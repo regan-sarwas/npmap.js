@@ -755,7 +755,7 @@
   background-size: 16px 16px;
 }
 .leaflet-retina .leaflet-control-home button {
-  background-image: url('images/control/home/fa-home.png');
+  background-image: url('images/control/home/fa-home@2x.png');
 }
 
 /* Legend Control */
