@@ -11,23 +11,20 @@ var SmallZoomControl = L.Control.extend({
     return this;
   },
   onAdd: function(map) {
-    var clsName = 'leaflet-control-zoom',
-      container = L.DomUtil.create('div', clsName + ' leaflet-bar');
-
-    this._zoomInButton = this._createButton('+', 'Zoom in', clsName + '-in', container, this._zoomIn, this);
-    this._zoomOutButton = this._createButton('-', 'Zoom out', clsName + '-out', container, this._zoomOut, this);
+    this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-bar');
+    this._zoomInButton = this._createButton('Zoom in', 'in', this._container, this._zoomIn, this);
+    this._zoomOutButton = this._createButton('Zoom out', 'out', this._container, this._zoomOut, this);
     map.on('zoomend zoomlevelschange', this._updateDisabled, this);
     this._updateDisabled();
 
-    return container;
+    return this._container;
   },
   onRemove: function(map) {
     map.off('zoomend zoomlevelschange', this._updateDisabled, this);
   },
-  _createButton: function(html, title, clsName, container, handler, context) {
+  _createButton: function(title, clsName, container, handler, context) {
     var button = L.DomUtil.create('button', clsName, container);
 
-    button.innerHTML = html;
     button.title = title;
 
     L.DomEvent.disableClickPropagation(button);
