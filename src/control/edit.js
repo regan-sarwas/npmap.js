@@ -196,12 +196,15 @@ L.Map.addInitHook(function() {
     options.ui = true;
     this.editControl = L.npmap.control.edit(options).addTo(this);
   } else {
-    var edit = false;
+    var edit = false,
+      overlays = this.options.overlays;
 
-    for (var i = 0; i < this.options.overlays.length; i++) {
-      if (this.options.overlays[i].edit) {
-        edit = true;
-        break;
+    if (overlays && L.Util.isArray(overlays)) {
+      for (var i = 0; i < overlays.length; i++) {
+        if (overlays[i].edit) {
+          edit = true;
+          break;
+        }
       }
     }
 
