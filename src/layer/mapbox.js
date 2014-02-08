@@ -33,25 +33,40 @@ var MapBoxLayer = L.TileLayer.extend({
   initialize: function(options) {
     var load;
 
-    L.Util.setOptions(this, options);
-    L.TileLayer.prototype.initialize.call(this, undefined, options);
-
     if (options.format) {
       util.strictOneOf(options.format, MapBoxLayer.FORMATS);
     }
 
-    if (L.Browser.retina && options.retinaVersion) {
-      if (typeof options.detectRetina === 'undefined' || options.detectRetina === true) {
-        options.detectRetina = true;
+    if (L.Browser.retina && (typeof options.detectRetina === 'undefined' || options.detectRetina === true)) {
+      if (options.retinaVersion) {
+        this.options.autoscale = false;
+        this.options.detectRetina = false;
         load = options.retinaVersion;
+        this._scalePrefix = '';
+      } else {
+        this.options.autoscale = true;
+        this.options.detectRetina = true;
+        load = options.tileJson || options.id;
+        this._scalePrefix = '@2x';
       }
     } else {
-      options.detectRetina = false;
+      this.options.autoscale = false;
+      this.options.detectRetina = false;
       load = options.tileJson || options.id;
+      this._scalePrefix = '';
     }
 
+    L.Util.setOptions(this, options);
+    L.TileLayer.prototype.initialize.call(this, undefined, options);
     this._hasInteractivity = false;
     this._loadTileJson(load);
+  },
+  _autoScale: function() {
+    if (L.Browser.retina && this.options.detectRetina && !this.options.retinaVersion && this.options.autoscale) {
+      return true;
+    } else {
+      return false;
+    }
   },
   _getGridData: function(latLng, layer, callback) {
     this._grid.getTileGrid(this._getTileGridUrl(latLng), latLng, function(resultData, gridData) {
@@ -129,10 +144,25 @@ var MapBoxLayer = L.TileLayer.extend({
     }
   },
   _setTileJson: function(json) {
+    var me = this,
+      extend;
+
     util.strict(json, 'object');
 
-    var extend = {
+    extend = {
+      attribution: (function() {
+        if (me.options.attribution) {
+          return me.options.attribution;
+        } else if (json.attribution) {
+          return json.attribution;
+        } else {
+          return null;
+        }
+      })(),
+      autoscale: json.autoscale || false,
       bounds: json.bounds ? this._toLeafletBounds(json.bounds) : null,
+      maxZoom: json.maxzoom,
+      minZoom: json.minzoom,
       tiles: json.tiles,
       grids: json.grids ? json.grids : null,
       tms: json.scheme === 'tms'
@@ -176,10 +206,10 @@ var MapBoxLayer = L.TileLayer.extend({
     var tiles = this.options.tiles,
       templated = L.Util.template(tiles[Math.floor(Math.abs(tilePoint.x + tilePoint.y) % tiles.length)], tilePoint);
 
-    if (templated) {
-      return templated.replace('.png', '.' + this.options.format);
-    } else {
+    if (!templated) {
       return templated;
+    } else {
+      return templated.replace('.png', (this._autoScale() ? this._scalePrefix : '') + '.' + this.options.format);
     }
   },
   onAdd: function onAdd(map) {
