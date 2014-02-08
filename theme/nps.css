@@ -754,6 +754,9 @@
   background-repeat: no-repeat;
   background-size: 16px 16px;
 }
+.leaflet-retina .leaflet-control-home button {
+  background-image: url('images/control/home/fa-home.png');
+}
 
 /* Legend Control */
 .leaflet-control-legend {
@@ -894,11 +897,17 @@
   background-repeat: no-repeat;
   background-size: 16px 16px;
 }
+.leaflet-retina .leaflet-control-zoom .in {
+  background-image: url('images/control/smallzoom/fa-plus@2x.png');
+}
 .leaflet-control-zoom .out {
   background-image: url('images/control/smallzoom/fa-minus.png');
   background-position: 5px 4px;
   background-repeat: no-repeat;
   background-size: 16px 16px;
+}
+.leaflet-retina .leaflet-control-zoom .out {
+  background-image: url('images/control/smallzoom/fa-minus@2x.png');
 }
 
 /* Switcher Control */
