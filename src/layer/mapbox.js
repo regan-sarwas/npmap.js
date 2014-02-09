@@ -38,20 +38,19 @@ var MapBoxLayer = L.TileLayer.extend({
     }
 
     if (L.Browser.retina && (typeof options.detectRetina === 'undefined' || options.detectRetina === true)) {
-      if (options.retinaVersion) {
-        this.options.autoscale = false;
-        this.options.detectRetina = false;
-        load = options.retinaVersion;
-        this._scalePrefix = '';
-      } else {
-        this.options.autoscale = true;
-        this.options.detectRetina = true;
-        load = options.tileJson || options.id;
-        this._scalePrefix = '@2x';
-      }
+      L.extend(this.options, {
+        autoscale: true,
+        detectRetina: true
+      });
+
+      load = options.tileJson || options.id;
+      this._scalePrefix = '@2x';
     } else {
-      this.options.autoscale = false;
-      this.options.detectRetina = false;
+      L.extend(this.options, {
+        autoscale: false,
+        detectRetina: false
+      });
+
       load = options.tileJson || options.id;
       this._scalePrefix = '';
     }
