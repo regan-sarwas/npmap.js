@@ -66,7 +66,6 @@
     background-repeat: no-repeat;
     border: none;
     border-left: solid 1px #adaca2;
-    border-right: solid 1px #adaca2;
     cursor: pointer;
     height: 21px;
     position: relative;
@@ -645,11 +644,6 @@
 }
 
 /* Fullscreen Control */
-.npmap-toolbar button .icon-fullscreen-enter, .npmap-toolbar button .icon-fullscreen-exit {
-  left: 9px;
-  position: absolute;
-  top: 7px;
-}
 .npmap-toolbar button.fullscreen.enter {
   background-image: url('images/control/fullscreen/enter.png');
   background-position: 7px;
@@ -774,6 +768,40 @@
     list-style-type: none;
   }
 
+/* Locate Control */
+.npmap .npmap-control-locate button {
+  background-image: url('images/control/locate/locate.png');
+  background-position: 4px;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+}
+.npmap .leaflet-retina .npmap-control-locate button {
+  background-image: url('images/control/locate/locate@2x.png');
+}
+
+/*
+.leaflet-touch .leaflet-control-locate button {
+  background-image: url(images/locate_touch.png);
+}
+*/
+.npmap .npmap-control-locate button.requesting {
+  background-image: url('images/control/locate/spinner.gif');
+  background-position: 50% 50%;
+}
+.npmap .leaflet-retina .npmap-control-locate button.requesting {
+  background-image: url('images/control/locate/spinner@2x.gif');
+}
+/*
+.leaflet-control-locate.active a {
+  background-position: -32px -2px;
+}
+.leaflet-touch .leaflet-control-locate {
+  box-shadow: none;
+  border: 2px solid rgba(0,0,0,0.2);
+  background-clip: padding-box;
+}
+*/
+
 /* Measure Control */
 .npmap .npmap-control-measure button {
   background-image: url('images/control/measure/ruler.png');
@@ -846,6 +874,26 @@
   .leaflet-retina .leaflet-control-overview button span {
     background-image: url('images/control/overview/toggle@2x.png');
   }
+
+/* Print Control */
+.npmap-toolbar button.print {
+  background-image: url('images/control/print/print.png');
+  background-position: 7px;
+  background-size: 14px 14px;
+}
+.npmap-retina .npmap-toolbar button.print {
+  background-image: url('images/control/print/print@2x.png');
+}
+
+/* Share Control */
+.npmap-toolbar button.share {
+  background-image: url('images/control/share/share.png');
+  background-position: 7px;
+  background-size: 14px 14px;
+}
+.npmap-retina .npmap-toolbar button.share {
+  background-image: url('images/control/share/share@2x.png');
+}
 
 /* Smallzoom Control */
 .leaflet-control-zoom .in {
