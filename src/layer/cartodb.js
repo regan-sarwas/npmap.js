@@ -1,10 +1,9 @@
-/* global L, document */
+/* global document, L */
 /* jshint camelcase: false */
 
 'use strict';
 
-var json3 = require('json3'),
-  reqwest = require('reqwest'),
+var reqwest = require('reqwest'),
   utfGrid = require('../util/utfgrid'),
   util = require('../util/util');
 
@@ -92,7 +91,7 @@ var CartoDbLayer = L.TileLayer.extend({
           },
           type: 'jsonp',
           url: util.buildUrl('http://' + me.options.user + '.cartodb.com/tiles/layergroup', {
-            config: json3.stringify({
+            config: JSON.stringify({
               layers: [{
                 options: {
                   cartocss: me._cartocss,
@@ -164,7 +163,7 @@ var CartoDbLayer = L.TileLayer.extend({
       }
     }
 
-    return '#layer' + json3.stringify(cartoCss).replace(/"/g, '').replace(/,/g, ';');
+    return '#layer' + JSON.stringify(cartoCss).replace(/"/g, '').replace(/,/g, ';');
   },
   setCartoCss: function(cartoCss) {
 

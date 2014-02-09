@@ -3,7 +3,6 @@
 'use strict';
 
 var Handlebars = require('handlebars'),
-  json3 = require('json3'),
   reqwest = require('reqwest');
 
 Handlebars.registerHelper('if', function(v1, operator, v2, opts) {
