@@ -132,7 +132,7 @@ var SwitcherControl = L.Control.extend({
     }
 
     active.className = '';
-    L.DomUtil.addClass(active, 'ico-' + icon + '-small');
+    L.DomUtil.addClass(active, icon + '-small');
     this._activeText.innerHTML = baseLayer.name;
   },
   _toggleList: function() {

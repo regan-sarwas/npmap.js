@@ -259,81 +259,6 @@
   vertical-align: text-top;
   width: 14px;
 }
-.npmap .icon-search {
-  background-position: 0 0;
-  height: 15px;
-  width: 16px;
-}
-.ico-aerial {
-  background-image: url('images/icon/aerial.png');
-  height: 22px;
-  position: absolute;
-  width: 17px;
-}
-.ico-aerial-small {
-  background-image: url('images/icon/aerial-small.png');
-  height: 13px;
-  margin-left: 11px;
-  margin-top: 7px;
-  position: absolute;
-  width: 13px;
-}
-.ico-generic {
-  background-image: url('images/icon/eye.png');
-  height: 22px;
-  position: absolute;
-  width: 17px;
-}
-.ico-generic-small {
-  background-image: url('images/icon/eye-small.png');
-  height: 10px;
-  margin-top: 9px;
-  margin-left: 8px;
-  position: absolute;
-  width: 17px;
-}
-.ico-nps {
-  background-image: url('images/icon/nps.png');
-  height: 22px;
-  position: absolute;
-  width: 17px;
-}
-.ico-nps-small {
-  background-image: url('images/icon/nps-small.png');
-  height: 15px;
-  margin-left: 12px;
-  margin-top: 6px;
-  position: absolute;
-  width: 12px;
-}
-.ico-street {
-  background-image: url('images/icon/street.png');
-  height: 22px;
-  position: absolute;
-  width: 17px;
-}
-.ico-street-small {
-  background-image: url('images/icon/street-small.png');
-  height: 13px;
-  margin-left: 9px;
-  margin-top: 8px;
-  position: absolute;
-  width: 17px;
-}
-.ico-topo {
-  background-image: url('images/icon/topo.png');
-  height: 22px;
-  position: absolute;
-  width: 17px;
-}
-.ico-topo-small {
-  background-image: url('images/icon/topo-small.png');
-  height: 13px;
-  margin-left: 9px;
-  margin-top: 8px;
-  position: absolute;
-  width: 17px;
-}
 .leaflet-marker-icon {
   background-size: 100%;
 }
@@ -1014,3 +939,73 @@
     .npmap-control-switcher li:last-child {
       border-bottom: none;
     }
+.npmap-control-switcher .aerial {
+  background-image: url('images/control/switcher/aerial.png');
+  height: 22px;
+  position: absolute;
+  width: 17px;
+}
+.npmap-control-switcher .aerial-small {
+  background-image: url('images/control/switcher/aerial-small.png');
+  height: 13px;
+  margin-left: 11px;
+  margin-top: 7px;
+  position: absolute;
+  width: 13px;
+}
+.npmap-control-switcher .generic {
+  background-image: url('images/control/switcher/eye.png');
+  height: 22px;
+  position: absolute;
+  width: 17px;
+}
+.npmap-control-switcher .generic-small {
+  background-image: url('images/control/switcher/eye-small.png');
+  height: 10px;
+  margin-top: 9px;
+  margin-left: 8px;
+  position: absolute;
+  width: 17px;
+}
+.npmap-control-switcher .nps {
+  background-image: url('images/control/switcher/nps.png');
+  height: 22px;
+  position: absolute;
+  width: 17px;
+}
+.npmap-control-switcher .nps-small {
+  background-image: url('images/control/switcher/nps-small.png');
+  height: 15px;
+  margin-left: 12px;
+  margin-top: 6px;
+  position: absolute;
+  width: 12px;
+}
+.npmap-control-switcher .street {
+  background-image: url('images/control/switcher/street.png');
+  height: 22px;
+  position: absolute;
+  width: 17px;
+}
+.npmap-control-switcher .street-small {
+  background-image: url('images/control/switcher/street-small.png');
+  height: 13px;
+  margin-left: 9px;
+  margin-top: 8px;
+  position: absolute;
+  width: 17px;
+}
+.npmap-control-switcher .topo {
+  background-image: url('images/control/switcher/topo.png');
+  height: 22px;
+  position: absolute;
+  width: 17px;
+}
+.npmap-control-switcher .topo-small {
+  background-image: url('images/control/switcher/topo-small.png');
+  height: 13px;
+  margin-left: 9px;
+  margin-top: 8px;
+  position: absolute;
+  width: 17px;
+}
