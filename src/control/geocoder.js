@@ -30,7 +30,7 @@ var GeocoderControl = L.Control.extend({
   onAdd: function(map) {
     var attribution = GeocoderControl.ATTRIBUTIONS[this.options.provider.toUpperCase()],
       container = L.DomUtil.create('div', 'leaflet-control-geocoder'),
-      button = this._button = L.DomUtil.create('button', null, container),
+      button = this._button = L.DomUtil.create('button', 'search', container),
       input = this._input = L.DomUtil.create('input', null, container),
       stopPropagation = L.DomEvent.stopPropagation,
       ul = this._ul = L.DomUtil.create('ul', 'leaflet-control', container);
@@ -48,7 +48,7 @@ var GeocoderControl = L.Control.extend({
       .on(input, 'mousewheel', stopPropagation)
       .on(ul, 'mousewheel', stopPropagation);
 
-    button.innerHTML = '<i class="icon-search"></i>';
+    this._container = container;
     button.title = 'Search';
     input.setAttribute('aria-activedescendant', null);
     input.setAttribute('aria-autocomplete', 'list');
@@ -116,18 +116,15 @@ var GeocoderControl = L.Control.extend({
     var value = this._input.value;
 
     if (value.length) {
-      var icon = this._button.childNodes[0],
-        me = this;
+      var me = this;
 
       me._clearResults();
       L.DomEvent.off(me._button, 'click', me._geocodeRequest);
-      L.DomUtil.removeClass(icon, 'icon-search');
-      L.DomUtil.addClass(icon, 'icon-working-black');
+      L.DomUtil.removeClass(me._button, 'search');
       L.DomUtil.addClass(me._button, 'working');
       geocode[me.options.provider](value, function(result) {
         L.DomEvent.on(me._button, 'click', me._geocodeRequest, me);
-        L.DomUtil.removeClass(icon, 'icon-working-black');
-        L.DomUtil.addClass(icon, 'icon-search');
+        L.DomUtil.addClass(me._button, 'search');
         L.DomUtil.removeClass(me._button, 'working');
 
         if (result && result.success) {
