@@ -774,6 +774,33 @@
     list-style-type: none;
   }
 
+/* Measure Control */
+.npmap .npmap-control-measure button {
+  background-image: url('images/control/measure/ruler.png');
+  background-position: 5px 4px;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+}
+.npmap .leaflet-retina .npmap-control-measure button {
+  background-image: url('images/control/measure/ruler@2x.png');
+}
+.leaflet-measure-tooltip {
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 5px #bbb;
+  font: 11px/1.25 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  height: auto !important;
+  margin: 0;
+  padding: 2px;
+  white-space: nowrap;
+  width: auto !important;
+}
+.leaflet-measure-tooltip-total {
+  font-weight: bold;
+}
+.leaflet-measure-tooltip-difference {
+  color: #777;
+}
+
 /* Overview Control */
 .leaflet-control-overview {
   -webkit-box-shadow: -1px 0 5px rgba(0,0,0,.28);
