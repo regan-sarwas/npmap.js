@@ -2,8 +2,7 @@
 
 'use strict';
 
-var json3 = require('json3'),
-  reqwest = require('reqwest'),
+var reqwest = require('reqwest'),
   util = require('../util/util');
 
 module.exports = {
@@ -282,7 +281,7 @@ module.exports = {
       size = map.getSize(),
       params = {
         f: 'json',
-        geometry: json3.stringify({
+        geometry: JSON.stringify({
           spatialReference: {
             wkid: 4326
           },
@@ -293,7 +292,7 @@ module.exports = {
         geometryType: 'esriGeometryPoint',
         imageDisplay: size.x + ',' + size.y + ',96',
         layers: 'visible:' + this.getLayers().split(':')[1],
-        mapExtent: json3.stringify(this.util.boundsToExtent(map.getBounds())),
+        mapExtent: JSON.stringify(this.util.boundsToExtent(map.getBounds())),
         returnGeometry: false,
         sr: '4326',
         tolerance: 5
