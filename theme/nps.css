@@ -876,6 +876,7 @@
   .leaflet-control-overview button span {
     background-image: url('images/control/overview/toggle.png');
     background-repeat: no-repeat;
+    background-size: 10px 10px;
     bottom: 10px;
     height: 10px;
     position: absolute;
@@ -890,6 +891,9 @@
            -o-transform: rotate(180deg);
               transform: rotate(180deg);
     }
+  .leaflet-retina .leaflet-control-overview button span {
+    background-image: url('images/control/overview/toggle@2x.png');
+  }
 
 /* Smallzoom Control */
 .leaflet-control-zoom .in {
