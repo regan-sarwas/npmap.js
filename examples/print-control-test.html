@@ -35,6 +35,11 @@
         padding: 10px 10px 10px 0;
       }
       .btn {
+        -webkit-user-select: none;
+           -moz-user-select: none;
+            -ms-user-select: none;
+             -o-user-select: none;
+                user-select: none;
         display: inline-block;
         padding: 6px 12px;
         margin-bottom: 0;
@@ -45,11 +50,6 @@
         white-space: nowrap;
         vertical-align: middle;
         cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -o-user-select: none;
-        user-select: none;
         border: 1px solid transparent;
         border-radius: 4px;
       }
@@ -76,7 +76,7 @@
       @media print and (color) {
         * {
           -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
+                  print-color-adjust: exact;
         }
       }
     </style>
