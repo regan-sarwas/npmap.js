@@ -68,7 +68,7 @@ var PrintControl = L.Control.extend({
     }
 
     params.b = JSON.stringify(params.b);
-    win = window.open('http://localhost:1984/examples/print-control-test.html' + L.Util.getParamString(params), '_blank');
+    win = window.open('http://www.nps.gov/maps/print.html' + L.Util.getParamString(params), '_blank');
     win.focus();
   }
 });
