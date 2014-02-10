@@ -5,7 +5,7 @@
 var util = require('../util/util');
 
 var ShareControl = L.Control.extend({
-  initialize: function(options) {
+  initialize: function() {
     this._button = L.DomUtil.create('button', 'share');
     this._button.title = 'Share the map';
     L.DomEvent.addListener(this._button, 'click', this.share, this);
@@ -23,7 +23,7 @@ var ShareControl = L.Control.extend({
     return this;
   },
   share: function() {
-
+    alert('The share tool has not yet been implemented.');
   }
 });
 

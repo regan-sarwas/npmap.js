@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>National Park Service Maps</title>
+    <meta name="apple-mobile-web-app-title" content="NPS Maps">
+    <meta name="application-name" content="NPS Maps">
+    <meta name="author" content="National Park Service">
+    <meta name="description" content="A website for National Park Service maps.">
+    <meta name="keywords" content="NPMap, National Park Service, Federal Government, Department of Interior, United States Government, GIS, Cartography, Web Mapping, Natural Resources, Cultural Resources, National Park Maps, NPS Maps">
+    <meta name="msapplication-TileColor" content="#222222">
+    <meta name="msapplication-TileImage" content="http://www.nps.gov/npmap/windows-8-tile.png">
+    <link rel="shortcut icon" href="http://www.nps.gov/npmap/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://www.nps.gov/npmap/apple-touch-icon-144x144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://www.nps.gov/npmap/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://www.nps.gov/npmap/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="http://www.nps.gov/npmap/apple-touch-icon-57x57-precomposed.png">
+    <style>
+      html, body {
+        margin-top: 0;
+      }
+      button {
+        font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      .buttons {
+        border-bottom: solid 1px black;
+        padding: 10px 10px 10px 0;
+      }
+      .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 1.428571429;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+      }
+      .btn-primary {
+        color: #fff;
+        background-color: #b28000;
+        border-color: #996e00;
+      }
+      .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active {
+        background-color: #896300;
+        border-color: #5b4200;
+        color: #fff;
+        text-decoration: none;
+      }
+
+      @media print {
+        html, body {
+          margin: 0;
+        }
+        .buttons, .leaflet-control-home, .leaflet-control-zoom {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body lang="en">
+    <form class="buttons" role="form">
+      <button class="btn btn-primary" onclick="window.print();return false;">Print</button>
+    </form>
+    <div id="map" style="height:7.0in;position:relative;width:100%;">
+    </div>
+    <script>
+      var search = window.location.search,
+        split = search.slice(1, search.length).split('&'),
+        b, c, NPMap, z;
+
+      for (var i = 0; i < split.length; i++) {
+        var param = split[i];
+
+        if (param.indexOf('b=') === 0) {
+          b = decodeURIComponent(param.slice(2, param.length));
+        } else if (param.indexOf('c') === 0) {
+          c = decodeURIComponent(param.slice(2, param.length));
+        } else if (param.indexOf('z') === 0) {
+          z = param.slice(2, param.length);
+        }
+      }
+
+      NPMap = JSON.parse(b);
+      NPMap.div = 'map';
+
+      if (c && z) {
+        NPMap.hooks = {
+          init: function(callback) {
+            NPMap.config.L.setView(JSON.parse(c), parseInt(z, 10));
+            callback();
+          }
+        };
+      }
+
+      (function() {
+        var s = document.createElement('script');
+        s.src = '../dist/npmap-bootstrap.js';
+        document.body.appendChild(s);
+      })();
+    </script>
+  </body>
+</html>
