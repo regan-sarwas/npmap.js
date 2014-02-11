@@ -53,7 +53,10 @@
     "mocha": "1.16.2",
     "mocha-phantomjs": "3.3.0",
     "sinon": "~1.7.3",
-    "uglify-js": "~2.4.6"
+    "uglify-js": "~2.4.6",
+    "grunt-mkdir": "~0.1.1",
+    "grunt-curl": "~1.4.0",
+    "grunt-http": "~1.0.1"
   },
   "engines": {
     "node": "*"
