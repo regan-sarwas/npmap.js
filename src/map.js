@@ -197,10 +197,13 @@ var Map = L.Map.extend({
           results = [],
           interval;
 
-        me._setCursor('wait');
-
         for (var i = 0; i < queryable.length; i++) {
           layer = queryable[i];
+
+          if (layer.options && layer.options.type === 'arcgisserver') {
+            me._setCursor('wait');
+          }
+
           layer._handleClick(latLng, layer, function(l, data) {
             if (data) {
               var result = data;
