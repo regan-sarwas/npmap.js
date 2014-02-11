@@ -111,7 +111,7 @@ module.exports = {
 
     if (typeof html === 'string') {
       var div = L.DomUtil.create('div', null);
-      div.innerHTML = html;
+      div.innerHTML = util.unescapeHtml(html);
       return div;
     } else {
       return html;
@@ -119,6 +119,10 @@ module.exports = {
   },
   _getMetadata: function() {
     var me = this;
+
+
+    // TODO: Implement timeout and set `loadError` property on layer to true if there is an error.
+
 
     reqwest({
       success: function(response) {
