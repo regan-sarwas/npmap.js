@@ -37,6 +37,7 @@ var MapBoxLayer = L.TileLayer.extend({
       util.strictOneOf(options.format, MapBoxLayer.FORMATS);
     }
 
+    /*
     if (L.Browser.retina && (typeof options.detectRetina === 'undefined' || options.detectRetina === true)) {
       L.extend(this.options, {
         autoscale: true,
@@ -46,6 +47,7 @@ var MapBoxLayer = L.TileLayer.extend({
       load = options.tileJson || options.id;
       this._scalePrefix = '@2x';
     } else {
+    */
       L.extend(this.options, {
         autoscale: false,
         detectRetina: false
@@ -53,7 +55,7 @@ var MapBoxLayer = L.TileLayer.extend({
 
       load = options.tileJson || options.id;
       this._scalePrefix = '';
-    }
+    //}
 
     L.Util.setOptions(this, options);
     L.TileLayer.prototype.initialize.call(this, undefined, options);
