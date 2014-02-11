@@ -7,18 +7,18 @@ window.L.Icon.Default.imagePath = 'http://d1smq4hh6dg11v.cloudfront.net/npmap.js
 L.npmap = module.exports = {
   VERSION: version,
   control: {
+    home: require('./src/control/home'),
+    smallzoom: require('./src/control/smallzoom'),
+    locate: require('./src/control/locate'),
+    measure: require('./src/control/measure'),
     edit: require('./src/control/edit'),
     fullscreen: require('./src/control/fullscreen'),
     geocoder: require('./src/control/geocoder'),
-    home: require('./src/control/home'),
     legend: require('./src/control/legend'),
-    locate: require('./src/control/locate'),
-    measure: require('./src/control/measure'),
     overview: require('./src/control/overview'),
     print: require('./src/control/print'),
     scale: require('./src/control/scale'),
     share: require('./src/control/share'),
-    smallzoom: require('./src/control/smallzoom'),
     switcher: require('./src/control/switcher')
   },
   icon: {
