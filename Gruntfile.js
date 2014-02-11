@@ -81,6 +81,14 @@ module.exports = function(grunt) {
         src: [
           'dist/**/*'
         ]
+      },
+      nps: {
+        options: {
+          force: true
+        },
+        src: [
+          '/Volumes/npmap/npmap.js/<%= pkg.version %>'
+        ]
       }
     },
     compress: {
@@ -165,6 +173,14 @@ module.exports = function(grunt) {
         src: [
           '**/*'
         ]
+      },
+      nps: {
+        cwd: 'dist/',
+        dest: '/Volumes/npmap/npmap.js/<%= pkg.version %>/',
+        expand: true,
+        src: [
+          '**/*'
+        ]
       }
     },
     csslint: {
@@ -179,6 +195,13 @@ module.exports = function(grunt) {
         expand: true,
         ext: '.min.css',
         src: ['*.css', '!*.min.css']
+      }
+    },
+    http: {
+      nps: {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/customcf/purge/index.cfm?site=www.nps.gov&urls=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2F*&Go=Purge+These+Pages'
+        }
       }
     },
     invalidate_cloudfront: {
@@ -197,6 +220,13 @@ module.exports = function(grunt) {
             '**/*'
           ]
         }]
+      }
+    },
+    mkdir: {
+      nps: {
+        create: [
+          '/Volumes/npmap/npmap.js/<%= pkg.version %>/'
+        ]
       }
     },
     mocha_phantomjs: {
@@ -245,10 +275,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-csslint');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-http');
   grunt.loadNpmTasks('grunt-invalidate-cloudfront');
+  grunt.loadNpmTasks('grunt-mkdir');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.registerTask('build', ['clean', 'copy', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
-  grunt.registerTask('deploy', ['compress', 'aws_s3', 'invalidate_cloudfront']);
+  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
+  grunt.registerTask('deploy-aws', ['compress', 'aws_s3', 'invalidate_cloudfront']);
+  grunt.registerTask('deploy-nps', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http:nps']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
