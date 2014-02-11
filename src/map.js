@@ -109,6 +109,7 @@ var Map = L.Map.extend({
     config.div = map;
     config.zoomControl = false;
     L.Map.prototype.initialize.call(me, config.div, config);
+    me._defaultCursor = me.getContainer().style.cursor;
     me._setupPopup();
     me._setupTooltip();
     me.on('autopanstart', function() {
@@ -169,15 +170,20 @@ var Map = L.Map.extend({
     var me = this;
 
     me.on('click', function(e) {
-      var changed = false,
+      var cancel = false,
+        changed = false,
         queryable = [],
         layer;
 
       function mapChanged() {
         changed = true;
       }
+      function mapClicked() {
+        cancel = true;
+      }
 
       me
+        .on('click', mapClicked)
         .on('dragstart', mapChanged)
         .on('movestart', mapChanged)
         .on('zoomstart', mapChanged);
@@ -192,7 +198,7 @@ var Map = L.Map.extend({
 
       if (queryable.length) {
         var completed = 0,
-          lastCursor = me.getContainer().style.cursor,
+          intervals = 0,
           latLng = e.latlng.wrap(),
           results = [],
           interval;
@@ -227,44 +233,57 @@ var Map = L.Map.extend({
 
         // TODO: Add support for a timeout so the infobox displays even if one or more operations fail.
         interval = setInterval(function() {
-          if (changed) {
+          intervals++;
+
+          if (cancel) {
             clearInterval(interval);
-            me._setCursor(lastCursor);
             me
+              .off('click', mapClicked)
               .off('dragstart', mapChanged)
               .off('movestart', mapChanged)
               .off('zoomstart', mapChanged);
-          } else {
-            if (queryable.length === completed) {
-              clearInterval(interval);
-              me
-                .off('dragstart', mapChanged)
-                .off('movestart', mapChanged)
-                .off('zoomstart', mapChanged);
+          } else if (changed) {
+            clearInterval(interval);
+            me
+              .off('click', mapClicked)
+              .off('dragstart', mapChanged)
+              .off('movestart', mapChanged)
+              .off('zoomstart', mapChanged);
+            me._setCursor('');
+          } else if ((queryable.length === completed) || intervals === 50) {
+            clearInterval(interval);
+            me
+              .off('click', mapClicked)
+              .off('dragstart', mapChanged)
+              .off('movestart', mapChanged)
+              .off('zoomstart', mapChanged);
 
-              if (results.length) {
-                var div = L.DomUtil.create('div', null),
-                  popup = L.popup({
-                    autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
-                  });
+            if (intervals > 49) {
+              // TODO: Show non-modal alert about the timeout.
+            }
 
-                for (var i = 0; i < results.length; i++) {
-                  var result = results[i];
+            if (results.length) {
+              var div = L.DomUtil.create('div', null),
+                popup = L.popup({
+                  autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
+                });
 
-                  if (typeof result === 'string') {
-                    var divResult = document.createElement('div');
-                    divResult.innerHTML = util.unescapeHtml(result);
-                    div.appendChild(divResult);
-                  } else {
-                    div.appendChild(result);
-                  }
+              for (var i = 0; i < results.length; i++) {
+                var result = results[i];
+
+                if (typeof result === 'string') {
+                  var divResult = document.createElement('div');
+                  divResult.innerHTML = util.unescapeHtml(result);
+                  div.appendChild(divResult);
+                } else {
+                  div.appendChild(result);
                 }
-
-                popup.setContent(div).setLatLng(latLng).openOn(me);
               }
 
-              me._setCursor(lastCursor);
+              popup.setContent(div).setLatLng(latLng).openOn(me);
             }
+
+            me._setCursor('');
           }
         }, 100);
       }
@@ -286,11 +305,15 @@ var Map = L.Map.extend({
     });
     me.on('mousemove', function(e) {
       var hasData = false,
+        lastCursor = me.getContainer().style.cursor,
         latLng = e.latlng.wrap(),
         newActiveTips = [];
 
       tooltip.hide();
-      me._setCursor('default');
+      
+      if (lastCursor !== 'wait') {
+        me._setCursor('');
+      }
 
       for (var i = 0; i < me._tooltips.length; i++) {
         if (activeTips.indexOf(me._tooltips[i]) === -1) {
