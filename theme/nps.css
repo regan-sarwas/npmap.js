@@ -440,6 +440,9 @@
     font-weight: bold;
     margin-bottom: 8px;
   }
+  .leaflet-popup-content .content {
+    font-size: 13px;
+  }
   .leaflet-popup-content .footer {
     border-top: solid 1px #b1b0a7;
     margin-bottom: 2px;
