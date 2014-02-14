@@ -73,6 +73,24 @@ _Returns_: a layer object
 
 ## L.npmap.layer.bing(config: object)
 
+Add a layer from the [Bing Imagery API](http://msdn.microsoft.com/en-us/library/ff701721.aspx) to your map with `L.npmap.layer.bing()`.
+
+_Extends_: [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer)
+
+_Arguments_:
+
+The first, and only, argument is required. It must be a layer config object with the following properties:
+
+...
+
+You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+
+_Example_:
+
+    var layer = L.npmap.layer.bing();
+
+_Returns_: a layer object
+
 ## L.npmap.layer.cartodb(config: object)
 
 ## L.npmap.layer.csv(config: object)
