@@ -9,6 +9,7 @@ Create and configure a map.
 The first, and only, argument is required. It must be a map config object with the following properties:
 
 - (Required) `div` (Object or String): Either an HTML element or the id of an HTML element to render the map into.
+- (Optional) `baseLayers` (Array): An array of baseLayer configuration objects OR baseLayer preset strings.
 - (Optional) `editControl` (Boolean): Defaults to `undefined`
 - (Optional) `fullscreenControl` (Boolean): Defaults to `undefined`.
 - (Optional) `geocoderControl` (Boolean or Object): Defaults to `undefined`.
@@ -16,6 +17,7 @@ The first, and only, argument is required. It must be a map config object with t
 - (Optional) `legendControl` (Boolean): Defaults to `undefined`
 - (Optional) `locateControl` (Boolean): Defaults to `undefined`
 - (Optional) `measureControl` (Boolean): Defaults to `undefined`
+- (Optional) `overlays` (Array): An array of overlay configuration objects OR overlay preset strings.
 - (Optional) `overviewControl` (Boolean or Object): Defaults to `undefined`.
 - (Optional) `printControl` (Boolean): Defaults to `undefined`
 - (Optional) `scaleControl` (Boolean): Defaults to `undefined`.
