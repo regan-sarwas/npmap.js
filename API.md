@@ -2,9 +2,11 @@
 
 ## L.npmap.map(config: object)
 
-Create and configure a map.
+Create and configure a map with baseLayers, overlays, and controls.
 
-*Arguments:*
+_Extends_: [`L.Map`](http://leafletjs.com/reference.html#map-options)
+
+_Arguments_:
 
 The first, and only, argument is required. It must be a map config object with the following properties:
 
@@ -26,37 +28,39 @@ The first, and only, argument is required. It must be a map config object with t
 
 You can also (optionally) provide any of the options supported by [`L.Map`](http://leafletjs.com/reference.html#map-options).
 
-*Example:*
+_Example_:
 
     var map = L.npmap.map({
       div: 'map',
       geocoderControl: true
     });
-
+    
+_Returns_: a map object
+    
 # Layers
 
 ## L.npmap.layer.arcgisserver(config: object)
 
 Add a layer from an ArcGIS Server map service, including services hosted on ArcGIS Online, to your map with `L.npmap.layer.arcgisserver()`.
 
-*Arguments:*
+_Extends_: [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer)
+
+_Arguments_:
 
 The first, and only, argument is required. It must be a layer config object with the following properties:
 
 - (Required) `tiled` (Boolean): Should be `true` if the service is tiled and `false` if it is not.
 - (Required) `url` (String): A URL string ending with "MapServer" for the ArcGIS Server service.
 - (Optional) `attribution` (String): An attribution string for the layer. HTML is allowed.
-- (Optinoal) `clickable` (Boolean): Is the layer "clickable"?
 - (Optional) `description` (String): Descriptive text for the layer. Used in legends, modules, and controls.
 - (Optional) `dynamicAttribution` (String): The URL of a [dynamic attribution](http://blogs.esri.com/esri/arcgis/2012/08/15/dynamic-attribution-is-here/) endpoint for the service.
 - (Optional) `layers` (String): A comma-delimited string of the ArcGIS Server integer layer identifiers to bring into the NPMap.js layer.
 - (Optional) `name` (String): A name for the layer. Used in legends, modules, and controls.
-- (Optional) `opacity` (Float): An opacity value for the layer. Defaults to `1.0`.
 - (Optional) `popup` (String OR Function): Configures the contents of the popup for an overlay. Either a Handlebars HTML template string or a function that is passed the data properties for a shape and returns an HTML string.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
-*Example:*
+_Example_:
 
     var layer = L.npmap.layer.arcgisserver({
       attribution: '<a href="http://www.esri.com">Esri</a>',
@@ -64,6 +68,8 @@ You can also (optionally) provide any of the options supported by [`L.TileLayer`
       tiled: true,
       url: 'http://services.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Unemployment_Rate/MapServer'
     });
+
+_Returns_: a layer object
 
 ## L.npmap.layer.bing(config: object)
 
