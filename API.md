@@ -1,56 +1,66 @@
-# NPMap.js API Docs
+# Map
 
-## Map
+## L.npmap.map(config: object)
 
-### L.npmap.map(config: object)
+Create and configure a map with baseLayers, overlays, and controls.
 
-Create and configure a map.
+_Extends_: [`L.Map`](http://leafletjs.com/reference.html#map-options)
 
-*Arguments:*
+_Arguments_:
 
 The first, and only, argument is required. It must be a map config object with the following properties:
 
 - (Required) `div` (Object or String): Either an HTML element or the id of an HTML element to render the map into.
+- (Optional) `baseLayers` (Array): An array of baseLayer configuration objects OR baseLayer preset strings.
+- (Optional) `editControl` (Boolean): Defaults to `undefined`
 - (Optional) `fullscreenControl` (Boolean): Defaults to `undefined`.
 - (Optional) `geocoderControl` (Boolean or Object): Defaults to `undefined`.
 - (Optional) `homeControl` (Boolean): Defaults to `true`.
-- (Optional) `overviewControl` (Boolean or Object): Default to `undefined`.
+- (Optional) `legendControl` (Boolean): Defaults to `undefined`
+- (Optional) `locateControl` (Boolean): Defaults to `undefined`
+- (Optional) `measureControl` (Boolean): Defaults to `undefined`
+- (Optional) `overlays` (Array): An array of overlay configuration objects OR overlay preset strings.
+- (Optional) `overviewControl` (Boolean or Object): Defaults to `undefined`.
+- (Optional) `printControl` (Boolean): Defaults to `undefined`
 - (Optional) `scaleControl` (Boolean): Defaults to `undefined`.
+- (Optional) `shareControl` (Boolean): Defaults to `undefined`
 - (Optional) `smallzoomControl` (Boolean): Defaults to `true`.
 
 You can also (optionally) provide any of the options supported by [`L.Map`](http://leafletjs.com/reference.html#map-options).
 
-*Example:*
+_Example_:
 
     var map = L.npmap.map({
       div: 'map',
       geocoderControl: true
     });
+    
+_Returns_: a map object
+    
+# Layers
 
-## Layers
-
-### L.npmap.layer.arcgisserver(config: object)
+## L.npmap.layer.arcgisserver(config: object)
 
 Add a layer from an ArcGIS Server map service, including services hosted on ArcGIS Online, to your map with `L.npmap.layer.arcgisserver()`.
 
-*Arguments:*
+_Extends_: [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer)
+
+_Arguments_:
 
 The first, and only, argument is required. It must be a layer config object with the following properties:
 
 - (Required) `tiled` (Boolean): Should be `true` if the service is tiled and `false` if it is not.
 - (Required) `url` (String): A URL string ending with "MapServer" for the ArcGIS Server service.
 - (Optional) `attribution` (String): An attribution string for the layer. HTML is allowed.
-- (Optinoal) `clickable` (Boolean): Is the layer "clickable"?
 - (Optional) `description` (String): Descriptive text for the layer. Used in legends, modules, and controls.
 - (Optional) `dynamicAttribution` (String): The URL of a [dynamic attribution](http://blogs.esri.com/esri/arcgis/2012/08/15/dynamic-attribution-is-here/) endpoint for the service.
 - (Optional) `layers` (String): A comma-delimited string of the ArcGIS Server integer layer identifiers to bring into the NPMap.js layer.
 - (Optional) `name` (String): A name for the layer. Used in legends, modules, and controls.
-- (Optional) `opacity` (Float): An opacity value for the layer. Defaults to `1.0`.
 - (Optional) `popup` (String OR Function): Configures the contents of the popup for an overlay. Either a Handlebars HTML template string or a function that is passed the data properties for a shape and returns an HTML string.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
-*Example:*
+_Example_:
 
     var layer = L.npmap.layer.arcgisserver({
       attribution: '<a href="http://www.esri.com">Esri</a>',
@@ -59,15 +69,37 @@ You can also (optionally) provide any of the options supported by [`L.TileLayer`
       url: 'http://services.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Unemployment_Rate/MapServer'
     });
 
-### L.npmap.layer.bing(config: object)
+_Returns_: a layer object
 
-### L.npmap.layer.cartodb(config: object)
+## L.npmap.layer.bing(config: object)
 
-### L.npmap.layer.csv(config: object)
+Add a layer from the [Bing Imagery API](http://msdn.microsoft.com/en-us/library/ff701721.aspx) to your map with `L.npmap.layer.bing()`.
+
+_Extends_: [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer)
+
+_Arguments_:
+
+The first, and only, argument is required. It must be a layer config object with the following properties:
+
+- (Required) `layer` (String): The layer you want to bring in from the Bing Imagery API.
+
+You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+
+_Example_:
+
+    var layer = L.npmap.layer.bing({
+      layer: 'aerialWithLabels'
+    });
+
+_Returns_: a layer object
+
+## L.npmap.layer.cartodb(config: object)
+
+## L.npmap.layer.csv(config: object)
 
 ### L.npmap.layer.geojson(config: object)
 
-### L.npmap.layer.github(config: object)
+## L.npmap.layer.github(config: object)
 
 Add a GeoJSON/TopoJSON layer from GitHub to your map with `L.npmap.layer.github()`.
 
@@ -95,9 +127,9 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
       user: 'nationalparkservice'
     });
 
-### L.npmap.layer.kml(config: object)
+## L.npmap.layer.kml(config: object)
 
-### L.npmap.layer.mapbox(config: object)
+## L.npmap.layer.mapbox(config: object)
 
 Add a layer from MapBox Hosting to your map with `L.npmap.layer.mapbox()`.
 
@@ -126,19 +158,19 @@ You can also (optionally) provide any of the options supported by [`L.TileLayer`
       id: 'examples.map-20v6611k'
     });
 
-### L.npmap.layer.tiled(config: object)
+## L.npmap.layer.tiled(config: object)
 
-### L.npmap.layer.wms(config: object)
+## L.npmap.layer.wms(config: object)
 
-## Controls
+# Controls
 
-### L.npmap.fullscreenControl(config: object)
+## L.npmap.fullscreenControl(config: object)
 
-### L.npmap.geocoderControl(config: object)
+## L.npmap.geocoderControl(config: object)
 
-### L.npmap.homeControl(config: object)
+## L.npmap.homeControl(config: object)
 
-### L.npmap.overviewControl(config: object)
+## L.npmap.overviewControl(config: object)
 
 Create a map control that provides context for the currently-visible area of the map. Adapted from the [Leaflet-MiniMap](https://github.com/Norkart/Leaflet-MiniMap) plugin.
 
@@ -162,9 +194,9 @@ You can also (optionally) provide any of the options supported by [`L.Control`](
       layer: 'mapbox-light'
     });
 
-### L.npmap.scaleControl(config: object)
+## L.npmap.scaleControl(config: object)
 
-### L.npmap.smallzoomControl(config: object)
+## L.npmap.smallzoomControl(config: object)
 
 Create a map control that contains zoom in/out buttons.
 
@@ -176,25 +208,25 @@ You can (optionally) provide any of the options supported by [`L.Control`](http:
 
     var control = L.npmap.control.smallzoom();
 
-### L.npmap.switcherControl(config: object)
+## L.npmap.switcherControl(config: object)
 
 The switcher control is used and controlled internally by NPMap.js, and is created and added to your map when more than one baseLayers is present in your map configuration object.
 
-## Icons
+# Icons
 
-### L.npmap.icon.maki(config: object)
+## L.npmap.icon.maki(config: object)
 
-### L.npmap.icon.npmaki(config: object)
+## L.npmap.icon.npmaki(config: object)
 
-## Utils
+# Utils
 
-## Concepts
+# Concepts
 
-### Using Popups
+## Using Popups
 
-### Using Tooltips
+## Using Tooltips
 
-### Styling Vectors
+## Styling Vectors
 
 NPMap.js uses the [simplestyle specification](https://github.com/mapbox/simplestyle-spec), which currently (at v1.1.0) includes the following properties:
 
@@ -228,8 +260,8 @@ If you prefer not to use the simplestyle specification, you can utilize the out-
 
 Take a look at the [Styling Vectors example](https://github.com/nationalparkservice/npmap.js/blob/master/examples/styling-vectors.html) to see an example of using the different configuration options to style vector data.
 
-## Notes
+# Notes
 
-- NPMap.js adds `L` property to every layer, map, module, or tool config object passed in via the map configuration object. You can use this property to interact programatically with the objects created by NPMap.js and Leaflet.
+- NPMap.js adds an `L` property to every layer (overlay or baselayer) and map config object passed in via the `NPMap` configuration object. You can use this property to interact programatically with the objects created by NPMap.js and Leaflet.
 - NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It is meant to act as a complement to the larger [Leaflet API](http://leafletjs.com/reference.html).
 - Unlike previous versions of the NPMap library, `npmap-bootstrap.js` now supports adding multiple maps to a page. Just make the `NPMap.config` property an array of map configuration objects.

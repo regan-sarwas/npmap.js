@@ -12,7 +12,7 @@ NPMap.js will eventually take the place of the [NPMap JavaScript library](https:
 
 ## Thanks
 
-Heavily inspired (cough cough) by [MapBox.js](https://github.com/mapbox/mapbox.js), and, of course, built on the great [Leaflet](http://leafletjs.com) library. Standing on the shoulders of giants.
+Heavily inspired (cough cough) by [MapBox.js](https://github.com/mapbox/mapbox.js), and, of course, built on the great [Leaflet](http://leafletjs.com) library. Standing on the shoulders of giants. Also, many thanks to the authors of all the great plugins used in the library.
 
 ## Versioning
 
