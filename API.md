@@ -9,11 +9,17 @@ Create and configure a map.
 The first, and only, argument is required. It must be a map config object with the following properties:
 
 - (Required) `div` (Object or String): Either an HTML element or the id of an HTML element to render the map into.
+- (Optional) `editControl` (Boolean): Defaults to `undefined`
 - (Optional) `fullscreenControl` (Boolean): Defaults to `undefined`.
 - (Optional) `geocoderControl` (Boolean or Object): Defaults to `undefined`.
 - (Optional) `homeControl` (Boolean): Defaults to `true`.
-- (Optional) `overviewControl` (Boolean or Object): Default to `undefined`.
+- (Optional) `legendControl` (Boolean): Defaults to `undefined`
+- (Optional) `locateControl` (Boolean): Defaults to `undefined`
+- (Optional) `measureControl` (Boolean): Defaults to `undefined`
+- (Optional) `overviewControl` (Boolean or Object): Defaults to `undefined`.
+- (Optional) `printControl` (Boolean): Defaults to `undefined`
 - (Optional) `scaleControl` (Boolean): Defaults to `undefined`.
+- (Optional) `shareControl` (Boolean): Defaults to `undefined`
 - (Optional) `smallzoomControl` (Boolean): Defaults to `true`.
 
 You can also (optionally) provide any of the options supported by [`L.Map`](http://leafletjs.com/reference.html#map-options).
@@ -228,6 +234,6 @@ Take a look at the [Styling Vectors example](https://github.com/nationalparkserv
 
 # Notes
 
-- NPMap.js adds `L` property to every layer, map, module, or tool config object passed in via the map configuration object. You can use this property to interact programatically with the objects created by NPMap.js and Leaflet.
+- NPMap.js adds an `L` property to every layer (overlay or baselayer) and map config object passed in via the `NPMap` configuration object. You can use this property to interact programatically with the objects created by NPMap.js and Leaflet.
 - NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It is meant to act as a complement to the larger [Leaflet API](http://leafletjs.com/reference.html).
 - Unlike previous versions of the NPMap library, `npmap-bootstrap.js` now supports adding multiple maps to a page. Just make the `NPMap.config` property an array of map configuration objects.
