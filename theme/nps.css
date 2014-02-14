@@ -263,6 +263,10 @@
 }
 
 /* Popup */
+.leaflet-popup-content {
+  min-width: 150px;
+  width: auto !important;
+}
 .leaflet-popup-content-wrapper {
      -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
@@ -358,7 +362,7 @@
   margin: 15px;
 }
   .leaflet-popup-content p {
-    margin: 10px 0 18px 0;
+    margin: 6px 0;
   }
   .leaflet-popup-content .actions {
     -webkit-touch-callout: none;
@@ -368,10 +372,11 @@
           -ms-user-select: none;
               user-select: none;
     border-top: solid 1px #b1b0a7;
-    margin-top: 4px;
-    padding-top: 11px;
+    margin-top: 18px;
+    padding-top: 18px;
   }
     .leaflet-popup-content ul {
+      margin-top: 0;
       padding-left: 0;
     }
     .leaflet-popup-content .actions ul li {
@@ -438,7 +443,7 @@
   .leaflet-popup-content .title {
     font-size: 13px;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .leaflet-popup-content .content {
     font-size: 13px;

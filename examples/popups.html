@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>Tooltip | Examples | NPMap.js</title>
+    <title>Popups | Examples | NPMap.js</title>
     <style>
       body {
         margin: 0;
@@ -28,14 +28,12 @@
         div: 'map',
         overlays: [{
           attribution: 'NPMap Team',
-          popup: '<div class="title">{{Name}}</div><p>{{Description}}</p>',
-          tooltip: '{{Name}}',
+          popup: '<div class="title">{{Name}}</div><div class="content" style="width:500px;"><p>{{Description}}</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ultricies non tellus sit amet eleifend. Phasellus a arcu quis tellus dignissim convallis. In ipsum odio, iaculis at vestibulum ut, eleifend sit amet mi. Phasellus lacinia lobortis sapien, et fermentum metus tristique vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla urna eget dignissim rhoncus. Pellentesque in mi et elit tristique suscipit. Cras vel lacinia mi. In nec lorem mauris. Aenean ac metus fringilla nunc tristique convallis nec eget dui. Quisque tincidunt massa nisl, a semper ligula auctor eu. Nulla pretium faucibus orci.</p></div><div class="actions"><ul><li><a href="#">A Test Action</a></li><li><a href="#">Another Test Action</a></li></ul></div>',
           type: 'geojson',
           url: 'data/rectangle.geojson'
         },{
           attribution: 'NPMap Team',
           table: 'park_bounds',
-          tooltip: 'Bounding box for {{alpha_code}}',
           type: 'cartodb',
           user: 'nps'
         },{
@@ -45,7 +43,6 @@
             name: 'park'
           },
           popup: '<div class="title">{{Name}}</div><p>The alpha code is {{Code}}.</p>',
-          tooltip: 'Center point for {{Code}}',
           type: 'geojson',
           url: 'http://www.nps.gov/npmap/support/library/examples/data/national-parks.geojson'
         }],
