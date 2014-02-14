@@ -1,8 +1,6 @@
-# NPMap.js API Docs
+# Map
 
-## Map
-
-### L.npmap.map(config: object)
+## L.npmap.map(config: object)
 
 Create and configure a map.
 
@@ -27,9 +25,9 @@ You can also (optionally) provide any of the options supported by [`L.Map`](http
       geocoderControl: true
     });
 
-## Layers
+# Layers
 
-### L.npmap.layer.arcgisserver(config: object)
+## L.npmap.layer.arcgisserver(config: object)
 
 Add a layer from an ArcGIS Server map service, including services hosted on ArcGIS Online, to your map with `L.npmap.layer.arcgisserver()`.
 
@@ -59,15 +57,15 @@ You can also (optionally) provide any of the options supported by [`L.TileLayer`
       url: 'http://services.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Unemployment_Rate/MapServer'
     });
 
-### L.npmap.layer.bing(config: object)
+## L.npmap.layer.bing(config: object)
 
-### L.npmap.layer.cartodb(config: object)
+## L.npmap.layer.cartodb(config: object)
 
-### L.npmap.layer.csv(config: object)
+## L.npmap.layer.csv(config: object)
 
 ### L.npmap.layer.geojson(config: object)
 
-### L.npmap.layer.github(config: object)
+## L.npmap.layer.github(config: object)
 
 Add a GeoJSON/TopoJSON layer from GitHub to your map with `L.npmap.layer.github()`.
 
@@ -95,9 +93,9 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
       user: 'nationalparkservice'
     });
 
-### L.npmap.layer.kml(config: object)
+## L.npmap.layer.kml(config: object)
 
-### L.npmap.layer.mapbox(config: object)
+## L.npmap.layer.mapbox(config: object)
 
 Add a layer from MapBox Hosting to your map with `L.npmap.layer.mapbox()`.
 
@@ -126,19 +124,19 @@ You can also (optionally) provide any of the options supported by [`L.TileLayer`
       id: 'examples.map-20v6611k'
     });
 
-### L.npmap.layer.tiled(config: object)
+## L.npmap.layer.tiled(config: object)
 
-### L.npmap.layer.wms(config: object)
+## L.npmap.layer.wms(config: object)
 
-## Controls
+# Controls
 
-### L.npmap.fullscreenControl(config: object)
+## L.npmap.fullscreenControl(config: object)
 
-### L.npmap.geocoderControl(config: object)
+## L.npmap.geocoderControl(config: object)
 
-### L.npmap.homeControl(config: object)
+## L.npmap.homeControl(config: object)
 
-### L.npmap.overviewControl(config: object)
+## L.npmap.overviewControl(config: object)
 
 Create a map control that provides context for the currently-visible area of the map. Adapted from the [Leaflet-MiniMap](https://github.com/Norkart/Leaflet-MiniMap) plugin.
 
@@ -162,9 +160,9 @@ You can also (optionally) provide any of the options supported by [`L.Control`](
       layer: 'mapbox-light'
     });
 
-### L.npmap.scaleControl(config: object)
+## L.npmap.scaleControl(config: object)
 
-### L.npmap.smallzoomControl(config: object)
+## L.npmap.smallzoomControl(config: object)
 
 Create a map control that contains zoom in/out buttons.
 
@@ -176,25 +174,25 @@ You can (optionally) provide any of the options supported by [`L.Control`](http:
 
     var control = L.npmap.control.smallzoom();
 
-### L.npmap.switcherControl(config: object)
+## L.npmap.switcherControl(config: object)
 
 The switcher control is used and controlled internally by NPMap.js, and is created and added to your map when more than one baseLayers is present in your map configuration object.
 
-## Icons
+# Icons
 
-### L.npmap.icon.maki(config: object)
+## L.npmap.icon.maki(config: object)
 
-### L.npmap.icon.npmaki(config: object)
+## L.npmap.icon.npmaki(config: object)
 
-## Utils
+# Utils
 
-## Concepts
+# Concepts
 
-### Using Popups
+## Using Popups
 
-### Using Tooltips
+## Using Tooltips
 
-### Styling Vectors
+## Styling Vectors
 
 NPMap.js uses the [simplestyle specification](https://github.com/mapbox/simplestyle-spec), which currently (at v1.1.0) includes the following properties:
 
@@ -228,7 +226,7 @@ If you prefer not to use the simplestyle specification, you can utilize the out-
 
 Take a look at the [Styling Vectors example](https://github.com/nationalparkservice/npmap.js/blob/master/examples/styling-vectors.html) to see an example of using the different configuration options to style vector data.
 
-## Notes
+# Notes
 
 - NPMap.js adds `L` property to every layer, map, module, or tool config object passed in via the map configuration object. You can use this property to interact programatically with the objects created by NPMap.js and Leaflet.
 - NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It is meant to act as a complement to the larger [Leaflet API](http://leafletjs.com/reference.html).
