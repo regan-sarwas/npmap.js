@@ -81,13 +81,15 @@ _Arguments_:
 
 The first, and only, argument is required. It must be a layer config object with the following properties:
 
-...
+- (Required) `layer` (String): The layer you want to bring in from the Bing Imagery API.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
 _Example_:
 
-    var layer = L.npmap.layer.bing();
+    var layer = L.npmap.layer.bing({
+      layer: 'aerialWithLabels'
+    });
 
 _Returns_: a layer object
 
