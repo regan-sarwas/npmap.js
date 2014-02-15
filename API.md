@@ -97,7 +97,7 @@ _Returns_: a layer object
 
 ## L.npmap.layer.csv(config: object)
 
-### L.npmap.layer.geojson(config: object)
+## L.npmap.layer.geojson(config: object)
 
 ## L.npmap.layer.github(config: object)
 
