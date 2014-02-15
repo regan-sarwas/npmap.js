@@ -34,7 +34,7 @@ _Example_:
       div: 'map',
       geocoderControl: true
     });
-    
+
 _Returns_: a map object
     
 # Layers
