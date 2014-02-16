@@ -34,7 +34,7 @@ NPMap.js is hosted on the National Park Service's content delivery network. Feel
 
 You must have [node.js](http://nodejs.org/) installed to run the build. After installing node.js:
 
-    git clone https://github.com/nationalparkservice/npmap.js.git
+    git clone https://github.com/nationalparkservice/npmap.js
     cd npmap.js
     npm install
 
