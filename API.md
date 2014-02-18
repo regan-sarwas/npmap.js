@@ -95,6 +95,8 @@ _Returns_: a layer object
 
 ## L.npmap.layer.cartodb(config: object)
 
+Add a [CartoDB](http://cartodb.com) layer to your map with `L.npmap.layer.cartodb()`.
+
 ## L.npmap.layer.csv(config: object)
 
 ### L.npmap.layer.geojson(config: object)
