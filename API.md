@@ -260,17 +260,26 @@ The switcher control is used and controlled internally by NPMap.js, and is creat
 
 ## Using Popups
 
-Popups are the "balloons" that display when you click on an overlay on the map.
+Popups are the "balloons" that display when you click on an overlay on the map. Each popup has four different configuration options:
 
-Popups for an overlay can be configured in one of two ways:
+1. Title
+2. Description
+3. Actions
+4. Width
+
+These configuration options can be specified in two different ways:
 
 <ol>
-  <li>By passing in a string with HTML and/or Handlebars templates</li>
+  <li>By passing in a string with HTML and/or Handlebars templates:<pre><code>'&lt;p&gt;The &lt;code&gt;cartodb_id&lt;/code&gt; of this feature is &lt;code&gt;{{cartodb_id}}&lt;/code&gt;.&lt;/p&gt;'</code></pre></li>
   <li>By passing in a configuration object:<pre><code>{
-  actions: [],
-  description: '',
-  media: [],
-  title: '',
+  actions: [{
+    handler: function() {
+      alert('Thanks for clicking!');
+    },
+    title: 'Click Me'
+  }],
+  description: '&lt;p&gt;The &lt;code&gt;cartodb_id&lt;/code&gt; of this feature is &lt;code&gt;{{cartodb_id}}&lt;/code&gt;.&lt;/p&gt;',
+  title: '{{alpha_code}}',
   width: 200
 }</code></pre></li>
 </ol>
