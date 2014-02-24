@@ -28,11 +28,22 @@
         div: 'map',
         overlays: [{
           attribution: 'NPMap Team',
-          popup: '<div class="title">{{Name}}</div><div class="content" style="width:500px;"><p>{{Description}}</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ultricies non tellus sit amet eleifend. Phasellus a arcu quis tellus dignissim convallis. In ipsum odio, iaculis at vestibulum ut, eleifend sit amet mi. Phasellus lacinia lobortis sapien, et fermentum metus tristique vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla urna eget dignissim rhoncus. Pellentesque in mi et elit tristique suscipit. Cras vel lacinia mi. In nec lorem mauris. Aenean ac metus fringilla nunc tristique convallis nec eget dui. Quisque tincidunt massa nisl, a semper ligula auctor eu. Nulla pretium faucibus orci.</p></div><div class="actions"><ul><li><a href="#">A Test Action</a></li><li><a href="#">Another Test Action</a></li></ul></div>',
+          popup: '<div class="title">{{Name}}</div><div class="content" style="width:500px;"><p>{{Description}}</p><p>This popup is configured with an HTML string. It has a hardcoded width of <code>500</code>.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ultricies non tellus sit amet eleifend. Phasellus a arcu quis tellus dignissim convallis. In ipsum odio, iaculis at vestibulum ut, eleifend sit amet mi. Phasellus lacinia lobortis sapien, et fermentum metus tristique vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla urna eget dignissim rhoncus. Pellentesque in mi et elit tristique suscipit. Cras vel lacinia mi. In nec lorem mauris. Aenean ac metus fringilla nunc tristique convallis nec eget dui. Quisque tincidunt massa nisl, a semper ligula auctor eu. Nulla pretium faucibus orci.</p></div><div class="actions"><ul><li><a href="#">A Test Action</a></li><li><a href="#">Another Test Action</a></li></ul></div>',
           type: 'geojson',
           url: 'data/rectangle.geojson'
         },{
           attribution: 'NPMap Team',
+          popup: {
+            actions: [{
+              handler: function() {
+                alert('Thanks for clicking!');
+              },
+              title: 'Click Me'
+            }],
+            description: '<p>The <code>cartodb_id</code> of this feature is <code>{{cartodb_id}}</code>.</p>',
+            title: '{{alpha_code}}',
+            width: 350
+          },
           styles: {
             'fill': '#819559',
             'fill-opacity': 0.5
@@ -42,7 +53,7 @@
           user: 'nps'
         },{
           attribution: 'Land Resources Division',
-          popup: '<div class="title">{{Name}}</div><p>The alpha code is {{Code}}.</p>',
+          popup: '<div class="title">{{Name}}</div><div class="content"><p>The alpha code is {{Code}}.</p></div>',
           styles: {
             point: {
               'marker-color': '#609321',
