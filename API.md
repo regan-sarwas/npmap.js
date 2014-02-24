@@ -326,7 +326,7 @@ Take a look at the [Styling Vectors example](https://github.com/nationalparkserv
 <ul>
   <li>NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It acts as a complement to the larger <a href="http://leafletjs.com/reference.html">Leaflet</a> API.</li>
   <li>NPMap.js adds an <code>L</code> property to every map config object and layer (overlay or baselayer) passed in via the <code>NPMap</code> configuration object. You can use this property to interact programatically with objects created by Leaflet. A few examples:<ul>
-    <li><code>NPMap.config.L</code> or <code>NPMap.config[0].L</code> will get a reference to the <code>[L.Map](http://leafletjs.com/reference.html#map-class)</code> object</li>
+    <li><code>NPMap.config.L</code> or <code>NPMap.config[0].L</code> will get a reference to the <code><a href="http://leafletjs.com/reference.html#map-class">L.Map</a></code> object</li>
     <li><code>NPMap.config.baseLayers[0].L</code> will get a reference to the Leaflet layer object for the first baseLayer</li>
     <li><code>NPMap.config.overlays[0].L</code> will get a reference to the Leaflet layer object for the first overlay</li>
   </ul></li>
