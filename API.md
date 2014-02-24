@@ -260,7 +260,7 @@ The switcher control is used and controlled internally by NPMap.js, and is creat
 
 ## Using Popups
 
-Popups are the "balloons" that display when you click on an overlay on the map. Each popup has four different configuration options:
+Popups display when you click on an overlay. Each popup has four different configuration options:
 
 1. Title
 2. Description
@@ -270,7 +270,7 @@ Popups are the "balloons" that display when you click on an overlay on the map. 
 These configuration options can be specified in two different ways:
 
 <ol>
-  <li>By passing in a string with HTML and/or Handlebars templates:<pre><code>'&lt;p&gt;The &lt;code&gt;cartodb_id&lt;/code&gt; of this feature is &lt;code&gt;{{cartodb_id}}&lt;/code&gt;.&lt;/p&gt;'</code></pre></li>
+  <li>By passing in a string with HTML and/or Handlebars templates:<pre><code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;'</code></pre></li>
   <li>By passing in a configuration object:<pre><code>{
   actions: [{
     handler: function() {
