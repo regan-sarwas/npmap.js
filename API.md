@@ -36,7 +36,7 @@ _Example_:
     });
 
 _Returns_: a map object
-    
+
 # Layers
 
 ## L.npmap.layer.arcgisserver(config: object)
@@ -97,13 +97,41 @@ _Returns_: a layer object
 
 Add a [CartoDB](http://cartodb.com) layer to your map with `L.npmap.layer.cartodb()`.
 
+_Extends_: [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer)
+
+_Arguments_:
+
+The first, and only, argument is required. It must be a layer config object with the following properties:
+
+- (Required) `table` (String)
+- (Required) `user` (String)
+- (Optional) `cartocss` (String)
+- (Optional) `interactivity` (String)
+- (Optional) `sql` (String)
+
+You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+
+_Example_:
+
+    var layer = L.npmap.layer.cartodb({
+      table: 'park_bounds',
+      type: 'cartodb',
+      user: 'nps'
+    });
+
+_Returns_: a layer object
+
 ## L.npmap.layer.csv(config: object)
+
+Add a CSV layer to your map with `L.npmap.layer.csv()`.
 
 ## L.npmap.layer.geojson(config: object)
 
+Add a GeoJSON layer to your map with `L.npmap.layer.geojson()`.
+
 ## L.npmap.layer.github(config: object)
 
-Add a GeoJSON/TopoJSON layer from GitHub to your map with `L.npmap.layer.github()`.
+Add a GeoJSON/TopoJSON layer from GitHub to your map with `L.npmap.layer.github()`. NOTE: This layer handler utilizes the GitHub API to pull data in. This API is limited to 60 requests per hour. For production apps, you will want to setup a [GitHub Pages](http://pages.github.com/) site.
 
 *Arguments:*
 
@@ -130,6 +158,8 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
     });
 
 ## L.npmap.layer.kml(config: object)
+
+Add a KML layer to your map with `L.npmap.layer.kml()`.
 
 ## L.npmap.layer.mapbox(config: object)
 
@@ -162,7 +192,11 @@ You can also (optionally) provide any of the options supported by [`L.TileLayer`
 
 ## L.npmap.layer.tiled(config: object)
 
+Add a tiled layer to your map with `L.npmap.layer.tiled()`.
+
 ## L.npmap.layer.wms(config: object)
+
+Add a WMS layer to your map with `L.npmap.layer.wms()`.
 
 # Controls
 
@@ -226,7 +260,30 @@ The switcher control is used and controlled internally by NPMap.js, and is creat
 
 ## Using Popups
 
+Popups for an overlay can be configured in one of two ways:
+
+<ol>
+  <li>By passing in a string with HTML and/or Handlebars templates</li>
+  <li>By passing in a configuration object<pre><code>{
+  actions: [],
+  description: '',
+  media: [],
+  title: '',
+  width: 200
+}</code></pre></li>
+</ol>
+
 ## Using Tooltips
+
+    var NPMap = {
+      overlays: [{
+        tooltip: '{{UnitCode}}',
+
+        table: 'park_bounds',
+        type: 'cartodb',
+        user: 'nps'
+      }]
+    };
 
 ## Styling Vectors
 
