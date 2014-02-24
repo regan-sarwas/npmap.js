@@ -330,8 +330,7 @@ Take a look at the [Styling Vectors example](https://github.com/nationalparkserv
     <li><code>NPMap.config.baseLayers[0].L</code> will get a reference to the Leaflet layer object for the first baseLayer</li>
     <li><code>NPMap.config.overlays[0].L</code> will get a reference to the Leaflet layer object for the first overlay</li>
   </ul></li>
-  <li>Unlike previous versions of the NPMap library, <code>npmap-bootstrap.js</code> now supports adding multiple maps to a page. Just make the <code>NPMap</code> property an array of map configuration objects:<pre><code>
-var NPMap = [{
+  <li>Unlike previous versions of the NPMap library, <code>npmap-bootstrap.js</code> now supports adding multiple maps to a page. Just make the <code>NPMap</code> property an array of map configuration objects:<pre><code>var NPMap = [{
   div: 'example-map-1'
 },{
   div: 'example-map-2'
