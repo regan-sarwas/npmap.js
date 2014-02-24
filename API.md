@@ -260,11 +260,13 @@ The switcher control is used and controlled internally by NPMap.js, and is creat
 
 ## Using Popups
 
+Popups are the "balloons" that display when you click on an overlay on the map.
+
 Popups for an overlay can be configured in one of two ways:
 
 <ol>
   <li>By passing in a string with HTML and/or Handlebars templates</li>
-  <li>By passing in a configuration object<pre><code>{
+  <li>By passing in a configuration object:<pre><code>{
   actions: [],
   description: '',
   media: [],
@@ -300,9 +302,9 @@ NPMap.js uses the [simplestyle specification](https://github.com/mapbox/simplest
 
 In addition, NPMap.js supports the following property that is not supported by the simplestyle specification:
 
-  marker-library
+    marker-library
 
-This property defaults to `maki`, and can (currently) be either `maki` or `npmaki`.
+This property is optional. It defaults to `maki`, and can also be `npmaki`.
 
 Styles for vector shapes can be set in multiple ways. NPMap.js looks in the following order for styles:
 
@@ -321,6 +323,18 @@ Take a look at the [Styling Vectors example](https://github.com/nationalparkserv
 
 # Notes
 
-- NPMap.js adds an `L` property to every layer (overlay or baselayer) and map config object passed in via the `NPMap` configuration object. You can use this property to interact programatically with the objects created by NPMap.js and Leaflet.
-- NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It is meant to act as a complement to the larger [Leaflet API](http://leafletjs.com/reference.html).
-- Unlike previous versions of the NPMap library, `npmap-bootstrap.js` now supports adding multiple maps to a page. Just make the `NPMap.config` property an array of map configuration objects.
+<ul>
+  <li>NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It acts as a complement to the larger <a href="http://leafletjs.com/reference.html">Leaflet</a> API.</li>
+  <li>NPMap.js adds an <code>L</code> property to every map config object and layer (overlay or baselayer) passed in via the <code>NPMap</code> configuration object. You can use this property to interact programatically with objects created by Leaflet. A few examples:<ul>
+    <li><code>NPMap.config.L</code> or <code>NPMap.config[0].L</code> will get a reference to the <code>[L.Map](http://leafletjs.com/reference.html#map-class)</code> object</li>
+    <li><code>NPMap.config.baseLayers[0].L</code> will get a reference to the Leaflet layer object for the first baseLayer</li>
+    <li><code>NPMap.config.overlays[0].L</code> will get a reference to the Leaflet layer object for the first overlay</li>
+  </ul></li>
+  <li>Unlike previous versions of the NPMap library, <code>npmap-bootstrap.js</code> now supports adding multiple maps to a page. Just make the <code>NPMap</code> property an array of map configuration objects:<pre><code>
+var NPMap = [{
+  div: 'example-map-1'
+},{
+  div: 'example-map-2'
+}];
+</code></pre></li>
+</ul>
