@@ -299,6 +299,8 @@ You can also specify a fixed width for your popup by passing a `width` property 
 
 This is useful if you want to embed fixed width media (images, videos, etc.) into the popup.
 
+You can see examples of configuring popups for overlays in the [popups](https://github.com/nationalparkservice/npmap.js/blob/master/examples/popups.html) example map.
+
 ## Using Tooltips
 
 Tooltips display when you hover over a feature in an overlay. Tooltips only work for layer handlers that support `mouseover` and `mouseout` operations, currently CartoDB, CSV, GeoJSON, GitHub, KML, and MapBox.
@@ -306,11 +308,14 @@ Tooltips display when you hover over a feature in an overlay. Tooltips only work
 Tooltips should be short and succinct. Like popups, HTML and Handlebars strings are supported.
 
     var NPMap = {
+      ...
       overlays: [{
         ...
         tooltip: '{{UnitCode}}'
       }]
     };
+
+You can see examples of configuring tooltips for overlays in the [tooltips](https://github.com/nationalparkservice/npmap.js/blob/master/examples/tooltips.html) example map.
 
 ## Styling Vectors
 
