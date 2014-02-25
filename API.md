@@ -260,16 +260,16 @@ The switcher control is used and controlled internally by NPMap.js, and is creat
 
 ## Using Popups
 
-Popups display when you click on an overlay. Each popup is made up of three different sections:
+Popups display when you click on a feature in an overlay. Each popup is made up of three different sections, all of which are optional:
 
 1. Title
 2. Description
 3. Actions
 
-These content for these sections can be specified in two different ways:
+The content for these sections can be specified in two different ways:
 
 <ol>
-  <li>By passing in a single string with HTML and/or Handlebars templates:<pre><code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;'</code></pre>. You should use the `title`, `content`, and `actions` classes to ensure your content is formatted properly.</li>
+  <li>By passing in a single string with HTML and/or Handlebars templates:<code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;'</code>. You should use the `title`, `content`, and `actions` classes to ensure your content is formatted properly.</li>
   <li>By passing in a configuration object:<pre><code>{
   actions: [{
     handler: function() {
@@ -279,10 +279,12 @@ These content for these sections can be specified in two different ways:
   }],
   description: '&lt;p&gt;The &lt;code&gt;cartodb_id&lt;/code&gt; of this feature is &lt;code&gt;{{cartodb_id}}&lt;/code&gt;.&lt;/p&gt;',
   title: '{{alpha_code}}'
-}</code></pre>NPMap.js will take care of formatting the different sections for you.</li>
+}</code></pre>If you use this method, NPMap.js will take care of generating the HTML and formatting the different sections.</li>
 </ol>
 
-In addition, you can specify a fixed width for your popup by passing a `width` property into the popup config object:
+HTML is supported, and all strings passed in will be parsed by [Handlebars](http://handlebarsjs.com/). You can also specify functions instead of strings. Functions will be passed an object with key/value pairs of the feature's properties, and must return a string (which, again, may contain HTML and/or Handlebars templates).
+
+You can also specify a fixed width for your popup by passing a `width` property into the popup config object:
 
     var NPMap = {
       ...
@@ -299,19 +301,20 @@ This is useful if you want to embed fixed width media (images, videos, etc.) int
 
 ## Using Tooltips
 
+Tooltips display when you hover over a feature in an overlay. Tooltips only work for layer handlers that support `mouseover` and `mouseout` operations, currently CartoDB, CSV, GeoJSON, GitHub, KML, and MapBox.
+
+Tooltips should be short and succinct. Like popups, HTML and Handlebars strings are supported.
+
     var NPMap = {
       overlays: [{
-        tooltip: '{{UnitCode}}',
-
-        table: 'park_bounds',
-        type: 'cartodb',
-        user: 'nps'
+        ...
+        tooltip: '{{UnitCode}}'
       }]
     };
 
 ## Styling Vectors
 
-NPMap.js uses the [simplestyle specification](https://github.com/mapbox/simplestyle-spec), which currently (at v1.1.0) includes the following properties:
+NPMap.js uses the [simplestyle specification](https://github.com/mapbox/simplestyle-spec), which currently, at v1.1.0, includes the following properties:
 
     fill
     fill-opacity
