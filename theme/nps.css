@@ -500,6 +500,12 @@
   margin-right: 5px;
   padding-right: 5px;
 }
+  .leaflet-popup-scrolled .actions, .leaflet-popup-scrolled .content, .leaflet-popup-scrolled .title {
+    margin-right: 10px;
+  }
+  .leaflet-popup-scrolled .content img {
+    margin-right: 10px;
+  }
 
 /* Tooltip */
 .leaflet-tooltip-container {
