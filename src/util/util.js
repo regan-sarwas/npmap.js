@@ -195,16 +195,63 @@ module.exports = {
    * @return {String}
    */
   dataToHtml: function(config, data, type) {
-    var html;
+    var html, options;
 
     type = type || 'popup';
+    options = config[type];
 
     // TODO: Shouldn't NPMap.js move the layer popup config to layer._popup?
-    if (config[type]) {
-      if (typeof config[type] === 'function') {
-        html = config[type](data);
-      } else if (typeof config[type] === 'string') {
-        html = this.handlebars(config[type], data);
+    if (options) {
+      switch (typeof options) {
+      case 'function':
+        html = options(data);
+        break;
+      case 'object':
+        var div = document.createElement('div');
+
+        if (options.title) {
+          var title = L.DomUtil.create('div', 'title', div);
+
+          if (typeof options.title === 'function') {
+            title.innerHTML = options.title(data);
+          } else if (typeof options.title === 'string') {
+            title.innerHTML = this.handlebars(options.title, data);
+          }
+        }
+
+        if (options.description) {
+          var description = L.DomUtil.create('div', 'description', div);
+
+          if (typeof options.description === 'function') {
+            description.innerHTML = options.description(data);
+          } else if (typeof options.description === 'string') {
+            description.innerHTML = this.handlebars(options.description, data);
+          }
+        }
+
+        if (options.actions && L.Util.isArray(options.actions)) {
+          var actions = L.DomUtil.create('div', 'actions', div),
+            ul = L.DomUtil.create('ul', null, actions),
+            a, action, li;
+
+          for (var i = 0; i < options.actions.length; i++) {
+            action = options.actions[i];
+            li = L.DomUtil.create('li', null, ul);
+            a = L.DomUtil.create('a', null, li);
+            a.innerHTML = action.title;
+            L.DomEvent.addListener(a, 'click', action.handler);
+          }
+        }
+
+        if (typeof options.width === 'number') {
+          div.style.width = options.width + 'px';
+        }
+
+        html = div;
+        break;
+      case 'string':
+        html = this.handlebars(options, data);
+        break;
       }
     } else if (type === 'popup') {
       // TODO: Shouldn't NPMap.js move the layer name config to layer._name?

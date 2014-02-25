@@ -53,7 +53,10 @@
           user: 'nps'
         },{
           attribution: 'Land Resources Division',
-          popup: '<div class="title">{{Name}}</div><div class="content"><p>The alpha code is {{Code}}.</p></div>',
+          popup: {
+            description: '<p>The alpha code is {{Code}}.</p>',
+            title: '{{Name}}'
+          },
           styles: {
             point: {
               'marker-color': '#609321',

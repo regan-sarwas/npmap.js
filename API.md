@@ -260,17 +260,16 @@ The switcher control is used and controlled internally by NPMap.js, and is creat
 
 ## Using Popups
 
-Popups display when you click on an overlay. Each popup has four different configuration options:
+Popups display when you click on an overlay. Each popup is made up of three different sections:
 
 1. Title
 2. Description
 3. Actions
-4. Width
 
-These configuration options can be specified in two different ways:
+These content for these sections can be specified in two different ways:
 
 <ol>
-  <li>By passing in a string with HTML and/or Handlebars templates:<pre><code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;'</code></pre></li>
+  <li>By passing in a single string with HTML and/or Handlebars templates:<pre><code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;'</code></pre>. You should use the `title`, `content`, and `actions` classes to ensure your content is formatted properly.</li>
   <li>By passing in a configuration object:<pre><code>{
   actions: [{
     handler: function() {
@@ -279,10 +278,24 @@ These configuration options can be specified in two different ways:
     title: 'Click Me'
   }],
   description: '&lt;p&gt;The &lt;code&gt;cartodb_id&lt;/code&gt; of this feature is &lt;code&gt;{{cartodb_id}}&lt;/code&gt;.&lt;/p&gt;',
-  title: '{{alpha_code}}',
-  width: 200
-}</code></pre></li>
+  title: '{{alpha_code}}'
+}</code></pre>NPMap.js will take care of formatting the different sections for you.</li>
 </ol>
+
+In addition, you can specify a fixed width for your popup by passing a `width` property into the popup config object:
+
+    var NPMap = {
+      ...
+      overlays: [{
+        ...
+        popup: {
+          title: 'This is a Title',
+          width: 300
+        }
+      }]
+    };
+
+This is useful if you want to embed fixed width media (images, videos, etc.) into the popup.
 
 ## Using Tooltips
 
