@@ -31,6 +31,24 @@
   .npmap-modules .module .title {
     margin: 10px;
   }
+.npmap-modules-buttons .npmap-modules-buttons-close {
+  background-image: url('images/module/fa-times.png');
+  background-position: 4px;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+}
+.npmap-retina .npmap-modules-buttons .npmap-modules-buttons-close {
+  background-image: url('images/module/fa-times@2x.png');
+}
+.npmap-modules-buttons .npmap-modules-buttons-information {
+  background-image: url('images/module/fa-info.png');
+  background-position: 4px;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+}
+.npmap-retina .npmap-modules-buttons .npmap-modules-buttons-information {
+  background-image: url('images/module/fa-info@2x.png');
+}
 .npmap-container {
   bottom: 0;
   left: 0;
@@ -67,11 +85,15 @@
       background-color: #7A796D;
       border: none;
       display: none;
+      height: 24px;
       margin: 0;
       padding: 0;
-      width: 28px;
-      height: 24px;
+      width: 24px;
     }
+      .npmap-map-wrapper .npmap-modules-buttons button.active {
+        background-color: #4b4B44;
+        cursor: default;
+      }
 .npmap-map {
   background-image: url('images/grain.png');
   height: 100%;

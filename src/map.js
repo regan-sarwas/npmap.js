@@ -177,13 +177,13 @@ var Map = L.Map.extend({
       L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
 
       for (var i = 0; i < modules.length; i++) {
-        var button = L.DomUtil.create('button', '', this._divModuleButtons),
-          div = L.DomUtil.create('div', 'module', this._divModules),
-          module = modules[i],
-          title = module.title;
+        var module = modules[i],
+          title = module.title,
+          button = L.DomUtil.create('button', 'npmap-modules-buttons-' + title.toLowerCase(), this._divModuleButtons),
+          div = L.DomUtil.create('div', 'module', this._divModules);
 
         button.id = 'npmap-modules-buttons-' + title;
-        div.id = 'npmap-module-' + title;
+        div.id = 'npmap-module-' + title.toLowerCase();
         div.innerHTML = '<h3 class="title">' + title + '</h3><div class="content">' + module.content + '</div>';
         L.DomEvent.addListener(button, 'click', function() {
           me.showModule(this.id.replace('npmap-modules-buttons-', ''));
@@ -493,7 +493,10 @@ var Map = L.Map.extend({
     this._divModules.style.display = 'none';
 
     for (var i = 1; i < buttons.length; i++) {
-      buttons[i].style.display = 'inline-block';
+      var button = buttons[i];
+
+      L.DomUtil.removeClass(button, 'active');
+      button.style.display = 'inline-block';
     }
   },
   showModule: function(title) {
@@ -521,6 +524,12 @@ var Map = L.Map.extend({
       var button = this._divModuleButtons.childNodes[i];
 
       button.style.display = 'inline-block';
+
+      if (button.id.replace('npmap-modules-buttons-', '') === title) {
+        L.DomUtil.addClass(button, 'active');
+      } else {
+        L.DomUtil.removeClass(button, 'active');
+      }
     }
 
     // TODO: Fire module 'show' event.
