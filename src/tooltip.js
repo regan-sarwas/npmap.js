@@ -2,9 +2,8 @@
 
 'use strict';
 
-/**
- * Forked from https://github.com/aratcliffe/Leaflet.tooltip.
- */
+var util = require('./util/util');
+
 var Tooltip = L.Class.extend({
   options: {
     fadeAnimation: false,
@@ -139,7 +138,7 @@ var Tooltip = L.Class.extend({
   },
   setHtml: function(html) {
     if (typeof html === 'string') {
-      this._container.innerHTML = html;
+      this._container.innerHTML = util.unescapeHtml(html);
     } else {
       while (this._container.hasChildNodes()) {
         this._container.removeChild(this._container.firstChild);
