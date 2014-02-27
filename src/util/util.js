@@ -213,9 +213,9 @@ module.exports = {
           var title = L.DomUtil.create('div', 'title', div);
 
           if (typeof options.title === 'function') {
-            title.innerHTML = options.title(data);
+            title.innerHTML = this.unescapeHtml(options.title(data));
           } else if (typeof options.title === 'string') {
-            title.innerHTML = this.handlebars(options.title, data);
+            title.innerHTML = this.unescapeHtml(this.handlebars(options.title, data));
           }
         }
 
@@ -223,9 +223,9 @@ module.exports = {
           var description = L.DomUtil.create('div', 'description', div);
 
           if (typeof options.description === 'function') {
-            description.innerHTML = options.description(data);
+            description.innerHTML = this.unescapeHtml(options.description(data));
           } else if (typeof options.description === 'string') {
-            description.innerHTML = this.handlebars(options.description, data);
+            description.innerHTML = this.unescapeHtml(this.handlebars(options.description, data));
           }
         }
 
