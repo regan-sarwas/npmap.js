@@ -506,17 +506,12 @@ var Map = L.Map.extend({
       var module = modules[i],
         visibility = 'none';
 
-      console.log(module.title);
-      console.log(title);
-
       if (module.title === title) {
         visibility = 'block';
       }
 
       module.visible = (visibility === 'block');
       childNodes[i].style.display = visibility;
-      console.log(childNodes[i]);
-      console.log(visibility);
     }
 
     divModules.style.display = 'block';
