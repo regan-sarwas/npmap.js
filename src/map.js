@@ -110,6 +110,7 @@ var Map = L.Map.extend({
     config.zoomControl = false;
     L.Map.prototype.initialize.call(me, config.div, config);
     me._defaultCursor = me.getContainer().style.cursor;
+    me._initializeModules();
     me._setupPopup();
     me._setupTooltip();
     me.on('autopanstart', function() {
@@ -162,6 +163,41 @@ var Map = L.Map.extend({
     }
 
     return this;
+  },
+  _initializeModules: function() {
+    if (this.options && this.options.modules && L.Util.isArray(this.options.modules)) {
+      var initialize = null,
+        me = this,
+        modules = this.options.modules;
+
+      this._divWrapper = this._container.parentNode;
+      this._divModules = util.getChildElementsByClassName(this._divWrapper.parentNode.parentNode, 'npmap-modules')[0];
+      this._divModuleButtons = L.DomUtil.create('div', 'npmap-modules-buttons', this._divWrapper);
+      this._buttonCloseModules = L.DomUtil.create('button', 'npmap-modules-buttons-close', this._divModuleButtons);
+      L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
+
+      for (var i = 0; i < modules.length; i++) {
+        var button = L.DomUtil.create('button', '', this._divModuleButtons),
+          div = L.DomUtil.create('div', 'module', this._divModules),
+          module = modules[i],
+          title = module.title;
+
+        button.id = 'npmap-modules-buttons-' + title;
+        div.id = 'npmap-module-' + title;
+        div.innerHTML = '<h3 class="title">' + title + '</h3><div class="content">' + module.content + '</div>';
+        L.DomEvent.addListener(button, 'click', function() {
+          me.showModule(this.id.replace('npmap-modules-buttons-', ''));
+        });
+
+        if (!initialize && module.visible === true) {
+          initialize = module.title;
+        }
+      }
+
+      if (initialize) {
+        this.showModule(initialize);
+      }
+    }
   },
   _setCursor: function(type) {
     this._container.style.cursor = type;
@@ -448,6 +484,62 @@ var Map = L.Map.extend({
     config.zoom = typeof config.zoom === 'number' ? config.zoom : 4;
 
     return config;
+  },
+  closeModules: function() {
+    var buttons = this._divModuleButtons.childNodes;
+
+    this._buttonCloseModules.style.display = 'none';
+    this._divWrapper.style.left = '0';
+    this._divModules.style.display = 'none';
+
+    for (var i = 1; i < buttons.length; i++) {
+      buttons[i].style.display = 'inline-block';
+    }
+  },
+  showModule: function(title) {
+    var divModules = this._divModules,
+      childNodes = divModules.childNodes,
+      modules = this.options.modules,
+      i;
+
+    for (i = 0; i < modules.length; i++) {
+      var module = modules[i],
+        visibility = 'none';
+
+      console.log(module.title);
+      console.log(title);
+
+      if (module.title === title) {
+        visibility = 'block';
+      }
+
+      module.visible = (visibility === 'block');
+      childNodes[i].style.display = visibility;
+      console.log(childNodes[i]);
+      console.log(visibility);
+    }
+
+    divModules.style.display = 'block';
+    this._divWrapper.style.left = '300px';
+
+    for (i = 0; i < this._divModuleButtons.childNodes.length; i++) {
+      var button = this._divModuleButtons.childNodes[i];
+
+      button.style.display = 'inline-block';
+    }
+
+    // TODO: Fire module 'show' event.
+  },
+  showModules: function() {
+    var buttons = this._divModuleButtons.childNodes;
+
+    this._buttonCloseModules.style.display = 'inline-block';
+    this._divWrapper.style.left = '300px';
+    this._divModules.style.display = 'block';
+
+    for (var i = 1; i < buttons.length; i++) {
+      buttons[i].style.display = 'inline-block';
+    }
   }
 });
 
