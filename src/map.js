@@ -187,7 +187,13 @@ var Map = L.Map.extend({
         button.id = 'npmap-modules-buttons|' + title.replace(/ /g, '_');
         button.title = title;
         div.id = 'npmap-module|' + title.replace(/ /g, '_');
-        div.innerHTML = '<h3 class="title">' + title + '</h3><div class="content">' + module.content + '</div>';
+        
+        if (module.type === 'custom') {
+          div.innerHTML = '<h2 class="title">' + title + '</h2><div class="content">' + module.content + '</div>';
+        } else {
+          // TODO: Get HTML from NPMap.js module.
+        }
+
         L.DomEvent.addListener(button, 'click', function() {
           me.showModule(this.id.replace('npmap-modules-buttons|', ''));
         });
