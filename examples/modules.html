@@ -22,14 +22,23 @@
     <script>
       var NPMap = {
         div: 'map',
+
+        fullscreenControl: true,
+        printControl: true,
+        shareControl: true,
+
         homeControl: {
           position: 'topright'
         },
         modules: [{
-          content: '<p>This is a paragraph.</p><p>And another</p><table><tr><td>1</td><td>2</td></tr></table>',
+          content: '<p>This is a paragraph.</p><p>And another.</p>',
           icon: 'information',
           title: 'My Fabulous Module',
           visible: true
+        },{
+          content: '<p>And another paragraph.</p><p>Let\'s do one more.</p>',
+          icon: 'information',
+          title: 'A Great Module'
         }],
         smallzoomControl: {
           position: 'topright'
