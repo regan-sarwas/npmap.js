@@ -33,8 +33,14 @@
       line-height: 1.1;
     }
     .npmap-modules .module .content {
+      bottom: 0;
       font-size: 14px;
+      left: 0;
+      overflow: auto;
       padding: 0 10px;
+      position: absolute;
+      right: 0;
+      top: 39px;
     }
       .npmap-modules .module .content h3 {
         font-size: 16px;
@@ -56,6 +62,13 @@
     .npmap-modules .module h2.title {
       font-size: 17px;
     }
+.npmap-modules-buttons .npmap-modules-buttons-button {
+  background-position: 4px;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+}
+
+/*
 .npmap-modules-buttons .npmap-modules-buttons-close {
   background-image: url('images/module/fa-times.png');
   background-position: 4px;
@@ -74,6 +87,7 @@
 .npmap-retina .npmap-modules-buttons .npmap-modules-buttons-information {
   background-image: url('images/module/fa-info@2x.png');
 }
+*/
 .npmap-container {
   bottom: 0;
   left: 0;
