@@ -174,19 +174,21 @@ var Map = L.Map.extend({
       this._divModules = util.getChildElementsByClassName(this._divWrapper.parentNode.parentNode, 'npmap-modules')[0];
       this._divModuleButtons = L.DomUtil.create('div', 'npmap-modules-buttons', this._divWrapper);
       this._buttonCloseModules = L.DomUtil.create('button', 'npmap-modules-buttons-close', this._divModuleButtons);
+      this._buttonCloseModules.title = 'Close';
       L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
 
       for (var i = 0; i < modules.length; i++) {
         var module = modules[i],
           title = module.title,
-          button = L.DomUtil.create('button', 'npmap-modules-buttons-' + title.toLowerCase(), this._divModuleButtons),
+          button = L.DomUtil.create('button', 'npmap-modules-buttons-' + module.icon.toLowerCase(), this._divModuleButtons),
           div = L.DomUtil.create('div', 'module', this._divModules);
 
-        button.id = 'npmap-modules-buttons-' + title;
-        div.id = 'npmap-module-' + title.toLowerCase();
+        button.id = 'npmap-modules-buttons|' + title.replace(/ /g, '_');
+        button.title = title;
+        div.id = 'npmap-module|' + title.replace(/ /g, '_');
         div.innerHTML = '<h3 class="title">' + title + '</h3><div class="content">' + module.content + '</div>';
         L.DomEvent.addListener(button, 'click', function() {
-          me.showModule(this.id.replace('npmap-modules-buttons-', ''));
+          me.showModule(this.id.replace('npmap-modules-buttons|', ''));
         });
 
         if (!initialize && module.visible === true) {
@@ -498,12 +500,16 @@ var Map = L.Map.extend({
       L.DomUtil.removeClass(button, 'active');
       button.style.display = 'inline-block';
     }
+
+    this.invalidateSize();
   },
   showModule: function(title) {
     var divModules = this._divModules,
       childNodes = divModules.childNodes,
       modules = this.options.modules,
       i;
+
+    title = title.replace(/_/g, ' ');
 
     for (i = 0; i < modules.length; i++) {
       var module = modules[i],
@@ -519,13 +525,14 @@ var Map = L.Map.extend({
 
     divModules.style.display = 'block';
     this._divWrapper.style.left = '300px';
+    this.invalidateSize();
 
     for (i = 0; i < this._divModuleButtons.childNodes.length; i++) {
       var button = this._divModuleButtons.childNodes[i];
 
       button.style.display = 'inline-block';
 
-      if (button.id.replace('npmap-modules-buttons-', '') === title) {
+      if (button.id.replace('npmap-modules-buttons|', '').replace(/_/g, ' ') === title) {
         L.DomUtil.addClass(button, 'active');
       } else {
         L.DomUtil.removeClass(button, 'active');
@@ -544,6 +551,8 @@ var Map = L.Map.extend({
     for (var i = 1; i < buttons.length; i++) {
       buttons[i].style.display = 'inline-block';
     }
+
+    this.invalidateSize();
   }
 });
 
