@@ -165,14 +165,14 @@ var Map = L.Map.extend({
     return this;
   },
   _initializeModules: function() {
-    if (this.options && this.options.modules && L.Util.isArray(this.options.modules)) {
+    if (this.options && this.options.modules && L.Util.isArray(this.options.modules) && this.options.modules.length) {
       var initialize = null,
         me = this,
         modules = this.options.modules;
 
-      this._divWrapper = this._container.parentNode;
+      this._divWrapper = this._container.parentNode.parentNode;
       this._divModules = util.getChildElementsByClassName(this._divWrapper.parentNode.parentNode, 'npmap-modules')[0];
-      this._divModuleButtons = L.DomUtil.create('div', 'npmap-modules-buttons', this._divWrapper);
+      this._divModuleButtons = L.DomUtil.create('div', 'npmap-modules-buttons', this._container.parentNode);
       this._buttonCloseModules = L.DomUtil.create('button', 'npmap-modules-buttons-close', this._divModuleButtons);
       this._buttonCloseModules.title = 'Close';
       L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
@@ -508,12 +508,6 @@ var Map = L.Map.extend({
       childNodes = divModules.childNodes,
       modules = this.options.modules,
       i;
-
-    
-    // Set left of toolbar to 300
-
-
-
 
     title = title.replace(/_/g, ' ');
 
