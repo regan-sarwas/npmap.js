@@ -168,7 +168,8 @@ var Map = L.Map.extend({
     if (this.options && this.options.modules && L.Util.isArray(this.options.modules) && this.options.modules.length) {
       var initialize = null,
         me = this,
-        modules = this.options.modules;
+        modules = this.options.modules,
+        button, i;
 
       this._divWrapper = this._container.parentNode.parentNode;
       this._divModules = util.getChildElementsByClassName(this._divWrapper.parentNode.parentNode, 'npmap-modules')[0];
@@ -177,12 +178,12 @@ var Map = L.Map.extend({
       this._buttonCloseModules.title = 'Close';
       L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
 
-      for (var i = 0; i < modules.length; i++) {
+      for (i = 0; i < modules.length; i++) {
         var module = modules[i],
           title = module.title,
-          button = L.DomUtil.create('button', 'npmap-modules-buttons-' + module.icon.toLowerCase(), this._divModuleButtons),
           div = L.DomUtil.create('div', 'module', this._divModules);
 
+        button = L.DomUtil.create('button', 'npmap-modules-buttons-' + module.icon.toLowerCase(), this._divModuleButtons);
         button.id = 'npmap-modules-buttons|' + title.replace(/ /g, '_');
         button.title = title;
         div.id = 'npmap-module|' + title.replace(/ /g, '_');
@@ -198,6 +199,11 @@ var Map = L.Map.extend({
 
       if (initialize) {
         this.showModule(initialize);
+      } else {
+        for (i = 1; i < this._divModuleButtons.childNodes.length; i++) {
+          button = this._divModuleButtons.childNodes[i];
+          button.style.display = 'inline-block';
+        }
       }
     }
   },
