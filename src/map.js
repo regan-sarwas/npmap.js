@@ -509,6 +509,12 @@ var Map = L.Map.extend({
       modules = this.options.modules,
       i;
 
+    
+    // Set left of toolbar to 300
+
+
+
+
     title = title.replace(/_/g, ' ');
 
     for (i = 0; i < modules.length; i++) {
