@@ -28,18 +28,34 @@
     right: 0;
     top: 0;
   }
-  .npmap-modules .module .content {
-    font-size: 14px;
-    padding: 0 10px;
-  }
+    .npmap-modules .module h1, h2, h3, h4, h5, h6 {
+      font-weight: 500;
+      line-height: 1.1;
+    }
+    .npmap-modules .module .content {
+      font-size: 14px;
+      padding: 0 10px;
+    }
+      .npmap-modules .module .content h3 {
+        font-size: 16px;
+      }
+      .npmap-modules .module .content h4 {
+        font-size: 15px;
+      }
+      .npmap-modules .module .content h5 {
+        font-size: 14px;
+      }
+      .npmap-modules .module .content h6 {
+        font-size: 13px;
+      }
   .npmap-modules .module .title {
-    /*margin: 10px;*/
     border-bottom: solid 1px #B5B39C;
-    font-size: 16px;
-    font-weight: normal;
     padding: 10px 9px;
     margin: 0;
   }
+    .npmap-modules .module h2.title {
+      font-size: 17px;
+    }
 .npmap-modules-buttons .npmap-modules-buttons-close {
   background-image: url('images/module/fa-times.png');
   background-position: 4px;
@@ -283,7 +299,7 @@
 /* Leaflet Overrides */
 .leaflet-container {
   color: #464646;
-  font-family: "Arial", Helvetica, sans-serif;
+  font-family: inherit;
 }
   .leaflet-container a {
     color: #b28000;
