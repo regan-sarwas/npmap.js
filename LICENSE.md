@@ -10,6 +10,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 NPMap.js uses a modified version of the [Esri-Leaflet](https://github.com/Esri/esri-leaflet) plugin.
 
+## Font Awesome
+
+NPMap.js uses icons from the [Font Awesome](https://github.com/FortAwesome/Font-Awesome) font. This font is licensed under the [SIL OFL 1.1](http://scripts.sil.org/OFL).
+
 ## leaflet.measure
 
 NPMap.js uses a modified version of the [leaflet.measure]() plugin. The license follows:
