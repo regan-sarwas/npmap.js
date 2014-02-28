@@ -542,7 +542,15 @@ var Map = L.Map.extend({
     for (i = 0; i < this._divModuleButtons.childNodes.length; i++) {
       var button = this._divModuleButtons.childNodes[i];
 
-      button.style.display = 'inline-block';
+      if (i === 0) {
+        button.style.display = 'inline-block';
+      } else {
+        if (modules.length > 1) {
+          button.style.display = 'inline-block';
+        } else {
+          button.style.display = 'none';
+        }
+      }
 
       if (button.id.replace('npmap-modules-buttons|', '').replace(/_/g, ' ') === title) {
         L.DomUtil.addClass(button, 'active');
