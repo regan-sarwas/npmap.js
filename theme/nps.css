@@ -28,6 +28,9 @@
     right: 0;
     top: 0;
   }
+  .npmap-modules .module .content {
+    padding: 0 10px;
+  }
   .npmap-modules .module .title {
     margin: 10px;
   }
