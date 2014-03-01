@@ -1,6 +1,3 @@
-/**
- * Forked from https://github.com/danzel/Leaflet.utfgrid/blob/master/src/leaflet.utfgrid.js.
- */
 var reqwest = require('reqwest'),
   tileMath = require('../util/tilemath');
 
@@ -30,6 +27,7 @@ module.exports = function(layer) {
         var me = this;
 
         cache[url] = 'loading';
+
         reqwest({
           error: function() {
             cache[url] = 'empty';
@@ -51,10 +49,11 @@ module.exports = function(layer) {
       }
     },
     getTileGridPoint: function(latLng, response) {
-      var point = layer._map.project(latLng),
-        resolution = layer.options.resolution || 4,
-        tileSize = layer.options.tileSize || 256,
-        max = layer._map.options.crs.scale(layer._map.getZoom()) / tileSize,
+      var map = layer._map,
+        point = map.project(latLng.wrap()),
+        resolution = 4,
+        tileSize = 256,
+        max = map.options.crs.scale(map.getZoom()) / tileSize,
         x = Math.floor(point.x / tileSize),
         y = Math.floor(point.y / tileSize);
 
