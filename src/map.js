@@ -184,7 +184,6 @@ var Map = L.Map.extend({
           title = module.title,
           div = L.DomUtil.create('div', 'module', this._divModules);
 
-        //button = L.DomUtil.create('button', 'npmap-modules-buttons-' + module.icon.toLowerCase(), this._divModuleButtons);
         button = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
         button.id = 'npmap-modules-buttons|' + title.replace(/ /g, '_');
         button.title = title;
