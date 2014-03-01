@@ -60,6 +60,23 @@ var MapBoxLayer = L.TileLayer.extend({
     this._hasInteractivity = false;
     this._loadTileJson(load);
   },
+  getTileUrl: function(tilePoint) {
+    var tiles = this.options.tiles,
+      templated = L.Util.template(tiles[Math.floor(Math.abs(tilePoint.x + tilePoint.y) % tiles.length)], tilePoint);
+
+    if (!templated) {
+      return templated;
+    } else {
+      return templated.replace('.png', (this._autoScale() ? this._scalePrefix : '') + '.' + this.options.format);
+    }
+  },
+  onAdd: function onAdd(map) {
+    this._map = map;
+    L.TileLayer.prototype.onAdd.call(this, map);
+  },
+  onRemove: function onRemove() {
+    L.TileLayer.prototype.onRemove.call(this, this._map);
+  },
   _autoScale: function() {
     if (L.Browser.retina && this.options.detectRetina && !this.options.retinaVersion && this.options.autoscale) {
       return true;
@@ -200,25 +217,6 @@ var MapBoxLayer = L.TileLayer.extend({
     if (this.options.tiles) {
       L.TileLayer.prototype._update.call(this);
     }
-  },
-  getTileUrl: function(tilePoint) {
-    var tiles = this.options.tiles,
-      templated = L.Util.template(tiles[Math.floor(Math.abs(tilePoint.x + tilePoint.y) % tiles.length)], tilePoint);
-
-    if (!templated) {
-      return templated;
-    } else {
-      return templated.replace('.png', (this._autoScale() ? this._scalePrefix : '') + '.' + this.options.format);
-    }
-  },
-  onAdd: function onAdd(map) {
-    L.TileLayer.prototype.onAdd.call(this, map);
-  },
-  onRemove: function onRemove() {
-    L.TileLayer.prototype.onRemove.call(this, this._map);
-  },
-  setId: function(id) {
-    
   }
 });
 
