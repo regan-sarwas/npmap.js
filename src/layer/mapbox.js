@@ -33,26 +33,23 @@ var MapBoxLayer = L.TileLayer.extend({
   initialize: function(options) {
     var load;
 
+    if (!options.id && !options.tileJson) {
+      throw new Error('MapBox layers require either an "id" or "tileJson" property.');
+    }
+
     if (options.format) {
       util.strictOneOf(options.format, MapBoxLayer.FORMATS);
     }
 
-    if (L.Browser.retina && (typeof options.detectRetina === 'undefined' || options.detectRetina === true)) {
-      L.extend(this.options, {
-        autoscale: true,
-        detectRetina: true
-      });
-
-      load = options.tileJson || options.id;
-      this._scalePrefix = '@2x';
+    if (L.Browser.retina && options.retinaVersion) {
+      load = options.retinaVersion;
     } else {
-      L.extend(this.options, {
-        autoscale: false,
-        detectRetina: false
-      });
-
       load = options.tileJson || options.id;
-      this._scalePrefix = '';
+    }
+
+    // Retina is opt-out by default, although we might need to rethink this.
+    if (options.detectRetina !== false) {
+      options.detectRetina = true;
     }
 
     L.Util.setOptions(this, options);
@@ -67,7 +64,7 @@ var MapBoxLayer = L.TileLayer.extend({
     if (!templated) {
       return templated;
     } else {
-      return templated.replace('.png', (this._autoScale() ? this._scalePrefix : '') + '.' + this.options.format);
+      return templated.replace('.png', (this._autoScale() ? '@2x' : '') + '.' + this.options.format);
     }
   },
   onAdd: function onAdd(map) {
@@ -78,11 +75,7 @@ var MapBoxLayer = L.TileLayer.extend({
     L.TileLayer.prototype.onRemove.call(this, this._map);
   },
   _autoScale: function() {
-    if (L.Browser.retina && this.options.detectRetina && !this.options.retinaVersion && this.options.autoscale) {
-      return true;
-    } else {
-      return false;
-    }
+    return L.Browser.retina && this.options.autoscale && this.options.detectRetina;
   },
   _getGridData: function(latLng, layer, callback) {
     this._grid.getTileGrid(this._getTileGridUrl(latLng), latLng, function(resultData, gridData) {
@@ -140,6 +133,10 @@ var MapBoxLayer = L.TileLayer.extend({
           if (response) {
             me._setTileJson(response);
             me.fire('ready');
+          } else {
+            me.fire('error', {
+              error: 'Error'
+            });
           }
         },
         type: 'jsonp',
@@ -177,12 +174,16 @@ var MapBoxLayer = L.TileLayer.extend({
       })(),
       autoscale: json.autoscale || false,
       bounds: json.bounds ? this._toLeafletBounds(json.bounds) : null,
+      grids: json.grids ? json.grids : null,
       maxZoom: json.maxzoom,
       minZoom: json.minzoom,
       tiles: json.tiles,
-      grids: json.grids ? json.grids : null,
       tms: json.scheme === 'tms'
     };
+
+    if (typeof this.options.attribution === 'undefined') {
+      extend.attribution = json.attribution;
+    }
 
     if (this.options.clickable !== false) {
       this._hasInteractivity = typeof json.grids === 'object';
@@ -190,10 +191,6 @@ var MapBoxLayer = L.TileLayer.extend({
       if (this._hasInteractivity) {
         this._grid = new utfGrid(this);
       }
-    }
-
-    if (typeof this.options.attribution === 'undefined') {
-      extend.attribution = json.attribution;
     }
 
     if (typeof this.options.maxZoom === 'undefined') {
@@ -205,7 +202,6 @@ var MapBoxLayer = L.TileLayer.extend({
     }
 
     L.extend(this.options, extend);
-
     this.tileJson = json;
     this.redraw();
     return this;
