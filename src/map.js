@@ -85,7 +85,8 @@ var baselayerPresets = require('./preset/baselayers.json'),
 
 var Map = L.Map.extend({
   initialize: function(config) {
-    var container = L.DomUtil.create('div', 'npmap-container'),
+    var baseLayerSet = false,
+      container = L.DomUtil.create('div', 'npmap-container'),
       map = L.DomUtil.create('div', 'npmap-map'),
       mapWrapper = L.DomUtil.create('div', 'npmap-map-wrapper'),
       me = this,
@@ -121,20 +122,27 @@ var Map = L.Map.extend({
       me.setView(config.center, config.zoom);
     }
 
-    for (var i = 0; i < config.baseLayers.length; i++) {
-      var baseLayer = config.baseLayers[i];
+    if (config.baseLayers.length) {
+      for (var i = 0; i < config.baseLayers.length; i++) {
+        var baseLayer = config.baseLayers[i];
 
-      baseLayer.zIndex = 0;
+        baseLayer.zIndex = 0;
 
-      if (baseLayer.visible === true) {
-        if (baseLayer.type === 'arcgisserver') {
-          baseLayer.L = L.npmap.layer[baseLayer.type][baseLayer.tiled === true ? 'tiled' : 'dynamic'](baseLayer);
+        if (!baseLayerSet && (baseLayer.visible || typeof baseLayer.visible === 'undefined')) {
+          baseLayer.visible = true;
+          baseLayerSet = true;
+
+          if (baseLayer.type === 'arcgisserver') {
+            baseLayer.L = L.npmap.layer[baseLayer.type][baseLayer.tiled === true ? 'tiled' : 'dynamic'](baseLayer);
+          } else {
+            baseLayer.L = L.npmap.layer[baseLayer.type](baseLayer);
+          }
+
+          me.addLayer(baseLayer.L);
+          break;
         } else {
-          baseLayer.L = L.npmap.layer[baseLayer.type](baseLayer);
+          baseLayer.visible = false;
         }
-
-        me.addLayer(baseLayer.L);
-        break;
       }
     }
 
@@ -419,19 +427,9 @@ var Map = L.Map.extend({
       throw new Error('The map config object must be either a string or object');
     }
 
-    if (typeof config.div === 'string') {
-      config.div = document.getElementById(config.div);
-    }
-
-    if (config.layers && L.Util.isArray(config.layers) && config.layers.length) {
-      config.overlays = config.layers;
-    } else if (!config.overlays || !L.Util.isArray(config.overlays)) {
-      config.overlays = [];
-    }
-
-    delete config.layers;
-
-    if (config.baseLayers !== false) {
+    if (typeof config.baseLayers === 'undefined' || config.baseLayers === false || (L.Util.isArray(config.baseLayers) && !config.baseLayers.length)) {
+      config.baseLayers = [];
+    } else {
       config.baseLayers = (function() {
         var visible = false;
 
@@ -478,16 +476,6 @@ var Map = L.Map.extend({
       })();
     }
 
-    if (config.overlays && L.Util.isArray(config.overlays) && config.overlays.length) {
-      for (var j = 0; j < config.overlays.length; j++) {
-        var overlay = config.overlays[j];
-
-        if (typeof overlay === 'string') {
-          overlay = config.overlays[j] = overlayPresets[overlay];
-        }
-      }
-    }
-
     config.center = (function() {
       var c = config.center;
 
@@ -497,8 +485,27 @@ var Map = L.Map.extend({
         return new L.LatLng(39, -96);
       }
     })();
-    config.zoom = typeof config.zoom === 'number' ? config.zoom : 4;
 
+    if (typeof config.div === 'string') {
+      config.div = document.getElementById(config.div);
+    }
+
+    if (config.layers && L.Util.isArray(config.layers) && config.layers.length) {
+      config.overlays = config.layers;
+
+      for (var j = 0; j < config.overlays.length; j++) {
+        var overlay = config.overlays[j];
+
+        if (typeof overlay === 'string') {
+          overlay = config.overlays[j] = overlayPresets[overlay];
+        }
+      }
+    } else if (!config.overlays || !L.Util.isArray(config.overlays)) {
+      config.overlays = [];
+    }
+
+    delete config.layers;
+    config.zoom = typeof config.zoom === 'number' ? config.zoom : 4;
     return config;
   },
   closeModules: function() {
