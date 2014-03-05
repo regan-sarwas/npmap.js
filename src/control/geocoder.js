@@ -35,6 +35,7 @@ var GeocoderControl = L.Control.extend({
       stopPropagation = L.DomEvent.stopPropagation,
       ul = this._ul = L.DomUtil.create('ul', 'leaflet-control', container);
 
+    this._initalizeNpsIndex();
     L.DomEvent.disableClickPropagation(button);
     L.DomEvent.disableClickPropagation(input);
     L.DomEvent.disableClickPropagation(ul);
@@ -44,7 +45,6 @@ var GeocoderControl = L.Control.extend({
       .on(input, 'focus', function() {
         this.value = this.value;
       })
-      .on(input, 'focus', this._inputOnFocus, this)
       .on(input, 'mousewheel', stopPropagation)
       .on(ul, 'mousewheel', stopPropagation);
 
@@ -153,7 +153,7 @@ var GeocoderControl = L.Control.extend({
     this._map.fitBounds(this._bounds[id]);
     this._input.setAttribute('aria-activedescendant', id);
   },
-  _inputOnFocus: function() {
+  _initalizeNpsIndex: function() {
     var me = this;
 
     reqwest({
@@ -278,8 +278,6 @@ var GeocoderControl = L.Control.extend({
       type: 'jsonp',
       url: 'http://www.nps.gov/npmap/data/park-bounds.js'
     });
-    L.DomEvent.off(me._input, 'focus', me._inputOnFocus);
-    delete me._inputOnFocus;
   }
 });
 
