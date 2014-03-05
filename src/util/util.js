@@ -219,8 +219,9 @@ module.exports = {
           }
         }
 
+        // TODO: Should the popup config be named "content"?
         if (options.description) {
-          var description = L.DomUtil.create('div', 'description', div);
+          var description = L.DomUtil.create('div', 'content', div);
 
           if (typeof options.description === 'function') {
             description.innerHTML = this.unescapeHtml(options.description(data));
