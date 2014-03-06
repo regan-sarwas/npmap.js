@@ -2,10 +2,10 @@
 
 'use strict';
 
-var Handlebars = require('handlebars'),
+var handlebars = require('handlebars'),
   reqwest = require('reqwest');
 
-Handlebars.registerHelper('if', function(v1, operator, v2, opts) {
+handlebars.registerHelper('if', function(v1, operator, v2, opts) {
   var isTrue = false;
 
   switch (operator) {
@@ -37,7 +37,7 @@ Handlebars.registerHelper('if', function(v1, operator, v2, opts) {
 
   return isTrue ? opts.fn(this) : opts.inverse(this);
 });
-Handlebars.registerHelper('toLowerCase', function(str) {
+handlebars.registerHelper('toLowerCase', function(str) {
   return str.toLowerCase();
 });
 
@@ -510,7 +510,7 @@ module.exports = {
    *
    */
   handlebars: function(template, data) {
-    template = Handlebars.compile(template);
+    template = handlebars.compile(template);
 
     return template(data);
   },

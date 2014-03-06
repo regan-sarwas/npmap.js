@@ -110,12 +110,14 @@ var Map = L.Map.extend({
     config.div = map;
     config.zoomControl = false;
     L.Map.prototype.initialize.call(me, config.div, config);
+    me._controllingCursor = true;
+    me._controllingInteractivity = true;
     me._defaultCursor = me.getContainer().style.cursor;
     me._initializeModules();
     me._setupPopup();
     me._setupTooltip();
     me.on('autopanstart', function() {
-      me._setCursor('default');
+      me._setCursor('');
     });
 
     if (!me._loaded) {
@@ -230,124 +232,135 @@ var Map = L.Map.extend({
     var me = this;
 
     me.on('click', function(e) {
-      var cancel = false,
-        changed = false,
-        queryable = [],
-        layer;
+      if (me._controllingInteractivity) {
+        var cancel = false,
+          changed = false,
+          queryable = [],
+          layer;
 
-      function mapChanged() {
-        changed = true;
-      }
-      function mapClicked() {
-        cancel = true;
-      }
+        me
+          .on('click', function() {
+            cancel = true;
+          })
+          .on('dragstart', function() {
+            changed = true;
+          })
+          .on('movestart', function() {
+            changed = true;
+          })
+          .on('zoomstart', function() {
+            changed = true;
+          });
 
-      me
-        .on('click', mapClicked)
-        .on('dragstart', mapChanged)
-        .on('movestart', mapChanged)
-        .on('zoomstart', mapChanged);
+        for (var layerId in me._layers) {
+          layer = me._layers[layerId];
 
-      for (var layerId in me._layers) {
-        layer = me._layers[layerId];
-
-        if (typeof layer.options === 'object' && (typeof layer.options.popup === 'undefined' || layer.options.popup !== false) && typeof layer._handleClick === 'function' && layer._hasInteractivity !== false) {
-          queryable.push(layer);
-        }
-      }
-
-      if (queryable.length) {
-        var completed = 0,
-          intervals = 0,
-          latLng = e.latlng.wrap(),
-          results = [],
-          interval;
-
-        for (var i = 0; i < queryable.length; i++) {
-          layer = queryable[i];
-
-          if (layer.options && layer.options.type === 'arcgisserver') {
-            me._setCursor('wait');
+          if (typeof layer.options === 'object' && (typeof layer.options.popup === 'undefined' || layer.options.popup !== false) && typeof layer._handleClick === 'function' && layer._hasInteractivity !== false) {
+            queryable.push(layer);
           }
+        }
 
-          layer._handleClick(latLng, layer, function(l, data) {
-            if (data) {
-              var result = data;
+        if (queryable.length) {
+          var completed = 0,
+            intervals = 0,
+            latLng = e.latlng.wrap(),
+            results = [],
+            interval;
 
-              if (result) {
-                var div;
+          for (var i = 0; i < queryable.length; i++) {
+            layer = queryable[i];
 
-                if (typeof result === 'string') {
-                  div = document.createElement('div');
-                  div.innerHTML = util.unescapeHtml(result);
-                  results.push(div);
-                } else if ('nodeType' in result) {
-                  results.push(result);
-                } else {
-                  results.push(util.dataToHtml(l.options, data));
+            if (layer.options && layer.options.type === 'arcgisserver') {
+              me._setCursor('wait');
+            }
+
+            layer._handleClick(latLng, layer, function(l, data) {
+              if (data) {
+                var result = data;
+
+                if (result) {
+                  var div;
+
+                  if (typeof result === 'string') {
+                    div = document.createElement('div');
+                    div.innerHTML = util.unescapeHtml(result);
+                    results.push(div);
+                  } else if ('nodeType' in result) {
+                    results.push(result);
+                  } else {
+                    results.push(util.dataToHtml(l.options, data));
+                  }
                 }
               }
-            }
 
-            completed++;
-          });
-        }
+              completed++;
+            });
+          }
 
-        // TODO: Add support for a timeout so the infobox displays even if one or more operations fail.
-        interval = setInterval(function() {
-          intervals++;
+          // TODO: Add support for a timeout so the infobox displays even if one or more operations fail.
+          interval = setInterval(function() {
+            intervals++;
 
-          if (cancel) {
-            clearInterval(interval);
-            me
-              .off('click', mapClicked)
-              .off('dragstart', mapChanged)
-              .off('movestart', mapChanged)
-              .off('zoomstart', mapChanged);
-          } else if (changed) {
-            clearInterval(interval);
-            me
-              .off('click', mapClicked)
-              .off('dragstart', mapChanged)
-              .off('movestart', mapChanged)
-              .off('zoomstart', mapChanged);
-            me._setCursor('');
-          } else if ((queryable.length === completed) || intervals === 50) {
-            clearInterval(interval);
-            me
-              .off('click', mapClicked)
-              .off('dragstart', mapChanged)
-              .off('movestart', mapChanged)
-              .off('zoomstart', mapChanged);
-
-            if (intervals > 49) {
-              // TODO: Show non-modal alert about the timeout.
-            }
-
-            if (results.length) {
-              var div = L.DomUtil.create('div', null),
-                popup = L.popup({
-                  autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
+            if (cancel || changed) {
+              clearInterval(interval);
+              me
+                .off('click', function() {
+                  cancel = true;
+                })
+                .off('dragstart', function() {
+                  changed = true;
+                })
+                .off('movestart', function() {
+                  changed = true;
+                })
+                .off('zoomstart', function() {
+                  changed = true;
+                });
+            } else if ((queryable.length === completed) || intervals === 50) {
+              clearInterval(interval);
+              me
+                .off('click', function() {
+                  cancel = true;
+                })
+                .off('dragstart', function() {
+                  changed = true;
+                })
+                .off('movestart', function() {
+                  changed = true;
+                })
+                .off('zoomstart', function() {
+                  changed = true;
                 });
 
-              for (var i = 0; i < results.length; i++) {
-                var result = results[i];
-
-                if (typeof result === 'string') {
-                  var divResult = document.createElement('div');
-                  divResult.innerHTML = util.unescapeHtml(result);
-                  div.appendChild(divResult);
-                } else {
-                  div.appendChild(result);
-                }
+              if (intervals > 49) {
+                // TODO: Show non-modal alert about the timeout.
               }
 
-              popup.setContent(div).setLatLng(latLng).openOn(me);
-            }
+              if (results.length) {
+                var div = L.DomUtil.create('div', null),
+                  popup = L.popup({
+                    autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
+                  });
 
-            me._setCursor('');
-          }
-        }, 100);
+                for (var i = 0; i < results.length; i++) {
+                  var result = results[i];
+
+                  if (typeof result === 'string') {
+                    var divResult = document.createElement('div');
+                    divResult.innerHTML = util.unescapeHtml(result);
+                    div.appendChild(divResult);
+                  } else {
+                    div.appendChild(result);
+                  }
+                }
+
+                popup.setContent(div).setLatLng(latLng).openOn(me);
+              }
+
+              me._setCursor('');
+            }
+          }, 100);
+        }
       }
     });
   },
@@ -366,57 +379,59 @@ var Map = L.Map.extend({
       tooltip.hide();
     });
     me.on('mousemove', function(e) {
-      var hasData = false,
-        lastCursor = me.getContainer().style.cursor,
-        latLng = e.latlng.wrap(),
-        newActiveTips = [];
+      if (this._controllingCursor) {
+        var hasData = false,
+          lastCursor = me.getContainer().style.cursor,
+          latLng = e.latlng.wrap(),
+          newActiveTips = [];
 
-      tooltip.hide();
-      
-      if (lastCursor !== 'wait') {
-        me._setCursor('');
-      }
-
-      for (var i = 0; i < me._tooltips.length; i++) {
-        if (activeTips.indexOf(me._tooltips[i]) === -1) {
-          newActiveTips.push(me._tooltips[i]);
+        tooltip.hide();
+        
+        if (lastCursor !== 'wait') {
+          me._setCursor('');
         }
-      }
 
-      activeTips = [];
-      me._tooltips = newActiveTips;
-
-      for (var layerId in me._layers) {
-        var layer = me._layers[layerId];
-
-        if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
-          layer._handleMousemove(latLng, layer, function(l, data) {
-            if (data) {
-              var tip;
-
-              hasData = true;
-
-              if (typeof layer.options.tooltip === 'function') {
-                tip = layer.options.tooltip(data);
-              } else if (typeof layer.options.tooltip === 'string') {
-                tip = util.unescapeHtml(util.handlebars(layer.options.tooltip, data));
-              }
-
-              if (tip) {
-                me._tooltips.push(tip);
-                activeTips.push(tip);
-              }
-            }
-          });
+        for (var i = 0; i < me._tooltips.length; i++) {
+          if (activeTips.indexOf(me._tooltips[i]) === -1) {
+            newActiveTips.push(me._tooltips[i]);
+          }
         }
-      }
 
-      if (hasData) {
-        me._setCursor('pointer');
-      }
+        activeTips = [];
+        me._tooltips = newActiveTips;
 
-      if (me._tooltips.length) {
-        tooltip.show(e.containerPoint, me._tooltips.join('<br>'));
+        for (var layerId in me._layers) {
+          var layer = me._layers[layerId];
+
+          if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
+            layer._handleMousemove(latLng, layer, function(l, data) {
+              if (data) {
+                var tip;
+
+                hasData = true;
+
+                if (typeof layer.options.tooltip === 'function') {
+                  tip = layer.options.tooltip(data);
+                } else if (typeof layer.options.tooltip === 'string') {
+                  tip = util.unescapeHtml(util.handlebars(layer.options.tooltip, data));
+                }
+
+                if (tip) {
+                  me._tooltips.push(tip);
+                  activeTips.push(tip);
+                }
+              }
+            });
+          }
+        }
+
+        if (hasData) {
+          me._setCursor('pointer');
+        }
+
+        if (me._tooltips.length) {
+          tooltip.show(e.containerPoint, me._tooltips.join('<br>'));
+        }
       }
     });
   },
@@ -427,7 +442,7 @@ var Map = L.Map.extend({
       throw new Error('The map config object must be either a string or object');
     }
 
-    if (typeof config.baseLayers === 'undefined' || config.baseLayers === false || (L.Util.isArray(config.baseLayers) && !config.baseLayers.length)) {
+    if (config.baseLayers === false || (L.Util.isArray(config.baseLayers) && !config.baseLayers.length)) {
       config.baseLayers = [];
     } else {
       config.baseLayers = (function() {
