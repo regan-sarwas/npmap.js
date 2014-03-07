@@ -745,7 +745,7 @@
 /* Fullscreen Control */
 .npmap-toolbar button.fullscreen.enter {
   background-image: url('images/font-awesome/arrows-alt.png');
-  background-position: 7px;
+  background-position: 8px;
   background-size: 14px 14px;
 }
 .npmap-retina .npmap-toolbar button.fullscreen.enter {
