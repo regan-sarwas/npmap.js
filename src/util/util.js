@@ -5,6 +5,7 @@
 var handlebars = require('handlebars'),
   reqwest = require('reqwest');
 
+/*
 handlebars.registerHelper('if', function(v1, operator, v2, opts) {
   var isTrue = false;
 
@@ -37,6 +38,7 @@ handlebars.registerHelper('if', function(v1, operator, v2, opts) {
 
   return isTrue ? opts.fn(this) : opts.inverse(this);
 });
+*/
 handlebars.registerHelper('toLowerCase', function(str) {
   return str.toLowerCase();
 });
