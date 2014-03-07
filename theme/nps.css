@@ -456,7 +456,7 @@
   }
     .leaflet-popup-content ul {
       margin-top: 0;
-      padding-left: 0;
+      padding-left: 25px;
     }
     .leaflet-popup-content .actions ul li {
       float: left;
