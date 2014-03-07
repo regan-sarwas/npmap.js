@@ -11,6 +11,9 @@ var FullscreenControl = L.Control.extend({
     this._button.title = 'Enter fullscreen';
     L.DomEvent.addListener(this._button, 'click', this.fullscreen, this);
 
+    // TODO: Test embedding into page that isn't on nps.gov.
+    this._frame = window.frameElement || null;
+
     return this;
   },
   _onKeyUp: function(e) {
@@ -33,16 +36,39 @@ var FullscreenControl = L.Control.extend({
     util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '26px';
     return this;
   },
+  _getParentDocumentBody: function(el) {
+    var parent;
+
+    do {
+      parent = el.parentNode;
+    } while (parent && !parent.previousElementSibling && !parent.nextElementSibling);
+
+    return parent;
+  },
   fullscreen: function() {
     var body = document.body;
 
     if (this._isFullscreen) {
+      if (this._frame) {
+        this._frameBody.height = this._frameBodyHeight;
+        this._frameBody.style.margin = this._frameBodyMargin;
+        this._frameBody.style.overflow = this._frameBodyOverflow;
+        this._frameBody.padding = this._frameBodyPadding;
+        this._frameBody.width = this._frameBodyWidth;
+        this._frame.height = this._frameHeight;
+        this._frame.style.left = this._frameLeft;
+        this._frame.style.position = this._framePosition;
+        this._frame.style.top = this._frameTop;
+        this._frame.width = this._frameWidth;
+        this._frame.style.zIndex = this._frameZindex;
+      }
+
       body.style.margin = this._bodyMargin;
       body.style.overflow = this._bodyOverflow;
       body.style.padding = this._bodyPadding;
-      this._container.style.left = 'auto';
-      this._container.style.top = 'auto';
-      this._container.style.position = 'relative';
+      this._container.style.left = this._containerLeft;
+      this._container.style.position = this._containerPosition;
+      this._container.style.top = this._containerTop;
       L.DomEvent.removeListener(document, 'keyup', this._onKeyUp);
       this._isFullscreen = false;
       L.DomUtil.removeClass(this._button, 'exit');
@@ -50,15 +76,43 @@ var FullscreenControl = L.Control.extend({
       this._button.title = 'Enter fullscreen';
       this._map.fire('exitfullscreen');
     } else {
+      if (this._frame) {
+        if (!this._frameBody) {
+          this._frameBody = this._getParentDocumentBody(this._frame);
+        }
+
+        this._frameBodyMargin = this._frameBody.style.margin;
+        this._frameBodyOverflow = this._frameBody.style.overflow;
+        this._frameBodyPadding = this._frameBody.style.padding;
+        this._frameBody.style.margin = '0';
+        this._frameBody.style.overflow = 'hidden';
+        this._frameBody.padding = '0';
+        this._frameHeight = this._frame.height;
+        this._frameLeft = this._frame.style.left;
+        this._framePosition = this._frame.style.position;
+        this._frameTop = this._frame.style.top;
+        this._frameWidth = this._frame.width;
+        this._frameZindex = this._frame.style.zIndex;
+        this._frame.height = '100%';
+        this._frame.style.left = '0';
+        this._frame.style.position = 'fixed';
+        this._frame.style.top = '0';
+        this._frame.style.zIndex = 9999999999;
+        this._frame.width = '100%';
+      }
+
       this._bodyMargin = body.style.margin;
       this._bodyOverflow = body.style.overflow;
       this._bodyPadding = body.style.padding;
       body.style.margin = '0';
       body.style.overflow = 'hidden';
       body.style.padding = '0';
+      this._containerLeft = this._container.style.left;
+      this._containerPosition = this._container.style.position;
+      this._containerTop = this._container.style.top;
       this._container.style.left = '0';
-      this._container.style.top = '0';
       this._container.style.position = 'fixed';
+      this._container.style.top = '0';
       L.DomEvent.addListener(document, 'keyup', this._onKeyUp, this);
       this._isFullscreen = true;
       L.DomUtil.removeClass(this._button, 'enter');
