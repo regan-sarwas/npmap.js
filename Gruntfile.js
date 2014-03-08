@@ -154,6 +154,10 @@ module.exports = function(grunt) {
         dest: 'dist/npmap-standalone.css',
         src: 'theme/nps.css'
       },
+      iframe: {
+        dest: 'dist/npmap-iframe.js',
+        src: 'src/iframe.js'
+      },
       images: {
         cwd: 'theme/images/',
         dest: 'dist/images',
@@ -244,6 +248,10 @@ module.exports = function(grunt) {
         dest: 'dist/npmap-bootstrap.min.js',
         src: 'dist/npmap-bootstrap.js'
       },
+      'npmap-iframe': {
+        dest: 'dist/npmap-iframe.min.js',
+        src: 'dist/npmap-iframe.js'
+      },
       'npmap-standalone': {
         dest: 'dist/npmap-standalone.min.js',
         src: 'dist/npmap-standalone.js'
@@ -279,7 +287,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-invalidate-cloudfront');
   grunt.loadNpmTasks('grunt-mkdir');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
+  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:images', 'copy:javascript', 'copy:npmaki', 'copy:iframe', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
   grunt.registerTask('deploy-aws', ['compress', 'aws_s3', 'invalidate_cloudfront']);
   grunt.registerTask('deploy-nps', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http:nps']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
