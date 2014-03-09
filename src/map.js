@@ -94,7 +94,8 @@ var Map = L.Map.extend({
       npmap = L.DomUtil.create('div', 'npmap' + (L.Browser.retina ? ' npmap-retina' : '')),
       toolbar = L.DomUtil.create('div', 'npmap-toolbar'),
       toolbarLeft = L.DomUtil.create('div', null),
-      toolbarRight = L.DomUtil.create('div', null);
+      toolbarRight = L.DomUtil.create('div', null),
+      zoomifyMode = false;
 
     config = me._toLeaflet(config);
     config.div.insertBefore(npmap, config.div.hasChildNodes() ? config.div.childNodes[0] : null);
@@ -125,49 +126,76 @@ var Map = L.Map.extend({
     }
 
     if (config.baseLayers.length) {
-      for (var i = 0; i < config.baseLayers.length; i++) {
-        var baseLayer = config.baseLayers[i];
+      var zoomify = [],
+        baseLayer, i;
 
-        baseLayer.zIndex = 0;
+      for (i = 0; i < config.baseLayers.length; i++) {
+        baseLayer = config.baseLayers[i];
 
-        if (!baseLayerSet && (baseLayer.visible || typeof baseLayer.visible === 'undefined')) {
-          baseLayer.visible = true;
-          baseLayerSet = true;
+        if (baseLayer.type === 'zoomify') {
+          zoomify.push(baseLayer);
+        }
+      }
 
-          if (baseLayer.type === 'arcgisserver') {
-            baseLayer.L = L.npmap.layer[baseLayer.type][baseLayer.tiled === true ? 'tiled' : 'dynamic'](baseLayer);
-          } else {
-            baseLayer.L = L.npmap.layer[baseLayer.type](baseLayer);
+      if (zoomify.length) {
+        zoomifyMode = true;
+
+        for (i = 0; i < zoomify.length; i++) {
+          baseLayer = zoomify[i];
+
+          if (baseLayer.visible || typeof baseLayer.visible === 'undefined') {
+            baseLayer.visible = true;
+            baseLayer.L = L.npmap.layer.zoomify(baseLayer).addTo(me);
+            break;
           }
+        }
+      } else {
+        for (i = 0; i < config.baseLayers.length; i++) {
+          baseLayer = config.baseLayers[i];
+          baseLayer.zIndex = 0;
 
-          me.addLayer(baseLayer.L);
-          break;
-        } else {
-          baseLayer.visible = false;
+          if (!baseLayerSet && (baseLayer.visible || typeof baseLayer.visible === 'undefined')) {
+            baseLayer.visible = true;
+            baseLayerSet = true;
+
+            if (baseLayer.type === 'arcgisserver') {
+              baseLayer.L = L.npmap.layer[baseLayer.type][baseLayer.tiled === true ? 'tiled' : 'dynamic'](baseLayer);
+            } else {
+              baseLayer.L = L.npmap.layer[baseLayer.type](baseLayer);
+            }
+
+            me.addLayer(baseLayer.L);
+          } else {
+            baseLayer.visible = false;
+          }
         }
       }
     }
 
-    if (config.overlays.length) {
+    if (!zoomifyMode && config.overlays.length) {
       var zIndex = 1;
 
       for (var j = 0; j < config.overlays.length; j++) {
         var overlay = config.overlays[j];
 
-        if (overlay.visible || typeof overlay.visible === 'undefined') {
-          overlay.visible = true;
-          overlay.zIndex = zIndex;
-
-          if (overlay.type === 'arcgisserver') {
-            overlay.L = L.npmap.layer[overlay.type][overlay.tiled === true ? 'tiled' : 'dynamic'](overlay);
-          } else {
-            overlay.L = L.npmap.layer[overlay.type](overlay);
-          }
-
-          me.addLayer(overlay.L);
-          zIndex++;
+        if (overlay.type === 'zoomify') {
+          throw new Error('Zoomify layers can only be added in the "baseLayers" config property.');
         } else {
-          overlay.visible = false;
+          if (overlay.visible || typeof overlay.visible === 'undefined') {
+            overlay.visible = true;
+            overlay.zIndex = zIndex;
+
+            if (overlay.type === 'arcgisserver') {
+              overlay.L = L.npmap.layer[overlay.type][overlay.tiled === true ? 'tiled' : 'dynamic'](overlay);
+            } else {
+              overlay.L = L.npmap.layer[overlay.type](overlay);
+            }
+
+            me.addLayer(overlay.L);
+            zIndex++;
+          } else {
+            overlay.visible = false;
+          }
         }
       }
     }

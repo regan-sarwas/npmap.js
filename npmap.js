@@ -2,10 +2,11 @@
 
 var version = require('./package.json').version;
 
-window.L.Icon.Default.imagePath = 'http://d1smq4hh6dg11v.cloudfront.net/npmap.js/' + version + '/images';
+window.L.Icon.Default.imagePath = 'http://www.nps.gov/npmap/npmap.js/' + version + '/images';
 
 L.npmap = module.exports = {
   VERSION: version,
+  // Preserve order of controls, because it affects the display hierarchy.
   control: {
     home: require('./src/control/home'),
     smallzoom: require('./src/control/smallzoom'),
@@ -39,7 +40,8 @@ L.npmap = module.exports = {
     mapbox: require('./src/layer/mapbox'),
     cartodb: require('./src/layer/cartodb'),
     tiled: require('./src/layer/tiled'),
-    wms: require('./src/layer/wms')
+    wms: require('./src/layer/wms'),
+    zoomify: require('./src/layer/zoomify')
   },
   map: require('./src/map'),
   preset: {
