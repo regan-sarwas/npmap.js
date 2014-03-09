@@ -522,7 +522,14 @@ module.exports = {
    * @return {Boolean}
    */
   isLocalUrl: function(url) {
-    return !(/^(?:[a-z]+:)?\/\//i.test(url));
+    if (url.indexOf(location.origin) === 0) {
+      return true;
+    } else {
+      return !(/^(?:[a-z]+:)?\/\//i.test(url));
+    }
+  },
+  _parseLocalUrl: function(url) {
+    return url.replace(location.origin, '');
   },
   /**
    *
@@ -541,7 +548,7 @@ module.exports = {
             callback(false);
           }
         };
-        request.open('get', url, true);
+        request.open('get', this._parseLocalUrl(url), true);
         request.send();
       } else {
         reqwest({
@@ -560,7 +567,7 @@ module.exports = {
             }
           },
           type: type,
-          url: url
+          url: this._parseLocalUrl(url)
         });
       }
     } else {
