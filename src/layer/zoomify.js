@@ -19,8 +19,12 @@ var ZoomifyLayer = L.TileLayer.extend({
     this._url = options.url;
     imageSize = new L.Point(options.width, options.height);
     tileSize = options.tileSize;
-    this._imageSize = [imageSize];
-    this._gridSize = [this._getGridSize(imageSize)];
+    this._imageSize = [
+      imageSize
+    ];
+    this._gridSize = [
+      this._getGridSize(imageSize)
+    ];
 
     while (parseInt(imageSize.x, 10) > tileSize || parseInt(imageSize.y, 10) > tileSize) {
       imageSize = imageSize.divideBy(2).floor();
@@ -36,8 +40,7 @@ var ZoomifyLayer = L.TileLayer.extend({
     return this._url + 'TileGroup' + this._getTileGroup(tilePoint) + '/' + this._map.getZoom() + '-' + tilePoint.x + '-' + tilePoint.y + '.jpg';
   },
   onAdd: function(map) {
-    var mapSize = map.getSize(),
-      zoom = this._getBestFitZoom(mapSize),
+    var zoom = this._getBestFitZoom(map.getSize()),
       imageSize = this._imageSize[zoom],
       center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
 
