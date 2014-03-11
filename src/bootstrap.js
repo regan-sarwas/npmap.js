@@ -24,22 +24,25 @@ NPMap = {
 
   function build(config) {
     function step() {
+      var divLoading;
+
+      function destroyLoader() {
+        divLoading.parentNode.removeChild(divLoading);
+        config.spinner.stop();
+        delete config.spinner;
+      }
+
       if (typeof config.div === 'string') {
         config.div = document.getElementById(config.div);
       }
 
-      
-      config.div.removeChild(L.npmap.util._.getChildElementsByClassName(config.div, 'npmap-loading')[0]);
+      divLoading = L.npmap.util._.getChildElementsByClassName(config.div, 'npmap-loading')[0];
       config.L = L.npmap.map(config);
 
       if (config.hooks && config.hooks.init) {
-        config.hooks.init(function() {
-          config.spinner.stop();
-          delete config.spinner;
-        });
+        config.hooks.init(destroyLoader);
       } else {
-        config.spinner.stop();
-        delete config.spinner;
+        destroyLoader();
       }
     };
 
@@ -59,6 +62,9 @@ NPMap = {
         build(NPMap.config);
       }
     });
+  }
+  function destroyLoader() {
+
   }
   function showLoader(div) {
     var mask = document.createElement('div');
