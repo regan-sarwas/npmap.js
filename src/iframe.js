@@ -1,7 +1,26 @@
 'use strict';
 
 var NPMapIframe = (function() {
+  var currentId = 0,
+    events = {};
+
   return {
+    addEventListener: function(component, eventType, handler) {
+      if (component === 'fullscreenControl' && (eventType === 'enterfullscreen' || eventType === 'exitfullscreen')) {
+        var id;
+
+        currentId++;
+        id = handler.id = currentId;
+
+        events[id] = {
+          component: component,
+          eventType: eventType,
+          handler: handler
+        };
+      } else {
+        // Throw error.
+      }
+    },
     fullscreenControl: {
       hookUp: function(iframe) {
         var body = document.body,
@@ -54,7 +73,7 @@ var NPMapIframe = (function() {
               'width',
               'zIndex'
             ],
-            height, i, prop, width;
+            handler, height, i, prop, width;
 
           if (e.data === 'enterfullscreen') {
             if (body && body.style) {
@@ -73,7 +92,7 @@ var NPMapIframe = (function() {
 
             height = iframe.height;
 
-            if (typeof height !== 'undefined') {
+            if (typeof height !== 'undefined' && height !== '100%') {
               if (height.length && (height.indexOf('%') === height.length - 1)) {
                 storage.iframeHeight = height;
                 iframe.height = '100%';
@@ -89,7 +108,7 @@ var NPMapIframe = (function() {
 
             width = iframe.width;
 
-            if (typeof width !== 'undefined') {
+            if (typeof width !== 'undefined' && width !== '100%') {
               if (width.length && (width.indexOf('%') === width.length - 1)) {
                 storage.iframeHeight = width;
                 iframe.width = '100%';
@@ -114,6 +133,14 @@ var NPMapIframe = (function() {
             iframe.style.top = '0';
             iframe.style.width = '100%';
             iframe.style.zIndex = 9999999999;
+
+            for (prop in events) {
+              handler = events[prop];
+
+              if (handler.component === 'fullscreenControl' && handler.eventType === 'enterfullscreen') {
+                handler.handler();
+              }
+            }
           } else if (e.data === 'exitfullscreen') {
             for (i = 0; i < iframeProps.length; i++) {
               prop = iframeProps[i];
@@ -121,22 +148,38 @@ var NPMapIframe = (function() {
             }
 
             if (typeof storage.iframeHeight !== 'undefined') {
-              height = parseFloat(storage.iframeHeight);
+              height = storage.iframeHeight;
 
-              if (!isNaN(height)) {
+              if (typeof height === 'number') {
                 iframe.height = height + (height === 0 ? '' : 'px');
-              } else if (height.indexOf('%') !== -1) {
-                iframe.height = height;
+              } else if (typeof height === 'string') {
+                if (height.indexOf('%') === -1) {
+                  height = parseFloat(height);
+
+                  if (!isNaN(height)) {
+                    iframe.height = height + (height === 0 ? '' : 'px');
+                  }
+                } else {
+                  iframe.height = height;
+                }
               }
             }
-            
-            if (typeof storage.iframeWidth !== 'undefined') {
-              width = parseFloat(storage.iframeWidth);
 
-              if (!isNaN(width)) {
+            if (typeof storage.iframeWidth !== 'undefined') {
+              width = storage.iframeWidth;
+
+              if (typeof width === 'number') {
                 iframe.width = width + (width === 0 ? '' : 'px');
-              } else if (width.indexOf('%') !== -1) {
-                iframe.width = width;
+              } else if (typeof width === 'string') {
+                if (width.indexOf('%') === -1) {
+                  width = parseFloat(width);
+
+                  if (!isNaN(width)) {
+                    iframe.width = width + (width === 0 ? '' : 'px');
+                  }
+                } else {
+                  iframe.width = width;
+                }
               }
             }
 
@@ -144,8 +187,28 @@ var NPMapIframe = (function() {
               prop = bodyProps[i];
               body.style[prop] = (typeof storage.body[prop] === 'undefined' ? null : storage.body[prop]);
             }
+
+            for (prop in events) {
+              handler = events[prop];
+
+              if (handler.component === 'fullscreenControl' && handler.eventType === 'exitfullscreen') {
+                handler.handler();
+              }
+            }
           }
         }, false);
+      }
+    },
+    removeEventListener: function(component, eventType, handler) {
+      if (component === 'fullscreenControl' && (eventType === 'enterfullscreen' || eventType === 'exitfullscreen')) {
+        for (var prop in events) {
+          if (parseInt(handler.id, 10) === parseInt(prop, 10)) {
+            delete events[handler.id];
+            break;
+          }
+        }
+      } else {
+        // Throw error.
       }
     }
   };

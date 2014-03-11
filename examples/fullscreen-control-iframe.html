@@ -18,9 +18,19 @@
     <p>Etiam lacus eros, dignissim sed rutrum nec, consequat et dolor. Cras massa ipsum, lobortis vitae lacinia ac, rhoncus ut lacus. Suspendisse potenti. Aliquam a rhoncus magna. Duis eu commodo enim, condimentum commodo nunc. Integer mi orci, molestie in placerat nec, accumsan a velit. Morbi semper mattis consectetur. Mauris interdum luctus orci et scelerisque. Etiam at purus eu leo mattis tempus quis sed orci. Nulla rutrum diam quis tincidunt congue. In hac habitasse platea dictumst. Aliquam molestie eros purus, id facilisis lacus laoreet ut. In auctor ac arcu non vehicula. Etiam pellentesque sem at diam mollis egestas. Quisque malesuada dapibus nulla, venenatis luctus mauris pulvinar ac. Aenean egestas nunc eget nisl condimentum, ac tempus metus faucibus.</p>
     <p>Cras sed leo a massa posuere lacinia id vel nibh. Quisque a mattis sapien. Sed sit amet lorem ac purus semper elementum quis feugiat diam. Morbi nec nibh vel purus cursus luctus. Suspendisse et nisl pretium, pretium leo sed, adipiscing felis. Sed vitae dui quis lectus laoreet suscipit et eu arcu. Sed ac blandit justo.</p>
     <iframe frameborder="0" height="500" id="test" src="iframe.html" width="500"></iframe>
-    <script src="../dist/npmap-iframe.min.js"></script>
+    <script src="../dist/npmap-iframe.js"></script>
     <script>
+      function enter() {
+        alert('trigger "enterfullscreen"');
+      }
+
       NPMapIframe.fullscreenControl.hookUp('test');
+      NPMapIframe.addEventListener('fullscreenControl', 'enterfullscreen', enter);
+      NPMapIframe.addEventListener('fullscreenControl', 'exitfullscreen', function() {
+        alert('trigger "exitfullscreen"');
+        NPMapIframe.removeEventListener('fullscreenControl', 'enterfullscreen', enter);
+        alert('remove "enterfullscreen" handler')
+      });
     </script>
   </body>
 </html>
