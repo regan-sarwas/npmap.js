@@ -123,7 +123,9 @@ var NPMapIframe = (function() {
             if (typeof storage.iframeHeight !== 'undefined') {
               height = parseFloat(storage.iframeHeight);
 
-              if (!isNaN(height) || height.indexOf('%') !== -1) {
+              if (!isNaN(height)) {
+                iframe.height = height + (height === 0 ? '' : 'px');
+              } else if (height.indexOf('%') !== -1) {
                 iframe.height = height;
               }
             }
@@ -131,7 +133,9 @@ var NPMapIframe = (function() {
             if (typeof storage.iframeWidth !== 'undefined') {
               width = parseFloat(storage.iframeWidth);
 
-              if (!isNaN(width) || width.indexOf('%') !== -1) {
+              if (!isNaN(width)) {
+                iframe.width = width + (width === 0 ? '' : 'px');
+              } else if (width.indexOf('%') !== -1) {
                 iframe.width = width;
               }
             }
