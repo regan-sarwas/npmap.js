@@ -159,7 +159,9 @@
     background-repeat: no-repeat;
     border: none;
     cursor: pointer;
-    height: 21px;
+    height: 25px;
+    padding-bottom: 0;
+    padding-top: 0;
     position: relative;
     width: 18px;
   }
