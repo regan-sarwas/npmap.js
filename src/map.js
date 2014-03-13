@@ -93,16 +93,14 @@ var Map = L.Map.extend({
       modules = L.DomUtil.create('div', 'npmap-modules'),
       npmap = L.DomUtil.create('div', 'npmap' + (L.Browser.retina ? ' npmap-retina' : '')),
       toolbar = L.DomUtil.create('div', 'npmap-toolbar'),
-      toolbarLeft = L.DomUtil.create('div', null),
-      toolbarRight = L.DomUtil.create('div', null),
+      toolbarLeft = L.DomUtil.create('ul', 'left'),
+      toolbarRight = L.DomUtil.create('ul', 'right'),
       zoomifyMode = false;
 
     config = me._toLeaflet(config);
     config.div.insertBefore(npmap, config.div.hasChildNodes() ? config.div.childNodes[0] : null);
     npmap.appendChild(modules);
     npmap.appendChild(container);
-    toolbarLeft.style.cssText = 'float:left;';
-    toolbarRight.style.cssText = 'float:right;';
     toolbar.appendChild(toolbarLeft);
     toolbar.appendChild(toolbarRight);
     container.appendChild(toolbar);

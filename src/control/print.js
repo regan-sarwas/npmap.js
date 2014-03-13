@@ -6,7 +6,8 @@ var util = require('../util/util');
 
 var PrintControl = L.Control.extend({
   initialize: function() {
-    this._button = L.DomUtil.create('button', 'print');
+    this._li = L.DomUtil.create('li', '');
+    this._button = L.DomUtil.create('button', 'print', this._li);
     this._button.title = 'Print the map';
     L.DomEvent.addListener(this._button, 'click', this.print, this);
 
@@ -15,7 +16,7 @@ var PrintControl = L.Control.extend({
   addTo: function(map) {
     var toolbar = util.getChildElementsByClassName(map.getContainer().parentNode.parentNode, 'npmap-toolbar')[0];
 
-    toolbar.childNodes[1].appendChild(this._button);
+    toolbar.childNodes[1].appendChild(this._li);
     toolbar.style.display = 'block';
     this._container = toolbar.parentNode.parentNode;
     this._map = map;
