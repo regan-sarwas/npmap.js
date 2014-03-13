@@ -141,7 +141,7 @@ var FullscreenControl = L.Control.extend({
 
       this._map.invalidateSize();
     } else {
-      window.alert('Sorry, but the fullscreen tool is not supported in your browser. Perhaps it is time for an upgrade?');
+      window.alert('Sorry, but the fullscreen tool does not work for maps that are loaded in an iframe hosted from another domain.');
     }
   }
 });
