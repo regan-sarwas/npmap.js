@@ -10,5 +10,5 @@ module.exports = {
      4. Also need to hookup to popups
 
     */
-  }  
+  }
 };

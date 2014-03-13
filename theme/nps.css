@@ -133,17 +133,31 @@
   width: 100%;
   z-index: 2;
 }
-  .npmap-toolbar .left {
-    float: left;
+  .npmap-toolbar ul.left, .npmap-toolbar ul.right {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
   }
-  .npmap-toolbar .right {
+    .npmap-toolbar ul.left li {
+      float: left;
+      border-right: solid 1px #adaca2;
+    }
+    .npmap-toolbar ul.right li {
+      float: right;
+      border-left: solid 1px #adaca2;
+    }
+  .npmap-toolbar ul.left {
+    float: left;
+    left: 0;
+  }
+  .npmap-toolbar ul.right {
     float: right;
+    right: 0;
   }
   .npmap-toolbar button {
     background-color: #828171;
     background-repeat: no-repeat;
     border: none;
-    border-left: solid 1px #adaca2;
     cursor: pointer;
     height: 21px;
     position: relative;
@@ -151,9 +165,6 @@
   }
     .npmap-toolbar button:hover {
       background-color: #74746a;
-    }
-    .npmap-toolbar button:last-child {
-      border-right: solid 1px transparent;
     }
 
 /* Buttons */
@@ -753,7 +764,7 @@
 }
 .npmap-toolbar button.fullscreen.exit {
   background-image: url('images/control/fullscreen/exit.png');
-  background-position: 7px;
+  background-position: 8px;
   background-size: 14px 14px;
 }
 .npmap-retina .npmap-toolbar button.fullscreen.exit {

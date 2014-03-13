@@ -46,8 +46,8 @@ var ZoomifyLayer = L.TileLayer.extend({
 
     L.TileLayer.prototype.onAdd.call(this, map);
     map.options.center = center;
-    map.options.zoom = zoom;
-    map.setView(center, zoom, true);
+    map.options.zoom = zoom - 1;
+    map.setView(center, zoom - 1, true);
   },
   _addTile: function (tilePoint, container) {
     var tilePos = this._getTilePos(tilePoint),
