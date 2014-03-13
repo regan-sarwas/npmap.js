@@ -6,14 +6,18 @@ var util = require('../util/util');
 
 var FullscreenControl = L.Control.extend({
   initialize: function(options) {
-    this._frame = false;
+    this._frame = null;
     this._supported = true;
 
     try {
-      this._frame = window.frameElement || false;
+      this._frame = window.frameElement || 'error';
     } catch (exception) {
-      this._frame = true;
       this._supported = false;
+    }
+
+    if (this._frame === 'error') {
+      this._supported = false;
+      this._frame = null;
     }
 
     // TODO: Also add ARIA attributes.
