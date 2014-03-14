@@ -4,6 +4,7 @@
 
 var baselayerPresets = require('./preset/baselayers.json'),
   colorPresets = require('./preset/colors.json'),
+  nanobar = require('nanobar'),
   overlayPresets = require('./preset/overlays.json'),
   util = require('./util/util');
 
@@ -97,6 +98,7 @@ var Map = L.Map.extend({
       toolbarRight = L.DomUtil.create('ul', 'right'),
       zoomifyMode = false;
 
+    
     config = me._toLeaflet(config);
     config.div.insertBefore(npmap, config.div.hasChildNodes() ? config.div.childNodes[0] : null);
     npmap.appendChild(modules);
@@ -117,6 +119,11 @@ var Map = L.Map.extend({
     me._setupTooltip();
     me.on('autopanstart', function() {
       me._setCursor('');
+    });
+    this._progress = new nanobar({
+      bg: '#d29700',
+      id: 'npmap-progress',
+      target: map
     });
 
     if (!me._loaded) {
@@ -288,17 +295,26 @@ var Map = L.Map.extend({
 
         if (queryable.length) {
           var completed = 0,
+            hasArcGisServer = false,
             intervals = 0,
             latLng = e.latlng.wrap(),
             results = [],
+            i,
             interval;
+
+          for (i = 0; i < queryable.length; i++) {
+            layer =  queryable[i];
+
+            if (layer.options && layer.options.type === 'arcgisserver') {
+              hasArcGisServer = true;
+              me._setCursor('wait');
+              me._progress.go(1);
+              break;
+            }
+          }
 
           for (var i = 0; i < queryable.length; i++) {
             layer = queryable[i];
-
-            if (layer.options && layer.options.type === 'arcgisserver') {
-              me._setCursor('wait');
-            }
 
             layer._handleClick(latLng, layer, function(l, data) {
               if (data) {
@@ -323,9 +339,9 @@ var Map = L.Map.extend({
             });
           }
 
-          // TODO: Add support for a timeout so the infobox displays even if one or more operations fail.
           interval = setInterval(function() {
             intervals++;
+            me._progress.go(intervals);
 
             if (cancel || changed) {
               clearInterval(interval);
@@ -342,7 +358,12 @@ var Map = L.Map.extend({
                 .off('zoomstart', function() {
                   changed = true;
                 });
-            } else if ((queryable.length === completed) || intervals === 50) {
+
+              if (hasArcGisServer) {
+                me._setCursor('');
+                me._progress.go(100);
+              }
+            } else if ((queryable.length === completed) || intervals === 100) {
               clearInterval(interval);
               me
                 .off('click', function() {
@@ -358,7 +379,12 @@ var Map = L.Map.extend({
                   changed = true;
                 });
 
-              if (intervals > 49) {
+              if (hasArcGisServer) {
+                me._setCursor('');
+                me._progress.go(100);
+              }
+
+              if (intervals > 99) {
                 // TODO: Show non-modal alert about the timeout.
               }
 
@@ -382,8 +408,6 @@ var Map = L.Map.extend({
 
                 popup.setContent(div).setLatLng(latLng).openOn(me);
               }
-
-              me._setCursor('');
             }
           }, 100);
         }
