@@ -134,26 +134,25 @@
   z-index: 2;
 }
   .npmap-toolbar ul.left, .npmap-toolbar ul.right {
+    line-height: 1;
     list-style-type: none;
     margin: 0;
     padding: 0;
   }
-    .npmap-toolbar ul.left li {
-      float: left;
-      border-right: solid 1px #adaca2;
-    }
-    .npmap-toolbar ul.right li {
-      float: right;
-      border-left: solid 1px #adaca2;
-    }
   .npmap-toolbar ul.left {
     float: left;
-    left: 0;
   }
+    .npmap-toolbar ul.left li {
+      border-right: solid 1px #adaca2;
+      float: left;
+    }
   .npmap-toolbar ul.right {
     float: right;
-    right: 0;
   }
+    .npmap-toolbar ul.right li {
+      border-left: solid 1px #adaca2;
+      float: left;
+    }
   .npmap-toolbar button {
     background-color: #828171;
     background-repeat: no-repeat;
