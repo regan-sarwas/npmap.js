@@ -1,4 +1,9 @@
 /* global L */
+/*
+  - Chrome and Safari fire exceptions when you try to access the window.frameElement from a cross-domain iframe.
+  - Firefox does not throw an exception, but 
+*/
+
 
 'use strict';
 
@@ -9,15 +14,22 @@ var FullscreenControl = L.Control.extend({
     this._frame = null;
     this._supported = true;
 
-    try {
-      this._frame = window.frameElement || 'error';
-    } catch (exception) {
-      this._supported = false;
-    }
+    if ((window.self !== window.top) && document.referrer !== '') {
+      // The map is in an iframe.
 
-    if (this._frame === 'error') {
-      this._supported = false;
-      this._frame = null;
+      if (util.parseDomainFromUrl(document.referrer) === util.parseDomainFromUrl(window.location.href)) {
+        try {
+          this._frame = window.frameElement;
+
+          if (this._frame) {
+            this._frameBody = this._getParentDocumentBody(this._frame);
+          }
+        } catch (exception) {
+          this._supported = false;
+        }
+      } else {
+        this._supported = false;
+      }
     }
 
     // TODO: Also add ARIA attributes.
@@ -62,14 +74,16 @@ var FullscreenControl = L.Control.extend({
   },
   fullscreen: function() {
     if (this._supported) {
-      var body = document.body;
+      var body = document.body,
+        holder,
+        utils;
 
       if (this._isFullscreen) {
         if (this._frame) {
           this._frameBody.height = this._frameBodyHeight;
           this._frameBody.style.margin = this._frameBodyMargin;
           this._frameBody.style.overflow = this._frameBodyOverflow;
-          this._frameBody.padding = this._frameBodyPadding;
+          this._frameBody.style.padding = this._frameBodyPadding;
           this._frameBody.width = this._frameBodyWidth;
           this._frame.height = this._frameHeight;
           this._frame.style.left = this._frameLeft;
@@ -94,19 +108,27 @@ var FullscreenControl = L.Control.extend({
 
         if (this._frame && window.postMessage) {
           parent.postMessage('exitfullscreen', '*');
+
+          if (this._frameBody) {
+            utils = window.parent.NPMapUtils;
+
+            if (utils && utils.fullscreenControl && utils.fullscreenControl.listeners && typeof utils.fullscreenControl.listeners.exitfullscreen === 'function') {
+              utils.fullscreenControl.listeners.exitfullscreen();
+            }
+          }
         }
       } else {
         if (this._frame) {
-          if (!this._frameBody) {
-            this._frameBody = this._getParentDocumentBody(this._frame);
-          }
-
+          this._frameBodyHeight = this._frameBody.style.height;
           this._frameBodyMargin = this._frameBody.style.margin;
           this._frameBodyOverflow = this._frameBody.style.overflow;
           this._frameBodyPadding = this._frameBody.style.padding;
+          this._frameBodyWidth = this._frameBody.style.width;
+          this._frameBody.style.height = '100%';
           this._frameBody.style.margin = '0';
           this._frameBody.style.overflow = 'hidden';
-          this._frameBody.padding = '0';
+          this._frameBody.style.padding = '0';
+          this._frameBody.style.width = '100%';
           this._frameHeight = this._frame.height;
           this._frameLeft = this._frame.style.left;
           this._framePosition = this._frame.style.position;
@@ -142,6 +164,14 @@ var FullscreenControl = L.Control.extend({
 
         if (this._frame && window.postMessage) {
           parent.postMessage('enterfullscreen', '*');
+
+          if (this._frameBody) {
+            utils = window.parent.NPMapUtils;
+
+            if (utils && utils.fullscreenControl && utils.fullscreenControl.listeners && typeof utils.fullscreenControl.listeners.enterfullscreen === 'function') {
+              utils.fullscreenControl.listeners.enterfullscreen();
+            }
+          }
         }
       }
 
