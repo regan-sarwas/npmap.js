@@ -587,6 +587,12 @@ module.exports = {
       });
     }
   },
+  // http://stackoverflow.com/a/8498629/27540
+  parseDomainFromUrl: function(url) {
+    var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+
+    return matches && matches[1];
+  },
   putCursorAtEndOfInput: function(input) {
     if (input.setSelectionRange) {
       var length = input.value.length * 2;
