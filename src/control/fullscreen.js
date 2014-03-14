@@ -1,9 +1,16 @@
 /* global L */
 /*
-  - Chrome and Safari fire exceptions when you try to access the window.frameElement from a cross-domain iframe.
-  - Firefox does not throw an exception, but 
-*/
+  TODO:
+    - Detect if map is in an iframe
+      - If map is in an iframe, detect if it is cross-domain
+        - If it is, detect if window.postMessage is supported
+          - If it is, enable it
+          - If it isn't, disable the tool
+        - If it isn't, try to bubble up and set necessary CSS styles on window.parent
 
+    window.postMessage should always be called for 'enterfullscreen' and 'exitfullscreen'
+    You should provide a library that makes it easy to hook up to these postMessage calls
+*/
 
 'use strict';
 
