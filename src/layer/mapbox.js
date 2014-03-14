@@ -43,13 +43,14 @@ var MapBoxLayer = L.TileLayer.extend({
 
     if (L.Browser.retina && options.retinaVersion) {
       load = options.retinaVersion;
+      options.detectRetina = true;
     } else {
       load = options.tileJson || options.id;
-    }
 
-    // Retina is opt-out by default, although we might need to rethink this.
-    if (options.detectRetina !== false) {
-      options.detectRetina = true;
+      // Retina is opt-in for now.
+      if (!L.Browser.retina || !options.detectRetina) {
+        options.detectRetina = false;
+      }
     }
 
     L.Util.setOptions(this, options);

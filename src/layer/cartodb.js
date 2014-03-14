@@ -20,10 +20,9 @@ var CartoDbLayer = L.TileLayer.extend({
   },
   // Leaflet overrides
   initialize: function(options) {
-    if (L.Browser.retina && (typeof options.detectRetina === 'undefined' || options.detectRetina === true)) {
-      this.options.detectRetina = true;
-    } else {
-      this.options.detectRetina = false;
+    // Retina is opt-in for now.
+    if (!L.Browser.retina || !options.detectRetina) {
+      options.detectRetina = false;
     }
 
     L.Util.setOptions(this, options);

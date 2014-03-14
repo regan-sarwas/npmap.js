@@ -112,6 +112,7 @@
   "mapbox": {
     "light": {
       "attribution": "<a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>, &copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
       "icon": "street",
       "id": "nps.map-sligp1fr",
       "name": "MapBox Light",
@@ -119,6 +120,7 @@
     },
     "satellite": {
       "attribution": "<a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>",
+      "detectRetina": true,
       "icon": "aerial",
       "id": "nps.map-n9nxe12m",
       "name": "MapBox Satellite",
@@ -126,6 +128,7 @@
     },
     "satelliteLabels": {
       "attribution": "<a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>, &copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
       "icon": "aerial",
       "id": "nps.map-r3ilza09",
       "name": "MapBox Satellite w/Labels",
@@ -133,6 +136,7 @@
     },
     "streets": {
       "attribution": "<a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>, &copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
       "icon": "street",
       "id": "nps.map-06dnxzq5",
       "name": "MapBox Streets",
@@ -140,6 +144,7 @@
     },
     "terrain": {
       "attribution": "<a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>, &copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
       "icon": "topo",
       "id": "nps.map-lj6szvbq",
       "name": "MapBox Terrain",
@@ -149,6 +154,7 @@
   "nps": {
     "darkStreets": {
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
       "icon": "nps",
       "id": "nps.gajjemg7",
       "name": "NPS Dark",
@@ -156,6 +162,7 @@
     },
     "lightStreets": {
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
       "icon": "nps",
       "id": "nps.g9ndno9j",
       "name": "NPS Light",
@@ -163,6 +170,7 @@
     },
     "neutralTerrain": {
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
       "icon": "nps",
       "id": "nps.g9nccg3d",
       "name": "NPS Neutral Terrain",
@@ -170,6 +178,7 @@
     },
     "satelliteNight": {
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
       "icon": "nps",
       "id": "nps.g9o0im10",
       "name": "NPS Satellite at Night",
