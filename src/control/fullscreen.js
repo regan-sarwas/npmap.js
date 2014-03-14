@@ -128,6 +128,8 @@ var FullscreenControl = L.Control.extend({
           }
         }
       } else {
+        // TODO: You should probably capture each margin and padding side individually (e.g. padding-left).
+
         if (this._frame) {
           this._frameBodyHeight = this._frameBody.style.height;
           this._frameBodyMargin = this._frameBody.style.margin;
