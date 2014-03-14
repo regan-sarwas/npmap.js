@@ -4,7 +4,7 @@
     - Detect if map is in an iframe
       - If map is in an iframe, detect if it is cross-domain
         - If it is, detect if window.postMessage is supported
-          - If it is, enable it
+          - If it is, enable it (this may work, but what if there are multiple maps on a page? the parent page may need to know which map has called fullscreen,, and there is no way to do this currently)
           - If it isn't, disable the tool
         - If it isn't, try to bubble up and set necessary CSS styles on window.parent
 
@@ -82,16 +82,15 @@ var FullscreenControl = L.Control.extend({
   fullscreen: function() {
     if (this._supported) {
       var body = document.body,
-        holder,
         utils;
 
       if (this._isFullscreen) {
         if (this._frame) {
-          this._frameBody.height = this._frameBodyHeight;
+          this._frameBody.style.height = this._frameBodyHeight;
           this._frameBody.style.margin = this._frameBodyMargin;
           this._frameBody.style.overflow = this._frameBodyOverflow;
           this._frameBody.style.padding = this._frameBodyPadding;
-          this._frameBody.width = this._frameBodyWidth;
+          this._frameBody.style.width = this._frameBodyWidth;
           this._frame.height = this._frameHeight;
           this._frame.style.left = this._frameLeft;
           this._frame.style.position = this._framePosition;
