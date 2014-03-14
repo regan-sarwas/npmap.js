@@ -98,7 +98,6 @@ var Map = L.Map.extend({
       toolbarRight = L.DomUtil.create('ul', 'right'),
       zoomifyMode = false;
 
-    
     config = me._toLeaflet(config);
     config.div.insertBefore(npmap, config.div.hasChildNodes() ? config.div.childNodes[0] : null);
     npmap.appendChild(modules);
@@ -114,9 +113,6 @@ var Map = L.Map.extend({
     me._controllingCursor = true;
     me._controllingInteractivity = true;
     me._defaultCursor = me.getContainer().style.cursor;
-    me._initializeModules();
-    me._setupPopup();
-    me._setupTooltip();
     me.on('autopanstart', function() {
       me._setCursor('');
     });
@@ -205,6 +201,10 @@ var Map = L.Map.extend({
       }
     }
 
+    me._initializeModules();
+    me._setupPopup();
+    me._setupTooltip();
+
     return this;
   },
   _initializeModules: function() {
@@ -262,154 +262,184 @@ var Map = L.Map.extend({
     this._container.style.cursor = type;
   },
   _setupPopup: function() {
-    var me = this;
+    var clicks = 0,
+      delayClick = false,
+      me = this;
 
-    me.on('click', function(e) {
-      if (me._controllingInteractivity) {
-        var cancel = false,
-          changed = false,
-          queryable = [],
-          layer;
+    function go(e) {
+      var cancel = false,
+        changed = false,
+        queryable = [];
 
-        me
-          .on('click', function() {
-            cancel = true;
-          })
-          .on('dragstart', function() {
-            changed = true;
-          })
-          .on('movestart', function() {
-            changed = true;
-          })
-          .on('zoomstart', function() {
-            changed = true;
-          });
+      me
+        .on('click', function() {
+          cancel = true;
+        })
+        .on('dragstart', function() {
+          changed = true;
+        })
+        .on('movestart', function() {
+          changed = true;
+        })
+        .on('zoomstart', function() {
+          changed = true;
+        });
 
-        for (var layerId in me._layers) {
-          layer = me._layers[layerId];
+      for (var layerId in me._layers) {
+        layer = me._layers[layerId];
 
-          if (typeof layer.options === 'object' && (typeof layer.options.popup === 'undefined' || layer.options.popup !== false) && typeof layer._handleClick === 'function' && layer._hasInteractivity !== false) {
-            queryable.push(layer);
+        if (typeof layer.options === 'object' && (typeof layer.options.popup === 'undefined' || layer.options.popup !== false) && typeof layer._handleClick === 'function' && layer._hasInteractivity !== false) {
+          queryable.push(layer);
+        }
+      }
+
+      if (queryable.length) {
+        var completed = 0,
+          hasArcGisServer = false,
+          intervals = 0,
+          latLng = e.latlng.wrap(),
+          results = [],
+          i,
+          interval;
+
+        for (i = 0; i < queryable.length; i++) {
+          layer =  queryable[i];
+
+          if (layer.options && layer.options.type === 'arcgisserver') {
+            hasArcGisServer = true;
+            //me._setCursor('wait');
+            me._progress.go(1);
+            break;
           }
         }
 
-        if (queryable.length) {
-          var completed = 0,
-            hasArcGisServer = false,
-            intervals = 0,
-            latLng = e.latlng.wrap(),
-            results = [],
-            i,
-            interval;
+        for (var i = 0; i < queryable.length; i++) {
+          layer = queryable[i];
 
-          for (i = 0; i < queryable.length; i++) {
-            layer =  queryable[i];
+          layer._handleClick(latLng, layer, function(l, data) {
+            if (data) {
+              var result = data;
 
-            if (layer.options && layer.options.type === 'arcgisserver') {
-              hasArcGisServer = true;
-              me._setCursor('wait');
-              me._progress.go(1);
-              break;
+              if (result) {
+                var div;
+
+                if (typeof result === 'string') {
+                  div = document.createElement('div');
+                  div.innerHTML = util.unescapeHtml(result);
+                  results.push(div);
+                } else if ('nodeType' in result) {
+                  results.push(result);
+                } else {
+                  results.push(util.dataToHtml(l.options, data));
+                }
+              }
             }
-          }
 
-          for (var i = 0; i < queryable.length; i++) {
-            layer = queryable[i];
+            completed++;
+          });
+        }
 
-            layer._handleClick(latLng, layer, function(l, data) {
-              if (data) {
-                var result = data;
+        interval = setInterval(function() {
+          intervals++;
+          me._progress.go(intervals);
 
-                if (result) {
-                  var div;
+          if (cancel || changed) {
+            clearInterval(interval);
+            me
+              .off('click', function() {
+                cancel = true;
+              })
+              .off('dragstart', function() {
+                changed = true;
+              })
+              .off('movestart', function() {
+                changed = true;
+              })
+              .off('zoomstart', function() {
+                changed = true;
+              });
 
-                  if (typeof result === 'string') {
-                    div = document.createElement('div');
-                    div.innerHTML = util.unescapeHtml(result);
-                    results.push(div);
-                  } else if ('nodeType' in result) {
-                    results.push(result);
-                  } else {
-                    results.push(util.dataToHtml(l.options, data));
-                  }
+            if (hasArcGisServer) {
+              me._setCursor('');
+              me._progress.go(100);
+            }
+          } else if ((queryable.length === completed) || intervals === 100) {
+            clearInterval(interval);
+            me
+              .off('click', function() {
+                cancel = true;
+              })
+              .off('dragstart', function() {
+                changed = true;
+              })
+              .off('movestart', function() {
+                changed = true;
+              })
+              .off('zoomstart', function() {
+                changed = true;
+              });
+
+            if (hasArcGisServer) {
+              //me._setCursor('');
+              me._progress.go(100);
+            }
+
+            if (intervals > 99) {
+              // TODO: Show non-modal alert about the timeout.
+            }
+
+            if (results.length) {
+              var div = L.DomUtil.create('div', null),
+                popup = L.popup({
+                  autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
+                });
+
+              for (var i = 0; i < results.length; i++) {
+                var result = results[i];
+
+                if (typeof result === 'string') {
+                  var divResult = document.createElement('div');
+                  divResult.innerHTML = util.unescapeHtml(result);
+                  div.appendChild(divResult);
+                } else {
+                  div.appendChild(result);
                 }
               }
 
-              completed++;
-            });
-          }
-
-          interval = setInterval(function() {
-            intervals++;
-            me._progress.go(intervals);
-
-            if (cancel || changed) {
-              clearInterval(interval);
-              me
-                .off('click', function() {
-                  cancel = true;
-                })
-                .off('dragstart', function() {
-                  changed = true;
-                })
-                .off('movestart', function() {
-                  changed = true;
-                })
-                .off('zoomstart', function() {
-                  changed = true;
-                });
-
-              if (hasArcGisServer) {
-                me._setCursor('');
-                me._progress.go(100);
-              }
-            } else if ((queryable.length === completed) || intervals === 100) {
-              clearInterval(interval);
-              me
-                .off('click', function() {
-                  cancel = true;
-                })
-                .off('dragstart', function() {
-                  changed = true;
-                })
-                .off('movestart', function() {
-                  changed = true;
-                })
-                .off('zoomstart', function() {
-                  changed = true;
-                });
-
-              if (hasArcGisServer) {
-                me._setCursor('');
-                me._progress.go(100);
-              }
-
-              if (intervals > 99) {
-                // TODO: Show non-modal alert about the timeout.
-              }
-
-              if (results.length) {
-                var div = L.DomUtil.create('div', null),
-                  popup = L.popup({
-                    autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
-                  });
-
-                for (var i = 0; i < results.length; i++) {
-                  var result = results[i];
-
-                  if (typeof result === 'string') {
-                    var divResult = document.createElement('div');
-                    divResult.innerHTML = util.unescapeHtml(result);
-                    div.appendChild(divResult);
-                  } else {
-                    div.appendChild(result);
-                  }
-                }
-
-                popup.setContent(div).setLatLng(latLng).openOn(me);
-              }
+              popup.setContent(div).setLatLng(latLng).openOn(me);
             }
-          }, 100);
+          }
+        }, 100);
+      }
+    }
+
+    for (var layerId in me._layers) {
+      var layer = me._layers[layerId];
+
+      if (typeof layer.options === 'object' && layer.options.type === 'arcgisserver') {
+        delayClick = true;
+        break;
+      }
+    }
+
+    if (delayClick) {
+      me.on('dblclick', function() {
+        clicks++;
+      });
+    }
+
+    me.on('click', function(e) {
+      clicks = 0;
+
+      if (me._controllingInteractivity) {
+        if (delayClick) {
+          setTimeout(function() {
+            if (!clicks) {
+              go(e);
+            }
+          }, 200);
+        } else {
+          go(e);
         }
       }
     });
