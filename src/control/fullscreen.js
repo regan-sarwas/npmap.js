@@ -98,9 +98,7 @@ var FullscreenControl = L.Control.extend({
       } else {
         if (this._frame) {
           if (!this._frameBody) {
-            console.log(this._frame);
             this._frameBody = this._getParentDocumentBody(this._frame);
-            console.log(this._frameBody);
           }
 
           this._frameBodyMargin = this._frameBody.style.margin;
