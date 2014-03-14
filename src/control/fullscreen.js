@@ -50,13 +50,15 @@ var FullscreenControl = L.Control.extend({
     return this;
   },
   _getParentDocumentBody: function(el) {
-    var parent;
+    while (el.parentNode) {
+      el = el.parentNode;
 
-    do {
-      parent = el.parentNode;
-    } while (parent && !parent.previousElementSibling && !parent.nextElementSibling);
+      if (el.tagName.toLowerCase() === 'body') {
+        return el;
+      }
+    }
 
-    return parent;
+    return null;
   },
   fullscreen: function() {
     if (this._supported) {
@@ -96,7 +98,9 @@ var FullscreenControl = L.Control.extend({
       } else {
         if (this._frame) {
           if (!this._frameBody) {
+            console.log(this._frame);
             this._frameBody = this._getParentDocumentBody(this._frame);
+            console.log(this._frameBody);
           }
 
           this._frameBodyMargin = this._frameBody.style.margin;
