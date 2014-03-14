@@ -303,19 +303,28 @@
 
 /* Leaflet Overrides */
 .leaflet-container {
+  -ms-touch-action: none;
   color: #464646;
   font-family: inherit;
   font-size: inherit;
+  outline: 0;
+  overflow: hidden;
 }
   .leaflet-container a {
     color: #b28000;
     cursor: pointer;
+    font-weight: normal;
     text-decoration: none;
   }
     .leaflet-container a:hover {
       color: #d39700;
       text-decoration: underline;
     }
+  .leaflet-container h1, .leaflet-container h2, .leaflet-container h3, .leaflet-container h4, .leaflet-container h5, .leaflet-container h6 {
+    font-size: 15px;
+    line-height: 20px;
+    margin: 0 0 10px;
+  }
 
 /* Icons */
 .npmaki-icon.large {
@@ -450,6 +459,7 @@
   text-decoration: none;
 }
 .leaflet-popup-content {
+  font-size: 14px;
   margin: 15px;
 }
   .leaflet-popup-content p {
@@ -531,16 +541,9 @@
   .leaflet-popup-content .layer:last-child {
     margin-bottom: 0;
   }
-    .leaflet-popup-content .layer ul {
-      padding-left: 25px;
-    }
   .leaflet-popup-content .title {
-    font-size: 13px;
     font-weight: bold;
-    margin-bottom: 10px;
-  }
-  .leaflet-popup-content .content {
-    font-size: 13px;
+    margin-bottom: 8px;
   }
   .leaflet-popup-content .footer {
     border-top: solid 1px #b1b0a7;
@@ -554,9 +557,6 @@
   .leaflet-popup-content .result:last-child {
     margin-bottom: 0;
   }
-    .leaflet-popup-content .result .title {
-      font-size: 13px;
-    }
   .leaflet-popup-content table {
     border: none;
     border-collapse: collapse;
