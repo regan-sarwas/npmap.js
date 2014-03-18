@@ -30,6 +30,8 @@ NPMap.js is versioned using [semantic versioining](http://semver.org). This mean
 
 NPMap.js is hosted on the National Park Service's content delivery network. Feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/npmap/npmap.js/major.minor.patch/. You should replace "major.minor.patch" with the number of the version you want to access.
 
+You can pull in the `master` branch from http://www.nps.gov/npmap/npmap.js/latest/. This should not, however, be used in production maps, as this branch may be unstable at times.
+
 ## Building
 
 You must have [node.js](http://nodejs.org/) installed to run the build. After installing node.js:
