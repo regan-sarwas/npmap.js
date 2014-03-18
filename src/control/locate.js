@@ -63,16 +63,16 @@ var LocateControl = L.Control.extend({
     me._button = L.DomUtil.create('button', 'leaflet-bar-single', this._container);
     me._button.title = this.options.strings.title;
     L.DomEvent
-        .on(me._button, 'click', L.DomEvent.stopPropagation)
-        .on(me._button, 'click', L.DomEvent.preventDefault)
-        .on(me._button, 'click', function() {
-          if (me._active && (me._event === undefined || map.getBounds().contains(me._event.latlng) || !me.options.setView || isOutsideMapBounds())) {
-            stopLocate();
-          } else {
-            locate();
-          }
-        })
-        .on(me._button, 'dblclick', L.DomEvent.stopPropagation);
+      .on(me._button, 'click', L.DomEvent.stopPropagation)
+      .on(me._button, 'click', L.DomEvent.preventDefault)
+      .on(me._button, 'click', function() {
+        if (me._active && (me._event === undefined || map.getBounds().contains(me._event.latlng) || !me.options.setView || isOutsideMapBounds())) {
+          stopLocate();
+        } else {
+          locate();
+        }
+      })
+      .on(me._button, 'dblclick', L.DomEvent.stopPropagation);
 
     function isOutsideMapBounds() {
       if (me._event === undefined) {
