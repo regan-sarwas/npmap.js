@@ -315,7 +315,6 @@ var Map = L.Map.extend({
 
         for (var i = 0; i < queryable.length; i++) {
           layer = queryable[i];
-
           layer._handleClick(latLng, layer, function(l, data) {
             if (data) {
               var result = data;
@@ -341,7 +340,10 @@ var Map = L.Map.extend({
 
         interval = setInterval(function() {
           intervals++;
-          me._progress.go(intervals);
+
+          if (hasArcGisServer) {
+            me._progress.go(intervals);
+          }
 
           if (cancel || changed) {
             clearInterval(interval);
@@ -360,7 +362,7 @@ var Map = L.Map.extend({
               });
 
             if (hasArcGisServer) {
-              me._setCursor('');
+              //me._setCursor('');
               me._progress.go(100);
             }
           } else if ((queryable.length === completed) || intervals === 100) {
