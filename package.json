@@ -30,7 +30,8 @@
     "nanobar": "0.0.6",
     "npmaki": "~0.4.1",
     "reqwest": "0.9.6",
-    "togeojson": "0.4.2"
+    "togeojson": "0.4.2",
+    "topojson": "~1.5.1"
   },
   "description": "A JavaScript web mapping library, built as a Leaflet plugin, for the National Park Service.",
   "devDependencies": {
@@ -48,16 +49,16 @@
     "grunt-contrib-csslint": "0.2.0",
     "grunt-contrib-cssmin": "0.7.0",
     "grunt-contrib-uglify": "0.2.6",
+    "grunt-curl": "~1.4.0",
+    "grunt-http": "~1.0.1",
     "grunt-invalidate-cloudfront": "0.1.2",
+    "grunt-mkdir": "~0.1.1",
     "grunt-mocha-phantomjs": "0.3.2",
     "happen": "~0.1.2",
     "mocha": "1.16.2",
     "mocha-phantomjs": "3.3.0",
     "sinon": "~1.7.3",
-    "uglify-js": "~2.4.6",
-    "grunt-mkdir": "~0.1.1",
-    "grunt-curl": "~1.4.0",
-    "grunt-http": "~1.0.1"
+    "uglify-js": "~2.4.6"
   },
   "engines": {
     "node": "*"

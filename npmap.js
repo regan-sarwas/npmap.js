@@ -6,7 +6,7 @@ window.L.Icon.Default.imagePath = 'http://www.nps.gov/npmap/npmap.js/' + version
 
 L.npmap = module.exports = {
   VERSION: version,
-  // Preserve order of controls, because it affects the display hierarchy.
+  // Preserve order of controls because it affects the display hierarchy.
   control: {
     home: require('./src/control/home'),
     smallzoom: require('./src/control/smallzoom'),
@@ -54,6 +54,6 @@ L.npmap = module.exports = {
   tooltip: require('./src/tooltip'),
   util: {
     _: require('./src/util/util'),
-    topojson: require('./src/util/topojson')
+    topojson: require('topojson')
   }
 };
