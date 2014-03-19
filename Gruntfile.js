@@ -288,7 +288,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-invalidate-cloudfront');
   grunt.loadNpmTasks('grunt-mkdir');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:html', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
+  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
   grunt.registerTask('deploy-aws', ['compress', 'aws_s3', 'invalidate_cloudfront']);
   grunt.registerTask('deploy-nps', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http:nps']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
