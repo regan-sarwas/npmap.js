@@ -24,7 +24,7 @@ var ShareControl = L.Control.extend({
     return this;
   },
   share: function() {
-    alert('The share tool has not yet been implemented.');
+    window.alert('The share tool has not yet been implemented.');
   }
 });
 
