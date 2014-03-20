@@ -266,10 +266,10 @@ Popups display when you click on a feature in an overlay. Each popup is made up 
 2. Description
 3. Actions
 
-The content for these sections can be specified in two different ways:
+The content for each of these sections can be specified in two different ways:
 
 <ol>
-  <li>By passing in a single string with HTML and/or Handlebars templates:<code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;'</code>. You should use the `title`, `content`, and `actions` classes to ensure your content is formatted properly.</li>
+  <li>By passing in a single string with HTML and/or Handlebars templates:<code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;&lt;div class="actions"&gt;&lt;ul&gt;&lt;li&gt;&lt;a&gt;An Action&lt;/a&gt;&lgt;/li&gt;&lt;/ul&gt;&lt;/div&gt;'</code>. You should use the `title`, `content`, and `actions` classes to ensure your content is formatted properly.</li>
   <li>By passing in a configuration object:<pre><code>{
   actions: [{
     handler: function() {
@@ -282,7 +282,7 @@ The content for these sections can be specified in two different ways:
 }</code></pre>If you use this method, NPMap.js will take care of generating the HTML and formatting the different sections.</li>
 </ol>
 
-HTML is supported, and all strings passed in will be parsed by [Handlebars](http://handlebarsjs.com/). You can also specify functions instead of strings. Functions will be passed an object with key/value pairs of the feature's properties, and must return a string (which, again, may contain HTML and/or Handlebars templates).
+HTML is supported, and all strings passed in will be parsed by [Handlebars](http://handlebarsjs.com/) and encoded/unencoded automatically. You can also specify functions instead of strings. Functions will be passed an object with key/value pairs of the feature's properties, and must return a string (which, again, may contain HTML and/or Handlebars templates).
 
 You can also specify a fixed width for your popup by passing a `width` property into the popup config object:
 
@@ -297,7 +297,7 @@ You can also specify a fixed width for your popup by passing a `width` property 
       }]
     };
 
-This is useful if you want to embed fixed width media (images, videos, etc.) into the popup.
+This can be useful if you want to embed fixed width media (images, videos, etc.) into the popup.
 
 You can see examples of configuring popups for overlays in the [popups](https://github.com/nationalparkservice/npmap.js/blob/master/examples/popups.html) example map.
 
