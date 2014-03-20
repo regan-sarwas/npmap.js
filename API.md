@@ -269,7 +269,7 @@ Popups display when you click on a feature in an overlay. Each popup is made up 
 The content for each of these sections can be specified in two different ways:
 
 <ol>
-  <li>By passing in a single string with HTML and/or Handlebars templates:<code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;&lt;div class="actions"&gt;&lt;ul&gt;&lt;li&gt;&lt;a&gt;An Action&lt;/a&gt;&lgt;/li&gt;&lt;/ul&gt;&lt;/div&gt;'</code>. You should use the `title`, `content`, and `actions` classes to ensure your content is formatted properly.</li>
+  <li>By passing in a single string with HTML and/or Handlebars templates:<code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;&lt;div class="actions"&gt;&lt;ul&gt;&lt;li&gt;&lt;a&gt;An Action&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;'</code>. You should use the <code>title</code>, <code>content</code>, and <code>actions</code> classes to ensure your content is formatted properly.</li>
   <li>By passing in a configuration object:<pre><code>{
   actions: [{
     handler: function() {
