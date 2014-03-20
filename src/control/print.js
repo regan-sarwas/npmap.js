@@ -23,8 +23,28 @@ var PrintControl = L.Control.extend({
     util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '26px';
     return this;
   },
+  _escapeHtml: function(layer) {
+    if (layer.popup) {
+      if (typeof layer.popup === 'string') {
+        layer.popup = util.escapeHtml(layer.popup);
+      } else {
+        if (typeof layer.popup.description === 'string') {
+          layer.popup.description = util.escapeHtml(layer.popup.description);
+        }
+
+        if (typeof layer.popup.title === 'string') {
+          layer.popup.title = util.escapeHtml(layer.popup.title);
+        }
+      }
+    }
+
+    if (layer.tooltip) {
+      layer.tooltip = util.escapeHtml(layer.popup);
+    }
+  },
   print: function() {
     var map = this._map,
+      me = this,
       options = map.options,
       center = map.getCenter(),
       configCenter = options.center,
@@ -45,32 +65,33 @@ var PrintControl = L.Control.extend({
         }),
         z: zoom
       },
-      active, i, win;
+      active, i, layer, win;
 
     for (i = 0; i < options.baseLayers.length; i++) {
-      var baseLayer = options.baseLayers[i];
+      layer = options.baseLayers[i];
 
-      if (typeof baseLayer.L === 'object') {
-        active = L.extend({}, baseLayer);
+      if (typeof layer.L === 'object') {
+        active = L.extend({}, layer);
         delete active.L;
+        me._escapeHtml(active);
         params.b.baseLayers.push(active);
         break;
       }
     }
 
     for (i = 0; i < options.overlays.length; i++) {
-      var overlay = options.overlays[i];
+      layer = options.overlays[i];
 
-      if (typeof overlay.L === 'object') {
-        active = L.extend({}, overlay);
+      if (typeof layer.L === 'object') {
+        active = L.extend({}, layer);
         delete active.L;
+        me._escapeHtml(active);
         params.b.overlays.push(active);
       }
     }
 
     params.b = JSON.stringify(params.b);
-    win = window.open('http://www.nps.gov/maps/print.html' + util.escapeHtml(L.Util.getParamString(params)), '_blank');
-    //win = window.open('http://localhost:1969/maps/print.html' + util.escapeHtml(L.Util.getParamString(params)), '_blank');
+    win = window.open('http://www.nps.gov/maps/print.html' + L.Util.getParamString(params), '_blank');
     win.focus();
   }
 });
