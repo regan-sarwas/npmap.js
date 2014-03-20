@@ -709,6 +709,16 @@
   white-space: nowrap;
 }
 
+/* Download Control */
+.npmap-toolbar button.download {
+  background-image: url('images/font-awesome/download.png');
+  background-position: 7px;
+  background-size: 14px 14px;
+}
+.npmap-retina .npmap-toolbar button.share {
+  background-image: url('images/font-awesome/download@2x.png');
+}
+
 /* Edit Control */
 .leaflet-control-edit button {
   background-image: url('images/control/draw/spritesheet.png');
