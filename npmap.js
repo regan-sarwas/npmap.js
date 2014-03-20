@@ -8,6 +8,7 @@ L.npmap = module.exports = {
   VERSION: version,
   // Preserve order of controls because it affects the display hierarchy.
   control: {
+    download: require('./src/control/download'),
     home: require('./src/control/home'),
     smallzoom: require('./src/control/smallzoom'),
     locate: require('./src/control/locate'),
