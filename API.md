@@ -260,29 +260,104 @@ The switcher control is used and controlled internally by NPMap.js, and is creat
 
 ## Using Popups
 
-Popups display when you click on a feature in an overlay. Each popup is made up of three different sections, all of which are optional:
+Popups display when you click on a feature in an overlay. Each popup is made up of three markup sections, with each having one or more nested subsection:
 
-1. Title
-2. Description
-3. Actions
+1. Header
+   1. Title
+2. Content
+   1. Media
+   2. Description
+3. Footer
+   1. Actions
 
-The content for each of these sections can be specified in two different ways:
+If you do not specify a `popup` property on your layer object, NPMap.js will use a set of sensible defaults to configure your popup display. If, however, you specify a `popup` property on your layer object, NPMap.js will only implement what you have specified. For example, if your `popup` property looks like this:
 
-<ol>
-  <li>By passing in a single string with HTML and/or Handlebars templates:<pre><code>'&lt;div class="title"&gt;{{Name}}&lt;/div&gt;&lt;div class="content"&gt;&lt;p&gt;The alpha code is {{Code}}.&lt;/p&gt;&lt;/div&gt;&lt;div class="actions"&gt;&lt;ul&gt;&lt;li&gt;&lt;a&gt;An Action&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;'</code></pre>. You should use the <code>title</code>, <code>content</code>, and <code>actions</code> classes to ensure your content is formatted properly.</li>
-  <li>By passing in a configuration object:<pre><code>{
-  actions: [{
-    handler: function() {
-      alert('Thanks for clicking!');
-    },
-    title: 'Click Me'
-  }],
-  description: '&lt;p&gt;The &lt;code&gt;cartodb_id&lt;/code&gt; of this feature is &lt;code&gt;{{cartodb_id}}&lt;/code&gt;.&lt;/p&gt;',
-  title: '{{alpha_code}}'
-}</code></pre>If you use this method, NPMap.js will take care of generating the HTML and formatting the different sections.</li>
-</ol>
+    popup: {
+      title: '{{Name}}'
+    }
 
-HTML is supported, and all strings passed in will be parsed by [Handlebars](http://handlebarsjs.com/) and encoded/unencoded automatically. You can also specify functions instead of strings. Functions will be passed an object with key/value pairs of the feature's properties, and must return a string (which, again, may contain HTML and/or Handlebars templates).
+NPMap.js will only bring the title in and will not render any other popup elements.
+
+### Configuration
+
+The content for each of the sections of a popup can be specified individually via a `popup` configuration object:
+
+    var NPMap = {
+      ...
+      overlays: [{
+        ...
+        popup: {
+          // {Array}, {String}, or {Function} (that returns an {Array} or {String})
+          actions: [{
+            handler: function(el) {
+              window.alert(el.innerHTML);
+            },
+            // No HTML, but Handlebars is supported
+            title: 'Click Me!'
+          }],
+          // {Object}, {String} or {Function} (that returns an {Object} or {String}) - supports Handlebars and HTML
+          description: '<p style="color:red;">{{description}}</p>',
+          // A config object
+          description: {
+            // {Array} (if null, defaults to 'all')
+            fields: [
+              'Name',
+              'Description'
+            ],
+            // {String} ('table' or 'list')
+            format: 'table'
+          },
+          // {Array}, {String}, of {Function} (that returns an {Array} or {String})
+          media: [{
+            id: '',
+            type: 'focus'
+          }],
+          // No HTML, but Handlebars is supported
+          more: '{{}}',
+          // {String} or {Function} (that returns a {String}) - supports Handlebars and HTML )
+          title: function(data) {
+            if (data.level > 5) {
+              return 'Greater than 5!';
+            } else {
+              return 'Less than 5!';
+            }
+          }
+        }
+      }]
+    };
+
+<table>
+  <thead>
+    <tr>
+      <td></td>
+      <td>Type</td>
+      <td>Description</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`actions`</td>
+      <td>`{Array}`</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>`{String}`</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>`{Function}`</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+
+As demonstrated above, you can specify each property as either a `string` (description) or a `function`. If you specify a `string`, NPMap.js will parse the string using [Handlebars](http://handlebarsjs.com/) and will also encode/unencode any HTML. If you specify a `function`, your function must return a `string` which can, again, contain Handlebars templates and/or HTML.
 
 You can also specify a fixed width for your popup by passing a `width` property into the popup config object:
 

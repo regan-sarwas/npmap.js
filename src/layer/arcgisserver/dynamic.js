@@ -22,7 +22,7 @@ var ArcGisServerDynamicLayer = L.Class.extend({
     util.strict(options.url, 'string');
 
     this._layerParams = L.Util.extend({}, this._defaultLayerParams);
-    this._serviceUrl = this.util.cleanUrl(options.url);
+    this._serviceUrl = this._cleanUrl(options.url);
 
     for (var option in options) {
       if (this._defaultLayerParams.hasOwnProperty(option)) {
@@ -45,7 +45,7 @@ var ArcGisServerDynamicLayer = L.Class.extend({
   },
   onAdd: function(map) {
     this._map = map;
-    this._moveHandler = this.util.debounce(this._update, 150, this);
+    this._moveHandler = this._debounce(this._update, 150, this);
 
     if (map.options.crs && map.options.crs.code) {
       var sr = map.options.crs.code.split(':')[1];
@@ -63,6 +63,19 @@ var ArcGisServerDynamicLayer = L.Class.extend({
     }
 
     map.off('moveend', this._moveHandler, this);
+  },
+  _debounce: function(fn, delay) {
+    var timer = null;
+
+    return function() {
+      var context = this || context, args = arguments;
+
+      clearTimeout(timer);
+
+      timer = setTimeout(function () {
+        fn.apply(context, args);
+      }, delay);
+    };
   },
   _getImageUrl: function () {
     var map = this._map,

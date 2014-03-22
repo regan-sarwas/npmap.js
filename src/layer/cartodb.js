@@ -18,9 +18,7 @@ var CartoDbLayer = L.TileLayer.extend({
       3
     ]
   },
-  // Leaflet overrides
   initialize: function(options) {
-    // Retina is opt-in for now.
     if (!L.Browser.retina || !options.detectRetina) {
       options.detectRetina = false;
     }
@@ -36,14 +34,13 @@ var CartoDbLayer = L.TileLayer.extend({
       L.TileLayer.prototype._update.call(this);
     }
   },
-  // NPMap.js methods
   _build: function() {
     var me = this;
 
     this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
     reqwest({
       success: function(response) {
-        var cartocss = '#layer{line-color:#d39800;line-opacity:0.8;line-width:3;marker-fill:#d39800;marker-height:8;polygon-fill:#d39800;polygon-opacity:0.2;}';
+        var cartocss;
 
         me._hasInteractivity = false;
         me._interactivity = null;
@@ -68,6 +65,8 @@ var CartoDbLayer = L.TileLayer.extend({
           cartocss = me.options.cartocss;
         } else if (me.options.styles) {
           cartocss = me._stylesToCartoCss(me.options.styles);
+        } else {
+          cartocss = '#layer{line-color:#d39800;line-opacity:0.8;line-width:3;marker-fill:#d39800;marker-height:8;polygon-fill:#d39800;polygon-opacity:0.2;}';
         }
 
         me._cartocss = cartocss;
@@ -117,7 +116,16 @@ var CartoDbLayer = L.TileLayer.extend({
       this._grid.getTileGrid(L.Util.template(this._urlGrid, L.Util.extend({
         s: this.options.subdomains[Math.floor(Math.random() * this.options.subdomains.length)]
       }, this._grid.getTileCoords(latLng))), latLng, function(resultData, gridData) {
-        callback(layer, gridData);
+        if (gridData) {
+          callback(layer, {
+            layer: layer,
+            results: [
+              gridData
+            ]
+          });
+        } else {
+          callback(layer, null);
+        }
       });
     } else {
       callback(layer, null);

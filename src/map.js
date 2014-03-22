@@ -8,6 +8,8 @@ var baselayerPresets = require('./preset/baselayers.json'),
   overlayPresets = require('./preset/overlays.json'),
   util = require('./util/util');
 
+require('./popup.js');
+
 (function() {
   var style = colorPresets.gold;
 
@@ -15,20 +17,6 @@ var baselayerPresets = require('./preset/baselayers.json'),
   L.CircleMarker.mergeOptions(style);
   L.Control.Attribution.mergeOptions({
     prefix: '<a href="http://www.nps.gov/npmap/disclaimer.html" target="_blank">Disclaimer</a>'
-  });
-  L.Polygon.mergeOptions(style);
-  L.Polyline.mergeOptions({
-    color: style.color,
-    opacity: style.opacity,
-    weight: style.weight
-  });
-  L.Popup.mergeOptions({
-    autoPanPaddingBottomRight: [20, 20],
-    autoPanPaddingTopLeft: [20, 20],
-    maxHeight: 300,
-    maxWidth: 221,
-    minWidth: 221,
-    offset: [1, -3]
   });
   L.Map.addInitHook(function() {
     var me = this;
@@ -81,6 +69,12 @@ var baselayerPresets = require('./preset/baselayers.json'),
       this.on('resize', resize);
       resize();
     }
+  });
+  L.Polygon.mergeOptions(style);
+  L.Polyline.mergeOptions({
+    color: style.color,
+    opacity: style.opacity,
+    weight: style.weight
   });
 })();
 
@@ -264,26 +258,30 @@ var Map = L.Map.extend({
   _setupPopup: function() {
     var clicks = 0,
       delayClick = false,
-      me = this;
+      me = this,
+      canceled, changed, hasArcGisServer;
 
-    function go(e) {
-      var cancel = false,
-        changed = false,
-        queryable = [];
-
+    function done() {
       me
-        .on('click', function() {
-          cancel = true;
-        })
-        .on('dragstart', function() {
-          changed = true;
-        })
-        .on('movestart', function() {
-          changed = true;
-        })
-        .on('zoomstart', function() {
-          changed = true;
-        });
+        .off('click', setCanceled)
+        .off('dragstart', setChanged)
+        .off('movestart', setChanged)
+        .off('zoomstart', setChanged);
+
+      if (hasArcGisServer) {
+        me._progress.go(100);
+      }
+    }
+    function go(e) {
+      var queryable = [];
+
+      canceled = false;
+      changed = false;
+      me
+        .on('click', setCanceled)
+        .on('dragstart', setChanged)
+        .on('movestart', setChanged)
+        .on('zoomstart', setChanged);
 
       for (var layerId in me._layers) {
         layer = me._layers[layerId];
@@ -295,47 +293,32 @@ var Map = L.Map.extend({
 
       if (queryable.length) {
         var completed = 0,
-          hasArcGisServer = false,
           intervals = 0,
           latLng = e.latlng.wrap(),
           results = [],
-          i,
-          interval;
+          i, interval;
+
+        hasArcGisServer = false;
 
         for (i = 0; i < queryable.length; i++) {
-          layer =  queryable[i];
+          layer = queryable[i];
 
           if (layer.options && layer.options.type === 'arcgisserver') {
             hasArcGisServer = true;
-            //me._setCursor('wait');
-            me._progress.go(1);
-            break;
           }
-        }
 
-        for (var i = 0; i < queryable.length; i++) {
-          layer = queryable[i];
           layer._handleClick(latLng, layer, function(l, data) {
             if (data) {
-              var result = data;
-
-              if (result) {
-                var div;
-
-                if (typeof result === 'string') {
-                  div = document.createElement('div');
-                  div.innerHTML = util.unescapeHtml(result);
-                  results.push(div);
-                } else if ('nodeType' in result) {
-                  results.push(result);
-                } else {
-                  results.push(util.dataToHtml(l.options, data));
-                }
-              }
+              data.layer = l;
+              results.push(data);
             }
 
             completed++;
           });
+        }
+
+        if (hasArcGisServer) {
+          me._progress.go(1);
         }
 
         interval = setInterval(function() {
@@ -345,74 +328,32 @@ var Map = L.Map.extend({
             me._progress.go(intervals);
           }
 
-          if (cancel || changed) {
+          if (canceled || changed) {
             clearInterval(interval);
-            me
-              .off('click', function() {
-                cancel = true;
-              })
-              .off('dragstart', function() {
-                changed = true;
-              })
-              .off('movestart', function() {
-                changed = true;
-              })
-              .off('zoomstart', function() {
-                changed = true;
-              });
-
-            if (hasArcGisServer) {
-              //me._setCursor('');
-              me._progress.go(100);
-            }
-          } else if ((queryable.length === completed) || intervals === 100) {
+            done();
+          } else if ((queryable.length === completed) || intervals > 99) {
             clearInterval(interval);
-            me
-              .off('click', function() {
-                cancel = true;
-              })
-              .off('dragstart', function() {
-                changed = true;
-              })
-              .off('movestart', function() {
-                changed = true;
-              })
-              .off('zoomstart', function() {
-                changed = true;
-              });
-
-            if (hasArcGisServer) {
-              //me._setCursor('');
-              me._progress.go(100);
-            }
+            done();
 
             if (intervals > 99) {
               // TODO: Show non-modal alert about the timeout.
             }
 
             if (results.length) {
-              var div = L.DomUtil.create('div', null),
-                popup = L.popup({
-                  autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
-                });
-
-              for (var i = 0; i < results.length; i++) {
-                var result = results[i];
-
-                if (typeof result === 'string') {
-                  var divResult = document.createElement('div');
-                  divResult.innerHTML = util.unescapeHtml(result);
-                  div.appendChild(divResult);
-                } else {
-                  div.appendChild(result);
-                }
-              }
-
-              popup.setContent(div).setLatLng(latLng).openOn(me);
+              var popup = L.npmap.popup({
+                autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
+              });
+              popup.setContent(popup._handleResults(results)).setLatLng(latLng).openOn(me);
             }
           }
         }, 100);
       }
+    }
+    function setCanceled() {
+      canceled = true;
+    }
+    function setChanged() {
+      changed = true;
     }
 
     for (var layerId in me._layers) {

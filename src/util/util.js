@@ -76,10 +76,7 @@ if (!Array.prototype.indexOf) {
 
 module.exports = {
   /**
-   * Builds an HTML attribute table.
-   * @param {String} name
-   * @param {Object} data
-   * @return {String}
+   * DEPRECATED: Builds an HTML attribute table.
    */
   _buildAttributeTable: function(name, data) {
     var div = L.DomUtil.create('div', 'result');
@@ -116,32 +113,18 @@ module.exports = {
 
     return div;
   },
-  /**
-   *
-   */
   _checkDisplay: function(node, changed) {
     if (node.style && node.style.display === 'none') {
       changed.push(node);
       node.style.display = 'block';
     }
   },
-  /**
-   * Gets the autoPanPadding for the 'topright' corner of the map.
-   * @param {Object} el
-   * @return {Array}
-   */
   _getAutoPanPaddingTopLeft: function(el) {
     var containers = this.getChildElementsByClassName(el, 'leaflet-top');
 
     return [this.getOuterDimensions(containers[0]).width + 20, this.getOuterDimensions(containers[1]).height + 20];
   },
-  /**
-   *
-   */
   _lazyLoader: function(i,j){function k(a){var a=a.toLowerCase(),b=a.indexOf("js"),a=a.indexOf("css");return-1==b&&-1==a?!1:b>a?"js":"css"}function m(a){var b=document.createElement("link");b.href=a;b.rel="stylesheet";b.type="text/css";b.onload=c;b.onreadystatechange=function(){("loaded"==this.readyState||"complete"==this.readyState)&&c()};document.getElementsByTagName("head")[0].appendChild(b)}function f(a){try{document.styleSheets[a].cssRules?c():document.styleSheets[a].rules&&document.styleSheets[a].rules.length?c():setTimeout(function(){f(a)},250)}catch(b){setTimeout(function(){f(a)},250)}}function c(){g--;0==g&&j&&j()}for(var g=0,d,l=document.styleSheets.length-1,h=0;h<i.length;h++)if(g++,d=i[h],"css"==k(d)&&(m(d),l++,!window.opera&&-1==navigator.userAgent.indexOf("MSIE")&&f(l)),"js"==k(d)){var e=document.createElement("script");e.type="text/javascript";e.src=d;e.onload=c;document.getElementsByTagName("head")[0].appendChild(e)}},
-  /**
-   *
-   */
   appendCssFile: function(urls, callback) {
     if (typeof urls === 'string') {
       urls = [
@@ -151,9 +134,6 @@ module.exports = {
 
     this._lazyLoader(urls, callback);
   },
-  /**
-   *
-   */
   appendJsFile: function(urls, callback) {
     if (typeof urls === 'string') {
       urls = [
@@ -163,13 +143,7 @@ module.exports = {
 
     this._lazyLoader(urls, callback);
   },
-  /**
-   *
-   */
   base64: (function(){return{encode:function(a){var b="",c,d,f,g,h,e,k=0;do c=a.charCodeAt(k++),d=a.charCodeAt(k++),f=a.charCodeAt(k++),g=c>>2,c=(c&3)<<4|d>>4,h=(d&15)<<2|f>>6,e=f&63,isNaN(d)?h=e=64:isNaN(f)&&(e=64),b=b+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(g)+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(c)+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(h)+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(e);while(k<a.length);return b},decode:function(a){var b="",c,d,f,g,h,e=0;a=a.replace(/[^A-Za-z0-9\+\/\=]/g,"");do c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(a.charAt(e++)),d="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(a.charAt(e++)),g="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(a.charAt(e++)),h="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(a.charAt(e++)),c=c<<2|d>>4,d=(d&15)<<4|g>>2,f=(g&3)<<6|h,b+=String.fromCharCode(c),64!=g&&(b+=String.fromCharCode(d)),64!=h&&(b+=String.fromCharCode(f));while(e<a.length);return b}}})(),
-  /**
-   *
-   */
   buildUrl: function(base, params) {
     var returnArray = [];
 
@@ -189,20 +163,12 @@ module.exports = {
     returnArray.pop();
     return returnArray.join('');
   },
-  /**
-   * Converts data to HTML for the popup or tooltip control.
-   * @param {Object} config
-   * @param {Object} data
-   * @param {String} type (Optional)
-   * @return {String}
-   */
   dataToHtml: function(config, data, type) {
     var html, options;
 
     type = type || 'popup';
     options = config[type];
 
-    // TODO: Shouldn't NPMap.js move the layer popup config to layer._popup?
     if (options) {
       switch (typeof options) {
       case 'function':
@@ -221,7 +187,6 @@ module.exports = {
           }
         }
 
-        // TODO: Should the popup config be named "content"?
         if (options.description) {
           var description = L.DomUtil.create('div', 'content', div);
 
@@ -257,7 +222,6 @@ module.exports = {
         break;
       }
     } else if (type === 'popup') {
-      // TODO: Shouldn't NPMap.js move the layer name config to layer._name?
       var count = 0,
         name = config.name || 'Layer';
 
@@ -272,6 +236,42 @@ module.exports = {
     }
 
     return html;
+  },
+  dataToList: function(data) {
+    var dl = document.createElement('dl');
+
+    for (var prop in data) {
+      var dd = document.createElement('dd'),
+        dt = document.createElement('dt');
+
+      dt.innerHTML = prop;
+      dd.innerHTML = data[prop];
+      dl.appendChild(dt);
+      dl.appendChild(dd);
+    }
+
+    return dl;
+  },
+  dataToTable: function(data) {
+    var table = document.createElement('table'),
+      tableBody = document.createElement('tbody');
+
+    table.appendChild(tableBody);
+
+    for (var prop in data) {
+      var tdProperty = document.createElement('td'),
+        tdValue = document.createElement('td'),
+        tr = document.createElement('tr');
+
+      tdProperty.style.paddingRight = '10px';
+      tdProperty.innerHTML = prop;
+      tdValue.innerHTML = data[prop];
+      tr.appendChild(tdProperty);
+      tr.appendChild(tdValue);
+      tableBody.appendChild(tr);
+    }
+
+    return table;
   },
   escapeHtml: function(unsafe) {
     return unsafe
@@ -312,9 +312,6 @@ module.exports = {
 
     return matches;
   },
-  /**
-   *
-   */
   getChildElementsByNodeName: function(parentNode, nodeName) {
     var children = parentNode.childNodes,
       matches = [];
@@ -341,9 +338,6 @@ module.exports = {
 
     return matches;
   },
-  /**
-   *
-   */
   getElementsByClassName: function(className) {
     var matches = [],
       regex = new RegExp('(^|\\s)' + className + '(\\s|$)'),
@@ -357,9 +351,6 @@ module.exports = {
 
     return matches;
   },
-  /**
-   *
-   */
   getEventObject: function(e) {
     if (!e) {
       e = window.event;
@@ -367,9 +358,6 @@ module.exports = {
 
     return e;
   },
-  /**
-   *
-   */
   getEventObjectTarget: function(e) {
     var target;
 
@@ -385,11 +373,6 @@ module.exports = {
 
     return target;
   },
-  /**
-   * Gets the next sibling of an HTML element.
-   * @param {Object} el
-   * @return {Object}
-   */
   getNextSibling: function(el) {
     do {
       el = el.nextSibling;
@@ -397,21 +380,11 @@ module.exports = {
 
     return el;
   },
-  /**
-   * Gets the offset, in pixels, of an element.
-   * @param {Object} el
-   * @return {Object}
-   */
   getOffset: function(el) {
     for (var lx = 0, ly = 0; el !== null; lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
 
     return {left: lx, top: ly};
   },
-  /**
-   * Gets the outer dimensions, in pixels, of an HTML element.
-   * @param {Object} el
-   * @return {Object}
-   */
   getOuterDimensions: function(el) {
     var height = 0,
       width = 0;
@@ -446,9 +419,6 @@ module.exports = {
 
     return {height: height, width: width};
   },
-  /**
-   * http://stackoverflow.com/a/2474742/27540
-   */
   getOuterHtml: function(el) {
     if (!el || !el.tagName) {
       return '';
@@ -464,9 +434,6 @@ module.exports = {
     div = null;
     return txt;
   },
-  /**
-   * UNDOCUMENTED
-   */
   getPosition: function(el) {
     var obj = {left: 0, top: 0},
       offset = this.getOffset(el),
@@ -477,11 +444,6 @@ module.exports = {
 
     return obj;
   },
-  /**
-   * Gets the previous sibling of an HTML element.
-   * @param {Object} el
-   * @return {Object}
-   */
   getPreviousSibling: function(el) {
     do {
       el = el.previousSibling;
@@ -489,13 +451,10 @@ module.exports = {
 
     return el;
   },
-  /**
-   * http://stackoverflow.com/a/5675579/27540
-   */
   getPropertyCount: function(obj) {
     if (!Object.keys) {
       var keys = [],
-          k;
+        k;
 
       for (k in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, k)) {
@@ -508,19 +467,11 @@ module.exports = {
       return Object.keys(obj).length;
     }
   },
-  /**
-   *
-   */
   handlebars: function(template, data) {
     template = handlebars.compile(template);
 
     return template(data);
   },
-  /**
-   * Checks to see if a url is local or remote.
-   * @param {String} url
-   * @return {Boolean}
-   */
   isLocalUrl: function(url) {
     if (url.indexOf(location.origin) === 0) {
       return true;
@@ -531,9 +482,6 @@ module.exports = {
   _parseLocalUrl: function(url) {
     return url.replace(location.origin, '');
   },
-  /**
-   *
-   */
   loadFile: function(url, type, callback) {
     if (this.isLocalUrl(url)) {
       if (type === 'xml') {
@@ -587,7 +535,6 @@ module.exports = {
       });
     }
   },
-  // http://stackoverflow.com/a/8498629/27540
   parseDomainFromUrl: function(url) {
     var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
 
@@ -616,6 +563,11 @@ module.exports = {
     if (values.indexOf(_) === -1) {
       throw new Error('Invalid argument: ' + _ + ' given, valid values are ' + values.join(', '));
     }
+  },
+  stripHtml: function(html) {
+    var tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
   },
   unescapeHtml: function(unsafe) {
     return unsafe

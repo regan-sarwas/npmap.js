@@ -43,6 +43,37 @@
           name: 'Hurricanes',
           layers: '0,1',
           opacity: 1,
+          popup: {
+            actions: '<ul><li><a href="#" onclick="window.alert(\'Clicked!\');return false;">Click Me</a></li></ul>',
+            description: function(data) {
+              if (typeof data.CAT === 'undefined') {
+                return '' +
+                  '<table><tbody>' +
+                    '<tr><td style="padding-right:10px;">Stage</td><td>{{STAGE}}</td></tr>' +
+                    '<tr><td style="padding-right:10px;">Day</td><td>{{DAY}}</td></tr>' +
+                    '<tr><td style="padding-right:10px;">Time</td><td>{{TIME}}</td></tr>' +
+                    '<tr><td style="padding-right:10px;">Pressure</td><td>{{PRESSURE}}</td></tr>' +
+                    '<tr><td style="padding-right:10px;">Wind Speed (Knots)</td><td>{{WINDSPEED}}</td></tr>' +
+                  '</tbody></table>';
+              } else {
+                return '' +
+                  '<table><tbody>' +
+                    '<tr><td style="padding-right:10px;">Category</td><td>{{CAT}}</td></tr>' +
+                    '<tr><td style="padding-right:10px;">Date</td><td>{{Date_date}}</td></tr>' +
+                    '<tr><td style="padding-right:10px;">Start Time</td><td>{{Time}}</td></tr>' +
+                    '<tr><td style="padding-right:10px;">End Time</td><td>{{EndTime}}</td></tr>' +
+                    '<tr><td style="padding-right:10px;">Wind Speed (Knots)</td><td>{{WIND_KTS}}</td></tr>' +
+                  '</tbody></table>';
+              }
+            },
+            title: function(data) {
+              if (typeof data.CAT === 'undefined') {
+                return data.EVENTID;
+              } else {
+                return data.NAME;
+              }
+            }
+          },
           tiled: false,
           type: 'arcgisserver',
           url: 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
