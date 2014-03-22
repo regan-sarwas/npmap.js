@@ -25,7 +25,14 @@
         maxZoom: 13,
         overlays: [{
           attribution: 'NPMap Team',
-          name: 'National Park Bounding Boxes',
+          name: 'Park Bounds',
+          popup: {
+            actions: '<ul><li><a onclick="window.alert(\'Thanks for clicking!\');return false;">Click Me!</a></li></ul>',
+            description: {
+              format: 'table'
+            },
+            title: '{{alpha_code}}'
+          },
           styles: {
             'fill': '#d39800',
             'fill-opacity': 0.2,
@@ -38,7 +45,16 @@
           user: 'nps'
         },{
           attribution: 'NPMap Team',
-          name: 'National Park Centroids',
+          name: 'Park Centroids',
+          popup: {
+            actions: [{
+
+            }],
+            description: '<p>Hardcoded description.</p>',
+            title: function(data) {
+              return data.alphacode;
+            }
+          },
           styles: {
             'marker-color': '#000',
             'marker-size': 'small' 

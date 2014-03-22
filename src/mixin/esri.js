@@ -1,4 +1,5 @@
 /* global L */
+/* jshint camelcase: false */
 
 'use strict';
 
@@ -6,123 +7,29 @@ var reqwest = require('reqwest'),
   util = require('../util/util');
 
 module.exports = {
-  _backHtml: null,
-  _clickResults: null,
-  _toggleMenu: function toggleMenu(menu, e) {
-    if (!menu.style.display || menu.style.display === 'none') {
-      var toElement = e.toElement;
-
-      menu.style.display = 'block';
-      menu.style.left = toElement.offsetLeft + 'px';
-      menu.style.top = (toElement.offsetTop + 18) + 'px';
-    } else {
-      menu.style.display = 'none';
-    }
+  _boundsToExtent: function(bounds) {
+    return {
+      spatalReference: {
+        wkid: 4326
+      },
+      xmax: bounds.getNorthEast().lng,
+      xmin: bounds.getSouthWest().lng,
+      ymax: bounds.getNorthEast().lat,
+      ymin: bounds.getSouthWest().lat
+    };
   },
-  util: {
-    boundsToExtent: function(bounds) {
-      return {
-        spatalReference: {
-          wkid: 4326
-        },
-        xmax: bounds.getNorthEast().lng,
-        xmin: bounds.getSouthWest().lng,
-        ymax: bounds.getNorthEast().lat,
-        ymin: bounds.getSouthWest().lat
-      };
-    },
-    cleanUrl: function(url) {
-      url = this.trim(url);
+  _cleanUrl: function(url) {
+    url = L.Util.trim(url);
 
-      if (url[url.length-1] !== '/') {
-        url += '/';
-      }
-
-      return url;
-    },
-    debounce: function(fn, delay) {
-      var timer = null;
-
-      return function() {
-        var context = this || context, args = arguments;
-
-        clearTimeout(timer);
-
-        timer = setTimeout(function () {
-          fn.apply(context, args);
-        }, delay);
-      };
-    },
-    trim: function(str) {
-      return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-    }
-  },
-  _back: function() {
-    this._map._popup.setContent(this._backHtml).update();
-  },
-  _createAction: function(cls, text, handler, menuItems, actionsDiv) {
-    var action = L.DomUtil.create('a', null);
-
-    action.innerHTML = text;
-    action.style.cssText = 'margin-left:5px;';
-
-    if (menuItems) {
-      var menu = L.DomUtil.create('ul', 'menu');
-
-      for (var i = 0; i < menuItems.length; i++) {
-        var a = L.DomUtil.create('a', null),
-          item = menuItems[i],
-          li = L.DomUtil.create('li', null);
-
-        a.innerHTML = item.text;
-        L.DomEvent.addListener(a, 'click', function() {
-          menu.style.display = 'none';
-          this.fn();
-        }, item);
-        li.appendChild(a);
-        menu.appendChild(li);
-      }
-
-      actionsDiv.appendChild(menu);
-      L.DomEvent.addListener(action, 'click' , function(e) {
-        this._toggleMenu(menu, e);
-      }, this);
-    } else if (handler) {
-      L.DomEvent.addListener(action, 'click' , handler, this);
+    if (url[url.length - 1] !== '/') {
+      url += '/';
     }
 
-    return action;
-  },
-  _dataToHtml: function(data) {
-    var html;
-
-    if (this.options.popup) {
-      switch (typeof this.options.popup) {
-      case 'function':
-        html = this.options.popup(data.attributes);
-        break;
-      case 'string':
-        html = util.handlebars(this.options.popup, data.attributes);
-        break;
-      }
-    } else {
-      html = util._buildAttributeTable(data.value, data.attributes);
-    }
-
-    if (typeof html === 'string') {
-      var div = L.DomUtil.create('div', null);
-      div.innerHTML = util.unescapeHtml(html);
-      return div;
-    } else {
-      return html;
-    }
+    return url;
   },
   _getMetadata: function() {
-    var me = this;
-
-
     // TODO: Implement timeout and set `loadError` property on layer to true if there is an error.
-
+    var me = this;
 
     reqwest({
       success: function(response) {
@@ -146,50 +53,47 @@ module.exports = {
   _handleClick: function(latLng, layer, callback) {
     var me = this;
 
-    me._clickResults = {};
     me.identify(latLng, function(response) {
       if (response) {
         var results = response.results;
 
         if (results && results.length) {
-          var divLayer = L.DomUtil.create('div', 'layer'),
-            divTitle = L.DomUtil.create('div', 'title'),
-            i = 0,
-            ul = L.DomUtil.create('ul', null);
+          var obj = {
+            subLayers: []
+          };
 
-          divTitle.innerHTML = me.options.name ? me.options.name : results[0].layerName;
-          divLayer.appendChild(divTitle);
-
-          for (i; i < results.length; i++) {
+          for (var i = 0; i < results.length; i++) {
             var result = results[i],
-              div = me._dataToHtml(result),
-              li = L.DomUtil.create('li', null),
-              link = L.DomUtil.create('a', null),
-              value = result.value;
+              active;
 
-            link.setAttribute('data-layerid', result.layerId);
-            link.setAttribute('data-objectid', result.attributes.OBJECTID);
-
-            for (var j = 0; j < div.childNodes.length; j++) {
-              var node = div.childNodes[j];
-
-              if (L.DomUtil.hasClass(node, 'title')) {
-                value = node.innerHTML;
+            for (var j = 0; j < obj.subLayers.length; j++) {
+              if (obj.subLayers[j].name === result.layerName) {
+                active = obj.subLayers[j];
                 break;
               }
             }
 
-            L.DomEvent.on(link, 'click', function() {
-              me._more(this);
-            });
-            link.innerHTML = value;
-            li.appendChild(link);
-            ul.appendChild(li);
-            me._clickResults[value] = div;
+            if (active) {
+              active.results.push(result.attributes);
+            } else {
+              obj.subLayers.push({
+                name: result.layerName,
+                popup: {
+                  description: {
+                    fields: 'all',
+                    format: 'table'
+                  },
+                  more: '{{' + result.displayFieldName + '}}',
+                  title: '{{' + result.displayFieldName + '}}'
+                },
+                results: [
+                  result.attributes
+                ]
+              });
+            }
           }
 
-          divLayer.appendChild(ul);
-          callback(layer, divLayer);
+          callback(layer, obj);
         } else {
           callback(layer, null);
         }
@@ -197,57 +101,6 @@ module.exports = {
         callback(layer, null);
       }
     });
-  },
-  _more: function(el) {
-    var actionsDiv = L.DomUtil.create('div', 'actions'),
-      actionsUl = L.DomUtil.create('ul', null),
-      addActions = [],
-      back = L.DomUtil.create('a', null),
-      div = L.DomUtil.create('div', null),
-      me = this,
-      popup = this._map._popup,
-      subLayerId = el.getAttribute('data-layerid');
-
-    div.appendChild(this._clickResults[el.innerHTML]);
-    this._backHtml = popup.getContent();
-    L.DomEvent.addListener(back, 'click', this._back, this);
-    back.innerHTML = '&#171; Back';
-    addActions.push(back);
-
-    if (this.options.edit && this.options.edit.layers.split(',').indexOf(subLayerId) !== -1) {
-      var userRole = this.options.edit.userRole;
-
-      if (typeof userRole === 'undefined' || userRole === 'Admin' || userRole === 'Writer') {
-        var objectId = parseInt(el.getAttribute('data-objectid'), 10);
-
-        subLayerId = parseInt(subLayerId, 10);
-
-        addActions.push(this._createAction('edit', 'Edit &#9656;', null, [{
-          fn: function() {
-            me.options.edit.handlers.editAttributes(subLayerId, objectId);
-          },
-          text: 'Attributes'
-        },{
-          fn: function() {
-            me.options.edit.handlers.editGeometry(subLayerId, objectId);
-          },
-          text: 'Geometry'
-        }], actionsDiv));
-        addActions.push(this._createAction('delete', 'Delete', function() {
-          me.options.edit.handlers['delete'](subLayerId, objectId);
-        }));
-      }
-    }
-
-    for (var i = 0; i < addActions.length; i++) {
-      var li = L.DomUtil.create('li', null);
-      li.appendChild(addActions[i]);
-      actionsUl.appendChild(li);
-    }
-
-    actionsDiv.appendChild(actionsUl);
-    div.appendChild(actionsDiv);
-    popup.setContent(div).update();
   },
   _updateAttribution: function() {
     var map = this._map,
@@ -292,11 +145,10 @@ module.exports = {
           x: latLng.lng,
           y: latLng.lat
         }),
-        //geometryPrecision
         geometryType: 'esriGeometryPoint',
         imageDisplay: size.x + ',' + size.y + ',96',
         layers: 'visible:' + this.getLayers().split(':')[1],
-        mapExtent: JSON.stringify(this.util.boundsToExtent(map.getBounds())),
+        mapExtent: JSON.stringify(this._boundsToExtent(map.getBounds())),
         returnGeometry: false,
         sr: '4326',
         tolerance: 5
