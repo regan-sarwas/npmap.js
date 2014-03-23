@@ -284,7 +284,7 @@ var Popup = L.Popup.extend({
         if (typeof obj === 'object') {
           if (obj.format === 'list') {
             obj = util.dataToList(result, obj.fields);
-          } else if (obj.format === 'table') {
+          } else {
             obj = util.dataToTable(result, obj.fields);
           }
         }

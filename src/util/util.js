@@ -5,40 +5,6 @@
 var handlebars = require('handlebars'),
   reqwest = require('reqwest');
 
-/*
-handlebars.registerHelper('if', function(v1, operator, v2, opts) {
-  var isTrue = false;
-
-  switch (operator) {
-  case '===':
-    isTrue = v1 === v2;
-    break;
-  case '!==':
-    isTrue = v1 !== v2;
-    break;
-  case '<':
-    isTrue = v1 < v2;
-    break;
-  case '<=':
-    isTrue = v1 <= v2;
-    break;
-  case '>':
-    isTrue = v1 > v2;
-    break;
-  case '>=':
-    isTrue = v1 >= v2;
-    break;
-  case '||':
-    isTrue = v1 || v2;
-    break;
-  case '&&':
-    isTrue = v1 && v2;
-    break;
-  }
-
-  return isTrue ? opts.fn(this) : opts.inverse(this);
-});
-*/
 handlebars.registerHelper('toLowerCase', function(str) {
   return str.toLowerCase();
 });
@@ -75,44 +41,6 @@ if (!Array.prototype.indexOf) {
 }
 
 module.exports = {
-  /**
-   * DEPRECATED: Builds an HTML attribute table.
-   */
-  _buildAttributeTable: function(name, data) {
-    var div = L.DomUtil.create('div', 'result');
-
-    if (!L.Util.isArray(data)) {
-      data = [data];
-    }
-
-    for (var index in data) {
-      var dataLayer = data[index],
-        divTitle = L.DomUtil.create('div', 'title'),
-        tableResults = L.DomUtil.create('table', null),
-        tableResultsBody = L.DomUtil.create('tbody', null);
-
-      divTitle.textContent = name;
-
-      for (var fieldName in dataLayer) {
-        var tableData = L.DomUtil.create('td', null),
-          tableField = L.DomUtil.create('td', null),
-          tableRow = L.DomUtil.create('tr', null);
-
-        tableField.style.paddingRight = '10px';
-        tableField.textContent = fieldName;
-        tableRow.appendChild(tableField);
-        tableData.textContent = dataLayer[fieldName];
-        tableRow.appendChild(tableData);
-        tableResultsBody.appendChild(tableRow);
-      }
-
-      tableResults.appendChild(tableResultsBody);
-      div.appendChild(divTitle);
-      div.appendChild(tableResults);
-    }
-
-    return div;
-  },
   _checkDisplay: function(node, changed) {
     if (node.style && node.style.display === 'none') {
       changed.push(node);
@@ -125,6 +53,9 @@ module.exports = {
     return [this.getOuterDimensions(containers[0]).width + 20, this.getOuterDimensions(containers[1]).height + 20];
   },
   _lazyLoader: function(i,j){function k(a){var a=a.toLowerCase(),b=a.indexOf("js"),a=a.indexOf("css");return-1==b&&-1==a?!1:b>a?"js":"css"}function m(a){var b=document.createElement("link");b.href=a;b.rel="stylesheet";b.type="text/css";b.onload=c;b.onreadystatechange=function(){("loaded"==this.readyState||"complete"==this.readyState)&&c()};document.getElementsByTagName("head")[0].appendChild(b)}function f(a){try{document.styleSheets[a].cssRules?c():document.styleSheets[a].rules&&document.styleSheets[a].rules.length?c():setTimeout(function(){f(a)},250)}catch(b){setTimeout(function(){f(a)},250)}}function c(){g--;0==g&&j&&j()}for(var g=0,d,l=document.styleSheets.length-1,h=0;h<i.length;h++)if(g++,d=i[h],"css"==k(d)&&(m(d),l++,!window.opera&&-1==navigator.userAgent.indexOf("MSIE")&&f(l)),"js"==k(d)){var e=document.createElement("script");e.type="text/javascript";e.src=d;e.onload=c;document.getElementsByTagName("head")[0].appendChild(e)}},
+  _parseLocalUrl: function(url) {
+    return url.replace(location.origin, '');
+  },
   appendCssFile: function(urls, callback) {
     if (typeof urls === 'string') {
       urls = [
@@ -163,112 +94,58 @@ module.exports = {
     returnArray.pop();
     return returnArray.join('');
   },
-  dataToHtml: function(config, data, type) {
-    var html, options;
-
-    type = type || 'popup';
-    options = config[type];
-
-    if (options) {
-      switch (typeof options) {
-      case 'function':
-        html = options(data);
-        break;
-      case 'object':
-        var div = document.createElement('div');
-
-        if (options.title) {
-          var title = L.DomUtil.create('div', 'title', div);
-
-          if (typeof options.title === 'function') {
-            title.innerHTML = this.unescapeHtml(options.title(data));
-          } else if (typeof options.title === 'string') {
-            title.innerHTML = this.unescapeHtml(this.handlebars(options.title, data));
-          }
-        }
-
-        if (options.description) {
-          var description = L.DomUtil.create('div', 'content', div);
-
-          if (typeof options.description === 'function') {
-            description.innerHTML = this.unescapeHtml(options.description(data));
-          } else if (typeof options.description === 'string') {
-            description.innerHTML = this.unescapeHtml(this.handlebars(options.description, data));
-          }
-        }
-
-        if (options.actions && L.Util.isArray(options.actions)) {
-          var actions = L.DomUtil.create('div', 'actions', div),
-            ul = L.DomUtil.create('ul', null, actions),
-            a, action, li;
-
-          for (var i = 0; i < options.actions.length; i++) {
-            action = options.actions[i];
-            li = L.DomUtil.create('li', null, ul);
-            a = L.DomUtil.create('a', null, li);
-            a.innerHTML = action.title;
-            L.DomEvent.addListener(a, 'click', action.handler);
-          }
-        }
-
-        if (typeof options.width === 'number') {
-          div.style.width = options.width + 'px';
-        }
-
-        html = div;
-        break;
-      case 'string':
-        html = this.handlebars(options, data);
-        break;
-      }
-    } else if (type === 'popup') {
-      var count = 0,
-        name = config.name || 'Layer';
-
-      for (var prop in data) {
-        count++;
-        break;
-      }
-
-      if (count) {
-        html = this._buildAttributeTable(name, data);
-      }
-    }
-
-    return html;
-  },
-  dataToList: function(data) {
+  dataToList: function(data, fields) {
     var dl = document.createElement('dl');
 
     for (var prop in data) {
-      var dd = document.createElement('dd'),
-        dt = document.createElement('dt');
+      var add = true;
 
-      dt.innerHTML = prop;
-      dd.innerHTML = data[prop];
-      dl.appendChild(dt);
-      dl.appendChild(dd);
+      if (fields && L.Util.isArray(fields)) {
+        if (fields.indexOf(prop) === -1) {
+          add = false;
+        }
+      }
+
+      if (add) {
+        var dd = document.createElement('dd'),
+          dt = document.createElement('dt');
+
+        dt.innerHTML = prop;
+        dd.innerHTML = data[prop];
+        dl.appendChild(dt);
+        dl.appendChild(dd);
+      }
     }
 
     return dl;
   },
-  dataToTable: function(data) {
+  dataToTable: function(data, fields) {
     var table = document.createElement('table'),
       tableBody = document.createElement('tbody');
 
     table.appendChild(tableBody);
 
     for (var prop in data) {
-      var tdProperty = document.createElement('td'),
-        tdValue = document.createElement('td'),
-        tr = document.createElement('tr');
+      var add = true;
 
-      tdProperty.style.paddingRight = '10px';
-      tdProperty.innerHTML = prop;
-      tdValue.innerHTML = data[prop];
-      tr.appendChild(tdProperty);
-      tr.appendChild(tdValue);
-      tableBody.appendChild(tr);
+      if (fields && L.Util.isArray(fields)) {
+        if (fields.indexOf(prop) === -1) {
+          add = false;
+        }
+      }
+
+      if (add) {
+        var tdProperty = document.createElement('td'),
+          tdValue = document.createElement('td'),
+          tr = document.createElement('tr');
+
+        tdProperty.style.paddingRight = '10px';
+        tdProperty.innerHTML = prop;
+        tdValue.innerHTML = data[prop];
+        tr.appendChild(tdProperty);
+        tr.appendChild(tdValue);
+        tableBody.appendChild(tr);
+      }
     }
 
     return table;
@@ -478,9 +355,6 @@ module.exports = {
     } else {
       return !(/^(?:[a-z]+:)?\/\//i.test(url));
     }
-  },
-  _parseLocalUrl: function(url) {
-    return url.replace(location.origin, '');
   },
   loadFile: function(url, type, callback) {
     if (this.isLocalUrl(url)) {

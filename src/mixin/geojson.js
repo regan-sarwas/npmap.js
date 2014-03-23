@@ -56,12 +56,14 @@ module.exports = {
 
       config.onEachFeature = function(feature, layer) {
         layer.on('click', function(e) {
-          var properties = feature.properties,
-            html = util.dataToHtml(config, properties),
-            target = e.target,
-            popup = L.popup({
+          var target = e.target,
+            popup = L.npmap.popup({
               autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(target._map.getContainer())
-            });
+            }),
+            properties = feature.properties,
+            html;
+
+          html = popup._resultToHtml(properties, config.popup);
 
           if (lastTarget) {
             lastTarget.closePopup().unbindPopup();

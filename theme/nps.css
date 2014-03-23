@@ -32,6 +32,9 @@
       font-weight: 500;
       line-height: 1.1;
     }
+    .npmap-modules .module h2.title {
+      font-size: 17px;
+    }
     .npmap-modules .module .content {
       bottom: 0;
       font-size: 14px;
@@ -54,13 +57,10 @@
       .npmap-modules .module .content h6 {
         font-size: 13px;
       }
-  .npmap-modules .module .title {
-    border-bottom: solid 1px #B5B39C;
-    padding: 10px 9px;
-    margin: 0;
-  }
-    .npmap-modules .module h2.title {
-      font-size: 17px;
+    .npmap-modules .module .title {
+      border-bottom: solid 1px #B5B39C;
+      padding: 10px 9px;
+      margin: 0;
     }
 .npmap-modules-buttons .npmap-modules-buttons-button {
   background-position: 4px;
