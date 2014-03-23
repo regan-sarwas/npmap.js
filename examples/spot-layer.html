@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>Spot Layer | Examples | NPMap.js</title>
+    <title>SPOT Layer | Examples | NPMap.js</title>
     <style>
       body {
         margin: 0;
@@ -21,10 +21,24 @@
     <div id="map"></div>
     <script>
       var NPMap = {
+        baseLayers: [
+          'mapbox-satelliteLabels'
+        ],
         div: 'map',
+        homeControl: false,
         overlays: [{
           id: '08HVpMLpDksQjCeBL1FbTkqGHP4Bk7dfg',
-          type: 'spot'
+          popup: {
+            description: '{{dateTime}}',
+            title: '{{messengerName}}'
+          },
+          styles: {
+            point: {
+              'marker-symbol': 'dog-park'
+            }
+          },
+          type: 'spot',
+          zoomToBounds: true
         }]
       };
 

@@ -34,12 +34,13 @@ L.npmap = module.exports = {
       tiled: require('./src/layer/arcgisserver/tiled')
     },
     bing: require('./src/layer/bing'),
+    cartodb: require('./src/layer/cartodb'),
     csv: require('./src/layer/csv'),
     geojson: require('./src/layer/geojson'),
     github: require('./src/layer/github'),
     kml: require('./src/layer/kml'),
     mapbox: require('./src/layer/mapbox'),
-    cartodb: require('./src/layer/cartodb'),
+    spot: require('./src/layer/spot'),
     tiled: require('./src/layer/tiled'),
     wms: require('./src/layer/wms'),
     zoomify: require('./src/layer/zoomify')
