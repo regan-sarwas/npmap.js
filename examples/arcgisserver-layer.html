@@ -35,6 +35,15 @@
           layers: '2',
           name: 'National Parks',
           opacity: 0.5,
+          popup: {
+            description: {
+              fields: [
+                'PARKNAME',
+                'UNIT_TYPE'
+              ],
+              format: 'table'
+            }
+          },
           tiled: false,
           type: 'arcgisserver',
           url: 'http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer'
