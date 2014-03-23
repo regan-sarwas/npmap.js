@@ -27,7 +27,6 @@
           attribution: 'NPMap Team',
           name: 'Park Bounds',
           popup: {
-            actions: '<ul><li><a onclick="window.alert(\'Thanks for clicking!\');return false;">Click Me!</a></li></ul>',
             description: {
               format: 'table'
             },
@@ -47,13 +46,10 @@
           attribution: 'NPMap Team',
           name: 'Park Centroids',
           popup: {
-            actions: [{
-
-            }],
-            description: '<p>Hardcoded description.</p>',
-            title: function(data) {
-              return data.alphacode;
-            }
+            description: {
+              format: 'table'
+            },
+            title: '{{alphacode}}'
           },
           styles: {
             'marker-color': '#000',

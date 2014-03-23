@@ -47,11 +47,13 @@
           user: 'nps'
         },{
           attribution: 'Land Resources Division',
-          maki: {
-            color: '#609321',
-            name: 'park'
-          },
           popup: '<div class="title">{{Name}}</div><p>The alpha code is {{Code}}.</p>',
+          styles: {
+            point: {
+              'marker-color': '#609321',
+              'marker-symbol': 'park'
+            }
+          },
           tooltip: 'Center point for {{Code}}',
           type: 'geojson',
           url: 'http://www.nps.gov/npmap/support/library/examples/data/national-parks.geojson'

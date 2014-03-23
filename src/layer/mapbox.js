@@ -78,9 +78,20 @@ var MapBoxLayer = L.TileLayer.extend({
   _autoScale: function() {
     return L.Browser.retina && this.options.autoscale && this.options.detectRetina;
   },
-  _getGridData: function(latLng, layer, callback) {
+  _getGridData: function(latLng, callback) {
+    var me = this;
+
     this._grid.getTileGrid(this._getTileGridUrl(latLng), latLng, function(resultData, gridData) {
-      callback(layer, gridData);
+      if (gridData) {
+        callback({
+          layer: me,
+          results: [
+            gridData
+          ]
+        });
+      } else {
+        callback(null);
+      }
     });
   },
   _getTileGridUrl: function(latLng) {
@@ -89,11 +100,11 @@ var MapBoxLayer = L.TileLayer.extend({
 
     return L.Util.template(grids[Math.floor(Math.abs(gridTileCoords.x + gridTileCoords.y) % grids.length)], gridTileCoords);
   },
-  _handleClick: function(latLng, layer, callback) {
-    this._getGridData(latLng, layer, callback);
+  _handleClick: function(latLng, callback) {
+    this._getGridData(latLng, callback);
   },
-  _handleMousemove: function (latLng, layer, callback) {
-    this._getGridData(latLng, layer, callback);
+  _handleMousemove: function (latLng, callback) {
+    this._getGridData(latLng, callback);
   },
   _loadTileJson: function(from) {
     if (typeof from === 'string') {

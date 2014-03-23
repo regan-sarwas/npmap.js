@@ -50,7 +50,7 @@ module.exports = {
       url: me._serviceUrl + '?f=json'
     });
   },
-  _handleClick: function(latLng, layer, callback) {
+  _handleClick: function(latLng, callback) {
     var me = this;
 
     me.identify(latLng, function(response) {
@@ -59,6 +59,7 @@ module.exports = {
 
         if (results && results.length) {
           var obj = {
+            layer: me,
             subLayers: []
           };
 
@@ -76,15 +77,16 @@ module.exports = {
             if (active) {
               active.results.push(result.attributes);
             } else {
+              var template = '{{' + result.displayFieldName + '}}';
+
               obj.subLayers.push({
                 name: result.layerName,
                 popup: {
                   description: {
-                    fields: 'all',
                     format: 'table'
                   },
-                  more: '{{' + result.displayFieldName + '}}',
-                  title: '{{' + result.displayFieldName + '}}'
+                  more: template,
+                  title: template
                 },
                 results: [
                   result.attributes
@@ -93,12 +95,12 @@ module.exports = {
             }
           }
 
-          callback(layer, obj);
+          callback(obj);
         } else {
-          callback(layer, null);
+          callback(null);
         }
       } else {
-        callback(layer, null);
+        callback(null);
       }
     });
   },

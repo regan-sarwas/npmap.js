@@ -16,70 +16,89 @@ var Popup = L.Popup.extend({
     this.setContent(this._html).update();
     this._html = null;
   },
-  _createAction: function(divActions, handler, text, items) {
-    var action = document.createElement('a');
+  _createAction: function(config, data, div) {
+    var a = document.createElement('a'),
+      li = document.createElement('li');
 
-    action.innerHTML = text;
-    //a.style.cssText = 'margin-left:5px;';
+    li.appendChild(a);
+    a.innerHTML = util.handlebars(config.text, data);
 
-    if (items) {
-      var menu = L.DomUtil.create('ul', 'menu', divActions);
+    if (config.menu) {
+      var menu = L.DomUtil.create('ul', 'menu', div);
 
-      for (var i = 0; i < items.length; i++) {
-        var a = document.createElement('a'),
-          item = items[i],
-          li = document.createElement('li');
+      for (var i = 0; i < config.menu.length; i++) {
+        var item = config.menu[i],
+          itemA = document.createElement('a'),
+          itemLi = document.createElement('li');
 
-        a.innerHTML = item.text;
-        L.DomEvent.addListener(a, 'click', function() {
+        itemA.innerHTML = util.handlebars(item.text, data);
+        L.DomEvent.addListener(itemA, 'click', function() {
           menu.style.display = 'none';
-          this.fn();
+          this.handler();
         }, item);
-        li.appendChild(a);
-        menu.appendChild(li);
+        itemLi.appendChild(itemA);
+        menu.appendChild(itemLi);
       }
 
-      L.DomEvent.addListener(action, 'click' , function(e) {
+      L.DomEvent.addListener(a, 'click' , function(e) {
         this._toggleMenu(menu, e);
       }, this);
-    } else if (handler) {
-      L.DomEvent.addListener(action, 'click' , handler, this);
+    } else if (config.handler) {
+      L.DomEvent.addListener(a, 'click' , config.handler, this);
     }
 
-    return action;
+    return li;
   },
-  _toggleMenu: function(menu, e) {
-    if (!menu.style.display || menu.style.display === 'none') {
-      var to = e.toElement;
-
-      menu.style.display = 'block';
-      menu.style.left = to.offsetLeft + 'px';
-      menu.style.top = (to.offsetTop + 18) + 'px';
-    } else {
-      menu.style.display = 'none';
-    }
-  },
-
-
-
-
-
-
   _handleResults: function(results) {
     var div;
+
+    function getLayerConfig(layer) {
+      if (layer.options && layer.options.popup) {
+        return layer.options.popup;
+      } else {
+        return null;
+      }
+    }
 
     if (results.length > 1) {
       div = this._resultsToHtml(results);
     } else {
-      var result = results[0],
-        options = (function() {
-          if (result.layer && result.layer.options && result.layer.options.popup) {
-            return result.layer.options.popup;
-          } else {
-            return null;
+      var all = [],
+        result = results[0],
+        i;
+
+      if (result.results && result.results.length) {
+        for (i = 0; i < result.results.length; i++) {
+          all.push({
+            layerConfig: getLayerConfig(result.layer),
+            result: result.results[i],
+            resultConfig: null
+          });
+        }
+      } else if (result.subLayers && result.subLayers.length) {
+        for (i = 0; i < result.subLayers.length; i++) {
+          var subLayer = result.subLayers[i];
+
+          if (subLayer.results && subLayer.results.length) {
+            for (var j = 0; j < subLayer.results.length; j++) {
+              all.push({
+                layerConfig: getLayerConfig(result.layer),
+                result: subLayer.results[j],
+                resultConfig: subLayer.popup || null
+              });
+            }
           }
-        })();
-      div = this._resultToHtml(result.results[0], options);
+        }
+      }
+
+      if (all.length === 1) {
+        var first = all[0];
+
+        // TODO: If a "subLayer" result, pass in subLayer.name and add to title of popup.
+        div = this._resultToHtml(first.result, first.layerConfig, first.resultConfig);
+      } else {
+        div = this._resultsToHtml(results);
+      }
     }
 
     return div;
@@ -97,42 +116,40 @@ var Popup = L.Popup.extend({
       var divLayer = L.DomUtil.create('div', 'layer', div),
         divLayerTitle = L.DomUtil.create('div', 'title', divLayer),
         resultLayer = results[i],
-        layerConfig = {},
-        divLayerContent;
+        layerConfig = null,
+        resultConfig = null,
+        a, childNode, divLayerContent, j, k, li, more, single, ul;
 
-      if (resultLayer.layer && resultLayer.layer.options && resultLayer.layer.options.popup) {
-        layerConfig = resultLayer.layer.options.popup;
-      }
+      if (resultLayer.layer.options) {
+        if (resultLayer.layer.options.popup) {
+          layerConfig = resultLayer.layer.options.popup;
+        }
 
-      if (resultLayer.layer && resultLayer.layer.options && resultLayer.layer.options.name) {
-        divLayerTitle.innerHTML = resultLayer.layer.options.name;
-      } else {
-        divLayerTitle.innerHTML = 'Unnamed';
+        if (resultLayer.layer.options.name) {
+          divLayerTitle.innerHTML = resultLayer.layer.options.name;
+        } else {
+          divLayerTitle.innerHTML = 'Unnamed';
+        }
       }
 
       if (resultLayer.results && resultLayer.results.length) {
-        var ul = document.createElement('ul');
-
         divLayerContent = L.DomUtil.create('div', 'content', divLayer);
+        ul = document.createElement('ul');
 
-        for (var j = 0; j < resultLayer.results.length; j++) {
-          var a = document.createElement('a'),
-            li = document.createElement('li'),
-            result = resultLayer.results[j],
-            resultConfig = {},
-            more, single;
+        for (j = 0; j < resultLayer.results.length; j++) {
+          var result = resultLayer.results[j];
 
-          // TODO: Figure out how you are going to pass "resultConfig" in from individual layer handlers.
+          a = document.createElement('a');
+          li = document.createElement('li');
+          single = this._resultToHtml(result, layerConfig, resultConfig, true);
 
-          single = this._resultToHtml(result, layerConfig, true);
-
-          if (typeof layerConfig.more === 'string') {
+          if (layerConfig && typeof layerConfig.more === 'string') {
             more = util.handlebars(layerConfig.more, result);
-          } else if (typeof resultConfig.more === 'string') {
+          } else if (resultConfig && typeof resultConfig.more === 'string') {
             more = util.handlebars(resultConfig.more, result);
           } else {
-            for (var k = 0; k < single.childNodes.length; k++) {
-              var childNode = single.childNodes[k];
+            for (k = 0; k < single.childNodes.length; k++) {
+              childNode = single.childNodes[k];
 
               if (L.DomUtil.hasClass(childNode, 'title')) {
                 more = util.stripHtml(childNode.innerHTML);
@@ -159,167 +176,190 @@ var Popup = L.Popup.extend({
       } else if (resultLayer.subLayers && resultLayer.subLayers.length) {
         divLayerContent = L.DomUtil.create('div', 'content', divLayer);
 
-        /*
-        for (j = 0; j < layerResult.subLayers.length; j++) {
+        for (j = 0; j < resultLayer.subLayers.length; j++) {
           var divSubLayer = L.DomUtil.create('div', 'sublayer', divLayerContent),
             divSubLayerTitle = L.DomUtil.create('div', 'title', divSubLayer),
             divSubLayerContent = L.DomUtil.create('div', 'content', divSubLayer),
-            subLayerResult = layerResult.subLayers[j],
-            ulSubLayer = document.createElement('ul');
+            resultSubLayer = resultLayer.subLayers[j];
 
-          divSubLayerContent.appendChild(ulSubLayer);
-          divSubLayerTitle.innerHTML = subLayerResult.name;
+          divSubLayerTitle.innerHTML = resultSubLayer.name;
+          ul = document.createElement('ul');
+          divSubLayerContent.appendChild(ul);
 
-          for (k = 0; k < subLayerResult.results.length; k++) {
+          for (k = 0; k < resultSubLayer.results.length; k++) {
+            var resultFinal = resultSubLayer.results[k];
+
+            if (resultSubLayer.popup) {
+              resultConfig = resultSubLayer.popup;
+            }
+
             a = document.createElement('a');
-            html = this._popupDataToHtml(subLayerResult.results[k], layerOptions.popup, subLayerResult.results[k].popup);
             li = document.createElement('li');
-            this._clickResults[index] = html;
-            L.DomEvent.addListener(a, 'click', function() {
-              this._popupMore(layerResult.layer, this._clickResults[this.id]);
-            });
+            single = this._resultToHtml(resultFinal, layerConfig, resultConfig, true);
 
-            for (l = 0; l < html.childNodes.length; l++) {
-              childNode = html.childNodes[l];
+            if (layerConfig && typeof layerConfig.more === 'string') {
+              more = util.handlebars(layerConfig.more, resultFinal);
+            } else if (resultConfig && typeof resultConfig.more === 'string') {
+              more = util.handlebars(resultConfig.more, resultFinal);
+            } else {
+              for (k = 0; k < single.childNodes.length; k++) {
+                childNode = single.childNodes[k];
 
-              if (L.DomUtil.hasClass(childNode, 'title')) {
-                title = util.stripHtml(childNode.innerHTML);
-                break;
+                if (L.DomUtil.hasClass(childNode, 'title')) {
+                  more = util.stripHtml(childNode.innerHTML);
+                  break;
+                }
               }
             }
 
-            console.log(subLayerResult);
-
-
-            // TODO: Pass the title in and use it if title isn't set via popup config.
-
-
-
-
-            if ((!title || title === 'Untitled') && subLayerResult.titleField) {
-              title = subLayerResult.results[k][subLayerResult.titleField];
+            if (!more) {
+              more = 'Untitled';
             }
 
+            L.DomEvent.addListener(a, 'click', function() {
+              me._more(this.id);
+            });
+            this._results[index] = single;
             a.id = index;
-            a.innerHTML = title;
+            a.innerHTML = more;
             li.appendChild(a);
-            ulSubLayer.appendChild(li);
+            ul.appendChild(li);
             index++;
           }
         }
-        */
       }
     }
 
     return div;
   },
-  _resultToHtml: function(result, layerConfig, addBackAction) {
+  _resultToHtml: function(result, layerConfig, resultConfig, addBack) {
     var config = layerConfig,
       div = L.DomUtil.create('div', 'layer'),
-      // TODO: Pass in resultConfig
-      resultConfig = {},
-      actions, description, divContent, media, obj, title;
+      actions, description, divContent, media, obj, title, ul;
 
     if (!config) {
-      config = {
-        description: {
-          format: 'table'
-        },
-        title: (function() {
-          if (resultConfig) {
-            return resultConfig.title || resultConfig.more || 'Untitled';
-          } else {
-            return 'Untitled';
+      if (resultConfig) {
+        config = resultConfig;
+      } else {
+        config = {
+          description: {
+            format: 'table'
+          },
+          title: 'Untitled'
+        };
+      }
+    }
+
+    if (typeof config === 'string') {
+      div.innerHTML = util.handlebars(config, result);
+    } else {
+      if (config.title) {
+        obj = null;
+
+        if (typeof config.title === 'function') {
+          obj = config.title(result);
+        } else {
+          obj = config.title;
+        }
+
+        if (obj && typeof obj === 'string') {
+          title = L.DomUtil.create('div', 'title', div);
+          title.innerHTML = util.handlebars(obj, result);
+        }
+      }
+
+      if (config.media) {
+        media = null;
+      }
+
+      if (config.description) {
+        obj = null;
+
+        if (typeof config.description === 'function') {
+          obj = config.description(result);
+        } else {
+          obj = config.description;
+        }
+
+        if (typeof obj === 'object') {
+          if (obj.format === 'list') {
+            obj = util.dataToList(result, obj.fields);
+          } else if (obj.format === 'table') {
+            obj = util.dataToTable(result, obj.fields);
           }
-        })()
-      };
-    }
+        }
 
-    if (config.title) {
-      obj = null;
+        if (obj) {
+          if (!divContent) {
+            divContent = L.DomUtil.create('div', 'content', div);
+          }
 
-      if (typeof config.title === 'function') {
-        obj = config.title(result);
-      } else {
-        obj = config.title;
-      }
+          description = L.DomUtil.create('div', 'description', divContent);
 
-      if (obj && typeof obj === 'string') {
-        title = L.DomUtil.create('div', 'title', div);
-        title.innerHTML = util.handlebars(obj, result);
-      }
-    }
-
-    if (config.media) {
-      media = null;
-    }
-
-    if (config.description) {
-      obj = null;
-
-      if (typeof config.description === 'function') {
-        obj = config.description(result);
-      } else {
-        obj = config.description;
-      }
-
-      if (typeof obj === 'object') {
-        if (obj.format === 'list') {
-          obj = util.dataToList(result, obj.fields);
-        } else if (obj.format === 'table') {
-          obj = util.dataToTable(result, obj.fields);
+          if (typeof obj === 'string') {
+            description.innerHTML = util.handlebars(obj, result);
+          } else if ('nodeType' in obj) {
+            description.appendChild(obj);
+          }
         }
       }
 
-      if (obj) {
-        if (!divContent) {
-          divContent = L.DomUtil.create('div', 'content', div);
+      if (config.actions) {
+        obj = null;
+
+        if (typeof config.actions === 'function') {
+          obj = config.actions(result);
+        } else {
+          obj = config.actions;
         }
 
-        description = L.DomUtil.create('div', 'description', divContent);
-
-        if (typeof obj === 'string') {
-          description.innerHTML = util.handlebars(obj, result);
-        } else if ('nodeType' in obj) {
-          description.appendChild(obj);
-        }
-      }
-    }
-
-    if (config.actions) {
-      obj = null;
-
-      if (typeof config.actions === 'function') {
-        obj = config.actions(result);
-      } else {
-        obj = config.actions;
-      }
-
-      if (L.Util.isArray(obj)) {
-        for (var i = 0; i < obj.length; i++) {
-          
-        }
-
-/*
-_createAction: function(divActions, handler, text, items) {
-*/
-
-        
-
-        // Iterate through and create markup
-      }
-
-      if (obj) {
-        if (typeof obj === 'string') {
+        if (obj) {
           actions = L.DomUtil.create('div', 'actions', div);
-          actions.innerHTML = util.handlebars(obj, result);
-        } else if ('nodeType' in obj) {
-          actions.appendChild(obj);
+
+          if (L.Util.isArray(obj)) {
+            ul = document.createElement('ul');
+            actions.appendChild(ul);
+
+            for (var i = 0; i < obj.length; i++) {
+              ul.appendChild(this._createAction(obj[i], result, actions));
+            }
+          } else if (typeof obj === 'string') {
+            actions.innerHTML = util.handlebars(obj, result);
+          } else if ('nodeType' in obj) {
+            actions.appendChild(obj);
+          }
         }
       }
     }
 
-    if (addBackAction) {
+    /*
+    if (me.options.edit && me.options.edit.layers.split(',').indexOf(subLayerId) !== -1) {
+      var userRole = me.options.edit.userRole;
+
+      if (typeof userRole === 'undefined' || userRole === 'Admin' || userRole === 'Writer') {
+        var objectId = parseInt(el.getAttribute('data-objectid'), 10);
+
+        subLayerId = parseInt(subLayerId, 10);
+
+        actions.push(me._createAction('edit', 'Edit &#9656;', null, [{
+          fn: function() {
+            me.options.edit.handlers.editAttributes(subLayerId, objectId);
+          },
+          text: 'Attributes'
+        },{
+          fn: function() {
+            me.options.edit.handlers.editGeometry(subLayerId, objectId);
+          },
+          text: 'Geometry'
+        }], divActions));
+        actions.push(me._createAction('delete', 'Delete', function() {
+          me.options.edit.handlers['delete'](subLayerId, objectId);
+        }));
+      }
+    }
+    */
+
+    if (addBack) {
       var a = document.createElement('a'),
         li = document.createElement('li');
 
@@ -330,46 +370,27 @@ _createAction: function(divActions, handler, text, items) {
       if (actions) {
         actions.childNodes[0].insertBefore(li, actions.childNodes[0].childNodes[0]);
       } else {
-        var ul = document.createElement('ul');
-
-        actions = L.DomUtil.create('div', 'actions', div);
+        ul = document.createElement('ul');
         ul.appendChild(li);
-        actions.appendChild(ul);
+        L.DomUtil.create('div', 'actions', div).appendChild(ul);
       }
     }
 
     return div;
+  },
+  _toggleMenu: function(menu, e) {
+    if (!menu.style.display || menu.style.display === 'none') {
+      var to = e.toElement;
+
+      menu.style.display = 'block';
+      menu.style.left = to.offsetLeft + 'px';
+      menu.style.top = (to.offsetTop + 18) + 'px';
+    } else {
+      menu.style.display = 'none';
+    }
   }
 });
 
 module.exports = function(options) {
   return new Popup(options);
 };
-
-/*
-if (me.options.edit && me.options.edit.layers.split(',').indexOf(subLayerId) !== -1) {
-  var userRole = me.options.edit.userRole;
-
-  if (typeof userRole === 'undefined' || userRole === 'Admin' || userRole === 'Writer') {
-    var objectId = parseInt(el.getAttribute('data-objectid'), 10);
-
-    subLayerId = parseInt(subLayerId, 10);
-
-    actions.push(me._createAction('edit', 'Edit &#9656;', null, [{
-      fn: function() {
-        me.options.edit.handlers.editAttributes(subLayerId, objectId);
-      },
-      text: 'Attributes'
-    },{
-      fn: function() {
-        me.options.edit.handlers.editGeometry(subLayerId, objectId);
-      },
-      text: 'Geometry'
-    }], divActions));
-    actions.push(me._createAction('delete', 'Delete', function() {
-      me.options.edit.handlers['delete'](subLayerId, objectId);
-    }));
-  }
-}
-*/
-
