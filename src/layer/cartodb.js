@@ -111,31 +111,33 @@ var CartoDbLayer = L.TileLayer.extend({
       })
     });
   },
-  _getGridData: function(latLng, layer, callback) {
+  _getGridData: function(latLng, callback) {
+    var me = this;
+
     if (this._urlGrid) {
       this._grid.getTileGrid(L.Util.template(this._urlGrid, L.Util.extend({
         s: this.options.subdomains[Math.floor(Math.random() * this.options.subdomains.length)]
       }, this._grid.getTileCoords(latLng))), latLng, function(resultData, gridData) {
         if (gridData) {
-          callback(layer, {
-            layer: layer,
+          callback({
+            layer: me,
             results: [
               gridData
             ]
           });
         } else {
-          callback(layer, null);
+          callback(null);
         }
       });
     } else {
-      callback(layer, null);
+      callback(null);
     }
   },
-  _handleClick: function(latLng, layer, callback) {
-    this._getGridData(latLng, layer, callback);
+  _handleClick: function(latLng, callback) {
+    this._getGridData(latLng, callback);
   },
-  _handleMousemove: function(latLng, layer, callback) {
-    this._getGridData(latLng, layer, callback);
+  _handleMousemove: function(latLng, callback) {
+    this._getGridData(latLng, callback);
   },
   _stylesToCartoCss: function(styles) {
     var cartoCss = {},

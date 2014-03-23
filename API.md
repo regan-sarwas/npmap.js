@@ -270,13 +270,13 @@ Popups display when you click on a feature in an overlay. Each popup is made up 
 3. Footer
    1. Actions
 
-If you do not specify a `popup` property on your layer object, NPMap.js will use a set of sensible defaults to configure your popup display. If, however, you specify a `popup` property on your layer object, NPMap.js will only implement what you have specified. For example, if your `popup` property looks like this:
+If you do not specify a `popup` property on your layer object, NPMap.js will use a set of sensible defaults to configure the popup. If, however, you specify a `popup` property on your layer object, NPMap.js will only implement what you have specified. For example, if your `popup` property looks like this:
 
     popup: {
       title: '{{Name}}'
     }
 
-NPMap.js will only bring the title in and will not render any other popup elements.
+NPMap.js will only display the title in the popup and will not render any other popup elements.
 
 ### Configuration
 
@@ -287,15 +287,27 @@ The content for each of the sections of a popup can be specified individually vi
       overlays: [{
         ...
         popup: {
-          // {Array}, {String}, or {Function} (that returns an {Array} or {String})
+          // {Array}, {String}, or {Function}. If a {Function}, it must return an {Array} or {String}.
           actions: [{
-            handler: function(el) {
-              window.alert(el.innerHTML);
+            handler: function() {
+              window.alert('Clicked!');
             },
-            // No HTML, but Handlebars is supported
-            title: 'Click Me!'
+            text: 'Click Me!' // No HTML, but Handlebars is supported
+          },{
+            menu: [{
+              handler: function() {
+                window.alert('You clicked Menu Item 1');
+              },
+              text: 'Menu Item 1' // No HTML, but Handlebars is supported
+            },{
+              handler: function() {
+                window.alert('You clicked Menu Item 2');
+              },
+              text: 'Menu Item 2' // No HTML, but Handlebars is supported
+            }],
+            text: 'Menu' // No HTML, but Handlebars is supported
           }],
-          // {Object}, {String} or {Function} (that returns an {Object} or {String}) - supports Handlebars and HTML
+          // {Object}, {String} or {Function}. If a {Function}, it must return an {Object} or {String}.
           description: '<p style="color:red;">{{description}}</p>',
           // A config object
           description: {
@@ -325,39 +337,6 @@ The content for each of the sections of a popup can be specified individually vi
         }
       }]
     };
-
-<table>
-  <thead>
-    <tr>
-      <td></td>
-      <td>Type</td>
-      <td>Description</td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>`actions`</td>
-      <td>`{Array}`</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>`{String}`</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>`{Function}`</td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
-
-
-
-
-
-As demonstrated above, you can specify each property as either a `string` (description) or a `function`. If you specify a `string`, NPMap.js will parse the string using [Handlebars](http://handlebarsjs.com/) and will also encode/unencode any HTML. If you specify a `function`, your function must return a `string` which can, again, contain Handlebars templates and/or HTML.
 
 You can also specify a fixed width for your popup by passing a `width` property into the popup config object:
 

@@ -523,8 +523,8 @@
               user-select: none;
     border-top: solid 1px #b1b0a7;
     clear: both;
-    margin-top: 18px;
-    padding-top: 18px;
+    margin-top: 12px;
+    padding-top: 12px;
   }
     .leaflet-popup-content .actions ul {
       padding-left: 0;

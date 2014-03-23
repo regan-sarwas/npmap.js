@@ -307,10 +307,9 @@ var Map = L.Map.extend({
             hasArcGisServer = true;
           }
 
-          layer._handleClick(latLng, layer, function(l, data) {
-            if (data) {
-              data.layer = l;
-              results.push(data);
+          layer._handleClick(latLng, function(result) {
+            if (result) {
+              results.push(result);
             }
 
             completed++;
@@ -404,13 +403,12 @@ var Map = L.Map.extend({
     me.on('mousemove', function(e) {
       if (this._controllingCursor) {
         var hasData = false,
-          lastCursor = me.getContainer().style.cursor,
           latLng = e.latlng.wrap(),
           newActiveTips = [];
 
         tooltip.hide();
         
-        if (lastCursor !== 'wait') {
+        if (me.getContainer().style.cursor !== 'wait') {
           me._setCursor('');
         }
 
@@ -427,21 +425,28 @@ var Map = L.Map.extend({
           var layer = me._layers[layerId];
 
           if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
-            layer._handleMousemove(latLng, layer, function(l, data) {
-              if (data) {
-                var tip;
+            layer._handleMousemove(latLng, function(result) {
+              if (result) {
+                var l = result.layer;
 
                 hasData = true;
 
-                if (typeof layer.options.tooltip === 'function') {
-                  tip = layer.options.tooltip(data);
-                } else if (typeof layer.options.tooltip === 'string') {
-                  tip = util.unescapeHtml(util.handlebars(layer.options.tooltip, data));
-                }
+                if (l.options && l.options.tooltip) {
+                  for (var i = 0; i < result.results.length; i++) {
+                    var data = result.results[i],
+                      tip;
 
-                if (tip) {
-                  me._tooltips.push(tip);
-                  activeTips.push(tip);
+                    if (typeof l.options.tooltip === 'function') {
+                      tip = util.handlebars(l.options.tooltip(data));
+                    } else if (typeof l.options.tooltip === 'string') {
+                      tip = util.unescapeHtml(util.handlebars(l.options.tooltip, data));
+                    }
+
+                    if (tip) {
+                      me._tooltips.push(tip);
+                      activeTips.push(tip);
+                    }
+                  }
                 }
               }
             });
@@ -456,6 +461,9 @@ var Map = L.Map.extend({
           tooltip.show(e.containerPoint, me._tooltips.join('<br>'));
         }
       }
+    });
+    me.on('mouseout', function() {
+      tooltip.hide();
     });
   },
   _toLeaflet: function(config) {
