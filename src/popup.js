@@ -48,11 +48,11 @@ var Popup = L.Popup.extend({
         menu.appendChild(itemLi);
       }
 
-      L.DomEvent.addListener(a, 'click' , function(e) {
+      L.DomEvent.addListener(a, 'click', function(e) {
         this._toggleMenu(menu, e);
       }, this);
     } else if (config.handler) {
-      L.DomEvent.addListener(a, 'click' , function() {
+      L.DomEvent.addListener(a, 'click', function() {
         var data = null;
 
         try {
@@ -126,8 +126,10 @@ var Popup = L.Popup.extend({
   _resultsToHtml: function(results) {
     var div = document.createElement('div'),
       index = 0,
-      me = this;
-
+      me = this,
+      listener = function() {
+        me._more(this.id);
+      };
     for (var i = 0; i < results.length; i++) {
       var divLayer = L.DomUtil.create('div', 'layer', div),
         divLayerTitle = L.DomUtil.create('div', 'title', divLayer),
@@ -232,9 +234,7 @@ var Popup = L.Popup.extend({
               more = 'Untitled';
             }
 
-            L.DomEvent.addListener(a, 'click', function() {
-              me._more(this.id);
-            });
+            L.DomEvent.addListener(a, 'click', listener);
             this._results[index] = single;
             a.id = index;
             a.innerHTML = more;
@@ -274,11 +274,6 @@ var Popup = L.Popup.extend({
       if (config.title) {
         obj = null;
 
-        if (!divContent) {
-          divContent = L.DomUtil.create('div', 'content', div);
-        }
-
-
         if (typeof config.title === 'function') {
           obj = config.title(result);
         } else {
@@ -289,6 +284,10 @@ var Popup = L.Popup.extend({
           title = L.DomUtil.create('div', 'title', div);
           title.innerHTML = util.handlebars(obj, result);
         }
+      }
+
+      if (!divContent) {
+        divContent = L.DomUtil.create('div', 'content', div);
       }
 
       if (config.description) {
@@ -327,10 +326,10 @@ var Popup = L.Popup.extend({
             media.push(config.media[i]);
           }
         }
-        mediaObj = util.mediaToList(media);
+        mediaObj = util.mediaToList(result, media);
         if (mediaObj) {
           mediaDiv = L.DomUtil.create('div', 'mediaDiv', divContent);
-          mediaDiv.appendChild(media);
+          mediaDiv.appendChild(mediaObj);
         }
       }
 
@@ -352,8 +351,8 @@ var Popup = L.Popup.extend({
             ul = document.createElement('ul');
             actions.appendChild(ul);
 
-            for (var i = 0; i < obj.length; i++) {
-              ul.appendChild(this._createAction(obj[i], result, actions));
+            for (var j = 0; j < obj.length; j++) {
+              ul.appendChild(this._createAction(obj[j], result, actions));
             }
           } else if (typeof obj === 'string') {
             actions.innerHTML = util.handlebars(obj, result);
