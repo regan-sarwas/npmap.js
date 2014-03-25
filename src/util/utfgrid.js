@@ -49,18 +49,23 @@ module.exports = function(layer) {
       }
     },
     getTileGridPoint: function(latLng, response) {
-      var map = layer._map,
-        point = map.project(latLng.wrap()),
-        resolution = 4,
-        tileSize = 256,
-        max = map.options.crs.scale(map.getZoom()) / tileSize,
-        x = Math.floor(point.x / tileSize),
-        y = Math.floor(point.y / tileSize);
+      var map = layer._map;
 
-      x = (x + max) % max;
-      y = (y + max) % max;
+      if (map) {
+        var point = map.project(latLng.wrap()),
+          resolution = 4,
+          tileSize = 256,
+          max = map.options.crs.scale(map.getZoom()) / tileSize,
+          x = Math.floor(point.x / tileSize),
+          y = Math.floor(point.y / tileSize);
 
-      return (response.data[response.keys[this.utfDecode(response.grid[Math.floor((point.y - (y * tileSize)) / resolution)].charCodeAt(Math.floor((point.x - (x * tileSize)) / resolution)))]]);
+        x = (x + max) % max;
+        y = (y + max) % max;
+
+        return (response.data[response.keys[this.utfDecode(response.grid[Math.floor((point.y - (y * tileSize)) / resolution)].charCodeAt(Math.floor((point.x - (x * tileSize)) / resolution)))]]);
+      }
+
+      return null;
     },
     hasUtfData: function(url, latLng) {
       var cache = reqwest.getCache(url),
