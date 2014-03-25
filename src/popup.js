@@ -256,6 +256,11 @@ var Popup = L.Popup.extend({
       if (config.title) {
         obj = null;
 
+        if (!divContent) {
+          divContent = L.DomUtil.create('div', 'content', div);
+        }
+
+
         if (typeof config.title === 'function') {
           obj = config.title(result);
         } else {
@@ -266,10 +271,6 @@ var Popup = L.Popup.extend({
           title = L.DomUtil.create('div', 'title', div);
           title.innerHTML = util.handlebars(obj, result);
         }
-      }
-
-      if (config.media) {
-        media = null;
       }
 
       if (config.description) {
@@ -290,10 +291,6 @@ var Popup = L.Popup.extend({
         }
 
         if (obj) {
-          if (!divContent) {
-            divContent = L.DomUtil.create('div', 'content', div);
-          }
-
           description = L.DomUtil.create('div', 'description', divContent);
 
           if (typeof obj === 'string') {
@@ -303,6 +300,23 @@ var Popup = L.Popup.extend({
           }
         }
       }
+
+      if (config.media) {
+        var mediaObj, mediaDiv;
+        media = [];
+        for (var i = 0; i < config.media.length; i++) {
+          if (result[config.media[i].id]) {
+            media.push(config.media[i]);
+          }
+        }
+        mediaObj = util.mediaToList(media);
+        if (mediaObj) {
+          mediaDiv = L.DomUtil.create('div', 'mediaDiv', divContent);
+          mediaDiv.appendChild(media);
+        }
+      }
+
+
 
       if (config.actions) {
         obj = null;
