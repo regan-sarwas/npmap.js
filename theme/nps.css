@@ -408,7 +408,9 @@
        -o-transform: none;
           transform: none;
   background-color: transparent;
+  /*
   border-left: solid 1px #bdbbb1;
+  */
   height: 24px;
   margin: 0 auto;
   padding: 0;
