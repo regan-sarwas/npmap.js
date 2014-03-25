@@ -169,8 +169,7 @@ module.exports = {
     return table;
   },
   mediaToList: function(data, media) {
-    var images,
-      imageTypes = {
+    var imageTypes = {
         focus: function(guids) {
           var attrs, guidArray, i, imgs = [],
             regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'); //{ Fix Vim brackets
@@ -196,7 +195,7 @@ module.exports = {
       if (imageTypes[media[mediaIndex].type]) {
         imageAttrs = imageTypes [media[mediaIndex].type](data[media[mediaIndex].id]);
         //TODO: Add multiple image support
-        imageAttrs = imageAttrs;
+        //imageAttrs = imageAttrs;
         newAnchor = L.DomUtil.create('a', '', imageDiv);
         newAnchor.href = imageAttrs[0].href;
         newImage = L.DomUtil.create('img', '', newAnchor);
@@ -204,6 +203,7 @@ module.exports = {
         newImage.style.width = '100%';
       }
     }
+    return imageDiv;
   },
   escapeHtml: function(unsafe) {
     return unsafe
