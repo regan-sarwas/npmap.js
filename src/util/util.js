@@ -125,12 +125,26 @@ module.exports = {
 
     table.appendChild(tableBody);
 
+    var fieldTitles = {};
+    if (L.Util.isArray(fields)) {
+      for (var i = 0; i < fields.length; i++) {
+        if (typeof(fields[i]) === "string") {
+          fieldTitles[fields[i]] = {'title': fields[i]};
+        } else {
+          fieldTitles[fields[i].field] = fields[i];
+        }
+      }
+    }
+
     for (var prop in data) {
-      var add = true;
+      var add = false;
 
       if (fields && L.Util.isArray(fields)) {
-        if (fields.indexOf(prop) === -1) {
-          add = false;
+        for (var field in fieldTitles) {
+          if (field === prop) {
+            add = true;
+            break;
+          }
         }
       }
 
@@ -140,8 +154,12 @@ module.exports = {
           tr = document.createElement('tr');
 
         tdProperty.style.paddingRight = '10px';
-        tdProperty.innerHTML = prop;
-        tdValue.innerHTML = data[prop];
+        tdProperty.innerHTML = fieldTitles[prop].title;
+        if (fieldTitles[prop].separator) {
+          tdValue.innerHTML = data[prop].replace(fieldTitles[prop].separator, '<br/>');
+        } else {
+          tdValue.innerHTML = data[prop];
+        }
         tr.appendChild(tdProperty);
         tr.appendChild(tdValue);
         tableBody.appendChild(tr);
