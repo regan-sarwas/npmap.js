@@ -326,10 +326,12 @@ var Popup = L.Popup.extend({
             media.push(config.media[i]);
           }
         }
-        mediaObj = util.mediaToList(result, media);
-        if (mediaObj) {
-          mediaDiv = L.DomUtil.create('div', 'mediaDiv', divContent);
-          mediaDiv.appendChild(mediaObj);
+        if (media.length) {
+          mediaObj = util.mediaToList(result, media);
+          if (mediaObj) {
+            mediaDiv = L.DomUtil.create('div', 'mediaDiv', divContent);
+            mediaDiv.appendChild(mediaObj);
+          }
         }
       }
 
