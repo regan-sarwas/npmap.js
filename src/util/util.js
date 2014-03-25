@@ -190,17 +190,22 @@ module.exports = {
     imageDiv.style.height = (250 * 0.75) + 'px';
     imageDiv.style.marginLeft = 'auto';
     imageDiv.style.marginRight = 'auto';
+    console.log(data, media);
     for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
-      var imageAttrs, newAnchor, newImage;
+      var imageAttrs, newAnchor = [], newImage = [];
+      console.log(imageTypes,media[mediaIndex],imageTypes[media[mediaIndex]]);
       if (imageTypes[media[mediaIndex].type]) {
         imageAttrs = imageTypes [media[mediaIndex].type](data[media[mediaIndex].id]);
         //TODO: Add multiple image support
         //imageAttrs = imageAttrs;
-        newAnchor = L.DomUtil.create('a', '', imageDiv);
-        newAnchor.href = imageAttrs[0].href;
-        newImage = L.DomUtil.create('img', '', newAnchor);
-        newImage.src = imageAttrs[0].src;
-        newImage.style.width = '100%';
+        if (imageAttrs.length > 0) {console.log('MULTI');}
+        for (var k=0; k<imageAttrs.length; k++) {
+          newAnchor.push(L.DomUtil.create('a', '', imageDiv));
+          newAnchor[k].href = imageAttrs[k].href;
+          newImage.push(L.DomUtil.create('img', '', newAnchor[k]));
+          newImage[k].src = imageAttrs[k].src;
+          newImage[k].style.width = '100%';
+        }
       }
     }
     return imageDiv;
