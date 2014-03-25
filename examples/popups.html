@@ -52,18 +52,18 @@
           popup: {
             actions: [{
               menu: [{
-                handler: function() {
-                  window.alert('Item 1');
+                handler: function(data) {
+                  window.alert('Item 1: ' + JSON.stringify(data));
                 },
                 text: 'Item 1'
               },{
-                handler: function() {
-                  window.alert('Item 2');
+                handler: function(data) {
+                  window.alert('Item 2: ' + JSON.stringify(data));
                 },
                 text: 'Item 2'
               },{
-                handler: function() {
-                  window.alert('Item 3');
+                handler: function(data) {
+                  window.alert('Item 3: ' + JSON.stringify(data));
                 },
                 text: 'Item 3'
               }],

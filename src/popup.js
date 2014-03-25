@@ -1,4 +1,5 @@
 /* global L */
+/* jshint camelcase: false */
 
 'use strict';
 
@@ -10,6 +11,7 @@ var Popup = L.Popup.extend({
     autoPanPaddingTopLeft: [20, 20],
     offset: [1, -3]
   },
+  _data: [],
   _html: null,
   _results: [],
   _back: function() {
@@ -33,9 +35,15 @@ var Popup = L.Popup.extend({
 
         itemA.innerHTML = util.handlebars(item.text, data);
         L.DomEvent.addListener(itemA, 'click', function() {
+          var data = null;
+
+          try {
+            data = this.parentNode.parentNode.parentNode.parentNode.npmap_data;
+          } catch (exception) {}
+
           menu.style.display = 'none';
-          this.handler();
-        }, item);
+          item.handler(data);
+        });
         itemLi.appendChild(itemA);
         menu.appendChild(itemLi);
       }
@@ -44,7 +52,15 @@ var Popup = L.Popup.extend({
         this._toggleMenu(menu, e);
       }, this);
     } else if (config.handler) {
-      L.DomEvent.addListener(a, 'click' , config.handler, this);
+      L.DomEvent.addListener(a, 'click' , function() {
+        var data = null;
+
+        try {
+          data = this.parentNode.parentNode.parentNode.parentNode.npmap_data;
+        } catch (exception) {}
+
+        config.handler(data);
+      });
     }
 
     return li;
@@ -236,6 +252,8 @@ var Popup = L.Popup.extend({
     var config = layerConfig,
       div = L.DomUtil.create('div', 'layer'),
       actions, description, divContent, media, obj, title, ul;
+
+    div.npmap_data = result;
 
     if (!config) {
       if (resultConfig) {
