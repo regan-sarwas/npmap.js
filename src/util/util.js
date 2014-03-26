@@ -252,7 +252,7 @@ module.exports = {
       } else {
         $('div.mediaDiv button.prev').removeClass('disabled');
       }
-      if ((curImg + direction) > maxImg) {
+      if ((curImg + direction) >= maxImg) {
         $('div.mediaDiv button.next').addClass('disabled');
       } else {
         $('div.mediaDiv button.next').removeClass('disabled');
