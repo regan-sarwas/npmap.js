@@ -190,22 +190,16 @@ module.exports = {
       imageList = document.createElement('ul'),
       imageLi = [],
       imageDiv = [],
+      imageAttrs,
       mediaIndex;
     imageList.setAttribute('class', 'mediaPopup');
     imageList.style.listStyleType = 'none';
     imageList.style.margin = '16px 0 0 0';
-    console.log(data, media);
     for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
-      var imageAttrs, newAnchor = [],
+      var newAnchor = [],
         newImage = [];
-      console.log(imageTypes, media[mediaIndex], imageTypes[media[mediaIndex]]);
       if (imageTypes[media[mediaIndex].type]) {
         imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
-        //TODO: Add multiple image support
-        //imageAttrs = imageAttrs;
-        if (imageAttrs.length > 0) {
-          console.log('MULTI', imageAttrs);
-        }
         for (var k = 0; k < imageAttrs.length; k++) {
           imageLi.push(document.createElement('li')); //, null, imageList));
           imageLi[k].style.float = 'left';
@@ -274,7 +268,9 @@ module.exports = {
     });
     btnDiv.appendChild(prev);
     btnDiv.appendChild(next);
-    mediaNavDiv.appendChild(btnDiv);
+    if (imageAttrs.length > 1) {
+      mediaNavDiv.appendChild(btnDiv);
+    }
 
 
     return mediaNavDiv;
