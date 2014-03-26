@@ -10,9 +10,9 @@ handlebars.registerHelper('toLowerCase', function(str) {
 });
 
 if (!Array.prototype.indexOf) {
-  Array.prototype.indexOf = function (searchElement, fromIndex) {
-    if ( this === undefined || this === null ) {
-      throw new TypeError( '"this" is null or not defined' );
+  Array.prototype.indexOf = function(searchElement, fromIndex) {
+    if (this === undefined || this === null) {
+      throw new TypeError('"this" is null or not defined');
     }
 
     var length = this.length >>> 0; // Hack to convert object.length to a UInt32
@@ -30,7 +30,7 @@ if (!Array.prototype.indexOf) {
       }
     }
 
-    for (;fromIndex < length; fromIndex++) {
+    for (; fromIndex < length; fromIndex++) {
       if (this[fromIndex] === searchElement) {
         return fromIndex;
       }
@@ -129,7 +129,9 @@ module.exports = {
     if (L.Util.isArray(fields)) {
       for (var i = 0; i < fields.length; i++) {
         if (typeof(fields[i]) === 'string') {
-          fieldTitles[fields[i]] = {'title': fields[i]};
+          fieldTitles[fields[i]] = {
+            'title': fields[i]
+          };
         } else {
           fieldTitles[fields[i].field] = fields[i];
         }
@@ -170,45 +172,110 @@ module.exports = {
   },
   mediaToList: function(data, media) {
     var imageTypes = {
-        focus: function(guids) {
-          var attrs, guidArray, i, imgs = [],
-            regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'); //{ Fix Vim brackets
-          guidArray = guids.match(regex);
-          for (i = 0; i < guidArray.length; i++) {
-            attrs = {
-              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
-              href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
-            };
-            imgs.push(attrs);
-          }
-          return imgs;
+      focus: function(guids) {
+        var attrs, guidArray, i, imgs = [],
+          regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'); //{ Fix Vim brackets
+        guidArray = guids.match(regex);
+        for (i = 0; i < guidArray.length; i++) {
+          attrs = {
+            src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
+            href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
+          };
+          imgs.push(attrs);
         }
-      },
-      imageDiv = L.DomUtil.create('div', ''),
+        return imgs;
+      }
+    },
+      mediaNavDiv = document.createElement('div'),
+      imageList = document.createElement('ul'),
+      imageLi = [],
+      imageDiv = [],
       mediaIndex;
-    imageDiv.style.width = '250px';
-    imageDiv.style.height = (250 * 0.75) + 'px';
-    imageDiv.style.marginLeft = 'auto';
-    imageDiv.style.marginRight = 'auto';
+    imageList.setAttribute('class', 'mediaPopup');
+    imageList.style.listStyleType = 'none';
+    imageList.style.margin = '16px 0 0 0';
     console.log(data, media);
     for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
-      var imageAttrs, newAnchor = [], newImage = [];
-      console.log(imageTypes,media[mediaIndex],imageTypes[media[mediaIndex]]);
+      var imageAttrs, newAnchor = [],
+        newImage = [];
+      console.log(imageTypes, media[mediaIndex], imageTypes[media[mediaIndex]]);
       if (imageTypes[media[mediaIndex].type]) {
-        imageAttrs = imageTypes [media[mediaIndex].type](data[media[mediaIndex].id]);
+        imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
         //TODO: Add multiple image support
         //imageAttrs = imageAttrs;
-        if (imageAttrs.length > 0) {console.log('MULTI');}
-        for (var k=0; k<imageAttrs.length; k++) {
-          newAnchor.push(L.DomUtil.create('a', '', imageDiv));
+        if (imageAttrs.length > 0) {
+          console.log('MULTI', imageAttrs);
+        }
+        for (var k = 0; k < imageAttrs.length; k++) {
+          imageLi.push(document.createElement('li')); //, null, imageList));
+          imageLi[k].style.float = 'left';
+          imageLi[k].style.display = k > 0 ? 'none' : 'inherit';
+          imageDiv.push(document.createElement('div')); //, null, imageLi[k]));
+          imageDiv[k].style.width = '250px';
+          imageDiv[k].style.height = (250 * 0.75) + 'px';
+          imageDiv[k].style.marginLeft = 'auto';
+          imageDiv[k].style.marginRight = 'auto';
+          newAnchor.push(document.createElement('a')); //, '', imageDiv[k]));
           newAnchor[k].href = imageAttrs[k].href;
-          newImage.push(L.DomUtil.create('img', '', newAnchor[k]));
+          newImage.push(document.createElement('img')); //, '', newAnchor[k]));
           newImage[k].src = imageAttrs[k].src;
           newImage[k].style.width = '100%';
+          newAnchor[k].appendChild(newImage[k]);
+          imageDiv[k].appendChild(newAnchor[k]);
+          imageLi[k].appendChild(imageDiv[k]);
+          imageList.appendChild(imageLi[k]);
         }
       }
     }
-    return imageDiv;
+    mediaNavDiv.appendChild(imageList);
+    // Buttons
+    //
+    var changeImage = function(direction) {
+      var curImg;
+      var maxImg = $('ul.mediaPopup li').length;
+      $('ul.mediaPopup li').each(function(a, b) {
+        if (b.style.display !== 'none') {
+          curImg = a;
+        }
+      });
+      if ((curImg + direction) < maxImg && (curImg + direction) > -1) {
+        $('ul.mediaPopup li').each(function(a, b) {
+          if (a === (curImg + direction)) {
+            b.style.display = 'inherit';
+          } else {
+            b.style.display = 'none';
+          }
+        });
+      }
+      if ((curImg + direction) <= 0) {
+        $('div.mediaDiv button.prev').addClass('disabled');
+      } else {
+        $('div.mediaDiv button.prev').removeClass('disabled');
+      }
+      if ((curImg + direction) > maxImg) {
+        $('div.mediaDiv button.next').addClass('disabled');
+      } else {
+        $('div.mediaDiv button.next').removeClass('disabled');
+      }
+    };
+    var prev = document.createElement('button');
+    prev.setAttribute('class', 'btn btn-primary disabled prev');
+    prev.textContent = '<';
+    var next = document.createElement('button');
+    next.setAttribute('class', 'btn btn-primary next');
+    next.style.float = 'right';
+    next.textContent = '>';
+    L.DomEvent.addListener(prev, 'click', function() {
+      changeImage(-1);
+    });
+    L.DomEvent.addListener(next, 'click', function() {
+      changeImage(1);
+    });
+    mediaNavDiv.appendChild(prev);
+    mediaNavDiv.appendChild(next);
+
+
+    return mediaNavDiv;
   },
   escapeHtml: function(unsafe) {
     return unsafe
@@ -279,7 +346,7 @@ module.exports = {
     var matches = [],
       regex = new RegExp('(^|\\s)' + className + '(\\s|$)'),
       tmp = document.getElementsByTagName('*');
-    
+
     for (var i = 0; i < tmp.length; i++) {
       if (regex.test(tmp[i].className)) {
         matches.push(tmp[i]);
@@ -320,7 +387,10 @@ module.exports = {
   getOffset: function(el) {
     for (var lx = 0, ly = 0; el !== null; lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
 
-    return {left: lx, top: ly};
+    return {
+      left: lx,
+      top: ly
+    };
   },
   getOuterDimensions: function(el) {
     var height = 0,
@@ -354,7 +424,10 @@ module.exports = {
       }
     }
 
-    return {height: height, width: width};
+    return {
+      height: height,
+      width: width
+    };
   },
   getOuterHtml: function(el) {
     if (!el || !el.tagName) {
@@ -372,7 +445,10 @@ module.exports = {
     return txt;
   },
   getPosition: function(el) {
-    var obj = {left: 0, top: 0},
+    var obj = {
+      left: 0,
+      top: 0
+    },
       offset = this.getOffset(el),
       offsetParent = this.getOffset(el.parentNode);
 
