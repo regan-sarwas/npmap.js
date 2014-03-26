@@ -259,10 +259,11 @@ module.exports = {
       }
     };
     var prev = document.createElement('button');
-    prev.setAttribute('class', 'btn btn-primary disabled prev');
+    prev.setAttribute('class', 'btn btn-primary disabled prev btn-circle');
     prev.textContent = '<';
+    prev.style.float = 'right';
     var next = document.createElement('button');
-    next.setAttribute('class', 'btn btn-primary next');
+    next.setAttribute('class', 'btn btn-primary next btn-circle');
     next.style.float = 'right';
     next.textContent = '>';
     L.DomEvent.addListener(prev, 'click', function() {
