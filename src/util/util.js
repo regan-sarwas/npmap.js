@@ -258,12 +258,13 @@ module.exports = {
         $('div.mediaDiv button.next').removeClass('disabled');
       }
     };
+    var btnDiv = document.createElement('div');
+    btnDiv.style.float = 'right';
     var prev = document.createElement('button');
     prev.setAttribute('class', 'btn btn-primary disabled prev btn-circle');
     prev.textContent = '<';
     var next = document.createElement('button');
     next.setAttribute('class', 'btn btn-primary next btn-circle');
-    next.style.float = 'right';
     next.textContent = '>';
     L.DomEvent.addListener(prev, 'click', function() {
       changeImage(-1);
@@ -271,8 +272,9 @@ module.exports = {
     L.DomEvent.addListener(next, 'click', function() {
       changeImage(1);
     });
-    mediaNavDiv.appendChild(prev);
-    mediaNavDiv.appendChild(next);
+    btnDiv.appendChild(prev);
+    btnDiv.appendChild(next);
+    mediaNavDiv.appendChild(btnDiv);
 
 
     return mediaNavDiv;
