@@ -514,7 +514,7 @@ module.exports = {
         for (var i = 0; i < matchArray.length; i++) {
           var newBase = matchArray[i].substr(1, matchArray[i].length - 5).replace(/https?:\/\//gi, ''),
             newName = newBase.substr(0, shorten) + (newBase.length > shorten ? '&hellip;' : '');
-          if (newBase.length-1 === shorten) {newName = newName.substr(0, shorten) + newBase.substr(shorten-1, 1);}
+          if (newBase.length-1 === shorten) {newName = newName.substr(0, shorten) + newBase.substr(shorten, 1);}
           textLinked = textLinked.replace(matchArray[i], '>' + newName + '</a>');
         }
       }
