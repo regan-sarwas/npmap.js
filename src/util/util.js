@@ -199,7 +199,8 @@ module.exports = {
       mediaIndex;
     imageList.setAttribute('class', 'mediaPopup');
     imageList.style.listStyleType = 'none';
-    imageList.style.margin = '16px 0 0 0';
+    imageList.style.margin = '16px 0 0 -10px';
+    imageList.style.height = (250 * 0.75) + 'px';
     for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
       var newAnchor = [],
         newImage = [];
