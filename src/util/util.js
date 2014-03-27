@@ -155,13 +155,18 @@ module.exports = {
           tdValue = document.createElement('td'),
           tr = document.createElement('tr');
 
-        tdProperty.style.paddingRight = '10px';
+        tdValue.style.wordBreak = 'break-all';
+        tdProperty.style.paddingRight = '5px';
         tdProperty.innerHTML = fieldTitles[prop].title;
         if (fieldTitles[prop].separator) {
           tdValue.innerHTML = data[prop].replace(fieldTitles[prop].separator, '<br/>');
         } else {
           tdValue.innerHTML = data[prop];
         }
+        if (fieldTitles[prop].process) {
+          tdValue.innerHTML = fieldTitles[prop].process(tdValue.innerHTML);
+        }
+
         tr.appendChild(tdProperty);
         tr.appendChild(tdValue);
         tableBody.appendChild(tr);
@@ -489,6 +494,32 @@ module.exports = {
     } else {
       return !(/^(?:[a-z]+:)?\/\//i.test(url));
     }
+  },
+  linkify: function(text, shorten, target) {
+    // There are probably better libraries to do this, but this
+    // works for our cases
+    // Text text, finds links in it and makes them into HTML links
+    // the shorten parameter is a number that accepts a value for
+    // how short the link should be
+     // target allows the link to be opened in a different target
+    var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])',
+      regexLink = new RegExp(regexRoot, 'gi'),
+      regexShorten = new RegExp('>' + regexRoot +'</a>', 'gi'),
+      textLinked = text.replace(regexLink, '<a href="$1"' + (target ? ' target="' + target + '"' : '') + '>$1</a>');
+    if (shorten) {
+      var matchArray = textLinked.match(regexShorten);
+      console.log(matchArray, textLinked);
+      if (matchArray) {
+        for (var i = 0; i < matchArray.length; i++) {
+          var newBase = matchArray[i].substr(1, matchArray[i].length - 5).replace(/https?:\/\//gi, ''),
+            newName = newBase.substr(0, shorten) + (newBase.length > shorten ? '&hellip;' : '');
+          if (newBase.length-1 === shorten) {newName = newName.substr(0, shorten) + newBase.substr(shorten-1, 1);}
+          textLinked = textLinked.replace(matchArray[i], '>' + newName + '</a>');
+        }
+      }
+    }
+
+    return textLinked;
   },
   loadFile: function(url, type, callback) {
     if (this.isLocalUrl(url)) {
