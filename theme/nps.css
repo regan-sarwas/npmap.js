@@ -301,6 +301,12 @@
   width: 100%;
 }
 
+.btn-circle {
+  width: 5px;
+  height: 15px;
+  border-radius: 15px !important;
+}
+
 /* Leaflet Overrides */
 .leaflet-container {
   -ms-touch-action: none;

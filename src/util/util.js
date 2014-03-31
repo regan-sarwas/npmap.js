@@ -10,9 +10,9 @@ handlebars.registerHelper('toLowerCase', function(str) {
 });
 
 if (!Array.prototype.indexOf) {
-  Array.prototype.indexOf = function (searchElement, fromIndex) {
-    if ( this === undefined || this === null ) {
-      throw new TypeError( '"this" is null or not defined' );
+  Array.prototype.indexOf = function(searchElement, fromIndex) {
+    if (this === undefined || this === null) {
+      throw new TypeError('"this" is null or not defined');
     }
 
     var length = this.length >>> 0; // Hack to convert object.length to a UInt32
@@ -30,7 +30,7 @@ if (!Array.prototype.indexOf) {
       }
     }
 
-    for (;fromIndex < length; fromIndex++) {
+    for (; fromIndex < length; fromIndex++) {
       if (this[fromIndex] === searchElement) {
         return fromIndex;
       }
@@ -52,7 +52,7 @@ module.exports = {
 
     return [this.getOuterDimensions(containers[0]).width + 20, this.getOuterDimensions(containers[1]).height + 20];
   },
-  _lazyLoader: function(i,j){function k(a){var a=a.toLowerCase(),b=a.indexOf("js"),a=a.indexOf("css");return-1==b&&-1==a?!1:b>a?"js":"css"}function m(a){var b=document.createElement("link");b.href=a;b.rel="stylesheet";b.type="text/css";b.onload=c;b.onreadystatechange=function(){("loaded"==this.readyState||"complete"==this.readyState)&&c()};document.getElementsByTagName("head")[0].appendChild(b)}function f(a){try{document.styleSheets[a].cssRules?c():document.styleSheets[a].rules&&document.styleSheets[a].rules.length?c():setTimeout(function(){f(a)},250)}catch(b){setTimeout(function(){f(a)},250)}}function c(){g--;0==g&&j&&j()}for(var g=0,d,l=document.styleSheets.length-1,h=0;h<i.length;h++)if(g++,d=i[h],"css"==k(d)&&(m(d),l++,!window.opera&&-1==navigator.userAgent.indexOf("MSIE")&&f(l)),"js"==k(d)){var e=document.createElement("script");e.type="text/javascript";e.src=d;e.onload=c;document.getElementsByTagName("head")[0].appendChild(e)}},
+  _lazyLoader: require('./_lazyLoader.js'),
   _parseLocalUrl: function(url) {
     return url.replace(location.origin, '');
   },
@@ -74,7 +74,7 @@ module.exports = {
 
     this._lazyLoader(urls, callback);
   },
-  base64: (function(){return{encode:function(a){var b="",c,d,f,g,h,e,k=0;do c=a.charCodeAt(k++),d=a.charCodeAt(k++),f=a.charCodeAt(k++),g=c>>2,c=(c&3)<<4|d>>4,h=(d&15)<<2|f>>6,e=f&63,isNaN(d)?h=e=64:isNaN(f)&&(e=64),b=b+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(g)+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(c)+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(h)+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(e);while(k<a.length);return b},decode:function(a){var b="",c,d,f,g,h,e=0;a=a.replace(/[^A-Za-z0-9\+\/\=]/g,"");do c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(a.charAt(e++)),d="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(a.charAt(e++)),g="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(a.charAt(e++)),h="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(a.charAt(e++)),c=c<<2|d>>4,d=(d&15)<<4|g>>2,f=(g&3)<<6|h,b+=String.fromCharCode(c),64!=g&&(b+=String.fromCharCode(d)),64!=h&&(b+=String.fromCharCode(f));while(e<a.length);return b}}})(),
+  base64: require('./base64.js'),
   buildUrl: function(base, params) {
     var returnArray = [];
 
@@ -128,8 +128,10 @@ module.exports = {
     var fieldTitles = {};
     if (L.Util.isArray(fields)) {
       for (var i = 0; i < fields.length; i++) {
-        if (typeof(fields[i]) === "string") {
-          fieldTitles[fields[i]] = {'title': fields[i]};
+        if (typeof(fields[i]) === 'string') {
+          fieldTitles[fields[i]] = {
+            'title': fields[i]
+          };
         } else {
           fieldTitles[fields[i].field] = fields[i];
         }
@@ -153,13 +155,18 @@ module.exports = {
           tdValue = document.createElement('td'),
           tr = document.createElement('tr');
 
-        tdProperty.style.paddingRight = '10px';
+        tdValue.style.wordBreak = 'break-all';
+        tdProperty.style.paddingRight = '5px';
         tdProperty.innerHTML = fieldTitles[prop].title;
         if (fieldTitles[prop].separator) {
           tdValue.innerHTML = data[prop].replace(fieldTitles[prop].separator, '<br/>');
         } else {
           tdValue.innerHTML = data[prop];
         }
+        if (fieldTitles[prop].process) {
+          tdValue.innerHTML = fieldTitles[prop].process(tdValue.innerHTML);
+        }
+
         tr.appendChild(tdProperty);
         tr.appendChild(tdValue);
         tableBody.appendChild(tr);
@@ -167,6 +174,112 @@ module.exports = {
     }
 
     return table;
+  },
+  mediaToList: function(data, media) {
+    var imageTypes = {
+      focus: function(guids) {
+        var attrs, guidArray, i, imgs = [],
+          regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'); //{ Fix Vim brackets
+        guidArray = guids.match(regex);
+        for (i = 0; i < guidArray.length; i++) {
+          attrs = {
+            src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
+            href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
+          };
+          imgs.push(attrs);
+        }
+        return imgs;
+      }
+    },
+      mediaNavDiv = document.createElement('div'),
+      imageList = document.createElement('ul'),
+      imageLi = [],
+      imageDiv = [],
+      imageAttrs,
+      mediaIndex;
+    imageList.setAttribute('class', 'mediaPopup');
+    imageList.style.listStyleType = 'none';
+    imageList.style.margin = '16px 0 0 -10px';
+    imageList.style.height = (250 * 0.75) + 'px';
+    for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
+      var newAnchor = [],
+        newImage = [];
+      if (imageTypes[media[mediaIndex].type]) {
+        imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
+        for (var k = 0; k < imageAttrs.length; k++) {
+          imageLi.push(document.createElement('li')); //, null, imageList));
+          imageLi[k].style.float = 'left';
+          imageLi[k].style.display = k > 0 ? 'none' : 'inherit';
+          imageDiv.push(document.createElement('div')); //, null, imageLi[k]));
+          imageDiv[k].style.width = '250px';
+          imageDiv[k].style.height = (250 * 0.75) + 'px';
+          imageDiv[k].style.marginLeft = 'auto';
+          imageDiv[k].style.marginRight = 'auto';
+          newAnchor.push(document.createElement('a')); //, '', imageDiv[k]));
+          newAnchor[k].href = imageAttrs[k].href;
+          newImage.push(document.createElement('img')); //, '', newAnchor[k]));
+          newImage[k].src = imageAttrs[k].src;
+          newImage[k].style.width = '100%';
+          newAnchor[k].appendChild(newImage[k]);
+          imageDiv[k].appendChild(newAnchor[k]);
+          imageLi[k].appendChild(imageDiv[k]);
+          imageList.appendChild(imageLi[k]);
+        }
+      }
+    }
+    mediaNavDiv.appendChild(imageList);
+    // Buttons
+    //
+    var changeImage = function(direction) {
+      var curImg;
+      var maxImg = $('ul.mediaPopup li').length;
+      $('ul.mediaPopup li').each(function(a, b) {
+        if (b.style.display !== 'none') {
+          curImg = a;
+        }
+      });
+      if ((curImg + direction) < maxImg && (curImg + direction) > -1) {
+        $('ul.mediaPopup li').each(function(a, b) {
+          if (a === (curImg + direction)) {
+            b.style.display = 'inherit';
+          } else {
+            b.style.display = 'none';
+          }
+        });
+      }
+      if ((curImg + direction) <= 0) {
+        $('div.mediaDiv button.prev').addClass('disabled');
+      } else {
+        $('div.mediaDiv button.prev').removeClass('disabled');
+      }
+      if ((curImg + direction + 1) >= maxImg) {
+        $('div.mediaDiv button.next').addClass('disabled');
+      } else {
+        $('div.mediaDiv button.next').removeClass('disabled');
+      }
+    };
+    var btnDiv = document.createElement('div');
+    btnDiv.style.float = 'right';
+    var prev = document.createElement('button');
+    prev.setAttribute('class', 'btn btn-primary disabled prev btn-circle');
+    prev.textContent = '<';
+    var next = document.createElement('button');
+    next.setAttribute('class', 'btn btn-primary next btn-circle');
+    next.textContent = '>';
+    L.DomEvent.addListener(prev, 'click', function() {
+      changeImage(-1);
+    });
+    L.DomEvent.addListener(next, 'click', function() {
+      changeImage(1);
+    });
+    btnDiv.appendChild(prev);
+    btnDiv.appendChild(next);
+    if (imageAttrs.length > 1) {
+      mediaNavDiv.appendChild(btnDiv);
+    }
+
+
+    return mediaNavDiv;
   },
   escapeHtml: function(unsafe) {
     return unsafe
@@ -237,7 +350,7 @@ module.exports = {
     var matches = [],
       regex = new RegExp('(^|\\s)' + className + '(\\s|$)'),
       tmp = document.getElementsByTagName('*');
-    
+
     for (var i = 0; i < tmp.length; i++) {
       if (regex.test(tmp[i].className)) {
         matches.push(tmp[i]);
@@ -271,14 +384,17 @@ module.exports = {
   getNextSibling: function(el) {
     do {
       el = el.nextSibling;
-    } while (el && el.nodeType != 1);
+    } while (el && el.nodeType !== 1);
 
     return el;
   },
   getOffset: function(el) {
     for (var lx = 0, ly = 0; el !== null; lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
 
-    return {left: lx, top: ly};
+    return {
+      left: lx,
+      top: ly
+    };
   },
   getOuterDimensions: function(el) {
     var height = 0,
@@ -312,7 +428,10 @@ module.exports = {
       }
     }
 
-    return {height: height, width: width};
+    return {
+      height: height,
+      width: width
+    };
   },
   getOuterHtml: function(el) {
     if (!el || !el.tagName) {
@@ -330,7 +449,10 @@ module.exports = {
     return txt;
   },
   getPosition: function(el) {
-    var obj = {left: 0, top: 0},
+    var obj = {
+      left: 0,
+      top: 0
+    },
       offset = this.getOffset(el),
       offsetParent = this.getOffset(el.parentNode);
 
@@ -342,7 +464,7 @@ module.exports = {
   getPreviousSibling: function(el) {
     do {
       el = el.previousSibling;
-    } while (el && el.nodeType != 1);
+    } while (el && el.nodeType !== 1);
 
     return el;
   },
@@ -373,6 +495,32 @@ module.exports = {
     } else {
       return !(/^(?:[a-z]+:)?\/\//i.test(url));
     }
+  },
+  linkify: function(text, shorten, target) {
+    // There are probably better libraries to do this, but this
+    // works for our cases
+    // Text text, finds links in it and makes them into HTML links
+    // the shorten parameter is a number that accepts a value for
+    // how short the link should be
+     // target allows the link to be opened in a different target
+    var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])',
+      regexLink = new RegExp(regexRoot, 'gi'),
+      regexShorten = new RegExp('>' + regexRoot +'</a>', 'gi'),
+      textLinked = text.replace(regexLink, '<a href="$1"' + (target ? ' target="' + target + '"' : '') + '>$1</a>');
+    if (shorten) {
+      var matchArray = textLinked.match(regexShorten);
+      console.log(matchArray, textLinked);
+      if (matchArray) {
+        for (var i = 0; i < matchArray.length; i++) {
+          var newBase = matchArray[i].substr(1, matchArray[i].length - 5).replace(/https?:\/\//gi, ''),
+            newName = newBase.substr(0, shorten) + (newBase.length > shorten ? '&hellip;' : '');
+          if (newBase.length-1 === shorten) {newName = newName.substr(0, shorten) + newBase.substr(shorten, 1);}
+          textLinked = textLinked.replace(matchArray[i], '>' + newName + '</a>');
+        }
+      }
+    }
+
+    return textLinked;
   },
   loadFile: function(url, type, callback) {
     if (this.isLocalUrl(url)) {
