@@ -31,7 +31,7 @@
     "npmaki": "~0.4.1",
     "reqwest": "0.9.6",
     "togeojson": "0.4.2",
-    "topojson": "~1.5.1"
+    "topojson": "1.6.0"
   },
   "description": "A JavaScript web mapping library, built as a Leaflet plugin, for the National Park Service.",
   "devDependencies": {
