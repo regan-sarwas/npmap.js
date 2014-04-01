@@ -176,11 +176,17 @@ module.exports = {
     return table;
   },
   mediaToList: function(data, media) {
-    var imageTypes = {
+    var imageDiv = [],
+      imageLi = [],
+      imageList = document.createElement('ul'),
+      imageTypes = {
         focus: function(guids) {
-          var attrs, guidArray, i, imgs = [],
-            regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'); //{ Fix Vim brackets
+          var imgs = [],
+            regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'),
+            attrs, guidArray, i;
+
           guidArray = guids.match(regex);
+
           for (i = 0; i < guidArray.length; i++) {
             attrs = {
               src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
@@ -188,52 +194,53 @@ module.exports = {
             };
             imgs.push(attrs);
           }
+
           return imgs;
         }
       },
       mediaNavDiv = document.createElement('div'),
-      imageList = document.createElement('ul'),
-      imageLi = [],
-      imageDiv = [],
       btnDiv, imageAttrs, mediaIndex, next, prev;
 
     function changeImage(direction) {
-      var maxImg = $('ul.mediaPopup li').length,
-        curImg;
+      var lis = imageList.childNodes,
+        maxImg = lis.length,
+        next = btnDiv.childNodes[1],
+        previous = btnDiv.childNodes[0],
+        curImg, i, li;
 
-      $('ul.mediaPopup li').each(function(a, b) {
-        if (b.style.display !== 'none') {
-          curImg = a;
+      for (i = 0; i < lis.length; i++) {
+        li = lis[i];
+
+        if (li.style.display !== 'none') {
+          curImg = i;
+          break;
         }
-      });
+      }
 
       if ((curImg + direction) < maxImg && (curImg + direction) > -1) {
-        $('ul.mediaPopup li').each(function(a, b) {
-          if (a === (curImg + direction)) {
-            b.style.display = 'inherit';
+        for (i = 0; i < lis.length; i++) {
+          li = lis[i];
+
+          if (i === (curImg + direction)) {
+            li.style.display = 'inherit';
           } else {
-            b.style.display = 'none';
+            li.style.display = 'none';
           }
-        });
+        }
       }
 
       if ((curImg + direction) <= 0) {
-        $('div.media button.prev').addClass('disabled');
+        L.DomUtil.addClass(previous, 'disabled');
       } else {
-        $('div.media button.prev').removeClass('disabled');
+        L.DomUtil.removeClass(previous, 'disabled');
       }
 
       if ((curImg + direction + 1) >= maxImg) {
-        $('div.media button.next').addClass('disabled');
+        L.DomUtil.addClass(next, 'disabled');
       } else {
-        $('div.media button.next').removeClass('disabled');
+        L.DomUtil.removeClass(next, 'disabled');
       }
     }
-
-    imageList.setAttribute('class', 'mediaPopup');
-    imageList.style.listStyleType = 'none';
-    imageList.style.margin = '16px 0 0 -10px';
-    imageList.style.height = (250 * 0.75) + 'px';
 
     for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
       var newAnchor = [],
@@ -255,7 +262,6 @@ module.exports = {
           newAnchor[k].href = imageAttrs[k].href;
           newImage.push(document.createElement('img'));
           newImage[k].src = imageAttrs[k].src;
-          newImage[k].style.width = '100%';
           newAnchor[k].appendChild(newImage[k]);
           imageDiv[k].appendChild(newAnchor[k]);
           imageLi[k].appendChild(imageDiv[k]);
@@ -264,15 +270,16 @@ module.exports = {
       }
     }
 
+    imageList.className = 'clearfix';
     mediaNavDiv.appendChild(imageList);
     btnDiv = document.createElement('div');
     btnDiv.style.float = 'right';
     prev = document.createElement('button');
-    prev.setAttribute('class', 'btn btn-primary disabled prev btn-circle');
-    prev.textContent = '<';
+    prev.setAttribute('class', 'btn btn-circle disabled prev');
+    prev.innerHTML = '<';
     next = document.createElement('button');
-    next.setAttribute('class', 'btn btn-primary next btn-circle');
-    next.textContent = '>';
+    next.setAttribute('class', 'btn btn-circle next');
+    next.innerHTML = '>';
     L.DomEvent.addListener(prev, 'click', function() {
       changeImage(-1);
     });
