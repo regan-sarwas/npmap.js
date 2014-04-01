@@ -272,6 +272,8 @@ var Popup = L.Popup.extend({
 
     if (typeof config === 'string') {
       div.innerHTML = util.handlebars(config, result);
+    } else if (typeof config === 'function') {
+      div.innerHTML = util.handlebars(config(result), result);
     } else {
       if (config.title) {
         obj = null;
