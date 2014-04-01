@@ -335,7 +335,7 @@ var Popup = L.Popup.extend({
           mediaObj = util.mediaToList(result, media);
 
           if (mediaObj) {
-            mediaDiv = L.DomUtil.create('div', 'media', divContent);
+            mediaDiv = L.DomUtil.create('div', 'media clearfix', divContent);
             mediaDiv.appendChild(mediaObj);
           }
         }
