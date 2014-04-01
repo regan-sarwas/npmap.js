@@ -52,7 +52,7 @@ module.exports = {
 
     return [this.getOuterDimensions(containers[0]).width + 20, this.getOuterDimensions(containers[1]).height + 20];
   },
-  _lazyLoader: require('./_lazyLoader.js'),
+  _lazyLoader: require('./lazyloader.js'),
   _parseLocalUrl: function(url) {
     return url.replace(location.origin, '');
   },
@@ -177,67 +177,36 @@ module.exports = {
   },
   mediaToList: function(data, media) {
     var imageTypes = {
-      focus: function(guids) {
-        var attrs, guidArray, i, imgs = [],
-          regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'); //{ Fix Vim brackets
-        guidArray = guids.match(regex);
-        for (i = 0; i < guidArray.length; i++) {
-          attrs = {
-            src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
-            href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
-          };
-          imgs.push(attrs);
+        focus: function(guids) {
+          var attrs, guidArray, i, imgs = [],
+            regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'); //{ Fix Vim brackets
+          guidArray = guids.match(regex);
+          for (i = 0; i < guidArray.length; i++) {
+            attrs = {
+              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
+              href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
+            };
+            imgs.push(attrs);
+          }
+          return imgs;
         }
-        return imgs;
-      }
-    },
+      },
       mediaNavDiv = document.createElement('div'),
       imageList = document.createElement('ul'),
       imageLi = [],
       imageDiv = [],
-      imageAttrs,
-      mediaIndex;
-    imageList.setAttribute('class', 'mediaPopup');
-    imageList.style.listStyleType = 'none';
-    imageList.style.margin = '16px 0 0 -10px';
-    imageList.style.height = (250 * 0.75) + 'px';
-    for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
-      var newAnchor = [],
-        newImage = [];
-      if (imageTypes[media[mediaIndex].type]) {
-        imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
-        for (var k = 0; k < imageAttrs.length; k++) {
-          imageLi.push(document.createElement('li')); //, null, imageList));
-          imageLi[k].style.float = 'left';
-          imageLi[k].style.display = k > 0 ? 'none' : 'inherit';
-          imageDiv.push(document.createElement('div')); //, null, imageLi[k]));
-          imageDiv[k].style.width = '250px';
-          imageDiv[k].style.height = (250 * 0.75) + 'px';
-          imageDiv[k].style.marginLeft = 'auto';
-          imageDiv[k].style.marginRight = 'auto';
-          newAnchor.push(document.createElement('a')); //, '', imageDiv[k]));
-          newAnchor[k].href = imageAttrs[k].href;
-          newImage.push(document.createElement('img')); //, '', newAnchor[k]));
-          newImage[k].src = imageAttrs[k].src;
-          newImage[k].style.width = '100%';
-          newAnchor[k].appendChild(newImage[k]);
-          imageDiv[k].appendChild(newAnchor[k]);
-          imageLi[k].appendChild(imageDiv[k]);
-          imageList.appendChild(imageLi[k]);
-        }
-      }
-    }
-    mediaNavDiv.appendChild(imageList);
-    // Buttons
-    //
-    var changeImage = function(direction) {
-      var curImg;
-      var maxImg = $('ul.mediaPopup li').length;
+      btnDiv, imageAttrs, mediaIndex, next, prev;
+
+    function changeImage(direction) {
+      var maxImg = $('ul.mediaPopup li').length,
+        curImg;
+
       $('ul.mediaPopup li').each(function(a, b) {
         if (b.style.display !== 'none') {
           curImg = a;
         }
       });
+
       if ((curImg + direction) < maxImg && (curImg + direction) > -1) {
         $('ul.mediaPopup li').each(function(a, b) {
           if (a === (curImg + direction)) {
@@ -247,23 +216,61 @@ module.exports = {
           }
         });
       }
+
       if ((curImg + direction) <= 0) {
-        $('div.mediaDiv button.prev').addClass('disabled');
+        $('div.media button.prev').addClass('disabled');
       } else {
-        $('div.mediaDiv button.prev').removeClass('disabled');
+        $('div.media button.prev').removeClass('disabled');
       }
+
       if ((curImg + direction + 1) >= maxImg) {
-        $('div.mediaDiv button.next').addClass('disabled');
+        $('div.media button.next').addClass('disabled');
       } else {
-        $('div.mediaDiv button.next').removeClass('disabled');
+        $('div.media button.next').removeClass('disabled');
       }
-    };
-    var btnDiv = document.createElement('div');
+    }
+
+    imageList.setAttribute('class', 'mediaPopup');
+    imageList.style.listStyleType = 'none';
+    imageList.style.margin = '16px 0 0 -10px';
+    imageList.style.height = (250 * 0.75) + 'px';
+
+    for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
+      var newAnchor = [],
+        newImage = [];
+
+      if (imageTypes[media[mediaIndex].type]) {
+        imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
+
+        for (var k = 0; k < imageAttrs.length; k++) {
+          imageLi.push(document.createElement('li'));
+          imageLi[k].style.float = 'left';
+          imageLi[k].style.display = k > 0 ? 'none' : 'inherit';
+          imageDiv.push(document.createElement('div'));
+          imageDiv[k].style.width = '250px';
+          imageDiv[k].style.height = (250 * 0.75) + 'px';
+          imageDiv[k].style.marginLeft = 'auto';
+          imageDiv[k].style.marginRight = 'auto';
+          newAnchor.push(document.createElement('a'));
+          newAnchor[k].href = imageAttrs[k].href;
+          newImage.push(document.createElement('img'));
+          newImage[k].src = imageAttrs[k].src;
+          newImage[k].style.width = '100%';
+          newAnchor[k].appendChild(newImage[k]);
+          imageDiv[k].appendChild(newAnchor[k]);
+          imageLi[k].appendChild(imageDiv[k]);
+          imageList.appendChild(imageLi[k]);
+        }
+      }
+    }
+
+    mediaNavDiv.appendChild(imageList);
+    btnDiv = document.createElement('div');
     btnDiv.style.float = 'right';
-    var prev = document.createElement('button');
+    prev = document.createElement('button');
     prev.setAttribute('class', 'btn btn-primary disabled prev btn-circle');
     prev.textContent = '<';
-    var next = document.createElement('button');
+    next = document.createElement('button');
     next.setAttribute('class', 'btn btn-primary next btn-circle');
     next.textContent = '>';
     L.DomEvent.addListener(prev, 'click', function() {
@@ -274,10 +281,10 @@ module.exports = {
     });
     btnDiv.appendChild(prev);
     btnDiv.appendChild(next);
+
     if (imageAttrs.length > 1) {
       mediaNavDiv.appendChild(btnDiv);
     }
-
 
     return mediaNavDiv;
   },
@@ -509,7 +516,7 @@ module.exports = {
       textLinked = text.replace(regexLink, '<a href="$1"' + (target ? ' target="' + target + '"' : '') + '>$1</a>');
     if (shorten) {
       var matchArray = textLinked.match(regexShorten);
-      console.log(matchArray, textLinked);
+
       if (matchArray) {
         for (var i = 0; i < matchArray.length; i++) {
           var newBase = matchArray[i].substr(1, matchArray[i].length - 5).replace(/https?:\/\//gi, ''),
