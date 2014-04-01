@@ -126,10 +126,12 @@ var Popup = L.Popup.extend({
   _resultsToHtml: function(results) {
     var div = document.createElement('div'),
       index = 0,
-      me = this,
-      listener = function() {
-        me._more(this.id);
-      };
+      me = this;
+
+    function listener() {
+      me._more(this.id);
+    }
+
     for (var i = 0; i < results.length; i++) {
       var divLayer = L.DomUtil.create('div', 'layer', div),
         divLayerTitle = L.DomUtil.create('div', 'title', divLayer),
@@ -320,22 +322,24 @@ var Popup = L.Popup.extend({
 
       if (config.media) {
         var mediaObj, mediaDiv;
+
         media = [];
+
         for (var i = 0; i < config.media.length; i++) {
           if (result[config.media[i].id]) {
             media.push(config.media[i]);
           }
         }
+
         if (media.length) {
           mediaObj = util.mediaToList(result, media);
+
           if (mediaObj) {
-            mediaDiv = L.DomUtil.create('div', 'mediaDiv', divContent);
+            mediaDiv = L.DomUtil.create('div', 'media', divContent);
             mediaDiv.appendChild(mediaObj);
           }
         }
       }
-
-
 
       if (config.actions) {
         obj = null;

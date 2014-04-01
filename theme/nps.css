@@ -599,6 +599,13 @@
   .leaflet-popup-content .layer:last-child {
     margin-bottom: 0;
   }
+  .leaflet-popup-content .media ul {
+    margin: 10px 0 0 0;
+    padding: 0;
+  }
+    .leaflet-popup-content .media ul li {
+      width: 100%;
+    }
   .leaflet-popup-content .title {
     font-weight: bold;
     margin-bottom: 8px;
