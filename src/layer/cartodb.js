@@ -173,15 +173,6 @@ var CartoDbLayer = L.TileLayer.extend({
     }
 
     return '#layer' + JSON.stringify(cartoCss).replace(/"/g, '').replace(/,/g, ';');
-  },
-  setCartoCss: function(cartoCss) {
-
-  },
-  setInteractivity: function(interactivity) {
-
-  },
-  setSql: function(sql) {
-
   }
 });
 
