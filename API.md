@@ -319,11 +319,15 @@ The content for each of the sections of a popup can be specified individually vi
             // {String} ('table' or 'list')
             format: 'table'
           },
-          // {Array}, {String}, of {Function} (that returns an {Array} or {String})
+          // {Array}, {String}, or {Function} (that returns an {Array} or {String})
           media: [{
             id: '',
             type: 'focus'
           }],
+
+
+          media: '<ul><li><img src=""></li><li><iframe src=""></iframe></li></ul>',
+
           // No HTML, but Handlebars is supported
           more: '{{}}',
           // {String} or {Function} (that returns a {String}) - supports Handlebars and HTML )
