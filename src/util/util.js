@@ -119,21 +119,26 @@ module.exports = {
 
     return dl;
   },
+  // TODO: Needs a lot of cleanup, and also need to document fields option.
   dataToTable: function(data, fields) {
     var table = document.createElement('table'),
-      tableBody = document.createElement('tbody');
+      tableBody = document.createElement('tbody'),
+      field, fieldTitles;
 
     table.appendChild(tableBody);
 
-    var fieldTitles = {};
     if (L.Util.isArray(fields)) {
+      fieldTitles = {};
+
       for (var i = 0; i < fields.length; i++) {
-        if (typeof(fields[i]) === 'string') {
-          fieldTitles[fields[i]] = {
-            'title': fields[i]
+        field = fields[i];
+
+        if (typeof(field) === 'string') {
+          fieldTitles[field] = {
+            'title': field
           };
         } else {
-          fieldTitles[fields[i].field] = fields[i];
+          fieldTitles[field.field] = field;
         }
       }
     }
@@ -141,13 +146,15 @@ module.exports = {
     for (var prop in data) {
       var add = false;
 
-      if (fields && L.Util.isArray(fields)) {
-        for (var field in fieldTitles) {
+      if (fieldTitles) {
+        for (field in fieldTitles) {
           if (field === prop) {
             add = true;
             break;
           }
         }
+      } else {
+        add = true;
       }
 
       if (add) {
@@ -156,14 +163,21 @@ module.exports = {
           tr = document.createElement('tr');
 
         tdValue.style.wordBreak = 'break-all';
-        tdProperty.style.paddingRight = '5px';
-        tdProperty.innerHTML = fieldTitles[prop].title;
-        if (fieldTitles[prop].separator) {
+        tdProperty.style.paddingRight = '10px';
+
+        if (fieldTitles) {
+          tdProperty.innerHTML = fieldTitles[prop].title;
+        } else {
+          tdProperty.innerHTML = prop;
+        }
+
+        if (fieldTitles && fieldTitles[prop] && fieldTitles[prop].separator) {
           tdValue.innerHTML = data[prop].replace(fieldTitles[prop].separator, '<br/>');
         } else {
           tdValue.innerHTML = data[prop];
         }
-        if (fieldTitles[prop].process) {
+
+        if (fieldTitles && fieldTitles[prop] && fieldTitles[prop].process) {
           tdValue.innerHTML = fieldTitles[prop].process(tdValue.innerHTML);
         }
 

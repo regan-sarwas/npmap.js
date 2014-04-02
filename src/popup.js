@@ -164,9 +164,9 @@ var Popup = L.Popup.extend({
           single = this._resultToHtml(result, layerConfig, resultConfig, true);
 
           if (layerConfig && typeof layerConfig.more === 'string') {
-            more = util.handlebars(layerConfig.more, result);
+            more = util.unescapeHtml(util.handlebars(layerConfig.more, result));
           } else if (resultConfig && typeof resultConfig.more === 'string') {
-            more = util.handlebars(resultConfig.more, result);
+            more = util.unescapeHtml(util.handlebars(resultConfig.more, result));
           } else {
             for (k = 0; k < single.childNodes.length; k++) {
               childNode = single.childNodes[k];
@@ -218,9 +218,9 @@ var Popup = L.Popup.extend({
             single = this._resultToHtml(resultFinal, layerConfig, resultConfig, true);
 
             if (layerConfig && typeof layerConfig.more === 'string') {
-              more = util.handlebars(layerConfig.more, resultFinal);
+              more = util.unescapeHtml(util.handlebars(layerConfig.more, resultFinal));
             } else if (resultConfig && typeof resultConfig.more === 'string') {
-              more = util.handlebars(resultConfig.more, resultFinal);
+              more = util.unescapeHtml(util.handlebars(resultConfig.more, resultFinal));
             } else {
               for (k = 0; k < single.childNodes.length; k++) {
                 childNode = single.childNodes[k];
@@ -264,16 +264,15 @@ var Popup = L.Popup.extend({
         config = {
           description: {
             format: 'table'
-          },
-          title: 'Untitled'
+          }
         };
       }
     }
 
     if (typeof config === 'string') {
-      div.innerHTML = util.handlebars(config, result);
+      div.innerHTML = util.unescapeHtml(util.handlebars(config, result));
     } else if (typeof config === 'function') {
-      div.innerHTML = util.handlebars(config(result), result);
+      div.innerHTML = util.unescapeHtml(util.handlebars(config(result), result));
     } else {
       if (config.title) {
         obj = null;
@@ -286,15 +285,12 @@ var Popup = L.Popup.extend({
 
         if (obj && typeof obj === 'string') {
           title = L.DomUtil.create('div', 'title', div);
-          title.innerHTML = util.handlebars(obj, result);
+          title.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
         }
       }
 
-      if (!divContent) {
-        divContent = L.DomUtil.create('div', 'content', div);
-      }
-
       if (config.description) {
+        divContent = L.DomUtil.create('div', 'content', div);
         obj = null;
 
         if (typeof config.description === 'function') {
@@ -315,15 +311,20 @@ var Popup = L.Popup.extend({
           description = L.DomUtil.create('div', 'description', divContent);
 
           if (typeof obj === 'string') {
-            description.innerHTML = util.handlebars(obj, result);
+            description.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
           } else if ('nodeType' in obj) {
             description.appendChild(obj);
           }
         }
       }
 
+      // TODO: Needs more work to support {string}s and possibly other config options
       if (config.media) {
         var mediaObj, mediaDiv;
+
+        if (!divContent) {
+          divContent = L.DomUtil.create('div', 'content', div);
+        }
 
         media = [];
 
@@ -363,7 +364,7 @@ var Popup = L.Popup.extend({
               ul.appendChild(this._createAction(obj[j], result, actions));
             }
           } else if (typeof obj === 'string') {
-            actions.innerHTML = util.handlebars(obj, result);
+            actions.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
           } else if ('nodeType' in obj) {
             actions.appendChild(obj);
           }

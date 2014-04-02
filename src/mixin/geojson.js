@@ -65,6 +65,8 @@ module.exports = {
 
           html = popup._resultToHtml(properties, config.popup);
 
+          console.log(html);
+
           if (lastTarget) {
             lastTarget.closePopup().unbindPopup();
             lastTarget = target;
