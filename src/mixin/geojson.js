@@ -2,7 +2,7 @@
 
 'use strict';
 
-var topojson = require('topojson'),
+var topojson = require('../util/topojson'),
   util = require('../util/util');
 
 module.exports = {

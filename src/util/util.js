@@ -290,10 +290,10 @@ module.exports = {
     btnDiv.style.float = 'right';
     prev = document.createElement('button');
     prev.setAttribute('class', 'btn btn-circle disabled prev');
-    prev.innerHTML = '<';
+    prev.innerHTML = '&lt;';
     next = document.createElement('button');
     next.setAttribute('class', 'btn btn-circle next');
-    next.innerHTML = '>';
+    next.innerHTML = '&gt;';
     L.DomEvent.addListener(prev, 'click', function() {
       changeImage(-1);
     });
