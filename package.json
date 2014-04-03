@@ -30,8 +30,7 @@
     "nanobar": "0.0.6",
     "npmaki": "0.4.1",
     "reqwest": "1.1.0",
-    "togeojson": "0.7.0",
-    "topojson": "1.6.1"
+    "togeojson": "0.7.0"
   },
   "description": "A JavaScript web mapping library, built as a Leaflet plugin, for the National Park Service.",
   "devDependencies": {
@@ -90,5 +89,5 @@
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
   },
-  "version": "2.0.0"
+  "version": "latest"
 }

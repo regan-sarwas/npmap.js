@@ -58,6 +58,6 @@ L.npmap = module.exports = {
   util: {
     _: require('./src/util/util'),
     geocode: require('./src/util/geocode'),
-    topojson: require('topojson')
+    topojson: require('./src/util/topojson')
   }
 };
