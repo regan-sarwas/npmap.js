@@ -421,6 +421,10 @@
   padding-left: 21px;
   width: 25px;
 }
+/* IE8 and below */
+.leaflet-oldie .leaflet-popup-tip-container {
+  display: none;
+}
 .leaflet-popup-tip {
   -webkit-box-shadow: none;
      -moz-box-shadow: none;
