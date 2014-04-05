@@ -56,13 +56,20 @@ module.exports = {
     var container = map.getContainer(),
       bottomLeft = this.getChildElementsByClassName(container, 'leaflet-bottom')[0],
       bottomRight = this.getChildElementsByClassName(container, 'leaflet-bottom')[1],
-      bottomHeight = this.getOuterDimensions(bottomLeft).height;
+      bottomHeight = this.getOuterDimensions(bottomLeft).height,
+      available;
 
     if (this.getOuterDimensions(bottomRight).height > bottomHeight) {
       bottomHeight = this.getOuterDimensions(bottomRight).height;
     }
 
-    return this.getOuterDimensions(container).height - bottomHeight - this.getOuterDimensions(this.getChildElementsByClassName(container, 'leaflet-top')[1]).height;
+    available = this.getOuterDimensions(container).height - bottomHeight - this.getOuterDimensions(this.getChildElementsByClassName(container, 'leaflet-top')[1]).height;
+
+    if (available > 149) {
+      return available;
+    } else {
+      return 150;
+    }
   },
   _lazyLoader: require('./lazyloader.js'),
   _parseLocalUrl: function(url) {
