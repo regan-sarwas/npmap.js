@@ -4,6 +4,7 @@
 
 var baselayerPresets = require('./preset/baselayers.json'),
   colorPresets = require('./preset/colors.json'),
+  humane = require('humane-js'),
   nanobar = require('nanobar'),
   overlayPresets = require('./preset/overlays.json'),
   util = require('./util/util');
@@ -109,6 +110,22 @@ var Map = L.Map.extend({
     me._defaultCursor = me.getContainer().style.cursor;
     me.on('autopanstart', function() {
       me._setCursor('');
+    });
+    this._notify = humane.create({
+      baseCls: 'humane-bootstrap',
+      container: map,
+    });
+    this._notify.danger = this._notify.spawn({
+      addnCls: 'humane-bootstrap-danger'
+    });
+    this._notify.info = this._notify.spawn({
+      addnCls: 'humane-bootstrap-info'
+    });
+    this._notify.success = this._notify.spawn({
+      addnCls: 'humane-bootstrap-success'
+    });
+    this._notify.warning = this._notify.spawn({
+      addnCls: 'humane-bootstrap-warning'
     });
     this._progress = new nanobar({
       bg: '#d29700',
@@ -330,11 +347,11 @@ var Map = L.Map.extend({
           if (canceled || changed) {
             clearInterval(interval);
             done();
-          } else if ((queryable.length === completed) || intervals > 99) {
+          } else if ((queryable.length === completed) || intervals > 98) {
             clearInterval(interval);
             done();
 
-            if (intervals > 99) {
+            if (intervals > 98) {
               // TODO: Show non-modal alert about the timeout.
             }
 
