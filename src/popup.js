@@ -14,6 +14,16 @@ var Popup = L.Popup.extend({
   _data: [],
   _html: null,
   _results: [],
+  onAdd: function(map) {
+    var content = this._content;
+
+    if (window.addEventListener) {
+      content.addEventListener('DOMMouseScroll', this._handleMouseWheel, false);
+    }
+
+    content.onmousewheel = this._handleMouseWheel;
+    L.Popup.prototype.onAdd.apply(this, [map]);
+  },
   _back: function() {
     this.setContent(this._html).update();
     this._html = null;
@@ -64,6 +74,18 @@ var Popup = L.Popup.extend({
     }
 
     return li;
+  },
+  _handleMouseWheel: function(e) {
+    var delta = e.wheelDelta,
+      parentNode = this.parentNode;
+
+    if (L.DomUtil.hasClass(parentNode, 'leaflet-popup-scrolled')) {
+      if (parentNode.scrollTop === 0 && delta > 0) {
+        util.cancelEvent();
+      } else if ((parentNode.scrollTop === parentNode.scrollHeight - util.getOuterDimensions(parentNode).height) && delta < 0) {
+        util.cancelEvent();
+      }
+    }
   },
   _handleResults: function(results) {
     var div;

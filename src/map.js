@@ -340,7 +340,8 @@ var Map = L.Map.extend({
 
             if (results.length) {
               var popup = L.npmap.popup({
-                autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer())
+                autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer()),
+                maxHeight: util._getAvailableVerticalSpace(me) - 67
               });
               popup.setContent(popup._handleResults(results)).setLatLng(latLng).openOn(me);
             }
