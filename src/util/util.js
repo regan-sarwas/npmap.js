@@ -15,7 +15,7 @@ if (!Array.prototype.indexOf) {
       throw new TypeError('"this" is null or not defined');
     }
 
-    var length = this.length >>> 0; // Hack to convert object.length to a UInt32
+    var length = this.length >>> 0;
 
     fromIndex = +fromIndex || 0;
 
@@ -51,6 +51,18 @@ module.exports = {
     var containers = this.getChildElementsByClassName(el, 'leaflet-top');
 
     return [this.getOuterDimensions(containers[0]).width + 20, this.getOuterDimensions(containers[1]).height + 20];
+  },
+  _getAvailableVerticalSpace: function(map) {
+    var container = map.getContainer(),
+      bottomLeft = this.getChildElementsByClassName(container, 'leaflet-bottom')[0],
+      bottomRight = this.getChildElementsByClassName(container, 'leaflet-bottom')[1],
+      bottomHeight = this.getOuterDimensions(bottomLeft).height;
+
+    if (this.getOuterDimensions(bottomRight).height > bottomHeight) {
+      bottomHeight = this.getOuterDimensions(bottomRight).height;
+    }
+
+    return this.getOuterDimensions(container).height - bottomHeight - this.getOuterDimensions(this.getChildElementsByClassName(container, 'leaflet-top')[1]).height;
   },
   _lazyLoader: require('./lazyloader.js'),
   _parseLocalUrl: function(url) {
@@ -93,6 +105,15 @@ module.exports = {
 
     returnArray.pop();
     return returnArray.join('');
+  },
+  cancelEvent: function(e) {
+    e = e || window.event;
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
+    e.returnValue = false;
   },
   dataToList: function(data, fields) {
     var dl = document.createElement('dl');
@@ -162,8 +183,8 @@ module.exports = {
           tdValue = document.createElement('td'),
           tr = document.createElement('tr');
 
-        tdValue.style.wordBreak = 'break-all';
         tdProperty.style.paddingRight = '10px';
+        //tdValue.style.wordBreak = 'break-all';
 
         if (fieldTitles) {
           tdProperty.innerHTML = fieldTitles[prop].title;
