@@ -1321,3 +1321,88 @@
   position: absolute;
   width: 17px;
 }
+
+/* Notifications */
+.humane, .humane-bootstrap {
+  -webkit-transition: all 0.4s ease-in-out;
+     -moz-transition: all 0.4s ease-in-out;
+      -ms-transition: all 0.4s ease-in-out;
+       -o-transition: all 0.4s ease-in-out;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  position: fixed;
+  transition: all 0.4s ease-in-out;
+  z-index: 100000;
+}
+.humane, .humane-bootstrap {
+  -webkit-border-bottom-left-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+     -moz-border-radius-bottomleft: 4px;
+     -moz-border-radius-bottomright: 4px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  -webkit-transform: translateY(-100px);
+     -moz-transform: translateY(-100px);
+      -ms-transform: translateY(-100px);
+       -o-transform: translateY(-100px);
+  background-color: #fff;
+  border: 1px solid transparent;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  display: table;
+  font-size: 14px;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  padding: 5px;
+  text-align: center;
+  top: 0;
+  transform: translateY(-100px);
+  width: 178px;
+}
+.humane p, .humane-bootstrap p, .humane ul, .humane-bootstrap ul {
+  margin: 0;
+  padding: 0;
+}
+.humane ul, .humane-bootstrap ul {
+  list-style: none;
+}
+.humane.humane-bootstrap-success, .humane-bootstrap.humane-bootstrap-success {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  color: #468847;
+}
+.humane.humane-bootstrap-info, .humane-bootstrap.humane-bootstrap-info {
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  color: #3a87ad;
+}
+.humane.humane-bootstrapwarning, .humane-bootstrap.humane-bootstrap-warning {
+  background-color: #fcf8e3;
+  border-color: #fbeed5;
+  color: #c09853;
+}
+.humane.humane-bootstrap-error, .humane-bootstrap.humane-bootstrap-danger {
+  background-color: #f2dede;
+  border-color: #eed3d7;
+  color: #b94a48;
+}
+.humane-animate, .humane-bootstrap.humane-bootstrap-animate {
+  opacity: 1;
+  -moz-transform: translateY(0);
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -o-transform: translateY(0);
+  transform: translateY(0);
+}
+.humane-js-animate, .humane-bootstrap.humane-bootstrap-js-animate {
+  opacity: 1;
+  -moz-transform: translateY(0);
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -o-transform: translateY(0);
+  transform: translateY(0);
+}
+.humane-js-animate:hover, .humane-bootstrap.humane-bootstrap-js-animate:hover {
+  opacity: 0.7;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+}
