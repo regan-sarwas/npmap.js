@@ -57,8 +57,12 @@ module.exports = {
       config.onEachFeature = function(feature, layer) {
         layer.on('click', function(e) {
           var target = e.target,
+            map = target._map,
+            container = map.getContainer(),
+            padding = util._getAutoPanPaddingTopLeft(container),
             popup = L.npmap.popup({
-              autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(target._map.getContainer())
+              autoPanPaddingTopLeft: padding,
+              maxHeight: util._getAvailableVerticalSpace(map) - 67
             }),
             properties = feature.properties,
             html;
