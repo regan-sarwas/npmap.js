@@ -62,7 +62,7 @@ module.exports = {
             padding = util._getAutoPanPaddingTopLeft(container),
             popup = L.npmap.popup({
               autoPanPaddingTopLeft: padding,
-              maxHeight: util._getAvailableVerticalSpace(map) - 67
+              maxHeight: util._getAvailableVerticalSpace(map) - 74
             }),
             properties = feature.properties,
             html;
