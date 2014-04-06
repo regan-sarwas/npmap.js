@@ -1376,12 +1376,12 @@
   border-color: #bce8f1;
   color: #3a87ad;
 }
-.humane.humane-bootstrapwarning, .humane-bootstrap.humane-bootstrap-warning {
+.humane.humane-bootstrap-warning, .humane-bootstrap.humane-bootstrap-warning {
   background-color: #fcf8e3;
   border-color: #fbeed5;
   color: #c09853;
 }
-.humane.humane-bootstrap-error, .humane-bootstrap.humane-bootstrap-danger {
+.humane.humane-bootstrap-danger, .humane-bootstrap.humane-bootstrap-danger {
   background-color: #f2dede;
   border-color: #eed3d7;
   color: #b94a48;
