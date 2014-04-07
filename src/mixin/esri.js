@@ -3,19 +3,21 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  util = require('../util/util');
+var reqwest = require('reqwest');
 
 module.exports = {
   _boundsToExtent: function(bounds) {
+    var ne = bounds.getNorthEast(),
+      sw = bounds.getSouthWest();
+
     return {
       spatalReference: {
         wkid: 4326
       },
-      xmax: bounds.getNorthEast().lng,
-      xmin: bounds.getSouthWest().lng,
-      ymax: bounds.getNorthEast().lat,
-      ymin: bounds.getSouthWest().lat
+      xmax: ne.lng,
+      xmin: sw.lng,
+      ymax: ne.lat,
+      ymin: sw.lat
     };
   },
   _cleanUrl: function(url) {
@@ -165,7 +167,7 @@ module.exports = {
         callback(response);
       },
       type: 'jsonp',
-      url: this._serviceUrl + '/identify'
+      url: this._serviceUrl + 'identify'
     });
   }
 };
