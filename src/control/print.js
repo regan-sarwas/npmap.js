@@ -67,13 +67,6 @@ var PrintControl = L.Control.extend({
       },
       active, i, layer, win;
 
-/*
-
-1. If NPMap.id (or is it NPMap.mapId?) exists, send a ?mapId parameter.
-2. Else send a Base64 encoded string
-
-*/
-
     for (i = 0; i < options.baseLayers.length; i++) {
       layer = options.baseLayers[i];
 
