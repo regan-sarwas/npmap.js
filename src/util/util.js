@@ -9,6 +9,7 @@ handlebars.registerHelper('toLowerCase', function(str) {
   return str.toLowerCase();
 });
 
+// Shim for Array.indexOf
 if (!Array.prototype.indexOf) {
   Array.prototype.indexOf = function(searchElement, fromIndex) {
     if (this === undefined || this === null) {
@@ -39,6 +40,119 @@ if (!Array.prototype.indexOf) {
     return -1;
   };
 }
+
+// Shim for window.atob/window.btoa
+(function() {
+  var decodeChars = new Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1),
+    encodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+  function base64decode(str) {
+    var c1, c2, c3, c4, i, len, out;
+
+    len = str.length;
+    i = 0;
+    out = '';
+
+    while (i < len) {
+      do {
+        c1 = decodeChars[str.charCodeAt(i++) & 0xff];
+      } while(i < len && c1 === -1);
+      
+      if (c1 === -1) {
+        break;
+      }
+
+      do {
+        c2 = decodeChars[str.charCodeAt(i++) & 0xff];
+      } while(i < len && c2 === -1);
+
+      if (c2 === -1) {
+        break;
+      }
+
+      out += String.fromCharCode((c1 << 2) | ((c2 & 0x30) >> 4));
+
+      do {
+        c3 = str.charCodeAt(i++) & 0xff;
+
+        if (c3 === 61) {
+          return out;
+        }
+
+        c3 = decodeChars[c3];
+      } while (i < len && c3 === -1);
+
+      if (c3 === -1) {
+        break;
+      }
+
+      out += String.fromCharCode(((c2 & 0XF) << 4) | ((c3 & 0x3C) >> 2));
+
+      do {
+        c4 = str.charCodeAt(i++) & 0xff;
+
+        if (c4 === 61) {
+          return out;
+        }
+
+        c4 = decodeChars[c4];
+      } while (i < len && c4 === -1);
+
+      if (c4 === -1) {
+        break;
+      }
+
+      out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
+
+    }
+
+    return out;
+  }
+  function base64encode(str) {
+    var c1, c2, c3, i, len, out;
+
+    len = str.length;
+    i = 0;
+    out = '';
+
+    while (i < len) {
+      c1 = str.charCodeAt(i++) & 0xff;
+
+      if (i === len) {
+        out += encodeChars.charAt(c1 >> 2);
+        out += encodeChars.charAt((c1 & 0x3) << 4);
+        out += '==';
+        break;
+      }
+
+      c2 = str.charCodeAt(i++);
+
+      if (i === len) {
+        out += encodeChars.charAt(c1 >> 2);
+        out += encodeChars.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
+        out += encodeChars.charAt((c2 & 0xF) << 2);
+        out += '=';
+        break;
+      }
+
+      c3 = str.charCodeAt(i++);
+      out += encodeChars.charAt(c1 >> 2);
+      out += encodeChars.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
+      out += encodeChars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >>6));
+      out += encodeChars.charAt(c3 & 0x3F);
+    }
+
+    return out;
+  }
+
+  if (!window.btoa) {
+    window.btoa = base64encode;
+  }
+
+  if (!window.atob) {
+    window.atob = base64decode;
+  }
+})();
 
 module.exports = {
   _checkDisplay: function(node, changed) {
@@ -93,7 +207,6 @@ module.exports = {
 
     this._lazyLoader(urls, callback);
   },
-  base64: require('./base64.js'),
   buildUrl: function(base, params) {
     var returnArray = [];
 
@@ -191,7 +304,6 @@ module.exports = {
           tr = document.createElement('tr');
 
         tdProperty.style.paddingRight = '10px';
-        //tdValue.style.wordBreak = 'break-all';
 
         if (fieldTitles) {
           tdProperty.innerHTML = fieldTitles[prop].title;
@@ -216,126 +328,6 @@ module.exports = {
     }
 
     return table;
-  },
-  mediaToList: function(data, media) {
-    var imageDiv = [],
-      imageLi = [],
-      imageList = document.createElement('ul'),
-      imageTypes = {
-        focus: function(guids) {
-          var imgs = [],
-            regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'),
-            attrs, guidArray, i;
-
-          guidArray = guids.match(regex);
-
-          for (i = 0; i < guidArray.length; i++) {
-            attrs = {
-              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
-              href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
-            };
-            imgs.push(attrs);
-          }
-
-          return imgs;
-        }
-      },
-      mediaNavDiv = document.createElement('div'),
-      btnDiv, imageAttrs, mediaIndex, next, prev;
-
-    function changeImage(direction) {
-      var lis = imageList.childNodes,
-        maxImg = lis.length,
-        next = btnDiv.childNodes[1],
-        previous = btnDiv.childNodes[0],
-        curImg, i, li;
-
-      for (i = 0; i < lis.length; i++) {
-        li = lis[i];
-
-        if (li.style.display !== 'none') {
-          curImg = i;
-          break;
-        }
-      }
-
-      if ((curImg + direction) < maxImg && (curImg + direction) > -1) {
-        for (i = 0; i < lis.length; i++) {
-          li = lis[i];
-
-          if (i === (curImg + direction)) {
-            li.style.display = 'inherit';
-          } else {
-            li.style.display = 'none';
-          }
-        }
-      }
-
-      if ((curImg + direction) <= 0) {
-        L.DomUtil.addClass(previous, 'disabled');
-      } else {
-        L.DomUtil.removeClass(previous, 'disabled');
-      }
-
-      if ((curImg + direction + 1) >= maxImg) {
-        L.DomUtil.addClass(next, 'disabled');
-      } else {
-        L.DomUtil.removeClass(next, 'disabled');
-      }
-    }
-
-    for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
-      var newAnchor = [],
-        newImage = [];
-
-      if (imageTypes[media[mediaIndex].type]) {
-        imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
-
-        for (var k = 0; k < imageAttrs.length; k++) {
-          imageLi.push(document.createElement('li'));
-          imageLi[k].style.float = 'left';
-          imageLi[k].style.display = k > 0 ? 'none' : 'inherit';
-          imageDiv.push(document.createElement('div'));
-          imageDiv[k].style.width = '250px';
-          imageDiv[k].style.height = (250 * 0.75) + 'px';
-          imageDiv[k].style.marginLeft = 'auto';
-          imageDiv[k].style.marginRight = 'auto';
-          newAnchor.push(document.createElement('a'));
-          newAnchor[k].href = imageAttrs[k].href;
-          newImage.push(document.createElement('img'));
-          newImage[k].src = imageAttrs[k].src;
-          newAnchor[k].appendChild(newImage[k]);
-          imageDiv[k].appendChild(newAnchor[k]);
-          imageLi[k].appendChild(imageDiv[k]);
-          imageList.appendChild(imageLi[k]);
-        }
-      }
-    }
-
-    imageList.className = 'clearfix';
-    mediaNavDiv.appendChild(imageList);
-    btnDiv = document.createElement('div');
-    btnDiv.style.float = 'right';
-    prev = document.createElement('button');
-    prev.setAttribute('class', 'btn btn-circle disabled prev');
-    prev.innerHTML = '&lt;';
-    next = document.createElement('button');
-    next.setAttribute('class', 'btn btn-circle next');
-    next.innerHTML = '&gt;';
-    L.DomEvent.addListener(prev, 'click', function() {
-      changeImage(-1);
-    });
-    L.DomEvent.addListener(next, 'click', function() {
-      changeImage(1);
-    });
-    btnDiv.appendChild(prev);
-    btnDiv.appendChild(next);
-
-    if (imageAttrs.length > 1) {
-      mediaNavDiv.appendChild(btnDiv);
-    }
-
-    return mediaNavDiv;
   },
   escapeHtml: function(unsafe) {
     return unsafe
@@ -553,16 +545,11 @@ module.exports = {
     }
   },
   linkify: function(text, shorten, target) {
-    // There are probably better libraries to do this, but this
-    // works for our cases
-    // Text text, finds links in it and makes them into HTML links
-    // the shorten parameter is a number that accepts a value for
-    // how short the link should be
-     // target allows the link to be opened in a different target
     var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])',
       regexLink = new RegExp(regexRoot, 'gi'),
       regexShorten = new RegExp('>' + regexRoot +'</a>', 'gi'),
       textLinked = text.replace(regexLink, '<a href="$1"' + (target ? ' target="' + target + '"' : '') + '>$1</a>');
+
     if (shorten) {
       var matchArray = textLinked.match(regexShorten);
 
@@ -570,7 +557,11 @@ module.exports = {
         for (var i = 0; i < matchArray.length; i++) {
           var newBase = matchArray[i].substr(1, matchArray[i].length - 5).replace(/https?:\/\//gi, ''),
             newName = newBase.substr(0, shorten) + (newBase.length > shorten ? '&hellip;' : '');
-          if (newBase.length-1 === shorten) {newName = newName.substr(0, shorten) + newBase.substr(shorten, 1);}
+
+          if (newBase.length-1 === shorten) {
+            newName = newName.substr(0, shorten) + newBase.substr(shorten, 1);
+          }
+
           textLinked = textLinked.replace(matchArray[i], '>' + newName + '</a>');
         }
       }
@@ -630,6 +621,126 @@ module.exports = {
         url: 'http://npmap-proxy.herokuapp.com?callback=?&type=' + type + '&url=' + url
       });
     }
+  },
+  mediaToList: function(data, media) {
+    var imageDiv = [],
+      imageLi = [],
+      imageList = document.createElement('ul'),
+      imageTypes = {
+        focus: function(guids) {
+          var imgs = [],
+            regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'),
+            attrs, guidArray, i;
+
+          guidArray = guids.match(regex);
+
+          for (i = 0; i < guidArray.length; i++) {
+            attrs = {
+              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
+              href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
+            };
+            imgs.push(attrs);
+          }
+
+          return imgs;
+        }
+      },
+      mediaNavDiv = document.createElement('div'),
+      btnDiv, imageAttrs, mediaIndex, next, prev;
+
+    function changeImage(direction) {
+      var lis = imageList.childNodes,
+        maxImg = lis.length,
+        next = btnDiv.childNodes[1],
+        previous = btnDiv.childNodes[0],
+        curImg, i, li;
+
+      for (i = 0; i < lis.length; i++) {
+        li = lis[i];
+
+        if (li.style.display !== 'none') {
+          curImg = i;
+          break;
+        }
+      }
+
+      if ((curImg + direction) < maxImg && (curImg + direction) > -1) {
+        for (i = 0; i < lis.length; i++) {
+          li = lis[i];
+
+          if (i === (curImg + direction)) {
+            li.style.display = 'inherit';
+          } else {
+            li.style.display = 'none';
+          }
+        }
+      }
+
+      if ((curImg + direction) <= 0) {
+        L.DomUtil.addClass(previous, 'disabled');
+      } else {
+        L.DomUtil.removeClass(previous, 'disabled');
+      }
+
+      if ((curImg + direction + 1) >= maxImg) {
+        L.DomUtil.addClass(next, 'disabled');
+      } else {
+        L.DomUtil.removeClass(next, 'disabled');
+      }
+    }
+
+    for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
+      var newAnchor = [],
+        newImage = [];
+
+      if (imageTypes[media[mediaIndex].type]) {
+        imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
+
+        for (var k = 0; k < imageAttrs.length; k++) {
+          imageLi.push(document.createElement('li'));
+          imageLi[k].style.float = 'left';
+          imageLi[k].style.display = k > 0 ? 'none' : 'inherit';
+          imageDiv.push(document.createElement('div'));
+          imageDiv[k].style.width = '250px';
+          imageDiv[k].style.height = (250 * 0.75) + 'px';
+          imageDiv[k].style.marginLeft = 'auto';
+          imageDiv[k].style.marginRight = 'auto';
+          newAnchor.push(document.createElement('a'));
+          newAnchor[k].href = imageAttrs[k].href;
+          newImage.push(document.createElement('img'));
+          newImage[k].src = imageAttrs[k].src;
+          newAnchor[k].appendChild(newImage[k]);
+          imageDiv[k].appendChild(newAnchor[k]);
+          imageLi[k].appendChild(imageDiv[k]);
+          imageList.appendChild(imageLi[k]);
+        }
+      }
+    }
+
+    imageList.className = 'clearfix';
+    mediaNavDiv.appendChild(imageList);
+    btnDiv = document.createElement('div');
+    btnDiv.style.float = 'right';
+    prev = document.createElement('button');
+    prev.setAttribute('class', 'btn btn-circle disabled prev');
+    prev.innerHTML = '&lt;';
+    next = document.createElement('button');
+    next.setAttribute('class', 'btn btn-circle next');
+    next.innerHTML = '&gt;';
+    L.DomEvent.addListener(prev, 'click', function() {
+      changeImage(-1);
+    });
+    L.DomEvent.addListener(next, 'click', function() {
+      changeImage(1);
+    });
+    btnDiv.appendChild(prev);
+    btnDiv.appendChild(next);
+
+    if (imageAttrs.length > 1) {
+      mediaNavDiv.appendChild(btnDiv);
+    }
+
+    return mediaNavDiv;
   },
   parseDomainFromUrl: function(url) {
     var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
