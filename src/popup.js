@@ -321,15 +321,13 @@ var Popup = L.Popup.extend({
           obj = config.description;
         }
 
-        if (obj && typeof obj === 'object') {
+        if (obj) {
           if (obj.format === 'list') {
             obj = util.dataToList(result, obj.fields);
-          } else {
+          } else if (obj.format === 'table') {
             obj = util.dataToTable(result, obj.fields);
           }
-        }
 
-        if (obj) {
           description = L.DomUtil.create('div', 'description', divContent);
 
           if (typeof obj === 'string') {
