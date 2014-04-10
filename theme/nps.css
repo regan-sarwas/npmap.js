@@ -1329,7 +1329,7 @@
       -ms-transition: all 0.4s ease-in-out;
        -o-transition: all 0.4s ease-in-out;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-  position: fixed;
+  position: absolute;
   transition: all 0.4s ease-in-out;
   z-index: 100000;
 }
