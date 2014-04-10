@@ -29,6 +29,19 @@ var CartoDbLayer = L.TileLayer.extend({
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
     this._build();
   },
+  /*
+  getTileUrl: function(tilePoint) {
+    var templated = L.Util.template(this._urlTile, L.Util.extend(tilePoint, {
+      s: this.options.subdomains[Math.floor(Math.random() * this.options.subdomains.length)]
+    }));
+
+    if (this.options.disableCaching) {
+      templated += '?cb=' + Math.round(new Date().getTime());
+    }
+
+    return templated;
+  },
+  */
   _update: function() {
     if (this._urlTile) {
       L.TileLayer.prototype._update.call(this);
