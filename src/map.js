@@ -223,7 +223,7 @@ var Map = L.Map.extend({
       var initialize = null,
         me = this,
         modules = this.options.modules,
-        button, i;
+        button, i, width = 0;
 
       this._divWrapper = this._container.parentNode.parentNode;
       this._divModules = util.getChildElementsByClassName(this._divWrapper.parentNode.parentNode, 'npmap-modules')[0];
@@ -234,20 +234,40 @@ var Map = L.Map.extend({
       L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
 
       for (i = 0; i < modules.length; i++) {
-        var module = modules[i],
-          title = module.title,
-          div = L.DomUtil.create('div', 'module', this._divModules);
+        var div = L.DomUtil.create('div', 'module', this._divModules),
+          module = modules[i],
+          title = module.title;
 
         button = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
         button.id = 'npmap-modules-buttons|' + title.replace(/ /g, '_');
         button.title = title;
         button.style['background-image'] = 'url(' + NPMap.path + '/images/font-awesome/' + module.icon + (L.Browser.retina ? '@2x' : '') + '.png)';
-        div.id = 'npmap-module|' + title.replace(/ /g, '_');
+        div.id = 'npmap-module_' + title.replace(/ /g, '_');
 
         if (module.type === 'custom') {
-          div.innerHTML = '<h2 class="title">' + title + '</h2><div class="content">' + module.content + '</div>';
+          var divContent = document.createElement('div'),
+            divTitle = document.createElement('h2');
+
+          divContent.className = 'content';
+          divTitle.className = 'title';
+          divTitle.innerHTML = title;
+
+          if (typeof module.content === 'string') {
+            divContent.innerHTML = module.content;
+          } else if ('nodeType' in module.content) {
+            divContent.appendChild(module.content);
+          }
+
+          div.appendChild(divTitle);
+          div.appendChild(divContent);
         } else {
           // TODO: Get HTML from NPMap.js module.
+        }
+
+        if (typeof module.width === 'number') {
+          if (module.width > width) {
+            width = module.width;
+          }
         }
 
         L.DomEvent.addListener(button, 'click', function() {
@@ -257,6 +277,10 @@ var Map = L.Map.extend({
         if (!initialize && module.visible === true) {
           initialize = module.title;
         }
+      }
+
+      if (width !== 0) {
+        this._divModules.style.width = width + 'px';
       }
 
       if (initialize) {
