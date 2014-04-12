@@ -633,7 +633,7 @@ var Map = L.Map.extend({
     }
 
     divModules.style.display = 'block';
-    this._divWrapper.style.left = '300px';
+    this._divWrapper.style.left = util.getOuterDimensions(divModules).width + 'px';
     this.invalidateSize();
 
     for (i = 0; i < this._divModuleButtons.childNodes.length; i++) {
@@ -662,8 +662,8 @@ var Map = L.Map.extend({
     var buttons = this._divModuleButtons.childNodes;
 
     this._buttonCloseModules.style.display = 'inline-block';
-    this._divWrapper.style.left = '300px';
     this._divModules.style.display = 'block';
+    this._divWrapper.style.left = util.getOuterDimensions(this._divModules).width + 'px';
 
     for (var i = 1; i < buttons.length; i++) {
       buttons[i].style.display = 'inline-block';
