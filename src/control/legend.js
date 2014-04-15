@@ -9,7 +9,6 @@ var LegendControl = L.Control.extend({
     L.Util.setOptions(this, options);
     this._container = L.DomUtil.create('div', 'leaflet-control-legend');
     L.DomEvent.disableClickPropagation(this._container);
-
     if (options.html) {
       if (typeof options.html === 'string') {
         this._html = options.html;
@@ -41,14 +40,14 @@ var LegendControl = L.Control.extend({
       options = this.options;
 
     if (options.title) {
-      html += '<h3>' + options.title  + '</h3>';
+      html += '<h4>' + options.title  + '</h4>';
     }
 
     for (var i = 0; i < overlays.length; i++) {
       var overlay = overlays[i];
 
       if (overlay.name) {
-        html += '<h4>' + overlay.name + '</h4>';
+        html += '<h5>' + overlay.name + '</h5>';
       }
 
       if (overlay.icons) {
