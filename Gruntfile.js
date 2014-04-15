@@ -24,13 +24,13 @@ module.exports = function(grunt) {
 
   grunt.util.linefeed = '\n';
   grunt.initConfig({
-    // aws: grunt.file.readJSON('aws.json'),
+    aws: grunt.file.readJSON('aws.json'),
     aws_s3: {
       options: {
-        // accessKeyId: '<%= aws.key %>',
+        accessKeyId: '<%= aws.key %>',
         bucket: 'npmap',
-        //differential: true,
-        // secretAccessKey: '<%= aws.secret %>',
+        differential: true,
+        secretAccessKey: '<%= aws.secret %>',
         sslEnabled: true,
         uploadConcurrency: 5
       },
@@ -38,7 +38,7 @@ module.exports = function(grunt) {
         files: [{
           action: 'delete',
           cwd: 'dist/',
-          // dest: 'npmap.js/<%= pkg.version %>/'
+          dest: 'npmap.js/<%= pkg.version %>/'
         }]
       },
       production: {
