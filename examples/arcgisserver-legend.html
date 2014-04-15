@@ -28,8 +28,10 @@
           console.log(response.layers);
 
           for (var i = 0; i < response.layers.length; i++) {
-            html += '<div class="legend-title">' + response.layers[0].layerName + '</div>' + '<ul class="legend-labels">' +
-            '<li>' + response.layers[0].legend[i].label + '&nbsp;<img src="' + response.layers[0].legend[i].imageData + '"></li>';
+            html += '<h1 class="legend-title"><strong>' + response.layers[0].layerName + '</strong></h1>' + '<ul class="legend-labels">'
+          }
+          for (var i = 0; i < response.layers[0].legend.length; i++) {
+            html += '<li><img src="data:' + response.layers[0].legend[i].imageData + ';base64,' + response.layers[0].legend[i].imageData + '">&nbsp;' + response.layers[0].legend[i].label + '</li>';
           }
 
           window.NPMap = {
@@ -41,20 +43,24 @@
               type: 'arcgisserver',
               url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
             }],
+            center: {
+              lat: 35.59973293205194,
+              lng: -75.37099182550776
+            },
             legendControl: {
               position: 'bottomright',
-              html: html
+              html: html += '</ul>' + '<div class="legend-source">Source: <a href="#link to source">NPS</a></div>'
             },
-            maxZoom: 13,
             overlays: [{
               attribution: 'Esri',
               layers: '0',
-              name: 'Beach Access Lines',
+              name: ' ',
               opacity: 0.5,
               popup: {
                 description: {
                   fields: [
-                    ''
+                    'Label',
+                    'Open_',
                   ],
                   format: 'table'
                 }
@@ -62,7 +68,8 @@
               tiled: false,
               type: 'arcgisserver',
               url: 'http://mapservices.nps.gov/arcgis/rest/services/CAHA_Access_Line/MapServer'
-            }]
+            }],
+            zoom: 9
           };
 
           (function() {
