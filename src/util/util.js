@@ -618,7 +618,7 @@ module.exports = {
           }
         },
         type: 'jsonp',
-        url: 'http://npmap-proxy.herokuapp.com?callback=?&type=' + type + '&url=' + encodeURIComponent(url)
+        url: 'https://npmap-proxy.herokuapp.com?callback=?&type=' + type + '&url=' + encodeURIComponent(url)
       });
     }
   },
