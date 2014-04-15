@@ -2,4 +2,6 @@ dist
 node_modules
 aws.json
 
+GruntFile.js
+
 .DS_Store
