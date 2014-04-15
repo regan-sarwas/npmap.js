@@ -40,14 +40,14 @@ var LegendControl = L.Control.extend({
       options = this.options;
 
     if (options.title) {
-      html += '<h4>' + options.title  + '</h4>';
+      html += '<h3>' + options.title  + '</h3>';
     }
 
     for (var i = 0; i < overlays.length; i++) {
       var overlay = overlays[i];
 
       if (overlay.name) {
-        html += '<h5>' + overlay.name + '</h5>';
+        html += '<h4>' + overlay.name + '</h4>';
       }
 
       if (overlay.icons) {
