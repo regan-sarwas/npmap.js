@@ -76,14 +76,16 @@ var Popup = L.Popup.extend({
     return li;
   },
   _handleMouseWheel: function(e) {
-    var delta = e.wheelDelta,
-      parentNode = this.parentNode;
+    if (e) {
+      var delta = e.wheelDelta,
+        parentNode = this.parentNode;
 
-    if (L.DomUtil.hasClass(parentNode, 'leaflet-popup-scrolled')) {
-      if (parentNode.scrollTop === 0 && delta > 0) {
-        util.cancelEvent();
-      } else if ((parentNode.scrollTop === parentNode.scrollHeight - util.getOuterDimensions(parentNode).height) && delta < 0) {
-        util.cancelEvent();
+      if (L.DomUtil.hasClass(parentNode, 'leaflet-popup-scrolled')) {
+        if (parentNode.scrollTop === 0 && delta > 0) {
+          util.cancelEvent();
+        } else if ((parentNode.scrollTop === parentNode.scrollHeight - util.getOuterDimensions(parentNode).height) && delta < 0) {
+          util.cancelEvent();
+        }
       }
     }
   },
