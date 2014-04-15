@@ -29,7 +29,7 @@ module.exports = function(grunt) {
       options: {
         accessKeyId: '<%= aws.key %>',
         bucket: 'npmap',
-        differential: true,
+        //differential: true,
         secretAccessKey: '<%= aws.secret %>',
         sslEnabled: true,
         uploadConcurrency: 5
