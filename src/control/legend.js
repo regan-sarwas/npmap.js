@@ -9,6 +9,7 @@ var LegendControl = L.Control.extend({
     L.Util.setOptions(this, options);
     this._container = L.DomUtil.create('div', 'leaflet-control-legend');
     L.DomEvent.disableClickPropagation(this._container);
+
     if (options.html) {
       if (typeof options.html === 'string') {
         this._html = options.html;
