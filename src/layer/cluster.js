@@ -63,47 +63,56 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
   },
   createCustomIconFunction: function(settings) {
     var defaultSettings = [{
-      name: 'small',
-      maxNodes: 9,
       color: '#7A904F',
-      size: 20,
+      fontColor: '#fff',
+      maxNodes: 9,
+      name: 'small',
       outerRing: 22,
-      fontColor: '#fff'
+      size: 20
     },{
-      name: 'medium',
-      maxNodes: 99,
       color: '#D49900',
-      size: 35,
+      fontColor: '#fff',
+      maxNodes: 99,
+      name: 'medium',
       outerRing: 24,
-      fontColor: '#fff'
+      size: 35
     },{
-      name: 'large',
-      maxNodes: Infinity,
       color: '#814705',
-      size: 50,
+      fontColor: '#fff',
+      maxNodes: Infinity,
+      name: 'large',
       outerRing: 24,
-      fontColor: '#fff'
+      size: 50
     }];
 
     function addStyles() {
-      var style = document.createElement('style');
+      var head = document.head || document.getElementsByTagName('head')[0],
+        style = document.createElement('style'),
+        text = '';
+
+      style.type = 'text/css';
+      text += '.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {';
+      text += '-webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-in;';
+      text += '-moz-transition: -moz-transform 0.2s ease-out, opacity 0.2s ease-in;';
+      text += '-o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-in;';
+      text += 'transition: transform 0.2s ease-out, opacity 0.2s ease-in;';
+      text += '}';
 
       for (var i = 0; i < defaultSettings.length; i++) {
         var currStyle = createStyle(defaultSettings[i]);
 
         for (var styleType in currStyle) {
-          style.textContent += '.' + 'marker-cluster-custom-' + defaultSettings[i].maxNodes.toString() + ' ' + (styleType === 'main' ? '' : styleType)  + ' {' + currStyle[styleType]  + '}\n';
+          text += '.' + 'marker-cluster-custom-' + defaultSettings[i].maxNodes.toString() + ' ' + (styleType === 'main' ? '' : styleType)  + ' {' + currStyle[styleType]  + '}\n';
         }
       }
 
-      style.type = 'text/css';
-      style.textContent += '.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {';
-      style.textContent += '-webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-in;';
-      style.textContent += '-moz-transition: -moz-transform 0.2s ease-out, opacity 0.2s ease-in;';
-      style.textContent += '-o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-in;';
-      style.textContent += 'transition: transform 0.2s ease-out, opacity 0.2s ease-in;';
-      style.textContent += '}';
-      document.getElementsByTagName('head')[0].appendChild(style);
+      if (style.styleSheet) {
+        style.styleSheet.cssText = text;
+      } else {
+        style.appendChild(document.createTextNode(text));
+      }
+
+      head.appendChild(style);
     }
     function autoTextColor(rgb) {
       if (Object.prototype.toString.call(rgb) !== '[object Array]') {
@@ -126,12 +135,12 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
       var styles = {
         main: {
           'background-clip': 'padding-box',
-          'background-color': supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.4)'),
+          'background': supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.4)'),
           'border-radius': ((style.size + style.outerRing)*0.5) + 'px'
         },
         div: {
           'text-align': 'center',
-          'background-color': supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.9)'),
+          'background': supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.9)'),
           width: style.size + 'px',
           height: style.size + 'px',
           'margin-left': (style.outerRing / 2) + 'px',
@@ -209,11 +218,13 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
         testDiv = document.createElement('div'),
         newColor;
 
-      testDiv.style.color = rgbaTestVal;
+      try {
+        testDiv.style.color = rgbaTestVal;
 
-      if (testDiv.style.color.substr(0,4) === 'rgba') {
-        returnValue = true;
-      }
+        if (testDiv.style.color.substr(0, 4) === 'rgba') {
+          returnValue = true;
+        }
+      } catch (e) {}
 
       if (color) {
         if (returnValue) {
