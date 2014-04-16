@@ -30,24 +30,24 @@
             var legend = response.layers[v].legend,
             title = response.layers[v].layerName;
 
-            if (label === "" && legend[i].imageData === "") {
-              html == ""
+            if (label === "" || (title.indexOf("Labels") !== -1)) {
+              html = ""
             } else {
-              html += '<h2 class="legend-title"><em>' +
-              title +
-              '</em></h2>' +
+              html += '<h2 class="legend-title"><em>' + title + '</em></h2>' +
               '<ul class="legend-labels">';
             }
 
-            for (var i = 0; i < response.layers[v].legend.length; i++) {
-              var imgType = legend[i].contentType,
-              image = legend[i].imageData,
-              label = legend[i].label;
+            if (html !== "") {
+              for (var i = 0; i < response.layers[v].legend.length; i++) {
+                var imgType = legend[i].contentType,
+                image = legend[i].imageData,
+                label = legend[i].label;
 
-              if (label === null || label === "") {
-                html = ''
-              } else {
+                if (label === "") {
+                  html = '<ul class="legend-labels">' + '<li><img src="data:' + imgType + ';base64,' + image + '">&nbsp;' + title + '</li>'
+                } else {
                 html += '<li><img src="data:' + imgType + ';base64,' + image + '">&nbsp;' + label + '</li>';
+                }
               }
             }
           });
