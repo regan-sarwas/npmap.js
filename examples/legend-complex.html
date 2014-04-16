@@ -16,6 +16,14 @@
         top: 0;
         width: 100%;
       }
+      .leaflet-container img {
+        margin-bottom: -5px;
+      }
+      h1.layer.name,
+      h2.legend-title,
+      .leaflet-container h2  {
+        margin: 0;
+      }
     </style>
   </head>
   <body>
@@ -90,6 +98,18 @@
         url: 'http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/legend?f=pjson'
       });
     </script>
+    <style>
+     .leaflet-container img {
+        margin-bottom: -5px;
+      }
+      h1.layer.name {
+        margin: 0;
+      }
+      h2.legend-title,
+      .leaflet-container h2  {
+        margin: 10px 0;
+      }
+    </style>
   </body>
 </html>
 
