@@ -23,47 +23,15 @@
     <script>
       reqwest({
         success: function(response) {
-          var html = '';
-
-          console.log(response.layers);
+          var html = '',
+          name = "Beach Access";
 
           for (var i = 0; i < response.layers.length; i++) {
-            html += '<h1 class="legend-title"><strong>' + response.layers[0].layerName + '</strong></h1>' + '<ul class="legend-labels">'
+            html += '<h2 class="legend-title"><em>' + response.layers[0].layerName + '</em></h2>' + '<ul class="legend-labels">'
           }
           for (var i = 0; i < response.layers[0].legend.length; i++) {
             html += '<li><img src="data:' + response.layers[0].legend[i].imageData + ';base64,' + response.layers[0].legend[i].imageData + '">&nbsp;' + response.layers[0].legend[i].label + '</li>';
           }
-
-/*
-* Wildlife Shootings
-  * Turtles
-    * Big Turtles
-    * Small Turtles
-  * Deer
-  * Bears
-* National Park Service Boundaries
-  * Tracts
-    * Private
-    * Federal
-    * State
-  * Boundaries
-    * National Parks
-    * National Monuments
-
-* Tracts
-  * Private
-  * Federal
-  * State
-* Boundaries
-  * National Parks
-  * National Monuments
-* Turtles
-  * Big Turtles
-  * Small Turtles
-* Vehicles Tracks
-  * Open to ORV's
-  * Open to Pedestrians
-*/
 
           window.NPMap = {
             div: 'map',
@@ -80,19 +48,17 @@
             },
             legendControl: {
               position: 'bottomright',
-              html: html += '</ul>' + '<div class="legend-source">Source: <a href="#link to source">NPS</a></div>'
+              html: '<h1 class="layer name">' + name + '</h1>' + html + '</ul>'
             },
             overlays: [{
               attribution: 'Esri',
               layers: '0',
-
               /*
               layers: {
                 'CALI_NHT': 'A',
                 'MOPI_NHT': 'B'
               },
               */
-
               name: 'Beach Access Lines',
               opacity: 0.5,
               popup: {
