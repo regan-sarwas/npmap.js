@@ -160,6 +160,9 @@
       border-left: solid 1px #adaca2;
       float: left;
     }
+  .npmap-toolbar ul li {
+    list-style-type: none;
+  }
   .npmap-toolbar button {
     background-color: #828171;
     background-repeat: no-repeat;
