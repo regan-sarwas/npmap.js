@@ -46,6 +46,12 @@ L.npmap = module.exports = {
     zoomify: require('./src/layer/zoomify')
   },
   map: require('./src/map'),
+  /*
+  Module: require('./src/module/Module'),
+  module: {
+    directions: require('./src/module/directions')
+  },
+  */
   popup: require('./src/popup'),
   preset: {
     baselayers: require('./src/preset/baselayers.json'),
@@ -58,6 +64,7 @@ L.npmap = module.exports = {
   util: {
     _: require('./src/util/util'),
     geocode: require('./src/util/geocode'),
+    route: require('./src/util/route'),
     topojson: require('./src/util/topojson')
   }
 };

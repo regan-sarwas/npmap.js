@@ -236,18 +236,14 @@ var Map = L.Map.extend({
       for (i = 0; i < modules.length; i++) {
         var div = L.DomUtil.create('div', 'module', this._divModules),
           module = modules[i],
-          title = module.title;
-
-        button = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
-        button.id = 'npmap-modules-buttons|' + title.replace(/ /g, '_');
-        button.title = title;
-        button.style['background-image'] = 'url(' + NPMap.path + '/images/font-awesome/' + module.icon + (L.Browser.retina ? '@2x' : '') + '.png)';
-        div.id = 'npmap-module_' + title.replace(/ /g, '_');
+          icon, title;
 
         if (module.type === 'custom') {
           var divContent = document.createElement('div'),
             divTitle = document.createElement('h2');
 
+          icon = module.icon;
+          title = module.title;
           divContent.className = 'content';
           divTitle.className = 'title';
           divTitle.innerHTML = title;
@@ -261,8 +257,15 @@ var Map = L.Map.extend({
           div.appendChild(divTitle);
           div.appendChild(divContent);
         } else {
-          // TODO: Get HTML from NPMap.js module.
+          modules[i].L = L.npmap.module.directions().addTo(this);
+          console.log(modules[i].L);
         }
+
+        button = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
+        button.id = 'npmap-modules-buttons_' + title.replace(/ /g, '_');
+        button.title = title;
+        button.style['background-image'] = 'url(' + NPMap.path + '/images/font-awesome/' + icon + (L.Browser.retina ? '@2x' : '') + '.png)';
+        div.id = 'npmap-module_' + title.replace(/ /g, '_');
 
         if (typeof module.width === 'number') {
           if (module.width > width) {
@@ -271,11 +274,11 @@ var Map = L.Map.extend({
         }
 
         L.DomEvent.addListener(button, 'click', function() {
-          me.showModule(this.id.replace('npmap-modules-buttons|', ''));
+          me.showModule(this.id.replace('npmap-modules-buttons_', ''));
         });
 
         if (!initialize && module.visible === true) {
-          initialize = module.title;
+          initialize = title;
         }
       }
 
