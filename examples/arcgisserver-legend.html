@@ -34,6 +34,37 @@
             html += '<li><img src="data:' + response.layers[0].legend[i].imageData + ';base64,' + response.layers[0].legend[i].imageData + '">&nbsp;' + response.layers[0].legend[i].label + '</li>';
           }
 
+/*
+* Wildlife Shootings
+  * Turtles
+    * Big Turtles
+    * Small Turtles
+  * Deer
+  * Bears
+* National Park Service Boundaries
+  * Tracts
+    * Private
+    * Federal
+    * State
+  * Boundaries
+    * National Parks
+    * National Monuments
+
+* Tracts
+  * Private
+  * Federal
+  * State
+* Boundaries
+  * National Parks
+  * National Monuments
+* Turtles
+  * Big Turtles
+  * Small Turtles
+* Vehicles Tracks
+  * Open to ORV's
+  * Open to Pedestrians
+*/
+
           window.NPMap = {
             div: 'map',
             baseLayers: [{
@@ -54,9 +85,25 @@
             overlays: [{
               attribution: 'Esri',
               layers: '0',
-              name: ' ',
+
+              /*
+              layers: {
+                'CALI_NHT': 'A',
+                'MOPI_NHT': 'B'
+              },
+              */
+
+              name: 'Beach Access Lines',
               opacity: 0.5,
               popup: {
+                actions: [{
+                  handler: function(data) {
+                    console.log(data);
+
+
+                  },
+                  text: 'Add to Route'
+                }],
                 description: {
                   fields: [
                     'Label',
