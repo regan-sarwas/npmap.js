@@ -1,9 +1,19 @@
 /* global L */
 /* jshint camelcase: false */
 
+/**
+    Go ahead and add each line as a geometry to a FeatureGroup here. Set clickable to false, and transparency to 100%.
+    Add the "Leaflet.GeometryUtil" and "Leaflet.Snap" to NPMap.js, via the editControl module.
+    In NPMap.js, add a new config option, "guideLayers" {Array}.
+*/
+/**
+    Also add support for using simplestyle to configure polygons and polylines.
+*/
+
 'use strict';
 
-var Maki = require('../icon/maki');
+var Maki = require('../icon/maki'),
+  NpMaki = require('../icon/npmaki');
 
 require('leaflet-draw');
 
@@ -14,7 +24,9 @@ var EditControl = L.Control.extend({
       metric: false
     },
     marker: {
-      icon: new Maki()
+      icon: {
+        'marker-library': 'maki'
+      }
     },
     polygon: {
       metric: false
@@ -25,7 +37,8 @@ var EditControl = L.Control.extend({
     position: 'topleft',
     rectangle: {
       metric: false
-    }
+    },
+    toolbar: true
   },
   initialize: function(options) {
     L.Util.setOptions(this, options);
@@ -41,6 +54,10 @@ var EditControl = L.Control.extend({
       me = this;
 
     if (this.options.marker) {
+      if (this.options.marker.icon && this.options.marker.icon['marker-library']) {
+        this.options.marker.icon = L.npmap.icon[this.options.marker.icon['marker-library']](this.options.marker.icon);
+      }
+
       this._initializeMode(container, new L.Draw.Marker(map, this.options.marker), 'Draw a marker');
     }
 
@@ -153,7 +170,7 @@ var EditControl = L.Control.extend({
     this._modes[type] = {};
     this._modes[type].handler = handler;
 
-    if (this.options.ui) {
+    if (this.options.toolbar) {
       button = L.DomUtil.create('button', type, container);
       button.title = title;
       L.DomEvent.disableClickPropagation(button);
@@ -189,11 +206,10 @@ L.Map.addInitHook(function() {
   if (this.options.editControl) {
     var options = {};
 
-    if (typeof this.options.drawControl === 'object') {
-      options = this.options.drawControl;
+    if (typeof this.options.editControl === 'object') {
+      options = this.options.editControl;
     }
 
-    options.ui = true;
     this.editControl = L.npmap.control.edit(options).addTo(this);
   } else {
     var edit = false,
@@ -210,7 +226,7 @@ L.Map.addInitHook(function() {
 
     if (edit) {
       this.editControl = L.npmap.control.edit({
-        ui: false
+        toolbar: false
       }).addTo(this);
     }
   }
