@@ -15,6 +15,14 @@
   .npmap .clearfix:after {
     clear: both;
   }
+  .npmap .ir {
+    background-repeat: no-repeat;
+    direction: ltr;
+    display: block;
+    overflow: hidden;
+    text-align: left;
+    text-indent: -999em;
+  }
 .npmap-modules {
   -webkit-box-shadow: 2px 0 2px rgba(0,0,0,.2);
      -moz-box-shadow: 2px 0 2px rgba(0,0,0,.2);
@@ -1408,4 +1416,43 @@
 .humane-js-animate:hover, .humane-bootstrap.humane-bootstrap-js-animate:hover {
   opacity: 0.7;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+}
+
+/* Modules */
+
+#npmap-module_Directions ul, #npmap-module_Directions ul li {
+  list-style-type: none;
+}
+#npmap-module_Directions ul {
+  padding-left: 0;
+}
+#npmap-module_Directions ul li label {
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+       -o-border-radius: 3px;
+          border-radius: 3px;
+  background: #000;
+  color: #fff;
+  cursor: move;
+  display: block;
+  float: left;
+  font-weight: bold;
+  line-height: 20px;
+  margin: 3px 6px 0 0;
+  text-align: center;
+  width: 20px;
+}
+#npmap-module_Directions ul li input {
+  float: left;
+  padding-right: 27px;
+  width: 205px;
+}
+#npmap-module_Directions ul li button {
+  border: none;
+  height: 25px;
+  padding: 0;
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  width: 25px;
 }

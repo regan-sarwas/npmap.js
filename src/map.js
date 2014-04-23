@@ -236,8 +236,8 @@ var Map = L.Map.extend({
 
       for (i = 0; i < modules.length; i++) {
         var div = L.DomUtil.create('div', 'module', this._divModules),
-          divContent = L.DomUtil.create('div', 'content', div),
           divTitle = L.DomUtil.create('h2', 'title', div),
+          divContent = L.DomUtil.create('div', 'content', div),
           module = modules[i],
           content, icon, title;
 
