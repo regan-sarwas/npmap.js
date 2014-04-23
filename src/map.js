@@ -223,7 +223,8 @@ var Map = L.Map.extend({
       var initialize = null,
         me = this,
         modules = this.options.modules,
-        button, i, width = 0;
+        width = 0,
+        button, i;
 
       this._divWrapper = this._container.parentNode.parentNode;
       this._divModules = util.getChildElementsByClassName(this._divWrapper.parentNode.parentNode, 'npmap-modules')[0];
@@ -235,30 +236,24 @@ var Map = L.Map.extend({
 
       for (i = 0; i < modules.length; i++) {
         var div = L.DomUtil.create('div', 'module', this._divModules),
+          divContent = L.DomUtil.create('div', 'content', div),
+          divTitle = L.DomUtil.create('h2', 'title', div),
           module = modules[i],
-          icon, title;
+          content, icon, title;
 
-        if (module.type === 'custom') {
-          var divContent = document.createElement('div'),
-            divTitle = document.createElement('h2');
+        if (module.type !== 'custom') {
+          this.options.modules[i] = module = L.npmap.module[module.type](module).addTo(this);
+        }
 
-          icon = module.icon;
-          title = module.title;
-          divContent.className = 'content';
-          divTitle.className = 'title';
-          divTitle.innerHTML = title;
+        content = module.content;
+        icon = module.icon;
+        title = module.title;
+        divTitle.innerHTML = title;
 
-          if (typeof module.content === 'string') {
-            divContent.innerHTML = module.content;
-          } else if ('nodeType' in module.content) {
-            divContent.appendChild(module.content);
-          }
-
-          div.appendChild(divTitle);
-          div.appendChild(divContent);
-        } else {
-          modules[i].L = L.npmap.module.directions().addTo(this);
-          console.log(modules[i].L);
+        if (typeof content === 'string') {
+          divContent.innerHTML = content;
+        } else if ('nodeType' in content) {
+          divContent.appendChild(content);
         }
 
         button = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
@@ -285,6 +280,8 @@ var Map = L.Map.extend({
       if (width !== 0) {
         this._divModules.style.width = width + 'px';
       }
+
+      console.log(this.options.modules);
 
       if (initialize) {
         this.showModule(initialize);
@@ -623,6 +620,8 @@ var Map = L.Map.extend({
 
     title = title.replace(/_/g, ' ');
 
+    console.log(title);
+
     for (i = 0; i < modules.length; i++) {
       var module = modules[i],
         visibility = 'none';
@@ -630,6 +629,8 @@ var Map = L.Map.extend({
       if (module.title === title) {
         visibility = 'block';
       }
+
+      console.log(module);
 
       module.visible = (visibility === 'block');
       childNodes[i].style.display = visibility;

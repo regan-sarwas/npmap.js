@@ -1,22 +1,20 @@
-/** 
-  1. Create module html
-  2. Create button html
-  3. Add both to modules container
-  4. Also need to hookup to popups
-*/
-
 /* globals L */
 
 'use strict';
 
-require('./Module');
+var route = require('../util/route');
 
-var DirectionsModule = L.npmap.Module.extend({
+var DirectionsModule = L.Class.extend({
+  includes: [
+    require('../mixin/module')
+  ],
   initialize: function(options) {
+    options = options || {};
+    this.content = 'Testing';
+    this.icon = 'truck';
+    this.title = this.type = 'Directions';
+    this.visible = options.visible || false;
     L.Util.setOptions(this, options);
-    options.content = 'Testing';
-    options.title = 'Directions';
-    L.npmap.Module.prototype.initialize.call(this, options);
 
     return this;
   }

@@ -12,10 +12,9 @@
 
 'use strict';
 
-var Maki = require('../icon/maki'),
-  NpMaki = require('../icon/npmaki');
-
 require('leaflet-draw');
+require('../icon/maki');
+require('../icon/npmaki');
 
 var EditControl = L.Control.extend({
   includes: L.Mixin.Events,
