@@ -24,50 +24,6 @@ module.exports = function(grunt) {
 
   grunt.util.linefeed = '\n';
   grunt.initConfig({
-    aws: grunt.file.readJSON('aws.json'),
-    aws_s3: {
-      options: {
-        accessKeyId: '<%= aws.key %>',
-        bucket: 'npmap',
-        //differential: true,
-        secretAccessKey: '<%= aws.secret %>',
-        sslEnabled: true,
-        uploadConcurrency: 5
-      },
-      clean_production: {
-        files: [{
-          action: 'delete',
-          cwd: 'dist/',
-          dest: 'npmap.js/<%= pkg.version %>/'
-        }]
-      },
-      production: {
-        options: {
-          params: {
-            CacheControl: 'max-age=630720000, public',
-            Expires: new Date(Date.now() + 63072000000).toISOString()
-          }
-        },
-        files: [{
-          cwd: 'dist/images/',
-          dest: 'npmap.js/<%= pkg.version %>/images/',
-          expand: true,
-          src: [
-            '**'
-          ]
-        },{
-          cwd: 'dist/gzip/',
-          dest: 'npmap.js/<%= pkg.version %>/',
-          expand: true,
-          params: {
-            ContentEncoding: 'gzip'
-          },
-          src: [
-            '**'
-          ]
-        }]
-      }
-    },
     browserify: {
       all: {
         files: {
@@ -274,7 +230,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-aws-s3');
   grunt.loadNpmTasks('grunt-banner');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -285,11 +240,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-http');
-  grunt.loadNpmTasks('grunt-invalidate-cloudfront');
   grunt.loadNpmTasks('grunt-mkdir');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
   grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
-  grunt.registerTask('deploy-aws', ['compress', 'aws_s3', 'invalidate_cloudfront']);
   grunt.registerTask('deploy-nps', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http:nps']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
