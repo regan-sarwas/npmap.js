@@ -169,24 +169,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    invalidate_cloudfront: {
-      options: {
-        distribution: '<%= aws.distribution %>',
-        key: '<%= aws.key %>',
-        secret: '<%= aws.secret %>'
-      },
-      production: {
-        files: [{
-          cwd: './dist/',
-          dest: 'npmap.js/<%= pkg.version %>/',
-          expand: true,
-          filter: 'isFile',
-          src: [
-            '**/*'
-          ]
-        }]
-      }
-    },
     mkdir: {
       nps: {
         create: [
