@@ -77,13 +77,21 @@
     },
     "oceans": {
       "attribution": "Esri",
-      "dynamicAttribution": "http://static.arcgis.com/attribution/World_Street_Map?f=json",
       "maxZoom": 16,
       "minZoom": 1,
       "name": "Esri Oceans",
       "tiled": true,
       "type": "arcgisserver",
-      "url": "http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer"
+      "url": "http://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer"
+    },
+    "oceansLabels": {
+      "attribution": "Esri",
+      "maxZoom": 16,
+      "minZoom": 1,
+      "name": "Esri Ocean Labels",
+      "tiled": true,
+      "type": "arcgisserver",
+      "url": "http://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer"
     },
     "streets": {
       "attribution": "Esri",
