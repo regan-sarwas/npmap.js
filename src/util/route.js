@@ -29,7 +29,7 @@ module.exports = ({
             });
           },
           success: function(response) {
-            console.log(response);
+            //console.log(response);
             callback(response);
           },
           type: 'jsonp',
