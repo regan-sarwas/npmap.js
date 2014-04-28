@@ -303,8 +303,6 @@ module.exports = {
           tdValue = document.createElement('td'),
           tr = document.createElement('tr');
 
-        tdProperty.style.paddingRight = '10px';
-
         if (fieldTitles) {
           tdProperty.innerHTML = fieldTitles[prop].title;
         } else {
