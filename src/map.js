@@ -281,8 +281,6 @@ var Map = L.Map.extend({
         this._divModules.style.width = width + 'px';
       }
 
-      console.log(this.options.modules);
-
       if (initialize) {
         this.showModule(initialize);
       } else {
@@ -620,8 +618,6 @@ var Map = L.Map.extend({
 
     title = title.replace(/_/g, ' ');
 
-    console.log(title);
-
     for (i = 0; i < modules.length; i++) {
       var module = modules[i],
         visibility = 'none';
@@ -629,8 +625,6 @@ var Map = L.Map.extend({
       if (module.title === title) {
         visibility = 'block';
       }
-
-      console.log(module);
 
       module.visible = (visibility === 'block');
       childNodes[i].style.display = visibility;
