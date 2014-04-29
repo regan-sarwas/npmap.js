@@ -4,6 +4,7 @@ var util = require('../../util/util');
 
 var ArcGisServerDynamicLayer = L.Class.extend({
   includes: [
+    L.Mixin.Events,
     require('../../mixin/esri')
   ],
   options: {
@@ -168,7 +169,6 @@ var ArcGisServerDynamicLayer = L.Class.extend({
       var newImage = e.target,
         oldImage = this._currentImage;
 
-      
       if (newImage._bounds.equals(bounds)) {
         this._currentImage = newImage;
 
@@ -187,6 +187,10 @@ var ArcGisServerDynamicLayer = L.Class.extend({
         this._map.removeLayer(newImage);
       }
     }, this);
+
+    this.fire('loading', {
+      bounds: bounds
+    });
   },
   bringToBack: function(){
     this.options.position = 'back';
