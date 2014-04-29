@@ -42,7 +42,8 @@
                 'UNIT_TYPE'
               ],
               format: 'table'
-            }
+            },
+            title: '{{PARKNAME}}'
           },
           tiled: false,
           type: 'arcgisserver',
@@ -58,20 +59,20 @@
               if (typeof data.CAT === 'undefined') {
                 return '' +
                   '<table><tbody>' +
-                    '<tr><td style="padding-right:10px;">Stage</td><td>{{STAGE}}</td></tr>' +
-                    '<tr><td style="padding-right:10px;">Day</td><td>{{DAY}}</td></tr>' +
-                    '<tr><td style="padding-right:10px;">Time</td><td>{{TIME}}</td></tr>' +
-                    '<tr><td style="padding-right:10px;">Pressure</td><td>{{PRESSURE}}</td></tr>' +
-                    '<tr><td style="padding-right:10px;">Wind Speed (Knots)</td><td>{{WINDSPEED}}</td></tr>' +
+                    '<tr><td>Stage</td><td>{{STAGE}}</td></tr>' +
+                    '<tr><td>Day</td><td>{{DAY}}</td></tr>' +
+                    '<tr><td>Time</td><td>{{TIME}}</td></tr>' +
+                    '<tr><td>Pressure</td><td>{{PRESSURE}}</td></tr>' +
+                    '<tr><td>Wind Speed (Knots)</td><td>{{WINDSPEED}}</td></tr>' +
                   '</tbody></table>';
               } else {
                 return '' +
                   '<table><tbody>' +
-                    '<tr><td style="padding-right:10px;">Category</td><td>{{CAT}}</td></tr>' +
-                    '<tr><td style="padding-right:10px;">Date</td><td>{{Date_date}}</td></tr>' +
-                    '<tr><td style="padding-right:10px;">Start Time</td><td>{{Time}}</td></tr>' +
-                    '<tr><td style="padding-right:10px;">End Time</td><td>{{EndTime}}</td></tr>' +
-                    '<tr><td style="padding-right:10px;">Wind Speed (Knots)</td><td>{{WIND_KTS}}</td></tr>' +
+                    '<tr><td>Category</td><td>{{CAT}}</td></tr>' +
+                    '<tr><td>Date</td><td>{{Date_date}}</td></tr>' +
+                    '<tr><td>Start Time</td><td>{{Time}}</td></tr>' +
+                    '<tr><td>End Time</td><td>{{EndTime}}</td></tr>' +
+                    '<tr><td>Wind Speed (Knots)</td><td>{{WIND_KTS}}</td></tr>' +
                   '</tbody></table>';
               }
             },
