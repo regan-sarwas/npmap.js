@@ -131,6 +131,7 @@
       "detectRetina": true,
       "icon": "aerial",
       "id": "nps.map-n9nxe12m",
+      "maxNativeZoom": 18,
       "name": "MapBox Satellite",
       "type": "mapbox"
     },
@@ -139,6 +140,7 @@
       "detectRetina": true,
       "icon": "aerial",
       "id": "nps.map-r3ilza09",
+      "maxNativeZoom": 18,
       "name": "MapBox Satellite w/Labels",
       "type": "mapbox"
     },
