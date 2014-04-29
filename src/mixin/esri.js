@@ -45,7 +45,8 @@ module.exports = {
           }
 
           me._metadata = response;
-          //me.fire('metadata', response);
+          console.log(me);
+          me.fire('metadata', response);
         }
       },
       type: 'jsonp',
@@ -66,12 +67,14 @@ module.exports = {
           };
 
           for (var i = 0; i < results.length; i++) {
-            var result = results[i],
-              active;
+            var active = null,
+              result = results[i];
 
             for (var j = 0; j < obj.subLayers.length; j++) {
-              if (obj.subLayers[j].name === result.layerName) {
-                active = obj.subLayers[j];
+              var subLayer = obj.subLayers[j];
+
+              if (subLayer.name === result.layerName) {
+                active = subLayer;
                 break;
               }
             }
@@ -79,16 +82,13 @@ module.exports = {
             if (active) {
               active.results.push(result.attributes);
             } else {
-              var template = '{{' + result.displayFieldName + '}}';
-
               obj.subLayers.push({
                 name: result.layerName,
                 popup: {
                   description: {
                     format: 'table'
                   },
-                  more: template,
-                  title: template
+                  title: '{{' + result.displayFieldName + '}}'
                 },
                 results: [
                   result.attributes
