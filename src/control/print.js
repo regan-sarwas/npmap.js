@@ -5,7 +5,11 @@
 var util = require('../util/util');
 
 var PrintControl = L.Control.extend({
-  initialize: function() {
+  options: {
+    url: 'http://www.nps.gov/maps/print.html'
+  },
+  initialize: function(options) {
+    L.Util.setOptions(this, options);
     this._li = L.DomUtil.create('li', '');
     this._button = L.DomUtil.create('button', 'print', this._li);
     this._button.title = 'Print the map';
@@ -23,18 +27,25 @@ var PrintControl = L.Control.extend({
     util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '26px';
     return this;
   },
-  _escapeHtml: function(layer) {
-    if (layer.popup) {
-      if (typeof layer.popup === 'string') {
-        layer.popup = util.escapeHtml(layer.popup);
-      } else {
-        if (typeof layer.popup.description === 'string') {
-          layer.popup.description = util.escapeHtml(layer.popup.description);
-        }
+  _clean: function(layer) {
+    delete layer.L;
 
-        if (typeof layer.popup.title === 'string') {
-          layer.popup.title = util.escapeHtml(layer.popup.title);
-        }
+    // TODO: Move layer type-specific code.
+    switch (layer.type) {
+    case 'arcgisserver':
+      delete layer.service;
+      break;
+    }
+
+    if (layer.popup) {
+      delete layer.popup.actions;
+
+      if (typeof layer.popup.description === 'string') {
+        layer.popup.description = util.escapeHtml(layer.popup.description);
+      }
+
+      if (typeof layer.popup.title === 'string') {
+        layer.popup.title = util.escapeHtml(layer.popup.title);
       }
     }
 
@@ -44,13 +55,22 @@ var PrintControl = L.Control.extend({
   },
   print: function() {
     var map = this._map,
-      me = this,
-      options = map.options,
       center = map.getCenter(),
-      configCenter = options.center,
-      zoom = map.getZoom(),
+      options = map.options,
       params = {
-        b: {
+        c: JSON.stringify({
+          lat: center.lat,
+          lng: center.lng
+        }),
+        z: map.getZoom()
+      },
+      win;
+
+    if (options.mapId) {
+      params.mapId = options.mapId;
+    } else {
+      var configCenter = options.center,
+        config = {
           baseLayers: [],
           center: {
             lat: configCenter.lat,
@@ -59,53 +79,38 @@ var PrintControl = L.Control.extend({
           overlays: [],
           zoom: options.zoom
         },
-        c: JSON.stringify({
-          lat: center.lat,
-          lng: center.lng
-        }),
-        z: zoom
-      },
-      active, i, layer, win;
+        active, i, layer;
 
-/*
+      for (i = 0; i < options.baseLayers.length; i++) {
+        layer = options.baseLayers[i];
 
-1. If NPMap.id (or is it NPMap.mapId?) exists, send a ?mapId parameter.
-2. Else send a Base64 encoded string
-
-*/
-
-    for (i = 0; i < options.baseLayers.length; i++) {
-      layer = options.baseLayers[i];
-
-      if (typeof layer.L === 'object') {
-        active = L.extend({}, layer);
-        delete active.L;
-        me._escapeHtml(active);
-        params.b.baseLayers.push(active);
-        break;
+        if (typeof layer.L === 'object') {
+          active = L.extend({}, layer);
+          this._clean(active);
+          config.baseLayers.push(active);
+          break;
+        }
       }
+
+      for (i = 0; i < options.overlays.length; i++) {
+        layer = options.overlays[i];
+
+        if (typeof layer.L === 'object') {
+          active = L.extend({}, layer);
+          this._clean(active);
+          config.overlays.push(active);
+        }
+      }
+
+      params.b = JSON.stringify(config);
     }
 
-    for (i = 0; i < options.overlays.length; i++) {
-      layer = options.overlays[i];
-
-      if (typeof layer.L === 'object') {
-        active = L.extend({}, layer);
-        delete active.L;
-        me._escapeHtml(active);
-        params.b.overlays.push(active);
-      }
-    }
-
-    params.b = JSON.stringify(params.b);
-    win = window.open('http://www.nps.gov/maps/print.html' + L.Util.getParamString(params), '_blank');
+    // TODO: Base64 encode and compress string.
+    win = window.open(this.options.url + L.Util.getParamString(params), '_blank');
     win.focus();
   }
 });
 
-L.Map.mergeOptions({
-  printControl: false
-});
 L.Map.addInitHook(function() {
   if (this.options.printControl) {
     var options = {};
