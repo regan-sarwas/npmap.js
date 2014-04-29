@@ -45,7 +45,6 @@ module.exports = {
           }
 
           me._metadata = response;
-          console.log(me);
           me.fire('metadata', response);
         }
       },
