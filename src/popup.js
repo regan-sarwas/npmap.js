@@ -22,7 +22,10 @@ var Popup = L.Popup.extend({
     }
 
     content.onmousewheel = this._handleMouseWheel;
-    L.Popup.prototype.onAdd.apply(this, [map]);
+
+    L.Popup.prototype.onAdd.apply(this, [
+      map
+    ]);
   },
   _back: function() {
     this.setContent(this._html).update();
@@ -134,7 +137,6 @@ var Popup = L.Popup.extend({
       if (all.length === 1) {
         var first = all[0];
 
-        // TODO: If a "subLayer" result, pass in subLayer.name and add to title of popup.
         div = this._resultToHtml(first.result, first.layerConfig, first.resultConfig);
       } else {
         div = this._resultsToHtml(results);
@@ -160,9 +162,7 @@ var Popup = L.Popup.extend({
       var divLayer = L.DomUtil.create('div', 'layer', div),
         divLayerTitle = L.DomUtil.create('div', 'title', divLayer),
         resultLayer = results[i],
-        layerConfig = null,
-        resultConfig = null,
-        a, childNode, divLayerContent, j, k, li, more, single, ul;
+        a, childNode, divLayerContent, j, k, layerConfig, li, more, resultConfig, single, ul;
 
       if (resultLayer.layer.options) {
         if (resultLayer.layer.options.popup) {
@@ -187,18 +187,12 @@ var Popup = L.Popup.extend({
           li = document.createElement('li');
           single = this._resultToHtml(result, layerConfig, resultConfig, true);
 
-          if (layerConfig && typeof layerConfig.more === 'string') {
-            more = util.unescapeHtml(util.handlebars(layerConfig.more, result));
-          } else if (resultConfig && typeof resultConfig.more === 'string') {
-            more = util.unescapeHtml(util.handlebars(resultConfig.more, result));
-          } else {
-            for (k = 0; k < single.childNodes.length; k++) {
-              childNode = single.childNodes[k];
+          for (k = 0; k < single.childNodes.length; k++) {
+            childNode = single.childNodes[k];
 
-              if (L.DomUtil.hasClass(childNode, 'title')) {
-                more = util.stripHtml(childNode.innerHTML);
-                break;
-              }
+            if (L.DomUtil.hasClass(childNode, 'title')) {
+              more = util.stripHtml(childNode.innerHTML);
+              break;
             }
           }
 
@@ -241,18 +235,12 @@ var Popup = L.Popup.extend({
             li = document.createElement('li');
             single = this._resultToHtml(resultFinal, layerConfig, resultConfig, true);
 
-            if (layerConfig && typeof layerConfig.more === 'string') {
-              more = util.unescapeHtml(util.handlebars(layerConfig.more, resultFinal));
-            } else if (resultConfig && typeof resultConfig.more === 'string') {
-              more = util.unescapeHtml(util.handlebars(resultConfig.more, resultFinal));
-            } else {
-              for (k = 0; k < single.childNodes.length; k++) {
-                childNode = single.childNodes[k];
+            for (var l = 0; l < single.childNodes.length; l++) {
+              childNode = single.childNodes[l];
 
-                if (L.DomUtil.hasClass(childNode, 'title')) {
-                  more = util.stripHtml(childNode.innerHTML);
-                  break;
-                }
+              if (L.DomUtil.hasClass(childNode, 'title')) {
+                more = util.stripHtml(childNode.innerHTML);
+                break;
               }
             }
 
@@ -293,133 +281,100 @@ var Popup = L.Popup.extend({
       }
     }
 
-    if (typeof config === 'string') {
-      div.innerHTML = util.unescapeHtml(util.handlebars(config, result));
-    } else if (typeof config === 'function') {
-      div.innerHTML = util.unescapeHtml(util.handlebars(config(result), result));
-    } else {
-      if (config.title) {
-        obj = null;
+    if (config.title) {
+      obj = null;
 
-        if (typeof config.title === 'function') {
-          obj = config.title(result);
-        } else {
-          obj = config.title;
-        }
-
-        if (obj && typeof obj === 'string') {
-          title = L.DomUtil.create('div', 'title', div);
-          title.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
-        }
+      if (typeof config.title === 'function') {
+        obj = config.title(result);
+      } else {
+        obj = config.title;
       }
 
-      if (config.description) {
+      if (obj && typeof obj === 'string') {
+        title = L.DomUtil.create('div', 'title', div);
+        title.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
+      }
+    }
+
+    if (config.description) {
+      divContent = L.DomUtil.create('div', 'content', div);
+      obj = null;
+
+      if (typeof config.description === 'function') {
+        obj = config.description(result);
+      } else {
+        obj = config.description;
+      }
+
+      if (obj) {
+        if (obj.format === 'list') {
+          obj = util.dataToList(result, obj.fields);
+        } else if (obj.format === 'table') {
+          obj = util.dataToTable(result, obj.fields);
+        }
+
+        description = L.DomUtil.create('div', 'description', divContent);
+
+        if (typeof obj === 'string') {
+          description.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
+        } else if ('nodeType' in obj) {
+          description.appendChild(obj);
+        }
+      }
+    }
+
+    // TODO: Needs more work to support {string}s and possibly other config options
+    if (config.media) {
+      var mediaObj, mediaDiv;
+
+      if (!divContent) {
         divContent = L.DomUtil.create('div', 'content', div);
-        obj = null;
+      }
 
-        if (typeof config.description === 'function') {
-          obj = config.description(result);
-        } else {
-          obj = config.description;
-        }
+      media = [];
 
-        if (obj) {
-          if (obj.format === 'list') {
-            obj = util.dataToList(result, obj.fields);
-          } else if (obj.format === 'table') {
-            obj = util.dataToTable(result, obj.fields);
-          }
-
-          description = L.DomUtil.create('div', 'description', divContent);
-
-          if (typeof obj === 'string') {
-            description.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
-          } else if ('nodeType' in obj) {
-            description.appendChild(obj);
-          }
+      for (var i = 0; i < config.media.length; i++) {
+        if (result[config.media[i].id]) {
+          media.push(config.media[i]);
         }
       }
 
-      // TODO: Needs more work to support {string}s and possibly other config options
-      if (config.media) {
-        var mediaObj, mediaDiv;
+      if (media.length) {
+        mediaObj = util.mediaToList(result, media);
 
-        if (!divContent) {
-          divContent = L.DomUtil.create('div', 'content', div);
-        }
-
-        media = [];
-
-        for (var i = 0; i < config.media.length; i++) {
-          if (result[config.media[i].id]) {
-            media.push(config.media[i]);
-          }
-        }
-
-        if (media.length) {
-          mediaObj = util.mediaToList(result, media);
-
-          if (mediaObj) {
-            mediaDiv = L.DomUtil.create('div', 'media clearfix', divContent);
-            mediaDiv.appendChild(mediaObj);
-          }
-        }
-      }
-
-      if (config.actions) {
-        obj = null;
-
-        if (typeof config.actions === 'function') {
-          obj = config.actions(result);
-        } else {
-          obj = config.actions;
-        }
-
-        if (obj) {
-          actions = L.DomUtil.create('div', 'actions', div);
-
-          if (L.Util.isArray(obj)) {
-            ul = document.createElement('ul');
-            actions.appendChild(ul);
-
-            for (var j = 0; j < obj.length; j++) {
-              ul.appendChild(this._createAction(obj[j], result, actions));
-            }
-          } else if (typeof obj === 'string') {
-            actions.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
-          } else if ('nodeType' in obj) {
-            actions.appendChild(obj);
-          }
+        if (mediaObj) {
+          mediaDiv = L.DomUtil.create('div', 'media clearfix', divContent);
+          mediaDiv.appendChild(mediaObj);
         }
       }
     }
 
-    /*
-    if (me.options.edit && me.options.edit.layers.split(',').indexOf(subLayerId) !== -1) {
-      var userRole = me.options.edit.userRole;
+    if (config.actions) {
+      obj = null;
 
-      if (typeof userRole === 'undefined' || userRole === 'Admin' || userRole === 'Writer') {
-        var objectId = parseInt(el.getAttribute('data-objectid'), 10);
+      if (typeof config.actions === 'function') {
+        obj = config.actions(result);
+      } else {
+        obj = config.actions;
+      }
 
-        subLayerId = parseInt(subLayerId, 10);
+      if (obj) {
+        actions = L.DomUtil.create('div', 'actions', div);
 
-        actions.push(me._createAction('edit', 'Edit &#9656;', null, [{
-          fn: function() {
-            me.options.edit.handlers.editAttributes(subLayerId, objectId);
-          },
-          text: 'Attributes'
-        },{
-          fn: function() {
-            me.options.edit.handlers.editGeometry(subLayerId, objectId);
-          },
-          text: 'Geometry'
-        }], divActions));
-        actions.push(me._createAction('delete', 'Delete', function() {
-          me.options.edit.handlers['delete'](subLayerId, objectId);
-        }));
+        if (L.Util.isArray(obj)) {
+          ul = document.createElement('ul');
+          actions.appendChild(ul);
+
+          for (var j = 0; j < obj.length; j++) {
+            ul.appendChild(this._createAction(obj[j], result, actions));
+          }
+        } else if (typeof obj === 'string') {
+          actions.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
+        } else if ('nodeType' in obj) {
+          actions.appendChild(obj);
+        }
       }
     }
-    */
 
     if (addBack) {
       var a = document.createElement('a'),
