@@ -309,6 +309,7 @@ var Map = L.Map.extend({
 
       if (hasArcGisServer) {
         me._progress.go(100);
+        me._setCursor('');
       }
     }
     function go(e) {
@@ -357,6 +358,7 @@ var Map = L.Map.extend({
 
         if (hasArcGisServer) {
           me._progress.go(1);
+          me._setCursor('wait');
         }
 
         interval = setInterval(function() {
