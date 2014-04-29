@@ -101,7 +101,7 @@ var CartoDbLayer = L.TileLayer.extend({
             return me;
           },
           type: 'jsonp',
-          url: util.buildUrl('http://' + me.options.user + '.cartodb.com/tiles/layergroup', {
+          url: util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
             config: JSON.stringify({
               layers: [{
                 options: {
