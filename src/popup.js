@@ -42,23 +42,25 @@ var Popup = L.Popup.extend({
       var menu = L.DomUtil.create('ul', 'menu', div);
 
       for (var i = 0; i < config.menu.length; i++) {
-        var item = config.menu[i],
-          itemA = document.createElement('a'),
-          itemLi = document.createElement('li');
+        (function() {
+          var item = config.menu[i],
+            itemA = document.createElement('a'),
+            itemLi = document.createElement('li');
 
-        itemA.innerHTML = util.handlebars(item.text, data);
-        L.DomEvent.addListener(itemA, 'click', function() {
-          var data = null;
+          itemA.innerHTML = util.handlebars(item.text, data);
+          L.DomEvent.addListener(itemA, 'click', function() {
+            var data = null;
 
-          try {
-            data = this.parentNode.parentNode.parentNode.parentNode.npmap_data;
-          } catch (exception) {}
+            try {
+              data = this.parentNode.parentNode.parentNode.parentNode.npmap_data;
+            } catch (exception) {}
 
-          menu.style.display = 'none';
-          item.handler(data);
-        });
-        itemLi.appendChild(itemA);
-        menu.appendChild(itemLi);
+            menu.style.display = 'none';
+            item.handler(data);
+          });
+          itemLi.appendChild(itemA);
+          menu.appendChild(itemLi);
+        })();
       }
 
       L.DomEvent.addListener(a, 'click', function(e) {
