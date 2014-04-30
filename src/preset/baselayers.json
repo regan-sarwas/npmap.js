@@ -13,7 +13,7 @@
       "layer": "aerialwithlabels",
       "maxZoom": 19,
       "minZoom": 0,
-      "name": "Bing Aerial w/Labels",
+      "name": "Bing Hybrid",
       "type": "bing"
     },
     "roads": {
@@ -123,7 +123,15 @@
       "detectRetina": true,
       "icon": "street",
       "id": "nps.map-sligp1fr",
-      "name": "MapBox Light",
+      "name": "Mapbox Light",
+      "type": "mapbox"
+    },
+    "outdoors": {
+      "attribution": "<a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>, &copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+      "detectRetina": true,
+      "icon": "topo",
+      "id": "nps.i49i583a",
+      "name": "Mapbox Outdoors",
       "type": "mapbox"
     },
     "satellite": {
@@ -132,7 +140,7 @@
       "icon": "aerial",
       "id": "nps.map-n9nxe12m",
       "maxNativeZoom": 18,
-      "name": "MapBox Satellite",
+      "name": "Mapbox Satellite",
       "type": "mapbox"
     },
     "satelliteLabels": {
@@ -141,7 +149,7 @@
       "icon": "aerial",
       "id": "nps.map-r3ilza09",
       "maxNativeZoom": 18,
-      "name": "MapBox Satellite w/Labels",
+      "name": "Mapbox Hybrid",
       "type": "mapbox"
     },
     "streets": {
@@ -149,7 +157,7 @@
       "detectRetina": true,
       "icon": "street",
       "id": "nps.map-06dnxzq5",
-      "name": "MapBox Streets",
+      "name": "Mapbox Streets",
       "type": "mapbox"
     },
     "terrain": {
