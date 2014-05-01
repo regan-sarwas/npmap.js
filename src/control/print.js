@@ -6,25 +6,31 @@ var util = require('../util/util');
 
 var PrintControl = L.Control.extend({
   options: {
+    ui: true,
     url: 'http://www.nps.gov/maps/print.html'
   },
   initialize: function(options) {
     L.Util.setOptions(this, options);
-    this._li = L.DomUtil.create('li', '');
-    this._button = L.DomUtil.create('button', 'print', this._li);
-    this._button.title = 'Print the map';
-    L.DomEvent.addListener(this._button, 'click', this.print, this);
+
+    if (this.options.ui === true) {
+      this._li = L.DomUtil.create('li', '');
+      this._button = L.DomUtil.create('button', 'print', this._li);
+      this._button.title = 'Print the map';
+      L.DomEvent.addListener(this._button, 'click', this.print, this);
+    }
 
     return this;
   },
   addTo: function(map) {
-    var toolbar = util.getChildElementsByClassName(map.getContainer().parentNode.parentNode, 'npmap-toolbar')[0];
+    if (this.options.ui === true) {
+      var toolbar = util.getChildElementsByClassName(map.getContainer().parentNode.parentNode, 'npmap-toolbar')[0];
+      toolbar.childNodes[1].appendChild(this._li);
+      toolbar.style.display = 'block';
+      this._container = toolbar.parentNode.parentNode;
+      util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '26px';
+    }
 
-    toolbar.childNodes[1].appendChild(this._li);
-    toolbar.style.display = 'block';
-    this._container = toolbar.parentNode.parentNode;
     this._map = map;
-    util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '26px';
     return this;
   },
   _clean: function(layer) {
