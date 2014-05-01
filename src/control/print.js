@@ -105,8 +105,10 @@ var PrintControl = L.Control.extend({
       params.b = JSON.stringify(config);
     }
 
+    params = L.Util.getParamString(params);
+
     // TODO: Base64 encode and compress string.
-    win = window.open(this.options.url + L.Util.getParamString(params), '_blank');
+    win = window.open(this.options.url + (this.options.url.indexOf('?') === -1 ? params : '&' + params.slice(1, params.length)), '_blank');
     win.focus();
   }
 });
