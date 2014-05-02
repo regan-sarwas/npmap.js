@@ -280,7 +280,7 @@ NPMap.js will only display the title in the popup and will not render any other 
 
 ### Configuration
 
-The content for each of the sections of a popup can be specified individually via a `popup` configuration object:
+The content for each of the sections of a popup should be specified individually via a `popup` configuration object:
 
     var NPMap = {
       ...
