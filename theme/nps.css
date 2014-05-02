@@ -692,6 +692,7 @@
   color: #464646;
   cursor: default;
   display: none;
+  max-width: 250px;
   opacity: 0;
   z-index: 10;
 }
