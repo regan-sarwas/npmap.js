@@ -56,7 +56,7 @@ var PrintControl = L.Control.extend({
     }
 
     if (layer.tooltip) {
-      layer.tooltip = util.escapeHtml(layer.popup);
+      layer.tooltip = util.escapeHtml(layer.tooltip);
     }
   },
   print: function() {
