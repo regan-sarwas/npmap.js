@@ -194,6 +194,16 @@
       "name": "NPS Neutral Terrain",
       "type": "mapbox"
     },
+    "parkTiles": {
+      "attribution": "<a href='mailto:npmap@nps.gov'>Submit Feedback</a> | <a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>, © <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "id": "nps.2yxv8n84",
+      "name": "Park Tiles",
+      "popup": {
+        "title": "{{#if name}}{{name}}{{else}}Unnamed{{/if}}"
+      },
+      "type": "mapbox"
+    },
     "satelliteNight": {
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
       "detectRetina": true,
