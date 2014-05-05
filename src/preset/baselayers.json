@@ -195,7 +195,7 @@
       "type": "mapbox"
     },
     "parkTiles": {
-      "attribution": "<a href='mailto:npmap@nps.gov'>Submit Feedback</a> | <a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>, © <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "attribution": "<a href='mailto:npmap@nps.gov'>Submit Feedback</a> | <a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>, &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "nps",
       "id": "nps.2yxv8n84",
       "name": "Park Tiles",
