@@ -554,7 +554,7 @@ var Map = L.Map.extend({
         if (visible) {
           return config.baseLayers;
         } else {
-          var active = baselayerPresets.nps.lightStreets;
+          var active = baselayerPresets.nps.parkTiles;
           active.visible = true;
           active.zIndex = 0;
           return [
