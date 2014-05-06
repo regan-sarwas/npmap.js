@@ -26,11 +26,13 @@ var LocateControl = L.Control.extend({
       weight: 2
     },
     metric: true,
-    onLocationError: function(err) {
-      alert(err.message);
+    onLocationError: function(context, error) {
+      L.DomUtil.removeClass(context._button, 'requesting');
+      L.DomUtil.removeClass(context._button, 'pressed');
+      context._map.notify.danger(error.message);
     },
     onLocationOutsideMapBounds: function(context) {
-      alert(context.options.strings.outsideMapBoundsMsg);
+      context._map.notify.danger(context.options.strings.outsideMapBoundsMsg);
     },
     position: 'topleft',
     setView: true,
@@ -51,6 +53,7 @@ var LocateControl = L.Control.extend({
     this._locateOptions = {
       watch: true
     };
+    this._map = map;
     L.extend(this._locateOptions, this.options.locateOptions);
     L.extend(this._locateOptions, {
       setView: false
@@ -110,7 +113,7 @@ var LocateControl = L.Control.extend({
       }
 
       stopLocate();
-      me.options.onLocationError(err);
+      me.options.onLocationError(me, err);
     }
     function onLocationFound(e) {
       if (me._event && (me._event.latlng.lat === e.latlng.lat && me._event.latlng.lng === e.latlng.lng && me._event.accuracy === e.accuracy)) {
