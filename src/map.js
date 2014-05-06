@@ -111,20 +111,20 @@ var Map = L.Map.extend({
     me.on('autopanstart', function() {
       me._setCursor('');
     });
-    this._notify = humane.create({
+    this.notify = humane.create({
       baseCls: 'humane-bootstrap',
       container: map,
     });
-    this._notify.danger = this._notify.spawn({
+    this.notify.danger = this.notify.spawn({
       addnCls: 'humane-bootstrap-danger'
     });
-    this._notify.info = this._notify.spawn({
+    this.notify.info = this.notify.spawn({
       addnCls: 'humane-bootstrap-info'
     });
-    this._notify.success = this._notify.spawn({
+    this.notify.success = this.notify.spawn({
       addnCls: 'humane-bootstrap-success'
     });
-    this._notify.warning = this._notify.spawn({
+    this.notify.warning = this.notify.spawn({
       addnCls: 'humane-bootstrap-warning'
     });
     this._progress = new nanobar({
