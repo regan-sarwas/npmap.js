@@ -407,7 +407,7 @@ The switcher control is used and controlled internally by NPMap.js. It is create
 ## Esri
 
 * `esri-gray`
-'esri-grayLabels`
+* `esri-grayLabels`
 * `esri-imagery`
 * `esri-imageryLabels`
 * `esri-nationalGeographic`
