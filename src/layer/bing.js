@@ -1,4 +1,4 @@
-/* global L */
+/* globals console, document, L, module, window */
 
 'use strict';
 
@@ -30,7 +30,7 @@ var BingLayer = L.TileLayer.extend({
     L.TileLayer.prototype.onRemove.apply(this, [map]);
   },
   _update: function() {
-    if (this._url == null || !this._map) {
+    if (this._url === null || !this._map) {
       return;
     }
 

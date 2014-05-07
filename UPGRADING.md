@@ -1,8 +1,6 @@
 # Upgrading
 
-Upgrading to NPMap.js (aka any version of NPMap >= 2.0.0) from an old version of the NPMap library (any version < 2.0.0) does not require any migration steps; NPMap.js takes care of transitioning any legacy configuration properties for you.
-
-That said, there are a number of changes you should be aware of when building **new** maps with NPMap.js. Adopting the new conventions will ensure you are taking advantage of all the new features available.
+Upgrading to NPMap.js (any version of NPMap >= 2.0.0) from an old version of the NPMap library (any version < 2.0.0) requires some minor changes to the NPMap configuration object.
 
 ## Changes
 
@@ -44,9 +42,12 @@ NPMap.js:
 
 Some more notes:
 
-1. The `layers` config property is now named `overlays`
+1. The `api` config property is no longer needed
 2. The `events` config property is now named `hooks`
 3. The `InfoBox` config property is now named `popup`
-4. The `type` property for `baselayers` and `layers` should now be defined in lowercase (e.g. `GeoJson` is now `geojson`)
+4. The `layers` config property is now named `overlays`
 5. The `TileStream` layer handler is now named `mapbox`
 6. The `tools` config property has been deprecated. "Tools" are now called "Controls", and they can be added as individual `Boolean` or `Object` configs. Take a look at the [examples](https://github.com/nationalparkservice/npmap.js/tree/master/examples) for more information.
+7. The `type` property for `baselayers` and `overlays` should now be defined in lowercase (`GeoJson` is now `geojson`, `Kml` is now `kml`, etc.)
+
+And that is it! Migrating should be fairly straightforward and painless. If you need help, send an email to the [NPMap team](mailto:npmap@nps.gov). We are happy to help.
