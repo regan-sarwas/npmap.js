@@ -432,7 +432,7 @@ The switcher control is used and controlled internally by NPMap.js. It is create
 
 # Utils
 
-More information about the NPMap.js util class coming soon.
+Docs for `L.npmap.util` coming soon.
 
 # Concepts
 
