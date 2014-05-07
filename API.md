@@ -4,76 +4,127 @@
 
 Create and configure a map with baseLayers, overlays, and controls.
 
-_Extends_: [`L.Map`](http://leafletjs.com/reference.html#map-options)
+_Extends_: [`L.Map`](http://leafletjs.com/reference.html#map-class)
 
 _Arguments_:
 
 The first, and only, argument is required. It must be a map config object with the following properties:
 
-- (Required) `div` (Object or String): Either an HTML element or the id of an HTML element to render the map into.
-- (Optional) `baseLayers` (Array): An array of baseLayer configuration objects OR baseLayer preset strings.
-- (Optional) `editControl` (Boolean): Defaults to `undefined`
-- (Optional) `fullscreenControl` (Boolean): Defaults to `undefined`.
-- (Optional) `geocoderControl` (Boolean or Object): Defaults to `undefined`.
-- (Optional) `homeControl` (Boolean): Defaults to `true`.
-- (Optional) `legendControl` (Boolean): Defaults to `undefined`
-- (Optional) `locateControl` (Boolean): Defaults to `undefined`
-- (Optional) `measureControl` (Boolean): Defaults to `undefined`
-- (Optional) `overlays` (Array): An array of overlay configuration objects OR overlay preset strings.
-- (Optional) `overviewControl` (Boolean or Object): Defaults to `undefined`.
-- (Optional) `printControl` (Boolean): Defaults to `undefined`
-- (Optional) `scaleControl` (Boolean): Defaults to `undefined`.
-- (Optional) `shareControl` (Boolean): Defaults to `undefined`
-- (Optional) `smallzoomControl` (Boolean): Defaults to `true`.
+* (Required) `div` (Object or String): Either an HTML element or the id of an HTML element to render the map into.
+* (Optional) `baseLayers` (Array): An array of baseLayer configuration objects OR [baseLayer preset](#baseLayer-presets) strings.
+* (Optional) `editControl` (Boolean): Defaults to `undefined`.
+* (Optional) `fullscreenControl` (Boolean): Defaults to `undefined`.
+* (Optional) `geocoderControl` (Boolean or Object): Defaults to `undefined`.
+* (Optional) `homeControl` (Boolean): Defaults to `true`.
+* (Optional) `legendControl` (Boolean): Defaults to `undefined`.
+* (Optional) `locateControl` (Boolean): Defaults to `undefined`.
+* (Optional) `measureControl` (Boolean): Defaults to `undefined`.
+* (Optional) `overlays` (Array): An array of overlay configuration objects OR overlay preset strings..
+* (Optional) `overviewControl` (Boolean or Object): Defaults to `undefined`.
+* (Optional) `printControl` (Boolean): Defaults to `undefined`.
+* (Optional) `scaleControl` (Boolean): Defaults to `undefined`.
+* (Optional) `shareControl` (Boolean): Defaults to `undefined`.
+* (Optional) `smallzoomControl` (Boolean): Defaults to `true`.
 
 You can also (optionally) provide any of the options supported by [`L.Map`](http://leafletjs.com/reference.html#map-options).
 
-_Example_:
+_Example (Bootstrap)_:
 
-    var map = L.npmap.map({
-      div: 'map',
-      geocoderControl: true
+    var NPMap = {
+      div: 'map'
     });
 
-_Returns_: a map object
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
 
 # Layers
 
+Layers can be added to a map via either the `baseLayers` or `overlays` configs. Only one baseLayer can be shown at a time. Multiple overlays can display at the same time.
+
+If adding via the `baseLayers` config, [baseLayer preset](#baseLayer-presets) strings are supported.
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      baseLayers: [
+        'bing-aerial'
+      ],
+      overlays: [{
+        table: 'park_bounds',
+        type: 'cartodb',
+        user: 'nps'
+      }]
+    };
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.bing().addTo(map);
+    L.npmap.layer.cartodb({
+      table: 'park_bounds',
+      type: 'cartodb',
+      user: 'nps'
+    }).addTo(map);
+
 ## L.npmap.layer.arcgisserver(config: object)
 
-Add a layer from an ArcGIS Server map service, including services hosted on ArcGIS Online, to your map with `L.npmap.layer.arcgisserver()`.
+Create a layer from an ArcGIS Server tiled or dynamic map service, including services hosted on ArcGIS Online, and add it to a map.
 
-_Extends_: [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer)
+_Extends_:
+
+* Tiled ArcGIS Server layers extend [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+* Dynamic ArcGIS Server layers extend [`L.Class`](http://leafletjs.com/reference.html#class).
 
 _Arguments_:
 
 The first, and only, argument is required. It must be a layer config object with the following properties:
 
-- (Required) `tiled` (Boolean): Should be `true` if the service is tiled and `false` if it is not.
-- (Required) `url` (String): A URL string ending with "MapServer" for the ArcGIS Server service.
-- (Optional) `attribution` (String): An attribution string for the layer. HTML is allowed.
-- (Optional) `description` (String): Descriptive text for the layer. Used in legends, modules, and controls.
-- (Optional) `dynamicAttribution` (String): The URL of a [dynamic attribution](http://blogs.esri.com/esri/arcgis/2012/08/15/dynamic-attribution-is-here/) endpoint for the service.
-- (Optional) `layers` (String): A comma-delimited string of the ArcGIS Server integer layer identifiers to bring into the NPMap.js layer.
-- (Optional) `name` (String): A name for the layer. Used in legends, modules, and controls.
-- (Optional) `popup` (String OR Function): Configures the contents of the popup for an overlay. Either a Handlebars HTML template string or a function that is passed the data properties for a shape and returns an HTML string.
+* (Required) `tiled` (Boolean): Should be `true` if the service is tiled and `false` if it is not.
+* (Required) `url` (String): A URL string ending with "MapServer" for the ArcGIS Server service.
+* (Optional) `attribution` (String): An attribution string for the layer. HTML is allowed.
+* (Optional) `description` (String): Descriptive text for the layer. Used in legends, modules, and controls.
+* (Optional) `dynamicAttribution` (String): The URL of a [dynamic attribution](http://blogs.esri.com/esri/arcgis/2012/08/15/dynamic-attribution-is-here/) endpoint for the service.
+* (Optional) `layers` (String): A comma-delimited string of the ArcGIS Server integer layer identifiers to bring into the NPMap.js layer.
+* (Optional) `name` (String): A name for the layer. Used in legends, modules, and controls.
+* (Optional) `popup` (String OR Function): Configures the contents of the popup for an overlay. Either a Handlebars HTML template string or a function that is passed the data properties for a shape and returns an HTML string.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
-_Example_:
+_Example (Bootstrap)_:
 
-    var layer = L.npmap.layer.arcgisserver({
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        attribution: '<a href="http://www.esri.com">Esri</a>',
+        opacity: 0.5,
+        tiled: true,
+        url: 'http://services.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Unemployment_Rate/MapServer'
+      }]
+    };
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.arcgisserver({
       attribution: '<a href="http://www.esri.com">Esri</a>',
       opacity: 0.5,
       tiled: true,
       url: 'http://services.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Unemployment_Rate/MapServer'
-    });
-
-_Returns_: a layer object
+    }).addTo(map);
 
 ## L.npmap.layer.bing(config: object)
 
-Add a layer from the [Bing Imagery API](http://msdn.microsoft.com/en-us/library/ff701721.aspx) to your map with `L.npmap.layer.bing()`.
+Create a layer from the [Bing Imagery API](http://msdn.microsoft.com/en-us/library/ff701721.aspx) and add it to a map.
 
 _Extends_: [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer)
 
@@ -81,21 +132,32 @@ _Arguments_:
 
 The first, and only, argument is required. It must be a layer config object with the following properties:
 
-- (Required) `layer` (String): The layer you want to bring in from the Bing Imagery API.
+- (Optional) `layer` (String): The layer you want to bring in from the Bing Imagery API. Defaults to `aerial`. Valid options are `aerial`, `aerialwithlabels`, and `road`.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
-_Example_:
+_Example (Bootstrap)_:
 
-    var layer = L.npmap.layer.bing({
-      layer: 'aerialWithLabels'
+    var NPMap = {
+      div: 'map',
+      baseLayers: [{
+        type: 'bing'
+      }]
+    };
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
     });
+
+    L.npmap.layer.bing().addTo(map);
 
 _Returns_: a layer object
 
 ## L.npmap.layer.cartodb(config: object)
 
-Add a [CartoDB](http://cartodb.com) layer to your map with `L.npmap.layer.cartodb()`.
+Create a [CartoDB](http://cartodb.com) layer and add it to a map.
 
 _Extends_: [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer)
 
@@ -103,15 +165,26 @@ _Arguments_:
 
 The first, and only, argument is required. It must be a layer config object with the following properties:
 
-- (Required) `table` (String)
-- (Required) `user` (String)
-- (Optional) `cartocss` (String)
-- (Optional) `interactivity` (String)
-- (Optional) `sql` (String)
+* (Required) `table` (String)
+* (Required) `user` (String)
+* (Optional) `cartocss` (String)
+* (Optional) `interactivity` (String)
+* (Optional) `sql` (String)
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
-_Example_:
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        table: 'park_bounds',
+        type: 'cartodb',
+        user: 'nps'
+      }]
+    };
+
+_Example (API)_:
 
     var layer = L.npmap.layer.cartodb({
       table: 'park_bounds',
@@ -123,32 +196,34 @@ _Returns_: a layer object
 
 ## L.npmap.layer.csv(config: object)
 
-Add a CSV layer to your map with `L.npmap.layer.csv()`.
+Create a CSV layer and add it to a map.
 
 ## L.npmap.layer.geojson(config: object)
 
-Add a GeoJSON layer to your map with `L.npmap.layer.geojson()`.
+Create a GeoJSON layer and add it to a map.
 
 ## L.npmap.layer.github(config: object)
 
-Add a GeoJSON/TopoJSON layer from GitHub to your map with `L.npmap.layer.github()`. NOTE: This layer handler utilizes the GitHub API to pull data in. This API is limited to 60 requests per hour. For production apps, you will want to setup a [GitHub Pages](http://pages.github.com/) site.
+Create a GitHub layer and add it to a map.
 
-*Arguments:*
+NOTE: This layer handler utilizes the GitHub API to pull data in. This API is limited to 60 requests per hour. For production apps, you will want to setup a [GitHub Pages](http://pages.github.com/) site and utilize the CSV, GeoJSON, or KML layer handlers.
+
+_Arguments_:
 
 The first, and only, argument is required, and must be a layer config object with the following properties:
 
-- (Required) `data` (Object | String): The GeoJSON data you'd like to add to the map. If this is a string, NPMap.js will parse it into an object for you. Required if your GitHub details (the other three "required" properties below) aren't provided.
+* (Required) `data` (Object | String): The GeoJSON data you'd like to add to the map. If this is a string, NPMap.js will parse it into an object for you. Required if your GitHub details (the other three "required" properties below) aren't provided.
 
 OR
 
-- (Required) `path` (String): The path to your GitHub file. This **should not** include your GitHub organization/user name or the name of the repository. This is the path to the GeoJSON file in your GitHub repository: e.g. `fire/CA-STF-HV2F.geojson`.
-- (Required) `repo` (String): The name of the repository that contains the data.
-- (Required) `user` (String): The name of the organization or user that owns the repository.
-- (Optional) `branch` (String) The name of the branch your GitHub file should be pulled in from. Defaults to `master`.
+* (Required) `path` (String): The path to your GitHub file. This **should not** include your GitHub organization/user name or the name of the repository. This is the path to the GeoJSON file in your GitHub repository: e.g. `fire/CA-STF-HV2F.geojson`.
+* (Required) `repo` (String): The name of the repository that contains the data.
+* (Required) `user` (String): The name of the organization or user that owns the repository.
+* (Optional) `branch` (String) The name of the branch your GitHub file should be pulled in from. Defaults to `master`.
 
 You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#tilelayer).
 
-*Example:*
+_Example_:
 
     var layer = L.npmap.layer.github({
       path: 'fire/CA-STF-HV2F.geojson',
@@ -159,94 +234,152 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
 
 ## L.npmap.layer.kml(config: object)
 
-Add a KML layer to your map with `L.npmap.layer.kml()`.
+Create a KML layer and add it to a map.
 
 ## L.npmap.layer.mapbox(config: object)
 
-Add a layer from MapBox Hosting to your map with `L.npmap.layer.mapbox()`.
+Create a Mapbox layer and add it to a map.
 
-*Arguments:*
+_Arguments_:
 
 The first, and only, argument is required, and must be a layer config object with the following properties:
 
-- (Required) `id` (String): The id ('account.id') of the MapBox map or tileset you want to add to the map. Can also be a comma-delimited string with multiple "account.id" strings if you want to take advantage of MapBox Hosting's compositing feature. Required if `tileJson` is not provided.
+* (Required) `id` (String): The id ('account.id') of the MapBox map or tileset you want to add to the map. Can also be a comma-delimited string with multiple "account.id" strings if you want to take advantage of MapBox Hosting's compositing feature. Required if `tileJson` is not provided.
 
 OR
 
-- (Required) `tileJson` (Object): A tileJson object for the MapBox map or tileset you want to add to the map. Required if `id` is not provided.
+* (Required) `tileJson` (Object): A tileJson object for the MapBox map or tileset you want to add to the map. Required if `id` is not provided.
 
 AND
 
-- (Optional) `format` (String): One of the following: 'jpg70', 'jpg80', 'jpg90', 'png', 'png32', 'png64', 'png128', or 'png256'. If not provided, defaults to 'png'.
-- (Optional) `icon` (String)
-- (Optional) `name` (String)
-- (Optional) `retinaVersion` (String): The id ('account.id') of the MapBox map or tileset designed specifically for retina devices.
+* (Optional) `format` (String): One of the following: 'jpg70', 'jpg80', 'jpg90', 'png', 'png32', 'png64', 'png128', or 'png256'. If not provided, defaults to 'png'.
+* (Optional) `icon` (String)
+* (Optional) `name` (String)
+* (Optional) `retinaVersion` (String): The id ('account.id') of the MapBox map or tileset designed specifically for retina devices.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
-*Example:*
+_Example_:
 
     var layer = L.npmap.layer.mapbox({
       id: 'examples.map-20v6611k'
     });
 
+## L.npmap.layer.spot(config: object)
+
+Create a SPOT layer and add it to a map.
+
 ## L.npmap.layer.tiled(config: object)
 
-Add a tiled layer to your map with `L.npmap.layer.tiled()`.
+Create a tiled layer and add it to a map.
 
 ## L.npmap.layer.wms(config: object)
 
-Add a WMS layer to your map with `L.npmap.layer.wms()`.
+Create a WMS layer and add it to a map.
+
+## L.npmap.layer.zoomify(config: object)
+
+Create a Zoomify layer and add it to a map.
+
+NOTE: Zoomify layers do not contain spatial reference information, so they will not work with other georeferenced layers. When you add a Zoomify layer to your map, NPMap.js switches the map to Zoomify mode, meaning it ignores all other layers in your `baseLayers` and `overlays` configs.
 
 # Controls
 
+## L.npmap.editControl(config: object)
+
+Create an edit control that supports adding markup shapes (points, lines, and polygons), and add it to a map.
+
 ## L.npmap.fullscreenControl(config: object)
+
+Create a fullscreen control that toggles the map in and out of fullscreen mode and add it to a map.
 
 ## L.npmap.geocoderControl(config: object)
 
-## L.npmap.homeControl(config: object)
+Create a geocoder control that searches through an index of Parks and pulls in more detailed location information from a geocoding service and add it to a map
 
-## L.npmap.overviewControl(config: object)
+_Arguments_:
 
-Create a map control that provides context for the currently-visible area of the map. Adapted from the [Leaflet-MiniMap](https://github.com/Norkart/Leaflet-MiniMap) plugin.
-
-*Arguments:*
-
-The first, and only, argument is required, and must be a config object with the following properties:
-
-- (Optional) `autoToggleDisplay` (Boolean): Should the overview hide automatically if the parent map bounds does not fit within the bounds of the overview map? Defaults to `false`.
-- (Optional) `height` (Number): The height of the overview map. Defaults to 150 pixels.
-- (Optional) `layer` (String|Object): A layer config object that you would like to add to the map. Can either be a layer preset string or a layer config object. If this is `undefined`, NPMap.js uses the baseLayer that is currently visible on the parent map.
-- (Optional) `toggleDisplay` (Boolean): Should the overview map be togglable? Defaults to `true`.
-- (Optional) `width` (Number): The width of the overview map. Defaults to 150 pixels.
-- (Optional) `zoomLevelFixed` (Number): Overrides `zoomLevelOffset`, sets the map to a fixed zoom level.
-- (Optional) `zoomLevelOffset` (Number): A positive or negative number that configures the overview map to a zoom level relative to the zoom level of the main map.
+* (Optional) `provider` (String): Which supported provider should be used? Defaults to `esri`. Valid options are `bing`, `esri`, `mapquest`, and `nominatim`.
 
 You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
 
-*Example:*
+_Example_:
 
-    var control = L.npmap.control.overview({
-      layer: 'mapbox-light'
-    });
+    var NPMap = {
+      ...
+      geocoderControl: true
+    };
 
-## L.npmap.scaleControl(config: object)
+## L.npmap.homeControl(config: object)
 
-## L.npmap.smallzoomControl(config: object)
+Create a control that zooms and/or pans the map back to its initial center and zoom and add it to a map. Is on, by default, for new maps.
 
-Create a map control that contains zoom in/out buttons.
-
-*Arguments:*
+_Arguments_:
 
 You can (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
 
-*Example:*
+_Example_:
 
-    var control = L.npmap.control.smallzoom();
+    var NPMap = {
+      ...
+      homeControl: true
+    };
+
+## L.npmap.legendControl(config: object)
+
+## L.npmap.measureControl(config: object)
+
+## L.npmap.overviewControl(config: object)
+
+Create a map control that provides context for the currently-visible area of the map and it to a map. Adapted from the [Leaflet-MiniMap](https://github.com/Norkart/Leaflet-MiniMap) plugin.
+
+_Arguments_:
+
+The first, and only, argument is required, and must be a config object with the following properties:
+
+* (Optional) `autoToggleDisplay` (Boolean): Should the overview hide automatically if the parent map bounds does not fit within the bounds of the overview map? Defaults to `false`.
+* (Optional) `height` (Number): The height of the overview map. Defaults to 150 pixels.
+* (Optional) `layer` (String|Object): A layer config object that you would like to add to the map. Can either be a layer preset string or a layer config object. If this is `undefined`, NPMap.js uses the baseLayer that is currently visible on the parent map.
+* (Optional) `toggleDisplay` (Boolean): Should the overview map be togglable? Defaults to `true`.
+* (Optional) `width` (Number): The width of the overview map. Defaults to 150 pixels.
+* (Optional) `zoomLevelFixed` (Number): Overrides `zoomLevelOffset`, sets the map to a fixed zoom level.
+* (Optional) `zoomLevelOffset` (Number): A positive or negative number that configures the overview map to a zoom level relative to the zoom level of the main map.
+
+You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
+
+_Example_:
+
+    var NPMap = {
+      ...
+      overviewControl: {
+        layer: 'mapbox-light'
+      }
+    };
+
+## L.npmap.printControl(config: object)
+
+## L.npmap.scaleControl(config: object)
+
+## L.npmap.shareControl(config: object)
+
+## L.npmap.smallzoomControl(config: object)
+
+Create a map control that contains zoom in/out buttons and add it to a map. Is on, by default, for new maps.
+
+_Arguments_:
+
+You can (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
+
+_Example_:
+
+    var NPMap = {
+      ...
+      smallzoomControl: true
+    }
 
 ## L.npmap.switcherControl(config: object)
 
-The switcher control is used and controlled internally by NPMap.js, and is created and added to your map when more than one baseLayers is present in your map configuration object.
+The switcher control is used and controlled internally by NPMap.js. It is created and added to your map when more than one layer config is present in the `baseLayers` config of your map configuration object.
 
 # Icons
 
@@ -254,7 +387,52 @@ The switcher control is used and controlled internally by NPMap.js, and is creat
 
 ## L.npmap.icon.npmaki(config: object)
 
+# Presets
+
+<h2 id="baseLayer-presets">baseLayer</h2>
+
+## NPS
+
+* `nps-lightStreets`
+* `nps-neutralTerrain`
+* `nps-parkTiles`
+* `nps-satelliteNight`
+
+## Bing
+
+* `bing-aerial`
+* `bing-aerialLabels`
+* `bing-roads`
+
+## Esri
+
+* `esri-gray`
+'esri-grayLabels`
+* `esri-imagery`
+* `esri-imageryLabels`
+* `esri-nationalGeographic`
+* `esri-oceans`
+* `esri-oceansLabels`
+* `esri-streets`
+* `esri-topographic`
+
+## Mapbox
+
+* `mapbox-satelliteLabels`
+* `mapbox-light`
+* `mapbox-outdoors`
+* `mapbox-satellite`
+* `mapbox-streets`
+* `mapbox-terrain`
+
+## Stamen
+
+* `stamen-toner`
+* `stamen-watercolor`
+
 # Utils
+
+More information about the NPMap.js util class coming soon.
 
 # Concepts
 
@@ -361,7 +539,7 @@ You can see examples of configuring popups for overlays in the [popups](https://
 
 ## Using Tooltips
 
-Tooltips display when you hover over a feature in an overlay. Tooltips only work for layer handlers that support `mouseover` and `mouseout` operations, currently CartoDB, CSV, GeoJSON, GitHub, KML, and MapBox.
+Tooltips display when you hover over a feature in an overlay. Tooltips only work for layer handlers that support `mouseover` and `mouseout` operations (currently CartoDB, CSV, GeoJSON, GitHub, KML, Mapbox, and SPOT).
 
 Tooltips should be short and succinct. Like popups, HTML and Handlebars strings are supported.
 
@@ -373,7 +551,7 @@ Tooltips should be short and succinct. Like popups, HTML and Handlebars strings 
       }]
     };
 
-You can see examples of configuring tooltips for overlays in the [tooltips](https://github.com/nationalparkservice/npmap.js/blob/master/examples/tooltips.html) example map.
+You can see examples of configuring tooltips for overlays in the [tooltips example](https://github.com/nationalparkservice/npmap.js/blob/master/examples/tooltips.html).
 
 ## Styling Vectors
 
