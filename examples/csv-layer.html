@@ -27,7 +27,10 @@
         },
         div: 'map',
         overlays: [{
-          popup: '<div class="title">{{{name}}}</div><div class="content">Zip Code: {{{zip}}}</div>',
+          popup: {
+            description: 'Zip Code: {{zip}}',
+            title: '{{name}}'
+          },
           type: 'csv',
           url: 'data/colorado_cities.csv'
         }],

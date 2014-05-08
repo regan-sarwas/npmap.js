@@ -21,19 +21,21 @@
     <div id="map"></div>
     <script>
       var NPMap = {
-        baseLayers: [],
+        baseLayers: false,
         div: 'map',
+        minZoom: 5,
         overlays: [{
-          id: 'nps.map-yyhgnmsc,nps.wilderness-areas,nps.wilderness-parks-update',
-          opacity: 1,
-          type:'mapbox',
           attribution: 'Wilderness Stewardship Division',
+          id: 'nps.map-yyhgnmsc,nps.wilderness-areas,nps.wilderness-parks-update',
           name: 'Wilderness Map',
+          opacity: 1,
           popup: {
             description: '&lt;ul&gt;&lt;li&gt;Designated Acres: {{acres_des}}&lt;/li&gt;&lt;li&gt;Designated Potential Acres: {{#if acres_pot}}{{acres_pot}}{{else}}N/A{{/if}}&lt;/li&gt;&lt;/ul&gt;',
             title: '{{name}}'
-          }
-        }]
+          },
+          type: 'mapbox'
+        }],
+        zoom: 5
       };
 
       (function() {

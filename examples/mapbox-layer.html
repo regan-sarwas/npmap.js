@@ -25,8 +25,11 @@
             baseLayers: [{
               attribution: attribution,
               id: 'mapbox.geography-class',
-              popup: '<div class="title">{{admin}}</div><div class="content" style="text-align:center;"><img src="data:image/png;base64,{{flag_png}}"></div>',
-              tooltip: '<div class="content">{{admin}}</div>',
+              popup: {
+                description: '<div style="text-align:center;"><img src="data:image/png;base64,{{flag_png}}"></div>',
+                title: '{{admin}}'
+              },
+              tooltip: '{{admin}}',
               type: 'mapbox'
             }],
             div: 'map',

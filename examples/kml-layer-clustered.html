@@ -24,12 +24,16 @@
         div: 'map',
         overlays: [{
           cluster: true,
-          popup: '<div class="title">{{alphacode}}</div>',
+          popup: {
+            title: '{{alphacode}}'
+          },
           type: 'kml',
           url: 'data/national_parks.kml'
         },{
           cluster: true,
-          popup: '<div class="title">{{{name}}}</div>',
+          popup: {
+            title: '{{name}}'
+          },
           type: 'kml',
           url: 'http://www.nps.gov/npmap/support/library/examples/data/dc.kml'
         }]

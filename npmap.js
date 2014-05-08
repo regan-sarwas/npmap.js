@@ -16,6 +16,7 @@ L.npmap = module.exports = {
     edit: require('./src/control/edit'),
     fullscreen: require('./src/control/fullscreen'),
     geocoder: require('./src/control/geocoder'),
+    hash: require('./src/control/hash'),
     legend: require('./src/control/legend'),
     overview: require('./src/control/overview'),
     print: require('./src/control/print'),

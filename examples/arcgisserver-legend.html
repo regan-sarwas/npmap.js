@@ -32,7 +32,7 @@
       reqwest({
         success: function(response) {
           var html = '',
-          name = "National Park Info";
+            name = "National Park Info";
 
           response.layers.forEach(function (index, v) {
             var legend = response.layers[v].legend,

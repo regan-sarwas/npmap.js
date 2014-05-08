@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>GitHub Layer | Examples | NPMap.js</title>
+    <title>Hash Control | Examples | NPMap.js</title>
     <style>
       body {
         margin: 0;
@@ -21,24 +21,8 @@
     <div id="map"></div>
     <script>
       var NPMap = {
-        center: {
-          lat: 37.82551432799189,
-          lng: -119.57931518554688
-        },
         div: 'map',
-        overlays: [{
-          attribution: 'Land Resources Division',
-          branch: 'gh-pages',
-          path: 'base_data/boundaries/parks/yose.topojson',
-          popup: {
-            title: 'Yosemite National Park'
-          },
-          repo: 'data',
-          style: 'parks',
-          type: 'github',
-          user: 'nationalparkservice'
-        }],
-        zoom: 10
+        hashControl: true
       };
 
       (function() {
