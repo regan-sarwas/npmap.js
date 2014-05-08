@@ -16,6 +16,7 @@ The first, and only, argument is required. It must be a map config object with t
 * (Optional) `fullscreenControl` (Boolean): Defaults to `undefined`.
 * (Optional) `geocoderControl` (Boolean or Object): Defaults to `undefined`.
 * (Optional) `homeControl` (Boolean): Defaults to `true`.
+* (Optional) `hooks` (Object): Add `init` and/or `preinit` hooks to the map. These must be functions that accept a `callback` parameter, and execute the `callback` function.
 * (Optional) `legendControl` (Boolean): Defaults to `undefined`.
 * (Optional) `locateControl` (Boolean): Defaults to `undefined`.
 * (Optional) `measureControl` (Boolean): Defaults to `undefined`.
@@ -27,6 +28,8 @@ The first, and only, argument is required. It must be a map config object with t
 * (Optional) `smallzoomControl` (Boolean): Defaults to `true`.
 
 You can also (optionally) provide any of the options supported by [`L.Map`](http://leafletjs.com/reference.html#map-options).
+
+_Returns_: a map object
 
 _Example (Bootstrap)_:
 
@@ -40,9 +43,16 @@ _Example (API)_:
       div: 'map'
     });
 
+_Working Examples_:
+
+* [Getting Started](http://www.nps.gov/npmap/npmap.js/latest/examples/basic.html)
+* [Load Hooks](http://www.nps.gov/npmap/npmap.js/latest/examples/hooks.html)
+* [Multiple Maps on One Page](http://www.nps.gov/npmap/npmap.js/latest/examples/multiple-maps.html)
+* [Using Notifications](http://www.nps.gov/npmap/npmap.js/latest/examples/notifications.html)
+
 # Layers
 
-Layers can be added to a map via either the `baseLayers` or `overlays` configs. Only one baseLayer can be shown at a time. Multiple overlays can display at the same time.
+Layers can be added to a map via either the `baseLayers` or `overlays` configs. Only one baseLayer can be visible at a time. Multiple overlays can be visible at the same time.
 
 If adding via the `baseLayers` config, [baseLayer preset](#baseLayer-presets) strings are supported.
 
@@ -73,6 +83,10 @@ _Example (API)_:
       user: 'nps'
     }).addTo(map);
 
+_Working Examples_:
+
+* [baseLayer Presets](http://www.nps.gov/npmap/npmap.js/latest/examples/baselayer-presets.html)
+
 ## L.npmap.layer.arcgisserver(config: object)
 
 Create a layer from an ArcGIS Server tiled or dynamic map service, including services hosted on ArcGIS Online, and add it to a map.
@@ -96,6 +110,8 @@ The first, and only, argument is required. It must be a layer config object with
 * (Optional) `popup` (String OR Function): Configures the contents of the popup for an overlay. Either a Handlebars HTML template string or a function that is passed the data properties for a shape and returns an HTML string.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+
+_Returns_: a layer object
 
 _Example (Bootstrap)_:
 
@@ -122,6 +138,10 @@ _Example (API)_:
       url: 'http://services.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Unemployment_Rate/MapServer'
     }).addTo(map);
 
+_Working Examples_:
+
+* [ArcGIS Server Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/arcgisserver-layer.html)
+
 ## L.npmap.layer.bing(config: object)
 
 Create a layer from the [Bing Imagery API](http://msdn.microsoft.com/en-us/library/ff701721.aspx) and add it to a map.
@@ -135,6 +155,8 @@ The first, and only, argument is required. It must be a layer config object with
 - (Optional) `layer` (String): The layer you want to bring in from the Bing Imagery API. Defaults to `aerial`. Valid options are `aerial`, `aerialwithlabels`, and `road`.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+
+_Returns_: a layer object
 
 _Example (Bootstrap)_:
 
@@ -153,7 +175,9 @@ _Example (API)_:
 
     L.npmap.layer.bing().addTo(map);
 
-_Returns_: a layer object
+_Working Examples_:
+
+* [Bing Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/bing-layer.html)
 
 ## L.npmap.layer.cartodb(config: object)
 
@@ -165,13 +189,15 @@ _Arguments_:
 
 The first, and only, argument is required. It must be a layer config object with the following properties:
 
-* (Required) `table` (String)
-* (Required) `user` (String)
-* (Optional) `cartocss` (String)
-* (Optional) `interactivity` (String)
-* (Optional) `sql` (String)
+* (Required) `table` (String): The name of the CartoDB table.
+* (Required) `user` (String): The name of the CartoDB user.
+* (Optional) `cartocss` (String): A [CartoCSS](https://www.mapbox.com/tilemill/docs/manual/carto/) string to apply to the layer.
+* (Optional) `interactivity` (String): A comma-delimited string of fields to pull from CartoDB for interactivity (available via mouseover and click operations).
+* (Optional) `sql` (String): A SQL query to pass to CartoDB.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+
+_Returns_: a layer object
 
 _Example (Bootstrap)_:
 
@@ -186,17 +212,75 @@ _Example (Bootstrap)_:
 
 _Example (API)_:
 
-    var layer = L.npmap.layer.cartodb({
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.cartodb({
       table: 'park_bounds',
       type: 'cartodb',
       user: 'nps'
-    });
+    }).addTo(map);
 
-_Returns_: a layer object
+_Working Examples_:
+
+* [CartoDB Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/cartodb-layer.html)
 
 ## L.npmap.layer.csv(config: object)
 
 Create a CSV layer and add it to a map.
+
+_Extends_: [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson)
+
+_Arguments_:
+
+The first, and only, argument is required. It must be a layer config object with the following properties:
+
+* (Required) `data` (String): The string of CSV data.
+
+OR
+
+* (Required) `url` (String): A URL to load the CSV data from. Required if `data` is not provided.
+
+AND
+
+* (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
+* (Optional) `popup` (Object): A popup config object.
+* (Optional) `styles` (Object): A styles config object.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
+
+You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
+
+1. `pointToLayer`
+2. `style`
+3. `onEachFeature`
+
+These options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        type: 'csv',
+        url: 'data/colorado_cities.csv'
+      }]
+    });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.csv({
+      url: 'data/colorado_cities.csv'
+    }).addTo(map);
+
+_Working Examples_:
+
+* [CSV Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/csv-layer.html)
+* [CSV Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/csv-layer.html)
 
 ## L.npmap.layer.geojson(config: object)
 
@@ -283,7 +367,7 @@ Create a Zoomify layer and add it to a map.
 
 NOTE: Zoomify layers do not contain spatial reference information, so they will not work with other georeferenced layers. When you add a Zoomify layer to your map, NPMap.js switches the map to Zoomify mode, meaning it ignores all other layers in your `baseLayers` and `overlays` configs.
 
-# Controls
+<h1 id="controls">Controls</h1>
 
 ## L.npmap.editControl(config: object)
 
