@@ -195,6 +195,8 @@ The first, and only, argument is required. It must be a layer config object with
 * (Optional) `interactivity` (String): A comma-delimited string of fields to pull from CartoDB for interactivity (available via mouseover and click operations).
 * (Optional) `sql` (String): A SQL query to pass to CartoDB.
 
+NOTE: If you specify a SQL query via the `sql` property, you _must_ also specify the `interactivity` property.
+
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
 _Returns_: a layer object
@@ -445,8 +447,7 @@ _Example (API)_:
 _Working Examples_:
 
 * [KML Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer.html)
-* [KML Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer.html)
-
+* [KML Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer-clustered.html)
 
 
 
