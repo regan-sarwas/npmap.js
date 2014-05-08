@@ -238,11 +238,11 @@ The first, and only, argument is required. It must be a layer config object with
 
 * (Required) `data` (String): The string of CSV data.
 
-OR
+_OR_
 
 * (Required) `url` (String): A URL to load the CSV data from. Required if `data` is not provided.
 
-AND
+_AND_
 
 * (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
 * (Optional) `popup` (Object): A popup config object.
@@ -255,7 +255,7 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
 2. `style`
 3. `onEachFeature`
 
-These options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
 
 _Example (Bootstrap)_:
 
@@ -280,11 +280,63 @@ _Example (API)_:
 _Working Examples_:
 
 * [CSV Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/csv-layer.html)
-* [CSV Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/csv-layer.html)
+* [CSV Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/csv-layer-clustered.html)
 
 ## L.npmap.layer.geojson(config: object)
 
 Create a GeoJSON layer and add it to a map.
+
+_Extends_: [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson)
+
+_Arguments_:
+
+The first, and only, argument is required. It must be a layer config object with the following properties:
+
+* (Required) `data` (Object): The GeoJSON object.
+
+_OR_
+
+* (Required) `url` (String): A URL to load the GeoJSON data from. Required if `data` is not provided.
+
+_AND_
+
+* (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
+* (Optional) `popup` (Object): A popup config object.
+* (Optional) `styles` (Object): A styles config object.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
+
+You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
+
+1. `pointToLayer`
+2. `style`
+3. `onEachFeature`
+
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        type: 'geojson',
+        url: 'data/national_parks.geojson'
+      }]
+    });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.geojson({
+      url: 'data/national_parks.geojson'
+    }).addTo(map);
+
+_Working Examples_:
+
+* [GeoJSON Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/geojson-layer.html)
+* [GeoJSON Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/geojson-layer-clustered.html)
 
 ## L.npmap.layer.github(config: object)
 
@@ -296,29 +348,117 @@ _Arguments_:
 
 The first, and only, argument is required, and must be a layer config object with the following properties:
 
-* (Required) `data` (Object | String): The GeoJSON data you'd like to add to the map. If this is a string, NPMap.js will parse it into an object for you. Required if your GitHub details (the other three "required" properties below) aren't provided.
-
-OR
-
-* (Required) `path` (String): The path to your GitHub file. This **should not** include your GitHub organization/user name or the name of the repository. This is the path to the GeoJSON file in your GitHub repository: e.g. `fire/CA-STF-HV2F.geojson`.
+* (Required) `path` (String): The path to your GitHub file. This _should not_ include your GitHub organization/user name or the name of the repository. This is the path to the GeoJSON file in your GitHub repository: e.g. `fire/CA-STF-HV2F.geojson`.
 * (Required) `repo` (String): The name of the repository that contains the data.
 * (Required) `user` (String): The name of the organization or user that owns the repository.
 * (Optional) `branch` (String) The name of the branch your GitHub file should be pulled in from. Defaults to `master`.
 
-You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#tilelayer).
+You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
 
-_Example_:
+1. `pointToLayer`
+2. `style`
+3. `onEachFeature`
 
-    var layer = L.npmap.layer.github({
-      path: 'fire/CA-STF-HV2F.geojson',
-      repo: 'data',
-      type: 'github',
-      user: 'nationalparkservice'
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        branch: 'gh-pages',
+        path: 'base_data/boundaries/parks/yose.topojson',
+        repo: 'data',
+        type: 'github',
+        user: 'nationalparkservice'
+      }]
     });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.github({
+      branch: 'gh-pages',
+      path: 'base_data/boundaries/parks/yose.topojson',
+      repo: 'data',
+      user: 'nationalparkservice'
+    }).addTo(map);
+
+_Working Examples_:
+
+* [GitHub Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/github-layer.html)
 
 ## L.npmap.layer.kml(config: object)
 
 Create a KML layer and add it to a map.
+
+NOTE: For NPMap.js to load KML data, the data must be properly formatted.
+
+_Arguments_:
+
+The first, and only, argument is required, and must be a layer config object with the following properties:
+
+* (Required) `data` (Object): The string of KML data.
+
+_OR_
+
+* (Required) `url` (String): A URL to load the KML data from. Required if `data` is not provided.
+
+_AND_
+
+* (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
+* (Optional) `popup` (Object): A popup config object.
+* (Optional) `styles` (Object): A styles config object.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
+
+You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
+
+1. `pointToLayer`
+2. `style`
+3. `onEachFeature`
+
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        type: 'kml',
+        url: 'data/national_parks.kml'
+      }]
+    });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.kml({
+      url: 'data/national_parks.kml'
+    }).addTo(map);
+
+_Working Examples_:
+
+* [KML Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer.html)
+* [KML Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer.html)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## L.npmap.layer.mapbox(config: object)
 
