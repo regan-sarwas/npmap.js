@@ -28,7 +28,9 @@
         div: 'map',
         overlays: [{
           attribution: 'NPMap Team',
-          popup: '<div class="title">{{Name}}</div><p>{{Description}}</p>',
+          popup: {
+            title: '{{Description}}'
+          },
           tooltip: '{{Name}}',
           type: 'geojson',
           url: 'data/rectangle.geojson'
@@ -47,7 +49,10 @@
           user: 'nps'
         },{
           attribution: 'Land Resources Division',
-          popup: '<div class="title">{{Name}}</div><p>The alpha code is {{Code}}.</p>',
+          popup: {
+            description: 'The alpha code is {{Code}}.',
+            title: '{{Name}}'
+          },
           styles: {
             point: {
               'marker-color': '#609321',

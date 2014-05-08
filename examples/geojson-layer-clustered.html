@@ -33,7 +33,10 @@
           maki: {
             name: 'star'
           },
-          popup: '<div class="title">{{name}}</div><p>This is {{#if type \'!==\' \'community\'}}not {{/if}}a community.</p>',
+          popup: {
+            description: 'This is {{#if type \'!==\' \'community\'}}not {{/if}}a community.',
+            title: '{{name}}'
+          },
           type: 'geojson',
           url: 'data/gateway_points_of_interest.geojson'
         },{
@@ -41,7 +44,10 @@
             color: '#609321',
             name: 'park'
           },
-          popup: '<div class="title">{{Name}}</div><p>The alpha code is {{Code}}.</p>',
+          popup: {
+            description: 'The alpha code is {{Code}}',
+            title: '{{Name}}'
+          },
           type: 'geojson',
           cluster: {
             clusterIcon: '#000',

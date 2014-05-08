@@ -21,7 +21,10 @@
         },
         div: 'map',
         overlays: [{
-          popup: '<div class="title">{{{name}}}</div><div class="content">Zip Code: {{{zip}}}</div>',
+          popup: {
+            description: 'Zip Code: {{zip}}',
+            title: '{{name}}'
+          },
           type: 'csv',
           url: 'http://nationalparkservice.github.io/data/demo/colorado_cities.csv'
         }],

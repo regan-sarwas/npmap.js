@@ -23,11 +23,15 @@
       var NPMap = {
         div: 'map',
         overlays: [{
-          popup: '<div class="title">{{alphacode}}</div>',
+          popup: {
+            title: '{{alphacode}}'
+          },
           type: 'kml',
           url: 'data/national_parks.kml'
         },{
-          popup: '<div class="title">{{{name}}}</div>',
+          popup: {
+            title: '{{name}}'
+          },
           type: 'kml',
           url: 'data/dc.kml'
         }]
