@@ -103,6 +103,7 @@ The first, and only, argument is required. It must be a layer config object with
 * (Required) `tiled` (Boolean): Should be `true` if the service is tiled and `false` if it is not.
 * (Required) `url` (String): A URL string ending with "MapServer" for the ArcGIS Server service.
 * (Optional) `attribution` (String): An attribution string for the layer. HTML is allowed.
+* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
 * (Optional) `description` (String): Descriptive text for the layer. Used in legends, modules, and controls.
 * (Optional) `dynamicAttribution` (String): The URL of a [dynamic attribution](http://blogs.esri.com/esri/arcgis/2012/08/15/dynamic-attribution-is-here/) endpoint for the service.
 * (Optional) `layers` (String): A comma-delimited string of the ArcGIS Server integer layer identifiers to bring into the NPMap.js layer.
@@ -152,7 +153,9 @@ _Arguments_:
 
 The first, and only, argument is required. It must be a layer config object with the following properties:
 
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
 - (Optional) `layer` (String): The layer you want to bring in from the Bing Imagery API. Defaults to `aerial`. Valid options are `aerial`, `aerialwithlabels`, and `road`.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
@@ -191,8 +194,11 @@ The first, and only, argument is required. It must be a layer config object with
 
 * (Required) `table` (String): The name of the CartoDB table.
 * (Required) `user` (String): The name of the CartoDB user.
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
 * (Optional) `cartocss` (String): A [CartoCSS](https://www.mapbox.com/tilemill/docs/manual/carto/) string to apply to the layer.
+* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
 * (Optional) `interactivity` (String): A comma-delimited string of fields to pull from CartoDB for interactivity (available via mouseover and click operations).
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
 * (Optional) `sql` (String): A SQL query to pass to CartoDB.
 
 NOTE: If you specify a SQL query via the `sql` property, you _must_ also specify the `interactivity` property.
@@ -246,6 +252,8 @@ _OR_
 
 _AND_
 
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
+* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
 * (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
 * (Optional) `popup` (Object): A popup config object.
 * (Optional) `styles` (Object): A styles config object.
@@ -302,6 +310,8 @@ _OR_
 
 _AND_
 
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
+* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
 * (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
 * (Optional) `popup` (Object): A popup config object.
 * (Optional) `styles` (Object): A styles config object.
@@ -353,7 +363,10 @@ The first, and only, argument is required, and must be a layer config object wit
 * (Required) `path` (String): The path to your GitHub file. This _should not_ include your GitHub organization/user name or the name of the repository. This is the path to the GeoJSON file in your GitHub repository: e.g. `fire/CA-STF-HV2F.geojson`.
 * (Required) `repo` (String): The name of the repository that contains the data.
 * (Required) `user` (String): The name of the organization or user that owns the repository.
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
 * (Optional) `branch` (String) The name of the branch your GitHub file should be pulled in from. Defaults to `master`.
+* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
 
 You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
 
@@ -411,10 +424,12 @@ _OR_
 
 _AND_
 
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
+* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
 * (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
 * (Optional) `popup` (Object): A popup config object.
 * (Optional) `styles` (Object): A styles config object.
-* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
 
 You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
 
@@ -449,18 +464,6 @@ _Working Examples_:
 * [KML Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer.html)
 * [KML Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer-clustered.html)
 
-
-
-
-
-
-
-
-
-
-
-
-
 ## L.npmap.layer.mapbox(config: object)
 
 Create a Mapbox layer and add it to a map.
@@ -469,46 +472,237 @@ _Arguments_:
 
 The first, and only, argument is required, and must be a layer config object with the following properties:
 
-* (Required) `id` (String): The id ('account.id') of the MapBox map or tileset you want to add to the map. Can also be a comma-delimited string with multiple "account.id" strings if you want to take advantage of MapBox Hosting's compositing feature. Required if `tileJson` is not provided.
+* (Required) `id` (String): The id ("account.id") of the Mapbox map or dataset you want to add to the map. Can also be a comma-delimited string with multiple "account.id" strings if you want to take advantage of Mapbox's compositing feature. Required if `tileJson` is not provided.
 
 OR
 
-* (Required) `tileJson` (Object): A tileJson object for the MapBox map or tileset you want to add to the map. Required if `id` is not provided.
+* (Required) `tileJson` (Object): A tileJson object for the Mapbox map or tileset you want to add to the map. Required if `id` is not provided.
 
 AND
 
-* (Optional) `format` (String): One of the following: 'jpg70', 'jpg80', 'jpg90', 'png', 'png32', 'png64', 'png128', or 'png256'. If not provided, defaults to 'png'.
-* (Optional) `icon` (String)
-* (Optional) `name` (String)
-* (Optional) `retinaVersion` (String): The id ('account.id') of the MapBox map or tileset designed specifically for retina devices.
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
+* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
+* (Optional) `format` (String): One of the following: `jpg70`, `jpg80`, `jpg90`, `png`, `png32`, `png64`, `png128`, or `png256`. Dfaults to `png`.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
+* (Optional) `retinaVersion` (String): The id ("account.id") of the MapBox map or tileset designed specifically for retina devices. If provided, this will be used if the map is loaded on a retina screen. It will be ignored otherwise.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
-_Example_:
+_Example (Bootstrap)_:
 
-    var layer = L.npmap.layer.mapbox({
-      id: 'examples.map-20v6611k'
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        id: 'examples.map-20v6611k',
+        type: 'mapbox'
+      }]
     });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.mapbox({
+      id: 'examples.map-20v6611k'
+    }).addTo(map);
+
+_Working Examples_:
+
+* [Mapbox Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/mapbox-layer.html)
 
 ## L.npmap.layer.spot(config: object)
 
 Create a SPOT layer and add it to a map.
 
+_Arguments_:
+
+The first, and only, argument is required, and must be a layer config object with the following properties:
+
+* (Required) `id` (String): The id of the SPOT device whose data you want to add to the map.
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
+* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
+* (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
+* (Optional) `popup` (Object): A popup config object.
+* (Optional) `styles` (Object): A styles config object.
+* (Optional) `zoomToBounds` (Boolean): Do you want to zoom the map to the extent of the points loaded from the SPOT device?
+
+You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
+
+1. `pointToLayer`
+2. `style`
+3. `onEachFeature`
+
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        id: '08HVpMLpDksQjCeBL1FbTkqGHP4Bk7dfg',
+        type: 'spot'
+      }]
+    });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.spot({
+      id: '08HVpMLpDksQjCeBL1FbTkqGHP4Bk7dfg'
+    }).addTo(map);
+
+_Working Examples_:
+
+* [SPOT Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/spot-layer.html)
+
 ## L.npmap.layer.tiled(config: object)
 
 Create a tiled layer and add it to a map.
+
+_Arguments_:
+
+The first, and only, argument is required, and must be a layer config object with the following properties:
+
+* (Required) `url` (String): The templated URL string. Accepted parameters are:
+  * `{{s}}`
+  * `{{x}}`
+  * `{{y}}`
+  * `{{z}}`
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
+
+You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        type: 'tiled',
+        url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+      }]
+    });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.tiled({
+      attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+    }).addTo(map);
+
+_Working Examples_:
+
+* [Tiled Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/tiled-layer.html)
 
 ## L.npmap.layer.wms(config: object)
 
 Create a WMS layer and add it to a map.
 
+_Arguments_:
+
+The first, and only, argument is required, and must be a layer config object with the following properties:
+
+* (Required) `layers` (String): A comma-delimited string of the layers from the WMS service to add to the layer.
+* (Required) `url` (String): The URL to the WMS service.
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
+
+You can also (optionally) provide any of the options supported by [`L.TileLayer.WMS`](http://leafletjs.com/reference.html#tilelayer-wms).
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        layers: 'RAS_RIDGE_NEXRAD',
+        type: 'wms',
+        url: 'http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs'
+      }]
+    });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.wms({
+      layers: 'RAS_RIDGE_NEXRAD',
+      url: 'http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs'
+    }).addTo(map);
+
+_Working Examples_:
+
+* [WMS Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/wms-layer.html)
+
 ## L.npmap.layer.zoomify(config: object)
 
 Create a Zoomify layer and add it to a map.
 
-NOTE: Zoomify layers do not contain spatial reference information, so they will not work with other georeferenced layers. When you add a Zoomify layer to your map, NPMap.js switches the map to Zoomify mode, meaning it ignores all other layers in your `baseLayers` and `overlays` configs.
+NOTE: Zoomify layers do not contain spatial reference information, so they will not work with other layers. Because of this, when a Zoomify layer is added to a map, NPMap.js ignores any other layers specified in the `baseLayers` and/or `overlays` configs.
+
+_Arguments_:
+
+The first, and only, argument is required, and must be a layer config object with the following properties:
+
+* (Required) `height` (Number): The height of the Zoomify layer.
+* (Required) `url` (String): The URL path to the directory that contains the Zoomify tiles.
+* (Required) `width` (Number): The width of the Zoomify layer.
+* (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
+* (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
+* (Optional) `tolerance` (Number): The tolerance to use when calculating the best initial zoom level. Defaults to `0.8`.
+
+You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        height: 2737,
+        type: 'zoomify',
+        url: 'data/parkmaps/maca/img/',
+        width: 6543
+      }]
+    });
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.layer.zoomify({
+      height: 2737,
+      url: 'data/parkmaps/maca/img/',
+      width: 6543
+    }).addTo(map);
+
+_Working Examples_:
+
+* [Zoomify Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/zoomify-layer.html)
 
 <h1 id="controls">Controls</h1>
+
+
+
+
+
+
+
+
+
 
 ## L.npmap.editControl(config: object)
 
