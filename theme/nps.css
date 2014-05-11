@@ -1422,39 +1422,86 @@
 
 /* Modules */
 
+input[type = 'text'] {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  border: 1px solid #c9c9c9;
+  color: #464646;
+  font-size: 12px;
+  font-weight: bold;
+  height: 29px;
+  padding: 0 5px;
+}
+
+#npmap-module_Directions .disclaimer {
+  display: none;
+}
 #npmap-module_Directions ul, #npmap-module_Directions ul li {
   list-style-type: none;
 }
 #npmap-module_Directions ul {
   padding-left: 0;
 }
-#npmap-module_Directions ul li label {
-  -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
-       -o-border-radius: 3px;
-          border-radius: 3px;
-  background: #000;
-  color: #fff;
-  cursor: move;
-  display: block;
-  float: left;
-  font-weight: bold;
-  line-height: 20px;
-  margin: 3px 6px 0 0;
-  text-align: center;
-  width: 20px;
-}
-#npmap-module_Directions ul li input {
-  float: left;
-  padding-right: 27px;
-  width: 205px;
-}
-#npmap-module_Directions ul li button {
-  border: none;
-  height: 25px;
-  padding: 0;
-  position: absolute;
-  right: 1px;
-  top: 1px;
-  width: 25px;
-}
+  #npmap-module_Directions ul li {
+    height: 29px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  #npmap-module_Directions ul li:last-child {
+    margin-bottom: 0;
+  }
+    #npmap-module_Directions ul li div {
+      left: 26px;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+      #npmap-module_Directions ul li button {
+        -webkit-background-clip: padding-box;
+           -moz-background-clip: padding;
+                background-clip: padding-box;
+        background-position: 4px;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+        border: none;
+        display: inline-block;
+        height: 25px;
+        padding: 0;
+        position: absolute;
+        right: 2px;
+        top: 2px;
+        width: 25px;
+      }
+        #npmap-module_Directions ul li button.remove {
+          background-color: transparent;
+          color: #000;
+        }
+        #npmap-module_Directions ul li div button.search {
+          background-color: #c09030;
+        }
+    #npmap-module_Directions ul li div.remove {
+      right: 28px;
+    }
+    #npmap-module_Directions ul li label {
+      -webkit-border-radius: 3px;
+         -moz-border-radius: 3px;
+           -o-border-radius: 3px;
+              border-radius: 3px;
+      background: #000;
+      color: #fff;
+      cursor: move;
+      display: block;
+      font-weight: bold;
+      line-height: 20px;
+      margin: 3px 0 0 0;
+      position: absolute;
+      text-align: center;
+      width: 20px;
+    }
+    #npmap-module_Directions ul li input {
+      width: 100%;
+    }
+    #npmap-module_Directions ul li input.search {
+      padding-right: 30px;
+    }
