@@ -22,6 +22,7 @@ module.exports = ({
         }
 
         reqwest({
+          crossOrigin: true,
           error: function() {
             callback({
               message: 'The route failed. Please check your network connection.',
@@ -32,7 +33,9 @@ module.exports = ({
             //console.log(response);
             callback(response);
           },
-          type: 'jsonp',
+          //type: 'json',
+          //type: 'jsonp',
+          // TODO: JSONP not working from Mapbox. Switch to CORS?
           url: 'http://api.tiles.mapbox.com/v3/nps.map-06dnxzq5/directions/driving/' + locations + '.json'
         });
       }

@@ -8,8 +8,7 @@ var util = require('./util/util');
 var Popup = L.Popup.extend({
   options: {
     autoPanPaddingBottomRight: [20, 20],
-    autoPanPaddingTopLeft: [20, 20],
-    offset: [1, -3]
+    autoPanPaddingTopLeft: [20, 20]
   },
   _data: [],
   _html: null,

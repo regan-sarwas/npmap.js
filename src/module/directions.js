@@ -1,4 +1,5 @@
 /* globals L, NPMap */
+/* jshint quotmark: false */
 
 'use strict';
 
@@ -16,13 +17,10 @@ var DirectionsModule = L.Class.extend({
     require('../mixin/module')
   ],
   initialize: function(options) {
-    var button = document.createElement('button'),
+    var buttonAddStop = document.createElement('button'),
+      buttonClear = document.createElement('button'),
+      buttonRoute = document.createElement('button'),
       div = document.createElement('div'),
-      divLi = document.createElement('div'),
-      input = document.createElement('input'),
-      label = document.createElement('label'),
-      li = document.createElement('li'),
-      me = this,
       p = document.createElement('p');
 
     L.Util.setOptions(this, options);
@@ -30,27 +28,27 @@ var DirectionsModule = L.Class.extend({
     div.appendChild(p);
     this._ul = document.createElement('ul');
     div.appendChild(this._ul);
-    label.htmlFor = 'stop-A';
-    label.innerHTML = 'A';
-    li.appendChild(label);
-    input.className = 'search';
-    input.id = 'stop-A';
-    input.type = 'text';
-    input.onkeypress = function(e) {
-      var value = input.value;
-
-      if (e.keyCode === 13 && value.length > 0) {
-        me._geocode('a', input.value);
-      }
-    };
-    divLi.appendChild(input);
-    button.className = 'search ir';
-    button.innerHTML = 'Search for a location';
-    button.style.backgroundImage = 'url(' + NPMap.path + 'images/font-awesome/search' + (L.Browser.retina ? '@2x' : '') + '.png)';
-    button.type = 'button';
-    divLi.appendChild(button);
-    li.appendChild(divLi);
-    this._ul.appendChild(li);
+    this._addLiFirst();
+    this._actions = document.createElement('div');
+    this._actions.className = 'actions';
+    buttonRoute.className = 'btn btn-primary';
+    buttonRoute.innerHTML = 'Get Directions';
+    buttonRoute.type = 'button';
+    L.DomEvent.addListener(buttonRoute, 'click', function() {
+      console.log('Get Directions');
+    }, this);
+    this._actions.appendChild(buttonRoute);
+    buttonAddStop.className = 'btn btn-primary';
+    buttonAddStop.innerHTML = 'Add Stop';
+    buttonAddStop.type = 'button';
+    //L.DomEvent.addListener(buttonAddStop, 'click', this._addStop, this);
+    this._actions.appendChild(buttonAddStop);
+    buttonClear.className = 'btn btn-link';
+    buttonClear.innerHTML = 'clear';
+    buttonClear.type = 'button';
+    L.DomEvent.addListener(buttonClear, 'click', this._clear, this);
+    this._actions.appendChild(buttonClear);
+    div.appendChild(this._actions);
     this._disclaimer = document.createElement('div');
     this._disclaimer.className = 'disclaimer';
     this._disclaimer.innerHTML = 'DISCLAIMER: These directions are for planning purposes only. While the National Park Service strives to provide the most accurate information possible, please use caution when driving in unfamiliar locations and check directions against the content provided by each Park\'s website. The National Park Service assumes no responsibility for information provided by NPS partners.';
@@ -59,46 +57,36 @@ var DirectionsModule = L.Class.extend({
     this.icon = 'truck';
     this.title = this.type = 'Directions';
     this.visible = (options && options.visible) || false;
+    this._addDraggableListeners();
 
     return this;
   },
+  _dragSource: null,
   _icon: {
-    iconAnchor: [18.5, 37],
+    iconAnchor: [13.5, 37],
     iconRetinaUrl: NPMap.path  + 'images/module/directions/stop-{{letter}}@2x.png',
     iconSize: [27, 37],
     iconUrl: NPMap.path  + 'images/module/directions/stop-{{letter}}.png',
-    popupAnchor: [18.5, 0]
+    popupAnchor: [0, -40]
   },
   _letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
-  _addStop: function(latLng) {
-    var childNodes = this._ul.childNodes,
-      icon = L.extend({}, this._icon),
-      letter = 'A';
+  _markers: [],
+  _route: null,
+  _addDraggableListeners: function() {
+    for (var i = 0; i < this._ul.childNodes.length; i++) {
+      var li = this._ul.childNodes[i];
 
-    if (childNodes.length === 1) {
-      // Replace this._ul.childNodes[0] with a regular input and a remove button
-      // Add a second li in
-      this._ul.removeChild(childNodes[0]);
-      this._ul.appendChild(this._createLi());
-    } else {
-      letter = this._letters[childNodes.length - 1];
+      L.DomEvent
+        .addListener(li, 'dragend', this._handleDragEnd, this)
+        .addListener(li, 'dragenter', this._handleDragEnter, this)
+        .addListener(li, 'dragleave', this._handleDragLeave, this)
+        .addListener(li, 'dragover', this._handleDragOver, this)
+        .addListener(li, 'dragstart', this._handleDragStart, this);
     }
-
-    this._ul.appendChild(this._createLi());
-
-    icon.iconRetinaUrl = util.handlebars(icon.iconRetinaUrl, {
-      letter: letter
-    });
-    icon.iconUrl = util.handlebars(icon.iconUrl, {
-      letter: letter
-    });
-
-    new L.Marker(latLng, {
-      icon: new L.Icon(icon)
-    }).addTo(this._map);
   },
-  _createLi: function() {
-    var button = document.createElement('button'),
+  _addLi: function(value) {
+    var backgroundImage = 'url(' + NPMap.path + 'images/module/directions/times' + (L.Browser.retina ? '@2x' : '') + '.png)',
+      button = document.createElement('button'),
       div = document.createElement('div'),
       input = document.createElement('input'),
       label = document.createElement('label'),
@@ -110,36 +98,189 @@ var DirectionsModule = L.Class.extend({
     label.htmlFor = 'stop-' + letter;
     label.innerHTML = letter;
     li.appendChild(label);
+    li.draggable = true;
     input.id = 'stop-' + letter;
     input.onkeypress = function(e) {
-      var value = input.value;
+      if (e.keyCode === 13 && input.value && input.value.length > 0) {
+        geocode.esri(input.value, function(response) {
+          if (response && response.results) {
+            var result = response.results[0];
 
-      if (e.keyCode === 13 && value.length > 0) {
-        me._geocode('a', input.value);
+            if (result) {
+              input.value = result.name;
+              result.letter = letter;
+              me._addMarker(result);
+
+              if (me._markers.length > 1) {
+                var latLngs = [];
+
+                for (var i = 0; i < me._markers.length; i++) {
+                  latLngs.push(me._markers[i].getLatLng());
+                }
+
+                route.mapbox.route(latLngs, function(route) {
+                  if (route && route.routes && route.routes.length) {
+                    me._route = new L.GeoJSON({
+                      type: 'Feature',
+                      geometry: route.routes[0].geometry,
+                      properties: {}
+                    }, {
+                      clickable: false,
+                      color: '#c16b2b',
+                      opacity: 1
+                    }).addTo(me._map);
+                    me._map.fitBounds(me._route.getBounds(), {
+                      padding: [30, 30]
+                    });
+                  }
+                });
+              }
+            }
+          }
+        });
       }
     };
     input.type = 'text';
+
+    if (value) {
+      input.value = value;
+    }
+
     div.appendChild(input);
     button.className = 'remove ir';
     button.innerHTML = 'Remove stop';
-    button.style.backgroundImage = 'url(' + NPMap.path + 'images/font-awesome/times' + (L.Browser.retina ? '@2x' : '') + '.png)';
+    button.onmouseout = function() {
+      this.style.backgroundImage = backgroundImage;
+    };
+    button.onmouseover = function() {
+      this.style.backgroundImage = 'url(' + NPMap.path + 'images/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
+    };
+    button.style.backgroundImage = backgroundImage;
     button.type = 'button';
     li.appendChild(div);
     li.appendChild(button);
-    return li;
+    this._ul.appendChild(li);
   },
-  _geocode: function(value) {
-    var me = this;
+  _addLiFirst: function() {
+    var button = document.createElement('button'),
+      divLi = document.createElement('div'),
+      input = document.createElement('input'),
+      label = document.createElement('label'),
+      li = document.createElement('li'),
+      me = this;
 
-    geocode.esri(value, function(response) {
-      if (response && response.results) {
-        var result = response.results[0];
+    label.htmlFor = 'stop-A';
+    label.innerHTML = 'A';
+    li.appendChild(label);
+    input.className = 'search';
+    input.id = 'stop-A';
+    input.type = 'text';
+    input.onkeypress = function(e) {
+      if (e.keyCode === 13 && input.value && input.value.length > 0) {
+        geocode.esri(input.value, function(response) {
+          if (response && response.results) {
+            var result = response.results[0];
 
-        if (result) {
-          me._addStop(result.latLng, value);
-        }
+            if (result) {
+              result.letter = 'A';
+              me._ul.innerHTML = '';
+              me._addLi(result.name);
+              me._addLi();
+              me._addMarker(result);
+            }
+          }
+        });
+      }
+    };
+    divLi.appendChild(input);
+    button.className = 'search ir';
+    button.innerHTML = 'Search for a location';
+    button.style.backgroundImage = 'url(' + NPMap.path + 'images/font-awesome/search' + (L.Browser.retina ? '@2x' : '') + '.png)';
+    button.type = 'button';
+    L.DomEvent.addListener(button, 'click', function() {
+      if (input.value && input.value.length > 0) {
+        me._geocode(input);
       }
     });
+    divLi.appendChild(button);
+    li.appendChild(divLi);
+    li.draggable = true;
+    this._ul.appendChild(li);
+  },
+  _addMarker: function(result) {
+    var icon = L.extend({}, this._icon),
+      latLng = result.latLng,
+      letter = result.letter;
+
+    L.extend(icon, {
+      iconRetinaUrl: util.handlebars(icon.iconRetinaUrl, {
+        letter: letter
+      }),
+      iconUrl: util.handlebars(icon.iconUrl, {
+        letter: letter
+      })
+    });
+    this._markers.push(new L.Marker({
+      lat: latLng[0],
+      lng: latLng[1]
+    }, {
+      icon: new L.Icon(icon)
+    }).bindPopup('<div class="title">' + result.name + '</div>').addTo(this._map));
+  },
+  _clear: function() {
+    var i;
+
+    this._ul.innerHTML = '';
+    this._addLiFirst();
+
+    for (i = 0; i < this._markers.length; i++) {
+      this._map.removeLayer(this._markers[i]);
+    }
+
+    if (this._route) {
+      this._map.removeLayer(this._route);
+      this._route = null;
+    }
+  },
+  _handleDragEnd: function(e) {
+    e.target.style.opacity = '1';
+  },
+  _handleDragEnter: function(e) {
+    e.target.classList.add('over');
+  },
+  _handleDragLeave: function(e) {
+    e.target.classList.remove('over');
+  },
+  _handleDrop: function(e) {
+    var target = e.target;
+
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+
+    if (target._dragSource != target) {
+      target._dragSource.innerHTML = target.innerHTML;
+      target.innerHTML = e.dataTransfer.getData('text/html');
+    }
+
+    return false;
+  },
+  _handleDragOver: function(e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
+    e.dataTransfer.dropEffect = 'move';
+
+    return false;
+  },
+  _handleDragStart: function(e) {
+    var target = e.target;
+
+    target.style.opacity = '0.4';
+    target._dragSource = target;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', target.innerHTML);
   }
 });
 
