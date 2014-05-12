@@ -66,10 +66,13 @@ require('./popup.js');
         }
 
         this._container.innerHTML = prefixAndAttribs.join(' | ');
+        me._updateImproveLinks();
       };
       this.on('resize', resize);
       resize();
     }
+
+    this.on('moveend', this._updateImproveLinks);
   });
   L.Polygon.mergeOptions(style);
   L.Polyline.mergeOptions({
@@ -595,6 +598,21 @@ var Map = L.Map.extend({
     delete config.layers;
     config.zoom = typeof config.zoom === 'number' ? config.zoom : 4;
     return config;
+  },
+  _updateImproveLinks: function() {
+    if (this.attributionControl) {
+      var els = util.getChildElementsByClassName(this.attributionControl._container, 'improve-park-tiles');
+
+      if (els && els.length) {
+        var center = this.getCenter();
+
+        for (var i = 0; i < els.length; i++) {
+          var el = els[0];
+
+          el.href = el.href.split('#')[0] + '#' + this.getZoom() + '/' + center.lat.toFixed(5) + '/' + center.lng.toFixed(5);
+        }
+      }
+    }
   },
   closeModules: function() {
     var buttons = this._divModuleButtons.childNodes;
