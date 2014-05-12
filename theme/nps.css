@@ -186,6 +186,18 @@
       background-color: #74746a;
     }
 
+/* Forms */
+input[type = 'text'] {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  border: 1px solid #c9c9c9;
+  color: #464646;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 7px 8px;
+}
+
 /* Buttons */
 .npmap button, .npmap input, .npmap select, .npmap textarea {
   font-family: inherit;
@@ -273,6 +285,20 @@
   .npmap .btn-default.disabled, .npmap .btn-default[disabled], .npmap fieldset[disabled] .btn-default, .npmap .btn-default.disabled:hover, .npmap .btn-default[disabled]:hover, .npmap fieldset[disabled] .btn-default:hover, .npmap .btn-default.disabled:focus, .npmap .btn-default[disabled]:focus, .npmap fieldset[disabled] .btn-default:focus, .npmap .btn-default.disabled:active, .npmap .btn-default[disabled]:active, .npmap fieldset[disabled] .btn-default:active, .npmap .btn-default.disabled.active, .npmap .btn-default[disabled].active, .npmap fieldset[disabled] .btn-default.active {
     background-color: #ffffff;
     border-color: #cccccc;
+  }
+.npmap .btn-link {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  background-color: transparent;
+  border-radius: 0;
+  color: #936a00;
+  cursor: pointer;
+  font-weight: normal;
+}
+  .npmap .btn-link:hover, .npmap .btn-link:focus {
+    background-color: transparent;
+    color: #b98600;
+    text-decoration: underline;
   }
 .npmap .btn-primary {
   background-color: #b28000;
@@ -1421,22 +1447,21 @@
 }
 
 /* Modules */
-
-input[type = 'text'] {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-  border: 1px solid #c9c9c9;
-  color: #464646;
-  font-size: 12px;
-  font-weight: bold;
-  height: 29px;
-  padding: 0 5px;
-}
-
 #npmap-module_Directions .disclaimer {
   display: none;
 }
+#npmap-module_Directions .actions {
+  margin: 20px 0 0 26px;
+}
+  #npmap-module_Directions .actions button {
+    margin-right: 5px;
+  }
+    #npmap-module_Directions .actions button:first-child {
+      display: none;
+    }
+    #npmap-module_Directions .actions button:last-child {
+      margin-right: 0;
+    }
 #npmap-module_Directions ul, #npmap-module_Directions ul li {
   list-style-type: none;
 }
@@ -1447,6 +1472,9 @@ input[type = 'text'] {
     height: 29px;
     margin-bottom: 10px;
     position: relative;
+  }
+  #npmap-module_Directions ul li.over {
+    border: 2px dashed #000;
   }
   #npmap-module_Directions ul li:last-child {
     margin-bottom: 0;
@@ -1461,17 +1489,17 @@ input[type = 'text'] {
         -webkit-background-clip: padding-box;
            -moz-background-clip: padding;
                 background-clip: padding-box;
-        background-position: 4px;
+        background-position: 5px 4px;
         background-repeat: no-repeat;
         background-size: 16px 16px;
         border: none;
         display: inline-block;
-        height: 25px;
+        height: 26px;
         padding: 0;
         position: absolute;
         right: 2px;
         top: 2px;
-        width: 25px;
+        width: 26px;
       }
         #npmap-module_Directions ul li button.remove {
           background-color: transparent;
