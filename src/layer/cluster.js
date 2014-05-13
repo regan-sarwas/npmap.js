@@ -139,31 +139,33 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
       var styles = {
         main: {
           'background-clip': 'padding-box',
-          'background': supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.4)'),
+          background: supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.4)'),
           'border-radius': ((style.size + style.outerRing)*0.5) + 'px'
         },
         div: {
-          'text-align': 'center',
-          'background': supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.9)'),
-          width: style.size + 'px',
+          background: supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.9)'),
+          'border-radius': (style.size / 2) + 'px',
           height: style.size + 'px',
           'margin-left': (style.outerRing / 2) + 'px',
           'margin-top': (style.outerRing / 2) + 'px',
-          'border-radius': (style.size / 2) + 'px'
+          'text-align': 'center',
+          width: style.size + 'px'
         },
         span: {
           color: 'rgb(' +  hexToArray(style.fontColor)[0] +', ' +  hexToArray(style.fontColor)[1] + ', ' +  hexToArray(style.fontColor)[2] + ')',
+          display: 'block',
           font: '12px Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif',
-          'line-height': style.size + 'px',
-          display: 'block'
+          'line-height': style.size + 'px'
         }
       };
 
       function cssStyle(fields) {
         var returnValue = [];
+
         for (var field in fields) {
           returnValue.push(field + ': ' + fields[field] +'; ');
         }
+
         return returnValue.join('');
       }
       function styleLoop(fields, process) {
