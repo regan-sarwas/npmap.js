@@ -66,13 +66,18 @@ require('./popup.js');
         }
 
         this._container.innerHTML = prefixAndAttribs.join(' | ');
-        me._updateImproveLinks();
+
+        if (typeof me._updateImproveLinks === 'function') {
+          me._updateImproveLinks();
+        }
       };
       this.on('resize', resize);
       resize();
     }
 
-    this.on('moveend', this._updateImproveLinks);
+    if (typeof me._updateImproveLinks === 'function') {
+      me.on('moveend', me._updateImproveLinks);
+    }
   });
   L.Polygon.mergeOptions(style);
   L.Polyline.mergeOptions({
