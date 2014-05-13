@@ -37,6 +37,7 @@ var CsvLayer = L.GeoJSON.extend({
     csv2geojson.csv2geojson(csv, {}, function(error, data) {
       L.GeoJSON.prototype.initialize.call(me, data, options);
       me.fire('ready');
+      me._loaded = true;
       return me;
     });
   }
