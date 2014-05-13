@@ -17,10 +17,9 @@ var DirectionsModule = L.Class.extend({
     require('../mixin/module')
   ],
   initialize: function(options) {
-    var buttonAddStop = document.createElement('button'),
-      buttonClear = document.createElement('button'),
-      buttonRoute = document.createElement('button'),
+    var buttonClear = document.createElement('button'),
       div = document.createElement('div'),
+      me = this,
       p = document.createElement('p');
 
     L.Util.setOptions(this, options);
@@ -31,18 +30,23 @@ var DirectionsModule = L.Class.extend({
     this._addLiFirst();
     this._actions = document.createElement('div');
     this._actions.className = 'actions';
-    buttonRoute.className = 'btn btn-primary';
-    buttonRoute.innerHTML = 'Get Directions';
-    buttonRoute.type = 'button';
-    L.DomEvent.addListener(buttonRoute, 'click', function() {
-      console.log('Get Directions');
+    this._buttonPrimary = document.createElement('button');
+    this._buttonPrimary.className = 'btn btn-primary';
+    this._buttonPrimary.innerHTML = 'Add Stop';
+    this._buttonPrimary.type = 'button';
+    L.DomEvent.addListener(this._buttonPrimary, 'click', function() {
+      if (me._buttonPrimary.innerHTML === 'Add Stop') {
+        var value = this._ul.childNodes[0].childNodes[1].childNodes[0].value || null;
+
+        this._ul.innerHTML = '';
+        this._addLi(value);
+        this._addLi();
+        me._buttonPrimary.innerHTML = 'Get Directions';
+      } else {
+
+      }
     }, this);
-    this._actions.appendChild(buttonRoute);
-    buttonAddStop.className = 'btn btn-primary';
-    buttonAddStop.innerHTML = 'Add Stop';
-    buttonAddStop.type = 'button';
-    //L.DomEvent.addListener(buttonAddStop, 'click', this._addStop, this);
-    this._actions.appendChild(buttonAddStop);
+    this._actions.appendChild(this._buttonPrimary);
     buttonClear.className = 'btn btn-link';
     buttonClear.innerHTML = 'clear';
     buttonClear.type = 'button';
@@ -149,12 +153,16 @@ var DirectionsModule = L.Class.extend({
     div.appendChild(input);
     button.className = 'remove ir';
     button.innerHTML = 'Remove stop';
-    button.onmouseout = function() {
-      this.style.backgroundImage = backgroundImage;
-    };
-    button.onmouseover = function() {
-      this.style.backgroundImage = 'url(' + NPMap.path + 'images/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
-    };
+    L.DomEvent
+      .addListener(button, 'click', function() {
+        console.log(this.parentNode);
+      })
+      .addListener(button, 'onmouseout', function() {
+        this.style.backgroundImage = backgroundImage;
+      })
+      .addListener(button, 'onmouseover', function() {
+        this.style.backgroundImage = 'url(' + NPMap.path + 'images/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
+      });
     button.style.backgroundImage = backgroundImage;
     button.type = 'button';
     li.appendChild(div);
@@ -232,6 +240,7 @@ var DirectionsModule = L.Class.extend({
 
     this._ul.innerHTML = '';
     this._addLiFirst();
+    this._buttonPrimary.innerHTML = 'Add Stop';
 
     for (i = 0; i < this._markers.length; i++) {
       this._map.removeLayer(this._markers[i]);
