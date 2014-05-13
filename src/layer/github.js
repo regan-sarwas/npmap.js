@@ -35,6 +35,7 @@ var GitHubLayer = L.GeoJSON.extend({
   _create: function(options, data) {
     L.GeoJSON.prototype.initialize.call(this, data, options);
     this.fire('ready');
+    this._loaded = true;
     return this;
   }
 });

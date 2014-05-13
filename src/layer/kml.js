@@ -34,6 +34,7 @@ var KmlLayer = L.GeoJSON.extend({
   _create: function(options, data) {
     L.GeoJSON.prototype.initialize.call(this, togeojson.kml(new DOMParser().parseFromString(data, 'text/xml')), options);
     this.fire('ready');
+    this._loaded = true;
     return this;
   }
 });

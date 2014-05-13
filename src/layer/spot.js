@@ -60,6 +60,7 @@ var SpotLayer = L.GeoJSON.extend({
     }
 
     this.fire('ready');
+    this._loaded = true;
     return this;
   }
 });

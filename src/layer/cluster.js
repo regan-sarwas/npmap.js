@@ -9,7 +9,8 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
     showCoverageOnHover: false
   },
   initialize: function(options) {
-    var me = this;
+    var me = this,
+      interval;
 
     L.Util.setOptions(this, options);
 
@@ -21,7 +22,6 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
     L.Util.setOptions(this, options.cluster);
     options.clustered = options.cluster.iconCreateFunction('getInfo');
     delete options.cluster;
-    this.L = L.npmap.layer[options.type](options);
     this._currentShownBounds = null;
     this._featureGroup = new L.FeatureGroup();
     this._featureGroup.on(L.FeatureGroup.EVENTS, this._propagateEvent, this);
@@ -31,9 +31,13 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
     this._nonPointGroup = L.featureGroup();
     this._nonPointGroup.on(L.FeatureGroup.EVENTS, this._propagateEvent, this);
     this._queue = [];
-    this.L.on('ready', function(that) {
-      me.addLayer(that.target);
-    }, this);
+    this.L = L.npmap.layer[options.type](options);
+    interval = setInterval(function() {
+      if (me.L._loaded) {
+        clearInterval(interval);
+        me.addLayer(me.L);
+      }
+    }, 0);
 
     return this;
   },
@@ -148,9 +152,10 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
           'border-radius': (style.size / 2) + 'px'
         },
         span: {
-          font: '12px Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif',
           color: 'rgb(' +  hexToArray(style.fontColor)[0] +', ' +  hexToArray(style.fontColor)[1] + ', ' +  hexToArray(style.fontColor)[2] + ')',
-          'line-height': style.size + 'px'
+          font: '12px Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif',
+          'line-height': style.size + 'px',
+          display: 'block'
         }
       };
 
