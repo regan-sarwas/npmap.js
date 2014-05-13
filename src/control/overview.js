@@ -2,7 +2,7 @@
 
 'use strict';
 
-var layerPresets = require('../preset/baselayers.json'),
+var baselayerPresets = require('../preset/baselayers.json'),
   util = require('../util/util');
 
 var OverviewControl = L.Control.extend({
@@ -25,15 +25,19 @@ var OverviewControl = L.Control.extend({
   initialize: function(options) {
     util.strict(options, 'object');
 
-    if (typeof options.layer === 'string') {
-      var name = options.layer.split('-');
+    if (options.layer) {
+      if (typeof options.layer === 'string') {
+        var name = options.layer.split('-');
 
-      options.layer = layerPresets[name[0]][name[1]];
+        options.layer = baselayerPresets[name[0]][name[1]];
+      }
+
+      L.Util.setOptions(this, options);
+      this._layer = options.layer.L = L.npmap.layer[options.layer.type](options.layer);
+      return this;
+    } else {
+      throw new Error('The overview control must have layer specified.');
     }
-
-    L.Util.setOptions(this, options);
-    this._layer = options.layer.L = L.npmap.layer[options.layer.type](options.layer);
-    return this;
   },
   onAdd: function(map) {
     this._mainMap = map;
@@ -95,7 +99,7 @@ var OverviewControl = L.Control.extend({
     this._mainMap.off('move', this._onMainMapMoving, this);
     this._miniMap.off('moveend', this._onMiniMapMoved, this);
     this._miniMap.removeLayer(this._layer);
-    this._attributionContainer.style.marginRight = '0px';
+    this._attributionContainer.style.marginRight = '0';
   },
   _addToggleButton: function() {
     this._toggleDisplayButton = this._createButton('', 'Hide Overview', null, this._container, this._toggleDisplayButtonClicked, this);
@@ -135,16 +139,22 @@ var OverviewControl = L.Control.extend({
   _decideZoom: function(fromMaintoMini) {
     if (!this.options.zoomLevelFixed) {
       if (fromMaintoMini) {
-        return this._mainMap.getZoom() + this.options.zoomLevelOffset;
+        var zoom = this._mainMap.getZoom() + this.options.zoomLevelOffset;
+
+        if (zoom < 0) {
+          zoom = 0;
+        }
+
+        return zoom;
       } else {
         var currentDiff = this._miniMap.getZoom() - this._mainMap.getZoom(),
-            proposedZoom = this._miniMap.getZoom() - this.options.zoomLevelOffset,
-            toRet;
-        
+          proposedZoom = this._miniMap.getZoom() - this.options.zoomLevelOffset,
+          toRet;
+
         if (currentDiff > this.options.zoomLevelOffset && this._mainMap.getZoom() < this._miniMap.getMinZoom() - this.options.zoomLevelOffset) {
           if (this._miniMap.getZoom() > this._lastMiniMapZoom) {
             toRet = this._mainMap.getZoom() + 1;
-            this._miniMap.setZoom(this._miniMap.getZoom() -1);
+            this._miniMap.setZoom(this._miniMap.getZoom() - 1);
           } else {
             toRet = this._mainMap.getZoom();
           }
