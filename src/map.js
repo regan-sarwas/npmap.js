@@ -392,7 +392,7 @@ var Map = L.Map.extend({
                 autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer()),
                 maxHeight: util._getAvailableVerticalSpace(me) - 74
               });
-              popup.setContent(popup._handleResults(results)).setLatLng(latLng).openOn(me);
+              popup.setContent(popup._handleResults(results, me.options.popup)).setLatLng(latLng).openOn(me);
             }
           }
         }, 100);
