@@ -28,7 +28,9 @@
         div: 'map',
         overlays: [{
           name: 'National Parks',
-          popup: '<div class="title"><a href="http://www.nps.gov/{{toLowerCase Code}}">{{Name}}</a></div>',
+          popup: {
+            title: '<a href="http://www.nps.gov/{{toLowerCase Code}}">{{Name}}</a>'
+          },
           styles: function(data) {
             return {
               point: {
