@@ -67,7 +67,7 @@ module.exports = {
             properties = feature.properties,
             html;
 
-          html = popup._resultToHtml(properties, config.popup);
+          html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
 
           if (lastTarget) {
             lastTarget.closePopup().unbindPopup();

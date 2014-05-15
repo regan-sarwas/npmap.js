@@ -93,7 +93,7 @@ var Popup = L.Popup.extend({
       }
     }
   },
-  _handleResults: function(results) {
+  _handleResults: function(results, mapPopupConfig) {
     var div;
 
     function getLayerConfig(layer) {
@@ -104,43 +104,55 @@ var Popup = L.Popup.extend({
       }
     }
 
-    if (results.length > 1) {
-      div = this._resultsToHtml(results);
+    if (mapPopupConfig && typeof mapPopupConfig === 'function') {
+      var html = mapPopupConfig(results);
+
+      div = document.createElement('div');
+
+      if (typeof html === 'string') {
+        div.innerHTML = html;
+      } else {
+        div = html;
+      }
     } else {
-      var all = [],
-        result = results[0],
-        i;
+      if (results.length > 1) {
+        div = this._resultsToHtml(results);
+      } else {
+        var all = [],
+          result = results[0],
+          i;
 
-      if (result.results && result.results.length) {
-        for (i = 0; i < result.results.length; i++) {
-          all.push({
-            layerConfig: getLayerConfig(result.layer),
-            result: result.results[i],
-            resultConfig: null
-          });
-        }
-      } else if (result.subLayers && result.subLayers.length) {
-        for (i = 0; i < result.subLayers.length; i++) {
-          var subLayer = result.subLayers[i];
+        if (result.results && result.results.length) {
+          for (i = 0; i < result.results.length; i++) {
+            all.push({
+              layerConfig: getLayerConfig(result.layer),
+              result: result.results[i],
+              resultConfig: null
+            });
+          }
+        } else if (result.subLayers && result.subLayers.length) {
+          for (i = 0; i < result.subLayers.length; i++) {
+            var subLayer = result.subLayers[i];
 
-          if (subLayer.results && subLayer.results.length) {
-            for (var j = 0; j < subLayer.results.length; j++) {
-              all.push({
-                layerConfig: getLayerConfig(result.layer),
-                result: subLayer.results[j],
-                resultConfig: subLayer.popup || null
-              });
+            if (subLayer.results && subLayer.results.length) {
+              for (var j = 0; j < subLayer.results.length; j++) {
+                all.push({
+                  layerConfig: getLayerConfig(result.layer),
+                  result: subLayer.results[j],
+                  resultConfig: subLayer.popup || null
+                });
+              }
             }
           }
         }
-      }
 
-      if (all.length === 1) {
-        var first = all[0];
+        if (all.length === 1) {
+          var first = all[0];
 
-        div = this._resultToHtml(first.result, first.layerConfig, first.resultConfig);
-      } else {
-        div = this._resultsToHtml(results);
+          div = this._resultToHtml(first.result, first.layerConfig, first.resultConfig);
+        } else {
+          div = this._resultsToHtml(results);
+        }
       }
     }
 
@@ -149,6 +161,155 @@ var Popup = L.Popup.extend({
   _more: function(index) {
     this._html = this.getContent();
     this.setContent(this._results[index]).update();
+  },
+  _resultToHtml: function(result, layerConfig, resultConfig, addBack, mapPopupConfig) {
+    var div;
+
+    if (mapPopupConfig && typeof mapPopupConfig === 'function') {
+      var html = mapPopupConfig(result);
+
+      div = document.createElement('div');
+
+      if (typeof html === 'string') {
+        div.innerHTML = html;
+      } else {
+        div = html;
+      }
+
+      return div;
+    } else {
+      var config = layerConfig,
+        actions, description, divContent, media, obj, title, ul;
+
+      div = L.DomUtil.create('div', 'layer');
+      div.npmap_data = result;
+
+      if (!config) {
+        if (resultConfig) {
+          config = resultConfig;
+        } else {
+          config = {
+            description: {
+              format: 'table'
+            }
+          };
+        }
+      }
+
+      if (config.title) {
+        obj = null;
+
+        if (typeof config.title === 'function') {
+          obj = config.title(result);
+        } else {
+          obj = config.title;
+        }
+
+        if (obj && typeof obj === 'string') {
+          title = L.DomUtil.create('div', 'title', div);
+          title.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
+        }
+      }
+
+      if (config.description) {
+        divContent = L.DomUtil.create('div', 'content', div);
+        obj = null;
+
+        if (typeof config.description === 'function') {
+          obj = config.description(result);
+        } else {
+          obj = config.description;
+        }
+
+        if (obj) {
+          if (obj.format === 'list') {
+            obj = util.dataToList(result, obj.fields);
+          } else if (obj.format === 'table') {
+            obj = util.dataToTable(result, obj.fields);
+          }
+
+          description = L.DomUtil.create('div', 'description', divContent);
+
+          if (typeof obj === 'string') {
+            description.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
+          } else if ('nodeType' in obj) {
+            description.appendChild(obj);
+          }
+        }
+      }
+
+      // TODO: Needs more work to support {string}s and possibly other config options
+      if (config.media) {
+        var mediaObj, mediaDiv;
+
+        if (!divContent) {
+          divContent = L.DomUtil.create('div', 'content', div);
+        }
+
+        media = [];
+
+        for (var i = 0; i < config.media.length; i++) {
+          if (result[config.media[i].id]) {
+            media.push(config.media[i]);
+          }
+        }
+
+        if (media.length) {
+          mediaObj = util.mediaToList(result, media);
+
+          if (mediaObj) {
+            mediaDiv = L.DomUtil.create('div', 'media clearfix', divContent);
+            mediaDiv.appendChild(mediaObj);
+          }
+        }
+      }
+
+      if (config.actions) {
+        obj = null;
+
+        if (typeof config.actions === 'function') {
+          obj = config.actions(result);
+        } else {
+          obj = config.actions;
+        }
+
+        if (obj) {
+          actions = L.DomUtil.create('div', 'actions', div);
+
+          if (L.Util.isArray(obj)) {
+            ul = document.createElement('ul');
+            actions.appendChild(ul);
+
+            for (var j = 0; j < obj.length; j++) {
+              ul.appendChild(this._createAction(obj[j], result, actions));
+            }
+          } else if (typeof obj === 'string') {
+            actions.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
+          } else if ('nodeType' in obj) {
+            actions.appendChild(obj);
+          }
+        }
+      }
+
+      if (addBack) {
+        var a = document.createElement('a'),
+          li = document.createElement('li');
+
+        L.DomEvent.addListener(a, 'click', this._back, this);
+        a.innerHTML = '&#171; Back';
+        li.appendChild(a);
+
+        if (actions) {
+          actions.childNodes[0].insertBefore(li, actions.childNodes[0].childNodes[0]);
+        } else {
+          ul = document.createElement('ul');
+          ul.appendChild(li);
+          L.DomUtil.create('div', 'actions', div).appendChild(ul);
+        }
+      }
+
+      return div;
+    }
   },
   _resultsToHtml: function(results) {
     var div = document.createElement('div'),
@@ -258,139 +419,6 @@ var Popup = L.Popup.extend({
             index++;
           }
         }
-      }
-    }
-
-    return div;
-  },
-  _resultToHtml: function(result, layerConfig, resultConfig, addBack) {
-    var config = layerConfig,
-      div = L.DomUtil.create('div', 'layer'),
-      actions, description, divContent, media, obj, title, ul;
-
-    div.npmap_data = result;
-
-    if (!config) {
-      if (resultConfig) {
-        config = resultConfig;
-      } else {
-        config = {
-          description: {
-            format: 'table'
-          }
-        };
-      }
-    }
-
-    if (config.title) {
-      obj = null;
-
-      if (typeof config.title === 'function') {
-        obj = config.title(result);
-      } else {
-        obj = config.title;
-      }
-
-      if (obj && typeof obj === 'string') {
-        title = L.DomUtil.create('div', 'title', div);
-        title.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
-      }
-    }
-
-    if (config.description) {
-      divContent = L.DomUtil.create('div', 'content', div);
-      obj = null;
-
-      if (typeof config.description === 'function') {
-        obj = config.description(result);
-      } else {
-        obj = config.description;
-      }
-
-      if (obj) {
-        if (obj.format === 'list') {
-          obj = util.dataToList(result, obj.fields);
-        } else if (obj.format === 'table') {
-          obj = util.dataToTable(result, obj.fields);
-        }
-
-        description = L.DomUtil.create('div', 'description', divContent);
-
-        if (typeof obj === 'string') {
-          description.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
-        } else if ('nodeType' in obj) {
-          description.appendChild(obj);
-        }
-      }
-    }
-
-    // TODO: Needs more work to support {string}s and possibly other config options
-    if (config.media) {
-      var mediaObj, mediaDiv;
-
-      if (!divContent) {
-        divContent = L.DomUtil.create('div', 'content', div);
-      }
-
-      media = [];
-
-      for (var i = 0; i < config.media.length; i++) {
-        if (result[config.media[i].id]) {
-          media.push(config.media[i]);
-        }
-      }
-
-      if (media.length) {
-        mediaObj = util.mediaToList(result, media);
-
-        if (mediaObj) {
-          mediaDiv = L.DomUtil.create('div', 'media clearfix', divContent);
-          mediaDiv.appendChild(mediaObj);
-        }
-      }
-    }
-
-    if (config.actions) {
-      obj = null;
-
-      if (typeof config.actions === 'function') {
-        obj = config.actions(result);
-      } else {
-        obj = config.actions;
-      }
-
-      if (obj) {
-        actions = L.DomUtil.create('div', 'actions', div);
-
-        if (L.Util.isArray(obj)) {
-          ul = document.createElement('ul');
-          actions.appendChild(ul);
-
-          for (var j = 0; j < obj.length; j++) {
-            ul.appendChild(this._createAction(obj[j], result, actions));
-          }
-        } else if (typeof obj === 'string') {
-          actions.innerHTML = util.unescapeHtml(util.handlebars(obj, result));
-        } else if ('nodeType' in obj) {
-          actions.appendChild(obj);
-        }
-      }
-    }
-
-    if (addBack) {
-      var a = document.createElement('a'),
-        li = document.createElement('li');
-
-      L.DomEvent.addListener(a, 'click', this._back, this);
-      a.innerHTML = '&#171; Back';
-      li.appendChild(a);
-
-      if (actions) {
-        actions.childNodes[0].insertBefore(li, actions.childNodes[0].childNodes[0]);
-      } else {
-        ul = document.createElement('ul');
-        ul.appendChild(li);
-        L.DomUtil.create('div', 'actions', div).appendChild(ul);
       }
     }
 
