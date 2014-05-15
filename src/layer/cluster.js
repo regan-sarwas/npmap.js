@@ -46,10 +46,10 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
     this._addAttribution();
     L.MarkerClusterGroup.prototype.onAdd.call(this, map);
   },
-  onRemove: function() {
-    delete this._map;
+  onRemove: function(map) {
     this._removeAttribution();
-    L.MarkerClusterGroup.prototype.onRemove.call(this);
+    L.MarkerClusterGroup.prototype.onRemove.call(this, map);
+    delete this._map;
   },
   _addAttribution: function() {
     var attribution = this.options.attribution;
