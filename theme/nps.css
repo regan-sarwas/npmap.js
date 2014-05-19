@@ -43,7 +43,7 @@
     right: 0;
     top: 0;
   }
-    .npmap-modules .module h1, h2, h3, h4, h5, h6 {
+    .npmap-modules .module h1, .npmap-modules .module h2, .npmap-modules .module h3, .npmap-modules .module h4, .npmap-modules .module h5, .npmap-modules .module h6 {
       font-weight: 500;
       line-height: 1.1;
     }
