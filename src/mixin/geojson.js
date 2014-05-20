@@ -20,10 +20,10 @@ module.exports = {
     this._addAttribution();
     L.GeoJSON.prototype.onAdd.call(this, map);
   },
-  onRemove: function() {
+  onRemove: function(map) {
     delete this._map;
     this._removeAttribution();
-    L.GeoJSON.prototype.onRemove.call(this);
+    L.GeoJSON.prototype.onRemove.call(this, map);
   },
   _addAttribution: function() {
     var attribution = this.options.attribution;
