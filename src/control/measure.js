@@ -43,10 +43,10 @@ var MeasureControl = L.Control.extend({
 
     if (mode === 'area') {
       this._stopMeasuringDistance();
-      this._startMeasuringArea();
+      this._startMeasuring('area');
     } else {
       this._stopMeasuringArea();
-      this._startMeasuringDistance();
+      this._startMeasuring('distance');
     }
   },
   _buttonAreaClick: function() {
@@ -221,8 +221,10 @@ var MeasureControl = L.Control.extend({
     this._distance = 0;
     this._lastPointDistance = this._layerGroupPath = this._tooltip = undefined;
   },
-  _startMeasuringArea: function() {
-    var map = this._map;
+  _startMeasuring: function(type) {
+    var clickFn = (type === 'area' ? this._mouseClickArea : this._mouseClickDistance),
+      dblClickFn = (type === 'area' ? this._finishPathArea : this._finishPathDistance),
+      map = this._map;
 
     if (typeof this._doubleClickZoom === 'undefined' || this._doubleClickZoom === null) {
       this._doubleClickZoom = map.doubleClickZoom.enabled();
@@ -231,27 +233,8 @@ var MeasureControl = L.Control.extend({
     map.doubleClickZoom.disable();
     L.DomEvent
       .on(document, 'keydown', this._keyDown, this)
-      .on(map, 'click', this._mouseClickArea, this)
-      .on(map, 'dblclick', this._finishPathArea, this);
-
-    this._currentCircles = this._currentTooltips = [];
-
-    if (!this._layerGroup) {
-      this._layerGroup = new L.LayerGroup().addTo(map);
-    }
-  },
-  _startMeasuringDistance: function() {
-    var map = this._map;
-
-    if (typeof this._doubleClickZoom === 'undefined' || this._doubleClickZoom === null) {
-      this._doubleClickZoom = map.doubleClickZoom.enabled();
-    }
-
-    map.doubleClickZoom.disable();
-    L.DomEvent
-      .on(document, 'keydown', this._keyDown, this)
-      .on(map, 'click', this._mouseClickDistance, this)
-      .on(map, 'dblclick', this._finishPathDistance, this);
+      .on(map, 'click', clickFn, this)
+      .on(map, 'dblclick', dblClickFn, this);
 
     this._currentCircles = this._currentTooltips = [];
 
@@ -295,8 +278,6 @@ var MeasureControl = L.Control.extend({
       this._layerGroup.clearLayers();
       this._layerGroupPath = null;
 
-      console.log(this._doubleClickZoom);
-
       if (this._doubleClickZoom) {
         map.doubleClickZoom.enable();
       }
@@ -308,12 +289,7 @@ var MeasureControl = L.Control.extend({
       map._controllingCursor = false;
       map._controllingInteractivity = false;
       this._menu.style.display = 'block';
-
-      if (this._activeMode === 'area') {
-        this._startMeasuringArea();
-      } else {
-        this._startMeasuringDistance();
-      }
+      this._startMeasuring(this._activeMode);
     }
   },
   _toAcres: function(meters) {
