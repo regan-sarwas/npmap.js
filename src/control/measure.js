@@ -224,7 +224,10 @@ var MeasureControl = L.Control.extend({
   _startMeasuringArea: function() {
     var map = this._map;
 
-    this._doubleClickZoom = map.doubleClickZoom.enabled();
+    if (typeof this._doubleClickZoom === 'undefined' || this._doubleClickZoom === null) {
+      this._doubleClickZoom = map.doubleClickZoom.enabled();
+    }
+
     map.doubleClickZoom.disable();
     L.DomEvent
       .on(document, 'keydown', this._keyDown, this)
@@ -240,7 +243,10 @@ var MeasureControl = L.Control.extend({
   _startMeasuringDistance: function() {
     var map = this._map;
 
-    this._doubleClickZoom = map.doubleClickZoom.enabled();
+    if (typeof this._doubleClickZoom === 'undefined' || this._doubleClickZoom === null) {
+      this._doubleClickZoom = map.doubleClickZoom.enabled();
+    }
+
     map.doubleClickZoom.disable();
     L.DomEvent
       .on(document, 'keydown', this._keyDown, this)
@@ -277,8 +283,7 @@ var MeasureControl = L.Control.extend({
     if (L.DomUtil.hasClass(this._button, 'pressed')) {
       L.DomUtil.removeClass(this._button, 'pressed');
       map._container.style.cursor = '';
-      map._controllingCursor = true;
-      map._controllingInteractivity = true;
+      map._controllingCursor = map._controllingInteractivity = true;
       this._menu.style.display = 'none';
 
       if (this._activeMode === 'area') {
@@ -290,9 +295,13 @@ var MeasureControl = L.Control.extend({
       this._layerGroup.clearLayers();
       this._layerGroupPath = null;
 
+      console.log(this._doubleClickZoom);
+
       if (this._doubleClickZoom) {
         map.doubleClickZoom.enable();
       }
+
+      this._doubleClickZoom = null;
     } else {
       L.DomUtil.addClass(this._button, 'pressed');
       map._container.style.cursor = 'crosshair';
