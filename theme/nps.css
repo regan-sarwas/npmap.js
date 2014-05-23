@@ -536,10 +536,10 @@
     margin-left: 5px;
   }
   .npmap .leaflet-popup-content ul {
-    float: none !important;
-    margin-left: 0 !important;
-    margin-top: 0 !important;
-    padding-left: 25px !important;
+    float: none;
+    margin-left: 0;
+    margin-top: 0;
+    padding-left: 25px;
   }
     .npmap .leaflet-popup-content ul li {
       list-style: initial;
