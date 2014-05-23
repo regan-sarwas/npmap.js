@@ -200,9 +200,6 @@
       "icon": "nps",
       "id": "nps.2yxv8n84",
       "name": "Park Tiles",
-      "popup": {
-        "title": "{{#if name}}{{name}}{{else}}{{FCategory}}{{/if}}"
-      },
       "type": "mapbox"
     },
     "satelliteNight": {
