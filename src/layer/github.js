@@ -22,10 +22,10 @@ var GitHubLayer = L.GeoJSON.extend({
       util.strict(options.repo, 'string');
       util.strict(options.user, 'string');
 
-      // TODO: Support CORS here for "modern" browsers.
+      // TODO: Support CORS here for modern browsers.
       reqwest({
         success: function(response) {
-          me._create(options, JSON.parse(util.base64.decode(response.data.content.replace(/\n|\r/g, ''))));
+          me._create(options, JSON.parse(window.atob(response.data.content.replace(/\s/g, ''))));
         },
         type: 'jsonp',
         url: 'https://api.github.com/repos/' + options.user + '/' + options.repo + '/contents/' + options.path + '?ref=' + branch
