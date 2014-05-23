@@ -1,3 +1,14 @@
 {
-  
+  "places": {
+    "points-of-interest": {
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+      "detectRetina": true,
+      "id": "nps.jhd2e8lb",
+      "name": "Points of Interest",
+      "popup": {
+        "title": "{{#if name}}{{name}}{{else}}{{FCategory}}{{/if}}"
+      },
+      "type": "mapbox"
+    }
+  }
 }
