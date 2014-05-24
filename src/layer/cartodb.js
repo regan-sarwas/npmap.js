@@ -4,10 +4,12 @@
 'use strict';
 
 var reqwest = require('reqwest'),
-  utfGrid = require('../util/utfgrid'),
   util = require('../util/util');
 
 var CartoDbLayer = L.TileLayer.extend({
+  includes: [
+    require('../mixin/grid')
+  ],
   options: {
     errorTileUrl: L.Util.emptyImageUrl,
     format: 'png',
@@ -17,6 +19,11 @@ var CartoDbLayer = L.TileLayer.extend({
       2,
       3
     ]
+  },
+  _update: function() {
+    if (this._urlTile) {
+      L.TileLayer.prototype._update.call(this);
+    }
   },
   initialize: function(options) {
     if (!L.Browser.retina || !options.detectRetina) {
@@ -28,24 +35,6 @@ var CartoDbLayer = L.TileLayer.extend({
     util.strict(this.options.user, 'string');
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
     this._build();
-  },
-  /*
-  getTileUrl: function(tilePoint) {
-    var templated = L.Util.template(this._urlTile, L.Util.extend(tilePoint, {
-      s: this.options.subdomains[Math.floor(Math.random() * this.options.subdomains.length)]
-    }));
-
-    if (this.options.disableCaching) {
-      templated += '?cb=' + Math.round(new Date().getTime());
-    }
-
-    return templated;
-  },
-  */
-  _update: function() {
-    if (this._urlTile) {
-      L.TileLayer.prototype._update.call(this);
-    }
   },
   _build: function() {
     var me = this;
@@ -92,7 +81,6 @@ var CartoDbLayer = L.TileLayer.extend({
 
             if (me._hasInteractivity && me._interactivity.length) {
               me._urlGrid = root + '/0/' + template + '.grid.json';
-              me._grid = new utfGrid(me);
             }
 
             me._urlTile = root + '/' + template + '.png';
@@ -128,9 +116,9 @@ var CartoDbLayer = L.TileLayer.extend({
     var me = this;
 
     if (this._urlGrid) {
-      this._grid.getTileGrid(L.Util.template(this._urlGrid, L.Util.extend({
+      this._getTileGrid(L.Util.template(this._urlGrid, L.Util.extend({
         s: this.options.subdomains[Math.floor(Math.random() * this.options.subdomains.length)]
-      }, this._grid.getTileCoords(latLng))), latLng, function(resultData, gridData) {
+      }, this._getTileCoords(latLng))), latLng, function(resultData, gridData) {
         if (gridData) {
           callback({
             layer: me,
@@ -145,12 +133,6 @@ var CartoDbLayer = L.TileLayer.extend({
     } else {
       callback(null);
     }
-  },
-  _handleClick: function(latLng, callback) {
-    this._getGridData(latLng, callback);
-  },
-  _handleMousemove: function(latLng, callback) {
-    this._getGridData(latLng, callback);
   },
   _stylesToCartoCss: function(styles) {
     var cartoCss = {},

@@ -4,10 +4,12 @@
 'use strict';
 
 var reqwest = require('reqwest'),
-  utfGrid = require('../util/utfgrid'),
   util = require('../util/util');
 
 var MapBoxLayer = L.TileLayer.extend({
+  includes: [
+    require('../mixin/grid')
+  ],
   options: {
     errorTileUrl: L.Util.emptyImageUrl,
     format: 'png',
@@ -34,7 +36,7 @@ var MapBoxLayer = L.TileLayer.extend({
     var load;
 
     if (!options.id && !options.tileJson) {
-      throw new Error('MapBox layers require either an "id" or "tileJson" property.');
+      throw new Error('Mapbox layers require either an "id" or a "tileJson" property.');
     }
 
     if (options.format) {
@@ -70,10 +72,11 @@ var MapBoxLayer = L.TileLayer.extend({
   },
   onAdd: function onAdd(map) {
     this._map = map;
-    L.TileLayer.prototype.onAdd.call(this, map);
+    L.TileLayer.prototype.onAdd.call(this, this._map);
   },
   onRemove: function onRemove() {
     L.TileLayer.prototype.onRemove.call(this, this._map);
+    delete this._map;
   },
   _autoScale: function() {
     return L.Browser.retina && this.options.autoscale && this.options.detectRetina;
@@ -81,7 +84,7 @@ var MapBoxLayer = L.TileLayer.extend({
   _getGridData: function(latLng, callback) {
     var me = this;
 
-    this._grid.getTileGrid(this._getTileGridUrl(latLng), latLng, function(resultData, gridData) {
+    me._getTileGrid(me._getTileGridUrl(latLng), latLng, function(resultData, gridData) {
       if (gridData) {
         callback({
           layer: me,
@@ -93,18 +96,6 @@ var MapBoxLayer = L.TileLayer.extend({
         callback(null);
       }
     });
-  },
-  _getTileGridUrl: function(latLng) {
-    var grids = this.options.grids,
-      gridTileCoords = this._grid.getTileCoords(latLng);
-
-    return L.Util.template(grids[Math.floor(Math.abs(gridTileCoords.x + gridTileCoords.y) % grids.length)], gridTileCoords);
-  },
-  _handleClick: function(latLng, callback) {
-    this._getGridData(latLng, callback);
-  },
-  _handleMousemove: function (latLng, callback) {
-    this._getGridData(latLng, callback);
   },
   _loadTileJson: function(from) {
     if (typeof from === 'string') {
@@ -199,10 +190,6 @@ var MapBoxLayer = L.TileLayer.extend({
 
     if (this.options.clickable !== false) {
       this._hasInteractivity = typeof json.grids === 'object';
-
-      if (this._hasInteractivity) {
-        this._grid = new utfGrid(this);
-      }
     }
 
     if (typeof this.options.maxZoom === 'undefined') {
