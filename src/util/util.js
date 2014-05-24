@@ -442,6 +442,8 @@ module.exports = {
       top: ly
     };
   },
+
+  
   getOuterDimensions: function(el) {
     var height = 0,
       width = 0;
@@ -541,6 +543,9 @@ module.exports = {
     } else {
       return !(/^(?:[a-z]+:)?\/\//i.test(url));
     }
+  },
+  isNumeric: function(val) {
+    return !isNaN(parseFloat(val)) && isFinite(val);
   },
   linkify: function(text, shorten, target) {
     var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])',
