@@ -442,8 +442,6 @@ module.exports = {
       top: ly
     };
   },
-
-  
   getOuterDimensions: function(el) {
     var height = 0,
       width = 0;
