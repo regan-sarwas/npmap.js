@@ -22,7 +22,6 @@ var Popup = L.Popup.extend({
     }
 
     content.onmousewheel = this._handleMouseWheel;
-
     L.Popup.prototype.onAdd.apply(this, [
       map
     ]);
@@ -163,11 +162,11 @@ var Popup = L.Popup.extend({
     this._html = this.getContent();
     this.setContent(this._results[index]).update();
   },
-  _resultToHtml: function(result, layerConfig, resultConfig, addBack, mapPopupConfig) {
+  _resultToHtml: function(result, layerConfig, resultConfig, addBack, mapConfig) {
     var div;
 
-    if (mapPopupConfig && typeof mapPopupConfig === 'function') {
-      var html = mapPopupConfig(result);
+    if (mapConfig && typeof mapConfig === 'function') {
+      var html = mapConfig(result);
 
       div = document.createElement('div');
 
