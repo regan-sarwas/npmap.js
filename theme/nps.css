@@ -721,6 +721,9 @@
   display: none;
   max-width: 250px;
   opacity: 0;
+  padding: 7px 10px;
+  position: absolute;
+  width: auto;
   z-index: 10;
 }
   .npmap .leaflet-tooltip.leaflet-tooltip-fade {

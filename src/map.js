@@ -440,8 +440,7 @@ var Map = L.Map.extend({
     var activeTips = [],
       me = this,
       tooltip = L.npmap.tooltip({
-        map: me,
-        padding: '7px 10px'
+        map: me
       });
 
     function handle(hasData) {
@@ -461,6 +460,7 @@ var Map = L.Map.extend({
             tooltip.setHtml(html);
           }
 
+          console.log('it\'s me');
           tooltip.setPosition(me._currentCursorEvent.containerPoint);
         } else {
           tooltip.show(me._currentCursorEvent.containerPoint, html);
