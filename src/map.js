@@ -27,7 +27,9 @@ require('./popup.js');
         left = util.getOuterDimensions(util.getChildElementsByClassName(container, 'leaflet-control-container')[0].childNodes[2]).width;
 
       if (left) {
-        left = left + 20;
+        left = left + 15;
+      } else {
+        left = 10;
       }
 
       util.getChildElementsByClassName(container, 'leaflet-control-attribution')[0].style['max-width'] = (util.getOuterDimensions(container).width - left) + 'px';
