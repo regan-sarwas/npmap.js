@@ -444,23 +444,50 @@ var Map = L.Map.extend({
         padding: '7px 10px'
       });
 
-    me._tooltips = [];
+    function handle(hasData) {
+      if (hasData) {
+        me._setCursor('pointer');
+      } else {
+        if (me.getContainer().style.cursor !== 'wait') {
+          me._setCursor('');
+        }
+      }
 
+      if (me._tooltips.length) {
+        var html = me._tooltips.join('<br>');
+
+        if (tooltip.isVisible()) {
+          if (tooltip.getHtml() !== html) {
+            tooltip.setHtml(html);
+          }
+
+          tooltip.setPosition(me._currentCursorEvent.containerPoint);
+        } else {
+          tooltip.show(me._currentCursorEvent.containerPoint, html);
+        }
+      } else {
+        tooltip.hide();
+      }
+    }
+
+    me._tooltips = [];
     L.DomEvent.on(util.getChildElementsByClassName(me.getContainer(), 'leaflet-popup-pane')[0], 'mousemove', function(e) {
       L.DomEvent.stopPropagation(e);
       tooltip.hide();
     });
     me.on('mousemove', function(e) {
-      if (this._controllingCursor) {
-        var hasData = false,
-          latLng = e.latlng.wrap(),
-          newActiveTips = [];
+      me._currentCursorEvent = e;
 
-        tooltip.hide();
-        
-        if (me.getContainer().style.cursor !== 'wait') {
-          me._setCursor('');
-        }
+      if (this._controllingCursor && tooltip.isVisible()) {
+        tooltip.setPosition(me._currentCursorEvent.containerPoint);
+      }
+
+      if (this._controllingCursor) {
+        var count = 0,
+          hasData = false,
+          newActiveTips = [],
+          total = 0,
+          layerId;
 
         for (var i = 0; i < me._tooltips.length; i++) {
           if (activeTips.indexOf(me._tooltips[i]) === -1) {
@@ -471,11 +498,15 @@ var Map = L.Map.extend({
         activeTips = [];
         me._tooltips = newActiveTips;
 
-        for (var layerId in me._layers) {
+        for (layerId in me._layers) {
+          total++;
+        }
+
+        for (layerId in me._layers) {
           var layer = me._layers[layerId];
 
           if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
-            layer._handleMousemove(latLng, function(result) {
+            layer._handleMousemove(me._currentCursorEvent.latlng.wrap(), function(result) {
               if (result) {
                 var l = result.layer;
 
@@ -499,22 +530,36 @@ var Map = L.Map.extend({
                   }
                 }
               }
+
+              count++;
             });
+          } else {
+            count++;
           }
         }
 
-        if (hasData) {
-          me._setCursor('pointer');
-        }
-
-        if (me._tooltips.length) {
-          tooltip.show(e.containerPoint, me._tooltips.join('<br>'));
+        if (count === total) {
+          handle(hasData);
+        } else {
+          var interval = setInterval(function() {
+            if (count === total) {
+              clearInterval(interval);
+              handle(hasData);
+            }
+          }, 0);
         }
       }
     });
     me.on('mouseout', function() {
       tooltip.hide();
     });
+    /*
+    me.on('zoomend', function() {
+      me.fire('mousemove', {
+        
+      });
+    });
+    */
   },
   _toLeaflet: function(config) {
     if (!config.div) {

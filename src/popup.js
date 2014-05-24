@@ -8,7 +8,8 @@ var util = require('./util/util');
 var Popup = L.Popup.extend({
   options: {
     autoPanPaddingBottomRight: [20, 20],
-    autoPanPaddingTopLeft: [20, 20]
+    autoPanPaddingTopLeft: [20, 20],
+    offset: [0, -1]
   },
   _data: [],
   _html: null,
@@ -176,6 +177,11 @@ var Popup = L.Popup.extend({
         div = html;
       }
 
+      return div;
+    } else if (layerConfig && typeof layerConfig === 'function') {
+      div = L.DomUtil.create('div', 'layer');
+      div.innerHTML = layerConfig(result);
+      div.npmap_data = result;
       return div;
     } else {
       var config = layerConfig,
