@@ -17,32 +17,50 @@ var SpotLayer = L.GeoJSON.extend({
 
     reqwest({
       success: function(response) {
+        var message;
+
         response = response.response;
 
-        if (response && response.feedMessageResponse && response.feedMessageResponse.messages && response.feedMessageResponse.messages.message) {
-          var geoJson = {
-              features: [],
-              type: 'FeatureCollection'
-            },
-            messages = response.feedMessageResponse.messages.message;
-
-          for (var i = 0; i < messages.length; i++) {
-            var message = messages[i];
-
-            geoJson.features.push({
-              geometry: {
-                coordinates: [message.longitude, message.latitude],
-                type: 'Point'
+        if (response) {
+          if (response.feedMessageResponse && response.feedMessageResponse.messages && response.feedMessageResponse.messages.message) {
+            var geoJson = {
+                features: [],
+                type: 'FeatureCollection'
               },
-              properties: message,
-              type: 'Feature'
-            });
-          }
+              messages = response.feedMessageResponse.messages.message;
 
-          if (geoJson.features.length) {
-            me._create(me.options, geoJson);
+            for (var i = 0; i < messages.length; i++) {
+              message = messages[i];
+
+              geoJson.features.push({
+                geometry: {
+                  coordinates: [message.longitude, message.latitude],
+                  type: 'Point'
+                },
+                properties: message,
+                type: 'Feature'
+              });
+            }
+
+            if (geoJson.features.length) {
+              me._create(me.options, geoJson);
+            } else {
+              // TODO: Display nonmodal error.
+            }
           } else {
-            // TODO: Display nonmodal error.
+            if (me._map) {
+              me._map.notify.danger(response.errors.error.text);
+            } else {
+              console.log('ERROR: ' + response.errors.error.text);
+            }
+          }
+        } else {
+          message = 'The SPOT service is unresponsive.';
+
+          if (me._map) {
+            me._map.notify.danger(message);
+          } else {
+            console.log('ERROR: ' + message);
           }
         }
       },
