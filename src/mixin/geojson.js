@@ -53,7 +53,8 @@ module.exports = {
       };
 
     if (typeof config.clickable === 'undefined' || config.clickable === true) {
-      var activeTip, lastTarget;
+      var activeTip = null,
+        lastTarget;
 
       config.onEachFeature = function(feature, layer) {
         layer.on('click', function(e) {
@@ -106,30 +107,34 @@ module.exports = {
             if (removeIndex !== null) {
               tooltips.splice(removeIndex, 1);
             }
+
+            activeTip = null;
           }
         });
         layer.on('mouseover', function(e) {
-          var tooltipConfig = config.tooltip;
+          if (!activeTip) {
+            var tooltipConfig = config.tooltip;
 
-          if (tooltipConfig) {
-            var properties = feature.properties,
-              tip;
+            if (tooltipConfig) {
+              var properties = feature.properties,
+                tip;
 
-            if (typeof tooltipConfig === 'function') {
-              tip = tooltipConfig(properties);
-            } else if (typeof tooltipConfig === 'string') {
-              tip = util.handlebars(tooltipConfig, properties);
-            }
+              if (typeof tooltipConfig === 'function') {
+                tip = tooltipConfig(properties);
+              } else if (typeof tooltipConfig === 'string') {
+                tip = util.handlebars(tooltipConfig, properties);
+              }
 
-            if (tip) {
-              var target = e.target,
-                obj = {
-                  html: tip,
-                  layerId: target._leaflet_id
-                };
+              if (tip) {
+                var target = e.target,
+                  obj = {
+                    html: tip,
+                    layerId: target._leaflet_id
+                  };
 
-              target._map._tooltips.push(obj);
-              activeTip = obj;
+                target._map._tooltips.push(obj);
+                activeTip = obj;
+              }
             }
           }
         });
