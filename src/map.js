@@ -443,7 +443,15 @@ var Map = L.Map.extend({
       me = this,
       tooltip = L.npmap.tooltip({
         map: me
-      });
+      }),
+      interval;
+
+
+
+
+
+
+
 
     function handle(hasData) {
       if (hasData) {
@@ -479,6 +487,9 @@ var Map = L.Map.extend({
     me.on('mousemove', function(e) {
       me._currentCursorEvent = e;
 
+      //if (!me._tooltips.length) {
+        //tooltip.hide();
+      //} else if (this._controllingCursor && tooltip.isVisible()) {
       if (this._controllingCursor && tooltip.isVisible()) {
         tooltip.setPosition(me._currentCursorEvent.containerPoint);
       }
@@ -486,25 +497,25 @@ var Map = L.Map.extend({
       if (this._controllingCursor) {
         var count = 0,
           hasData = false,
-          newActiveTips = [],
           total = 0,
-          layerId;
+          layer, layerId;
 
-        for (var i = 0; i < me._tooltips.length; i++) {
-          if (activeTips.indexOf(me._tooltips[i]) === -1) {
-            newActiveTips.push(me._tooltips[i]);
+        if (interval) {
+          clearInterval(interval);
+        }
+
+        me._tooltips = [];
+
+        for (layerId in me._layers) {
+          layer = me._layers[layerId];
+
+          if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
+            total++;
           }
         }
 
-        activeTips = [];
-        me._tooltips = newActiveTips;
-
         for (layerId in me._layers) {
-          total++;
-        }
-
-        for (layerId in me._layers) {
-          var layer = me._layers[layerId];
+          layer = me._layers[layerId];
 
           if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
             layer._handleMousemove(me._currentCursorEvent.latlng.wrap(), function(result) {
@@ -524,9 +535,8 @@ var Map = L.Map.extend({
                       tip = util.unescapeHtml(util.handlebars(l.options.tooltip, data));
                     }
 
-                    if (tip) {
+                    if (tip && me._tooltips.indexOf(tip) === -1) {
                       me._tooltips.push(tip);
-                      activeTips.push(tip);
                     }
                   }
                 }
@@ -534,15 +544,13 @@ var Map = L.Map.extend({
 
               count++;
             });
-          } else {
-            count++;
           }
         }
 
         if (count === total) {
           handle(hasData);
         } else {
-          var interval = setInterval(function() {
+          interval = setInterval(function() {
             if (count === total) {
               clearInterval(interval);
               handle(hasData);
