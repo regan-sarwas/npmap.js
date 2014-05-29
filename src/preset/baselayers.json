@@ -35,15 +35,6 @@
       "type": "arcgisserver",
       "url": "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer"
     },
-    "grayLabels": {
-      "attribution": "Copyright: &copy;2013 Esri, DeLorme, NAVTEQ",
-      "maxZoom": 16,
-      "minZoom": 1,
-      "name": "Esri Light Gray Labels",
-      "tiled": true,
-      "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer"
-    },
     "imagery": {
       "attribution": "Esri, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community",
       "icon": "aerial",
@@ -54,16 +45,6 @@
       "tiled": true,
       "type": "arcgisserver",
       "url": "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
-    },
-    "imageryLabels": {
-      "attribution": "Esri, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community",
-      "maxZoom": 19,
-      "minZoom": 1,
-      "popup": false,
-      "name": "Esri Boundaries & Places",
-      "tiled": true,
-      "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
     },
     "nationalGeographic": {
       "attribution": "Esri",
@@ -83,15 +64,6 @@
       "tiled": true,
       "type": "arcgisserver",
       "url": "http://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer"
-    },
-    "oceansLabels": {
-      "attribution": "Esri",
-      "maxZoom": 16,
-      "minZoom": 1,
-      "name": "Esri Ocean Labels",
-      "tiled": true,
-      "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer"
     },
     "streets": {
       "attribution": "Esri",
@@ -200,6 +172,14 @@
       "icon": "nps",
       "id": "nps.2yxv8n84",
       "name": "Park Tiles",
+      "type": "mapbox"
+    },
+    "parkTilesImagery": {
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+      "detectRetina": true,
+      "icon": "nps",
+      "id": "nps.map-n9nxe12m,nps.z3hnnp4r,nps.whfyh5gu,nps.d4lfc2r7,nps.dta2y72l",
+      "name": "Park Tiles Imagery",
       "type": "mapbox"
     },
     "satelliteNight": {
