@@ -1,4 +1,5 @@
 /* global L */
+/* jshint camelcase: false */
 
 'use strict';
 
@@ -90,9 +91,21 @@ module.exports = {
         });
         layer.on('mouseout', function(e) {
           if (activeTip) {
-            var tooltips = e.target._map._tooltips;
+            var tooltips = e.target._map._tooltips,
+              removeIndex = null;
 
-            tooltips.splice(tooltips.indexOf(activeTip), 1);
+            for (var i = 0; i < tooltips.length; i++) {
+              var obj = tooltips[i];
+
+              if (activeTip.layerId === obj.layerId) {
+                removeIndex = i;
+                break;
+              }
+            }
+
+            if (removeIndex !== null) {
+              tooltips.splice(removeIndex, 1);
+            }
           }
         });
         layer.on('mouseover', function(e) {
@@ -109,8 +122,14 @@ module.exports = {
             }
 
             if (tip) {
-              e.target._map._tooltips.push(tip);
-              activeTip = tip;
+              var target = e.target,
+                obj = {
+                  html: tip,
+                  layerId: target._leaflet_id
+                };
+
+              target._map._tooltips.push(obj);
+              activeTip = obj;
             }
           }
         });

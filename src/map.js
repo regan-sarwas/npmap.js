@@ -1,4 +1,5 @@
 /* global L, NPMap */
+/* jshint camelcase: false */
 
 'use strict';
 
@@ -439,8 +440,7 @@ var Map = L.Map.extend({
     });
   },
   _setupTooltip: function() {
-    var activeTips = [],
-      me = this,
+    var me = this,
       tooltip = L.npmap.tooltip({
         map: me
       }),
@@ -463,7 +463,13 @@ var Map = L.Map.extend({
       }
 
       if (me._tooltips.length) {
-        var html = me._tooltips.join('<br>');
+        var html = '';
+
+        for (var i = 0; i < me._tooltips.length; i++) {
+          var obj = me._tooltips[i];
+
+          html += '<div id="tooltip-' + obj.layerId + '">' + obj.html + '</div>';
+        }
 
         if (tooltip.isVisible()) {
           if (tooltip.getHtml() !== html) {
@@ -487,9 +493,6 @@ var Map = L.Map.extend({
     me.on('mousemove', function(e) {
       me._currentCursorEvent = e;
 
-      //if (!me._tooltips.length) {
-        //tooltip.hide();
-      //} else if (this._controllingCursor && tooltip.isVisible()) {
       if (this._controllingCursor && tooltip.isVisible()) {
         tooltip.setPosition(me._currentCursorEvent.containerPoint);
       }
@@ -504,8 +507,6 @@ var Map = L.Map.extend({
           clearInterval(interval);
         }
 
-        me._tooltips = [];
-
         for (layerId in me._layers) {
           layer = me._layers[layerId];
 
@@ -518,6 +519,23 @@ var Map = L.Map.extend({
           layer = me._layers[layerId];
 
           if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
+            var remove = [],
+              i;
+
+            for (i = 0; i < me._tooltips.length; i++) {
+              var obj = me._tooltips[i];
+
+              if (obj.layerId === layer._leaflet_id) {
+                remove.push(obj);
+              }
+            }
+
+            if (remove.length) {
+              for (i = 0; i < remove.length; i++) {
+                me._tooltips.splice(me._tooltips.indexOf(remove[i]), 1);
+              }
+            }
+
             layer._handleMousemove(me._currentCursorEvent.latlng.wrap(), function(result) {
               if (result) {
                 var l = result.layer;
@@ -536,7 +554,10 @@ var Map = L.Map.extend({
                     }
 
                     if (tip && me._tooltips.indexOf(tip) === -1) {
-                      me._tooltips.push(tip);
+                      me._tooltips.push({
+                        html: tip,
+                        layerId: l._leaflet_id
+                      });
                     }
                   }
                 }
