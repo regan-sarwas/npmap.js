@@ -112,29 +112,27 @@ module.exports = {
           }
         });
         layer.on('mouseover', function(e) {
-          if (!activeTip) {
-            var tooltipConfig = config.tooltip;
+          var tooltipConfig = config.tooltip;
 
-            if (tooltipConfig) {
-              var properties = feature.properties,
-                tip;
+          if (tooltipConfig) {
+            var properties = feature.properties,
+              tip;
 
-              if (typeof tooltipConfig === 'function') {
-                tip = tooltipConfig(properties);
-              } else if (typeof tooltipConfig === 'string') {
-                tip = util.handlebars(tooltipConfig, properties);
-              }
+            if (typeof tooltipConfig === 'function') {
+              tip = tooltipConfig(properties);
+            } else if (typeof tooltipConfig === 'string') {
+              tip = util.handlebars(tooltipConfig, properties);
+            }
 
-              if (tip) {
-                var target = e.target,
-                  obj = {
-                    html: tip,
-                    layerId: target._leaflet_id
-                  };
+            if (tip) {
+              var target = e.target,
+                obj = {
+                  html: tip,
+                  layerId: target._leaflet_id
+                };
 
-                target._map._tooltips.push(obj);
-                activeTip = obj;
-              }
+              target._map._tooltips.push(obj);
+              activeTip = obj;
             }
           }
         });
