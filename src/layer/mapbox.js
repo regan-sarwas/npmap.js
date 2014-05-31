@@ -85,15 +85,25 @@ var MapBoxLayer = L.TileLayer.extend({
     var me = this;
 
     me._getTileGrid(me._getTileGridUrl(latLng), latLng, function(resultData, gridData) {
-      if (gridData) {
+      if (resultData === 'loading') {
         callback({
           layer: me,
-          results: [
-            gridData
-          ]
+          results: 'loading'
         });
       } else {
-        callback(null);
+        if (gridData) {
+          callback({
+            layer: me,
+            results: [
+              gridData
+            ]
+          });
+        } else {
+          callback({
+            layer: me,
+            results: null
+          });
+        }
       }
     });
   },

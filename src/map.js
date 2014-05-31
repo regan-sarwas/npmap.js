@@ -387,15 +387,32 @@ var Map = L.Map.extend({
             done();
 
             if (intervals > 98) {
-              // TODO: Show non-modal alert about the timeout.
+              this.notify.danger('No information to display because the operation timed out.');
             }
 
             if (results.length) {
-              var popup = L.npmap.popup({
-                autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer()),
-                maxHeight: util._getAvailableVerticalSpace(me) - 74
-              });
-              popup.setContent(popup._handleResults(results, me.options.popup)).setLatLng(latLng).openOn(me);
+              var actual = [];
+
+              for (var i = 0; i < results.length; i++) {
+                var result = results[i];
+
+                if (typeof result.results !== 'undefined') {
+                  if (result.results && result.results !== 'loading') {
+                    actual.push(result);
+                  }
+                } else {
+                  actual.push(result);
+                }
+              }
+
+              if (actual.length) {
+                var popup = L.npmap.popup({
+                  autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer()),
+                  maxHeight: util._getAvailableVerticalSpace(me) - 74
+                });
+
+                popup.setContent(popup._handleResults(actual, me.options.popup)).setLatLng(latLng).openOn(me);
+              }
             }
           }
         }, 100);
@@ -441,25 +458,14 @@ var Map = L.Map.extend({
   },
   _setupTooltip: function() {
     var me = this,
+      overData = [],
       tooltip = L.npmap.tooltip({
         map: me
-      }),
-      interval;
+      });
 
-
-
-
-
-
-
-
-    function handle(hasData) {
-      if (hasData) {
-        me._setCursor('pointer');
-      } else {
-        if (me.getContainer().style.cursor !== 'wait') {
-          me._setCursor('');
-        }
+    function handle() {
+      if (me._controllingCursor) {
+        updateCursor();
       }
 
       if (me._tooltips.length) {
@@ -476,12 +482,55 @@ var Map = L.Map.extend({
             tooltip.setHtml(html);
           }
 
-          tooltip.setPosition(me._currentCursorEvent.containerPoint);
+          tooltip.setPosition(me._cursorEvent.containerPoint);
         } else {
-          tooltip.show(me._currentCursorEvent.containerPoint, html);
+          tooltip.show(me._cursorEvent.containerPoint, html);
         }
       } else {
         tooltip.hide();
+      }
+    }
+    function removeOverData(layerId) {
+      var remove = [],
+        i;
+
+      for (i = 0; i < overData.length; i++) {
+        if (overData[i] === layerId) {
+          remove.push(layerId);
+        }
+      }
+
+      if (remove.length) {
+        for (i = 0; i < remove.length; i++) {
+          overData.splice(overData.indexOf(remove[i]), 1);
+        }
+      }
+    }
+    function removeTooltip(layerId) {
+      var remove = [],
+        i;
+
+      for (i = 0; i < me._tooltips.length; i++) {
+        var obj = me._tooltips[i];
+
+        if (obj.layerId === layerId) {
+          remove.push(obj);
+        }
+      }
+
+      if (remove.length) {
+        for (i = 0; i < remove.length; i++) {
+          me._tooltips.splice(me._tooltips.indexOf(remove[i]), 1);
+        }
+      }
+    }
+    function updateCursor() {
+      if (overData.length) {
+        me._setCursor('pointer');
+      } else {
+        if (me.getContainer().style.cursor !== 'wait') {
+          me._setCursor('');
+        }
       }
     }
 
@@ -491,105 +540,57 @@ var Map = L.Map.extend({
       tooltip.hide();
     });
     me.on('mousemove', function(e) {
-      me._currentCursorEvent = e;
+      me._cursorEvent = e;
 
-      if (this._controllingCursor && tooltip.isVisible()) {
-        tooltip.setPosition(me._currentCursorEvent.containerPoint);
-      }
+      if (me._controllingCursor) {
+        handle();
 
-      if (this._controllingCursor) {
-        var count = 0,
-          hasData = false,
-          total = 0,
-          layer, layerId;
-
-        if (interval) {
-          clearInterval(interval);
-        }
-
-        for (layerId in me._layers) {
-          layer = me._layers[layerId];
+        for (var layerId in me._layers) {
+          var layer = me._layers[layerId];
 
           if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
-            total++;
-          }
-        }
+            layer._handleMousemove(me._cursorEvent.latlng.wrap(), function(result) {
+              if (result.results !== 'loading') {
+                var l = result.layer,
+                  leafletId = l._leaflet_id;
 
-        for (layerId in me._layers) {
-          layer = me._layers[layerId];
+                removeOverData(leafletId);
+                removeTooltip(leafletId);
 
-          if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
-            var remove = [],
-              i;
+                if (result.results) {
+                  overData.push(leafletId);
 
-            for (i = 0; i < me._tooltips.length; i++) {
-              var obj = me._tooltips[i];
+                  if (l.options && l.options.tooltip) {
+                    for (var i = 0; i < result.results.length; i++) {
+                      var data = result.results[i],
+                        tip;
 
-              if (obj.layerId === layer._leaflet_id) {
-                remove.push(obj);
-              }
-            }
+                      if (typeof l.options.tooltip === 'function') {
+                        tip = util.handlebars(l.options.tooltip(data));
+                      } else if (typeof l.options.tooltip === 'string') {
+                        tip = util.unescapeHtml(util.handlebars(l.options.tooltip, data));
+                      }
 
-            if (remove.length) {
-              for (i = 0; i < remove.length; i++) {
-                me._tooltips.splice(me._tooltips.indexOf(remove[i]), 1);
-              }
-            }
-
-            layer._handleMousemove(me._currentCursorEvent.latlng.wrap(), function(result) {
-              if (result) {
-                var l = result.layer;
-
-                hasData = true;
-
-                if (l.options && l.options.tooltip) {
-                  for (var i = 0; i < result.results.length; i++) {
-                    var data = result.results[i],
-                      tip;
-
-                    if (typeof l.options.tooltip === 'function') {
-                      tip = util.handlebars(l.options.tooltip(data));
-                    } else if (typeof l.options.tooltip === 'string') {
-                      tip = util.unescapeHtml(util.handlebars(l.options.tooltip, data));
-                    }
-
-                    if (tip && me._tooltips.indexOf(tip) === -1) {
-                      me._tooltips.push({
-                        html: tip,
-                        layerId: l._leaflet_id
-                      });
+                      if (tip && me._tooltips.indexOf(tip) === -1) {
+                        me._tooltips.push({
+                          html: tip,
+                          layerId: leafletId
+                        });
+                      }
                     }
                   }
                 }
-              }
 
-              count++;
+                handle();
+              }
             });
           }
-        }
-
-        if (count === total) {
-          handle(hasData);
-        } else {
-          interval = setInterval(function() {
-            if (count === total) {
-              clearInterval(interval);
-              handle(hasData);
-            }
-          }, 0);
         }
       }
     });
     me.on('mouseout', function() {
       tooltip.hide();
     });
-    /*
-    me.on('zoomend', function() {
-      me.fire('mousemove', {
-        
-      });
-    });
-    */
   },
   _toLeaflet: function(config) {
     if (!config.div) {

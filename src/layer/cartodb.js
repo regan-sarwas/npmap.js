@@ -119,19 +119,32 @@ var CartoDbLayer = L.TileLayer.extend({
       this._getTileGrid(L.Util.template(this._urlGrid, L.Util.extend({
         s: this.options.subdomains[Math.floor(Math.random() * this.options.subdomains.length)]
       }, this._getTileCoords(latLng))), latLng, function(resultData, gridData) {
-        if (gridData) {
+        if (resultData === 'loading') {
           callback({
             layer: me,
-            results: [
-              gridData
-            ]
+            results: 'loading'
           });
         } else {
-          callback(null);
+          if (gridData) {
+            callback({
+              layer: me,
+              results: [
+                gridData
+              ]
+            });
+          } else {
+            callback({
+              layer: me,
+              results: null
+            });
+          }
         }
       });
     } else {
-      callback(null);
+      callback({
+        layer: me,
+        results: null
+      });
     }
   },
   _stylesToCartoCss: function(styles) {
