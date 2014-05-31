@@ -469,16 +469,58 @@ var Map = L.Map.extend({
       }
 
       if (me._tooltips.length) {
-        var html = '';
+        var changed = false,
+          childNodes = tooltip._container.childNodes,
+          html = '',
+          i, obj;
 
-        for (var i = 0; i < me._tooltips.length; i++) {
-          var obj = me._tooltips[i];
+        if (childNodes.length) {
+          var remove = [];
 
-          html += '<div id="tooltip-' + obj.layerId + '">' + obj.html + '</div>';
+          for (i = 0; i < childNodes.length; i++) {
+            var childNode = childNodes[i],
+              removeNode = true;
+
+            for (var j = 0; j < me._tooltips.length; j++) {
+              obj = me._tooltips[j];
+
+              // Also do comparison of html to see.
+              if (obj.added && (obj.layerId === parseInt(childNode.id.replace('tooltip-', ''), 10))) {
+                removeNode = false;
+                break;
+              }
+            }
+
+            if (removeNode) {
+              remove.push(childNode);
+            }
+          }
+
+          if (remove.length) {
+            for (i = 0; i < remove.length; i++) {
+              var div = remove[i];
+
+              div.parentNode.removeChild(div);
+            }
+
+            changed = true;
+          }
+
+          html = tooltip.getHtml();
+        }
+
+        for (i = 0; i < me._tooltips.length; i++) {
+          obj = me._tooltips[i];
+
+          if (!obj.added) {
+            changed = true;
+            html += '<div id="tooltip-' + obj.layerId + '">' + util.unescapeHtml(obj.html) + '</div>';
+            obj.added = true;
+          }
         }
 
         if (tooltip.isVisible()) {
-          if (tooltip.getHtml() !== html) {
+          if (changed) {
             tooltip.setHtml(html);
           }
 
@@ -488,6 +530,7 @@ var Map = L.Map.extend({
         }
       } else {
         tooltip.hide();
+        tooltip.setHtml('');
       }
     }
     function removeOverData(layerId) {
