@@ -202,9 +202,6 @@ var ArcGisServerDynamicLayer = L.Class.extend({
     this._currentImage.bringToFront();
     return this;
   },
-  getLayers: function() {
-    return this._layerParams.layers;
-  },
   redraw: function() {
     this._update();
   },

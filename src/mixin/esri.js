@@ -136,6 +136,13 @@ module.exports = {
       map.attributionControl.addAttribution(this.options.attribution);
     }
   },
+  getLayers: function() {
+    if (this._layerParams && this._layerParams.length) {
+      return this._layerParams.layers.split(':')[1];
+    } else {
+      return this.options.layers;
+    }
+  },
   identify: function(latLng, callback) {
     var map = this._map,
       size = map.getSize(),
@@ -150,7 +157,7 @@ module.exports = {
         }),
         geometryType: 'esriGeometryPoint',
         imageDisplay: size.x + ',' + size.y + ',96',
-        layers: 'visible:' + this.getLayers().split(':')[1],
+        layers: 'visible:' + this.getLayers(),
         mapExtent: JSON.stringify(this._boundsToExtent(map.getBounds())),
         returnGeometry: false,
         sr: '4326',
