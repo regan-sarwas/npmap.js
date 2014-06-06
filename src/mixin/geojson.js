@@ -225,9 +225,14 @@ module.exports = {
       if (type !== 'point') {
         // TODO: Add support for passing Leaflet styles in.
         var count = 0,
-          properties = feature.properties,
           style = {},
-          property;
+          properties, property;
+
+        if (typeof feature.properties === 'object') {
+          properties = feature.properties;
+        } else {
+          properties = {};
+        }
 
         for (property in matchSimpleStyles) {
           if (typeof properties[property] !== 'undefined' && properties[property] !== null && properties[property] !== '') {
