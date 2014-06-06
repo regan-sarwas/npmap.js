@@ -137,7 +137,7 @@ module.exports = {
     }
   },
   getLayers: function() {
-    if (this._layerParams && this._layerParams.length) {
+    if (this._layerParams) {
       return this._layerParams.layers.split(':')[1];
     } else {
       return this.options.layers;
