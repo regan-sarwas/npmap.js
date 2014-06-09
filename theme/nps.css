@@ -132,9 +132,14 @@
       }
 .npmap-map {
   background-image: url('images/grain.png');
+  border: solid 1px transparent;
+  box-sizing: border-box;
   height: 100%;
   width: 100%;
 }
+  .npmap-map:focus {
+    border-color: #a0a0a0;
+  }
 .npmap-toolbar {
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
      -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
@@ -367,11 +372,9 @@
 
 /* Leaflet Overrides */
 .npmap .leaflet-container {
-  -ms-touch-action: none;
   color: #464646;
   font-family: inherit;
   font-size: inherit;
-  outline: 0;
   overflow: hidden;
 }
   .npmap .leaflet-container a {
