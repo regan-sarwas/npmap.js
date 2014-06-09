@@ -23,6 +23,9 @@
     text-align: left;
     text-indent: -999em;
   }
+  .npmap a:focus, .npmap button:focus, .npmap div:focus, .npmap input:focus {
+    outline-color: #b28000;
+  }
 .npmap-modules {
   -webkit-box-shadow: 2px 0 2px rgba(0,0,0,.2);
      -moz-box-shadow: 2px 0 2px rgba(0,0,0,.2);
