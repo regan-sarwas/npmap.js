@@ -55,6 +55,7 @@ var OverviewControl = L.Control.extend({
       crs: map.options.crs,
       doubleClickZoom: !this.options.zoomLevelFixed,
       homeControl: false,
+      keyboard: false,
       scrollWheelZoom: !this.options.zoomLevelFixed,
       smallzoomControl: false,
       touchZoom: !this.options.zoomLevelFixed,
@@ -191,11 +192,11 @@ var OverviewControl = L.Control.extend({
 
     setTimeout(function() {
       me._toggleDisplayButton.style.display = 'block';
+      me._toggleDisplayButton.focus();
       me._aimingRect.setStyle({
         fillOpacity: 0,
         opacity: 0
       });
-      //me._miniMap.invalidateSize();
     }, 200);
   },
   _onMainMapMoved: function() {
@@ -264,11 +265,11 @@ var OverviewControl = L.Control.extend({
 
     setTimeout(function() {
       me._toggleDisplayButton.style.display = 'block';
+      me._toggleDisplayButton.focus();
       me._aimingRect.setStyle({
         fillOpacity: 0.2,
         opacity: 0.5
       });
-      //me._miniMap.invalidateSize();
     }, 200);
   },
   _setDisplay: function(minimize) {
