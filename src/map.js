@@ -307,7 +307,6 @@ var Map = L.Map.extend({
   },
   _setupPopup: function() {
     var clicks = 0,
-      delayClick = false,
       me = this,
       canceled, changed, hasArcGisServer;
 
@@ -324,7 +323,8 @@ var Map = L.Map.extend({
       }
     }
     function go(e) {
-      var queryable = [];
+      var queryable = [],
+        layer;
 
       canceled = false;
       changed = false;
@@ -425,34 +425,18 @@ var Map = L.Map.extend({
       changed = true;
     }
 
-    for (var layerId in me._layers) {
-      var layer = me._layers[layerId];
-
-      if (typeof layer.options === 'object' && layer.options.type === 'arcgisserver') {
-        delayClick = true;
-        break;
-      }
-    }
-
-    if (delayClick) {
-      me.on('dblclick', function() {
-        clicks++;
-      });
-    }
-
+    me.on('dblclick', function() {
+      clicks++;
+    });
     me.on('click', function(e) {
       clicks = 0;
 
       if (me._controllingInteractivity) {
-        if (delayClick) {
-          setTimeout(function() {
-            if (!clicks) {
-              go(e);
-            }
-          }, 200);
-        } else {
-          go(e);
-        }
+        setTimeout(function() {
+          if (!clicks) {
+            go(e);
+          }
+        }, 200);
       }
     });
   },

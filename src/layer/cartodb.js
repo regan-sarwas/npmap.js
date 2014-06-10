@@ -57,10 +57,10 @@ var CartoDbLayer = L.TileLayer.extend({
               me._interactivity.push(field);
             }
           }
+        }
 
-          if (me._interactivity.length) {
-            me._hasInteractivity = true;
-          }
+        if (me._interactivity.length) {
+          me._hasInteractivity = true;
         }
 
         if (me.options.cartocss) {
