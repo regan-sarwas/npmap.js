@@ -1,3 +1,4 @@
+/* INFO: In leaflet.markercluster, in src/MarkerCluster.js, add "keyboard: false" to line 4. */
 /* global L */
 
 'use strict';
@@ -67,14 +68,14 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
   },
   createCustomIconFunction: function(settings) {
     var defaultSettings = [{
-      color: '#7A904F',
+      color: '#7a904f',
       fontColor: '#fff',
       maxNodes: 9,
       name: 'small',
       outerRing: 22,
       size: 20
     },{
-      color: '#D49900',
+      color: '#d49900',
       fontColor: '#fff',
       maxNodes: 99,
       name: 'medium',
@@ -188,15 +189,21 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
       var childCount = cluster.getChildCount(),
         className, size;
 
-      for (var markerIndex = 0; markerIndex < defaultSettings.length; markerIndex++) {
-        if (childCount <= defaultSettings[markerIndex].maxNodes) {
-          className = 'marker-cluster-custom-' + defaultSettings[markerIndex].maxNodes.toString();
-          size = defaultSettings[markerIndex].size + defaultSettings[markerIndex].outerRing;
+      for (var i = 0; i < defaultSettings.length; i++) {
+        var defaultSetting = defaultSettings[i];
+
+        if (childCount <= defaultSetting.maxNodes) {
+          className = 'marker-cluster-custom-' + defaultSetting.maxNodes.toString();
+          size = defaultSetting.size + defaultSetting.outerRing;
           break;
         }
       }
 
-      return new L.DivIcon({html: '<div><span>' + childCount + '</span></div>', className: className, iconSize: new L.Point(size, size) });
+      return new L.DivIcon({
+        className: className,
+        html: '<div><span>' + childCount + '</span></div>',
+        iconSize: new L.Point(size, size)
+      });
     }
     function hexToArray(hexValue) {
       var returnValue = false;
@@ -210,9 +217,9 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
 
         if (hexValue.match(/[\da-fA-F]{6}$/)) {
           returnValue = [
-            parseInt(hexValue.substr(0,2), 16),
-            parseInt(hexValue.substr(2,2), 16),
-            parseInt(hexValue.substr(4,2), 16)
+            parseInt(hexValue.substr(0, 2), 16),
+            parseInt(hexValue.substr(2, 2), 16),
+            parseInt(hexValue.substr(4, 2), 16)
           ];
         }
       }
@@ -238,9 +245,9 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
           return color;
         } else {
           newColor = color.replace(/^rgba\(/g, 'rgb(,').replace(')','').split(',');
-          newColor[1] = Math.floor(parseInt(newColor[1],10) + (255 * (1 - parseFloat(newColor[4], 10))));
-          newColor[2] = Math.floor(parseInt(newColor[2],10) + (255 * (1 - parseFloat(newColor[4], 10))));
-          newColor[3] = Math.floor(parseInt(newColor[3],10) + (255 * (1 - parseFloat(newColor[4], 10))));
+          newColor[1] = Math.floor(parseInt(newColor[1], 10) + (255 * (1 - parseFloat(newColor[4], 10))));
+          newColor[2] = Math.floor(parseInt(newColor[2], 10) + (255 * (1 - parseFloat(newColor[4], 10))));
+          newColor[3] = Math.floor(parseInt(newColor[3], 10) + (255 * (1 - parseFloat(newColor[4], 10))));
           if (newColor[1] > 255) {newColor[1] = 255;}
           if (newColor[2] > 255) {newColor[2] = 255;}
           if (newColor[3] > 255) {newColor[3] = 255;}
@@ -266,7 +273,17 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
 
     if (settings) {
       if (typeof settings === 'string') {
-        updateDefaults({'small': {'color': settings}, 'medium': {'color': settings}, 'large': {'color': settings}});
+        updateDefaults({
+          small: {
+            color: settings
+          },
+          medium: {
+            color: settings
+          },
+          large: {
+            color: settings
+          }
+        });
       } else if (Object.prototype.toString.call(settings) === '[object Object]') {
         updateDefaults(settings);
       } else if (Object.prototype.toString.call(settings) === '[object Array]') {
@@ -275,6 +292,7 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
     }
 
     addStyles();
+
     return customIconCreateFunction;
   }
 });
