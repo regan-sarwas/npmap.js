@@ -195,7 +195,7 @@ var OverviewControl = L.Control.extend({
         fillOpacity: 0,
         opacity: 0
       });
-      me._miniMap.invalidateSize();
+      //me._miniMap.invalidateSize();
     }, 200);
   },
   _onMainMapMoved: function() {
@@ -268,7 +268,7 @@ var OverviewControl = L.Control.extend({
         fillOpacity: 0.2,
         opacity: 0.5
       });
-      me._miniMap.invalidateSize();
+      //me._miniMap.invalidateSize();
     }, 200);
   },
   _setDisplay: function(minimize) {
