@@ -40,14 +40,14 @@ var OverviewControl = L.Control.extend({
     }
   },
   onAdd: function(map) {
-    this._mainMap = map;
-    this._attributionContainer = this._mainMap.attributionControl._container;
     this._container = L.DomUtil.create('div', 'leaflet-control-overview');
-    this._container.style.margin = '0 0 ' + -this._attributionContainer.offsetHeight + 'px 0';
     this._container.style.width = this.options.width + 'px';
     this._container.style.height = this.options.height + 'px';
     L.DomEvent.disableClickPropagation(this._container);
     L.DomEvent.on(this._container, 'mousewheel', L.DomEvent.stopPropagation);
+    this._mainMap = map;
+    this._attributionContainer = this._mainMap.attributionControl._container;
+    this._container.style.margin = '0 0 ' + -this._attributionContainer.offsetHeight + 'px 0';
     this._miniMap = this.L = new L.Map(this._container, {
       attributionControl: false,
       autoToggleDisplay: this.options.autoToggleDisplay,
@@ -68,6 +68,7 @@ var OverviewControl = L.Control.extend({
     this._miniMapMoving = false;
     this._userToggledDisplay = false;
     this._minimized = false;
+    this._transitioning = false;
 
     if (this.options.toggleDisplay) {
       this._addToggleButton();
@@ -177,6 +178,11 @@ var OverviewControl = L.Control.extend({
   _minimize: function() {
     var me = this;
 
+    this._transitioning = true;
+    this._attributionContainer.style.marginRight = '50px';
+    this._container.style.width = '47px';
+    this._container.style.height = '47px';
+    this._minimized = true;
     this._toggleDisplayButton.style.display = 'none';
     this._toggleDisplayButton.style.height = '47px';
     this._toggleDisplayButton.style.width = '47px';
@@ -185,10 +191,6 @@ var OverviewControl = L.Control.extend({
     this._toggleDisplayButtonImage.style.right = 'auto';
     this._toggleDisplayButtonImage.style.left = '10px';
     this._toggleDisplayButtonImage.style.top = '10px';
-    this._container.style.width = '47px';
-    this._container.style.height = '47px';
-    this._attributionContainer.style.marginRight = '50px';
-    this._minimized = true;
 
     setTimeout(function() {
       me._toggleDisplayButton.style.display = 'block';
@@ -197,15 +199,19 @@ var OverviewControl = L.Control.extend({
         fillOpacity: 0,
         opacity: 0
       });
+      me._miniMap.invalidateSize();
+      me._transitioning = false;
     }, 200);
   },
   _onMainMapMoved: function() {
-    if (!this._miniMapMoving) {
-      this._mainMapMoving = true;
-      this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
-      this._setDisplay(this._decideMinimized());
-    } else {
-      this._miniMapMoving = false;
+    if (!this._transitioning) {
+      if (!this._miniMapMoving) {
+        this._mainMapMoving = true;
+        this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+        this._setDisplay(this._decideMinimized());
+      } else {
+        this._miniMapMoving = false;
+      }
     }
 
     this._aimingRect.setBounds(this._mainMap.getBounds());
@@ -214,15 +220,24 @@ var OverviewControl = L.Control.extend({
     this._aimingRect.setBounds(this._mainMap.getBounds());
   },
   _onMiniMapMoved: function() {
-    if (!this._mainMapMoving) {
-      this._miniMapMoving = true;
-      this._mainMap.setView(this._miniMap.getCenter(), this._decideZoom(false));
-      this._shadowRect.setStyle({
-        fillOpacity: 0,
-        opacity: 0
-      });
+    if (!this._transitioning) {
+      if (!this._mainMapMoving) {
+        this._miniMapMoving = true;
+        this._mainMap.setView(this._miniMap.getCenter(), this._decideZoom(false));
+        this._shadowRect.setStyle({
+          fillOpacity: 0,
+          opacity: 0
+        });
+      } else {
+        this._mainMapMoving = false;
+      }
     } else {
-      this._mainMapMoving = false;
+      if (!this._mainMapMoving) {
+        this._shadowRect.setStyle({
+          fillOpacity: 0,
+          opacity: 0
+        });
+      }
     }
   },
   _onMiniMapMoveStarted:function() {
@@ -245,6 +260,7 @@ var OverviewControl = L.Control.extend({
   _restore: function() {
     var me = this;
 
+    this._transitioning = true;
     this._toggleDisplayButton.style.display = 'none';
     this._toggleDisplayButton.style.height = '20px';
     this._toggleDisplayButton.style.bottom = '0';
@@ -270,6 +286,8 @@ var OverviewControl = L.Control.extend({
         fillOpacity: 0.2,
         opacity: 0.5
       });
+      me._miniMap.invalidateSize();
+      me._transitioning = false;
     }, 200);
   },
   _setDisplay: function(minimize) {
