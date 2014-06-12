@@ -59,7 +59,7 @@ var CartoDbLayer = L.TileLayer.extend({
           }
         }
 
-        if (me._interactivity.length) {
+        if (L.Util.isArray(me._interactivity) && me._interactivity.length) {
           me._hasInteractivity = true;
         }
 
