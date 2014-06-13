@@ -28,7 +28,7 @@
         div: 'map',
         overlays: [{
           attribution: 'NPMap Team',
-          name: 'Park Bounds',
+          name: 'Parks',
           popup: {
             actions: '<ul><li><a onclick="window.alert(\'Thanks for clicking!\');return false;">Click Me!</a></li></ul>',
             description: {
@@ -43,42 +43,7 @@
             'stroke-opacity': 0.8,
             'stroke-width': 3
           },
-          table: 'park_bounds',
-          type: 'cartodb',
-          user: 'nps'
-        },{
-          attribution: 'NPMap Team',
-          name: 'Park Centroids',
-          popup: {
-            actions: [{
-              menu: [{
-                handler: function(data) {
-                  window.alert('Item 1: ' + JSON.stringify(data));
-                },
-                text: 'Item 1'
-              },{
-                handler: function(data) {
-                  window.alert('Item 2: ' + JSON.stringify(data));
-                },
-                text: 'Item 2'
-              },{
-                handler: function(data) {
-                  window.alert('Item 3: ' + JSON.stringify(data));
-                },
-                text: 'Item 3'
-              }],
-              text: 'Menu'
-            }],
-            description: '<p>Hardcoded description.</p>',
-            title: function(data) {
-              return data.alphacode;
-            }
-          },
-          styles: {
-            'marker-color': '#000',
-            'marker-size': 'small' 
-          },
-          table: 'park_points',
+          table: 'parks',
           type: 'cartodb',
           user: 'nps'
         },{

@@ -64,7 +64,7 @@ _Example (Bootstrap)_:
         'bing-aerial'
       ],
       overlays: [{
-        table: 'park_bounds',
+        table: 'parks',
         type: 'cartodb',
         user: 'nps'
       }]
@@ -78,7 +78,7 @@ _Example (API)_:
 
     L.npmap.layer.bing().addTo(map);
     L.npmap.layer.cartodb({
-      table: 'park_bounds',
+      table: 'parks',
       type: 'cartodb',
       user: 'nps'
     }).addTo(map);
@@ -212,7 +212,7 @@ _Example (Bootstrap)_:
     var NPMap = {
       div: 'map',
       overlays: [{
-        table: 'park_bounds',
+        table: 'parks',
         type: 'cartodb',
         user: 'nps'
       }]
@@ -225,7 +225,7 @@ _Example (API)_:
     });
 
     L.npmap.layer.cartodb({
-      table: 'park_bounds',
+      table: 'parks',
       type: 'cartodb',
       user: 'nps'
     }).addTo(map);
