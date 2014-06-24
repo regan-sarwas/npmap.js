@@ -10,7 +10,7 @@ This library is under _very_ active development, so please help test and [report
 
 ## Thanks
 
-Heavily inspired (cough cough) by [MapBox.js](https://github.com/mapbox/mapbox.js), and, of course, built on the great [Leaflet](http://leafletjs.com) library. Standing on the shoulders of giants. Also, many thanks to the authors of all the great plugins used in/by the library (take a look at [LICENSE.md](https://github.com/nationalparkservice/npmap.js/blob/master/LICENSE.md) for a list).
+Heavily inspired (cough cough) by [Mapbox.js](https://github.com/mapbox/mapbox.js), and, of course, built on the great [Leaflet](http://leafletjs.com) library. Standing on the shoulders of giants. Also, many thanks to the authors of all the great plugins used in/by the library (take a look at [LICENSE.md](https://github.com/nationalparkservice/npmap.js/blob/master/LICENSE.md) for a list).
 
 ## Versioning
 
