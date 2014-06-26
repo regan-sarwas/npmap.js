@@ -1,4 +1,42 @@
 {
+  "marigold": {
+    "color": "#FFF4AD",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#FFF4AD",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "daisy": {
+    "color": "#DDCC77",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#DDCC77",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "mustard": {
+    "color": "#d98d38",
+    "fill": true,
+    "fillColor": "#d98d38",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "gold": {
+    "color": "#d39800",
+    "fill": true,
+    "fillColor": "#d39800",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
   "chesnut": {
     "color": "#bf815d",
     "fill": true,
@@ -8,55 +46,58 @@
     "stroke": true,
     "weight": 3
   },
-  "chill": {
-    "color": "#1b99aa",
-    "colorBlindGroups": [
-      "a",
-      "b"
-    ],
+  "clementine": {
+    "color": "#D95F02",
     "fill": true,
-    "fillColor": "#1b99aa",
+    "fillColor": "#D95F02",
     "fillOpacity": 0.2,
     "opacity": 0.5,
     "stroke": true,
     "weight": 3
   },
-  "currant": {
-    "color": "#5f3663",
-    "colorBlindGroups": [
-      "a",
-      "b",
-      "c"
-    ],
+  "salmon": {
+    "color": "#FA946E",
     "fill": true,
-    "fillColor": "#5f3663",
+    "fillColor": "#FA946E",
     "fillOpacity": 0.2,
     "opacity": 0.5,
     "stroke": true,
     "weight": 3
   },
-  "eucalyptus": {
-    "color": "#558877",
-    "colorBlindGroups": [
-      "a",
-      "b"
-    ],
+  "rose": {
+    "color": "#d46655",
     "fill": true,
-    "fillColor": "#558877",
+    "fillColor": "#d46655",
     "fillOpacity": 0.2,
     "opacity": 0.5,
     "stroke": true,
     "weight": 3
   },
-  "gold": {
-    "color": "#d39800",
-    "colorBlindGroups": [
-      "a",
-      "b",
-      "c"
-    ],
+  "coral": {
+    "color": "#CC6677",
+    "colorBlind": true,
     "fill": true,
-    "fillColor": "#d39800",
+    "fillColor": "#CC6677",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "berry": {
+    "color": "#AA4499",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#AA4499",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "scarlet": {
+    "color": "#882255",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#882255",
     "fillOpacity": 0.2,
     "opacity": 0.5,
     "stroke": true,
@@ -71,40 +112,105 @@
     "stroke": true,
     "weight": 3
   },
-  "mustard": {
-    "color": "#d98d38",
-    "colorBlindGroups": [
-      "a",
-      "b",
-      "c"
-    ],
+  "violet": {
+    "color": "#7570B3",
     "fill": true,
-    "fillColor": "#d98d38",
+    "fillColor": "#7570B3",
     "fillOpacity": 0.2,
     "opacity": 0.5,
     "stroke": true,
     "weight": 3
   },
-  "parks": {
-    "color": "#7a9052",
-    "colorBlindGroups": [
-      "a"
-    ],
+  "currant": {
+    "color": "#5f3663",
     "fill": true,
-    "fillColor": "#7a9052",
+    "fillColor": "#5f3663",
     "fillOpacity": 0.2,
     "opacity": 0.5,
     "stroke": true,
     "weight": 3
   },
-  "rose": {
-    "color": "#d46655",
-    "colorBlindGroups": [
-      "a",
-      "c"
-    ],
+  "breeze": {
+    "color": "#88CCEE",
+    "colorBlind": true,
     "fill": true,
-    "fillColor": "#d46655",
+    "fillColor": "#88CCEE",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "chill": {
+    "color": "#1b99aa",
+    "fill": true,
+    "fillColor": "#1b99aa",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "steele": {
+    "color": "#32557D",
+    "fill": true,
+    "fillColor": "#32557D",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "sapphire": {
+    "color": "#332288",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#332288",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "turquoise": {
+    "color": "#44AA99",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#44AA99",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "meadow": {
+    "color": "#1B9E77",
+    "fill": true,
+    "fillColor": "#1B9E77",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "eucalyptus": {
+    "color": "#558877",
+    "fill": true,
+    "fillColor": "#558877",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "sycamore": {
+    "color": "#999933",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#999933",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "emerald": {
+    "color": "#117733",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#117733",
     "fillOpacity": 0.2,
     "opacity": 0.5,
     "stroke": true,
@@ -112,10 +218,6 @@
   },
   "russett": {
     "color": "#7a4810",
-    "colorBlindGroups": [
-      "a",
-      "b"
-    ],
     "fill": true,
     "fillColor": "#7a4810",
     "fillOpacity": 0.2,
@@ -123,7 +225,45 @@
     "stroke": true,
     "weight": 3
   },
-  "black": {
-    "color": "#000000"
+  "sand": {
+    "color": "#7a4810",
+    "fill": true,
+    "fillColor": "#7a4810",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "nickel": {
+    "color": "#6C6C6C",
+    "fill": true,
+    "fillColor": "#6C6C6C",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "night": {
+    "color": "#1F1F1F",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#1F1F1F",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+  "white": {
+    "color": "#FFFFFF",
+    "colorBlind": true,
+    "fill": true,
+    "fillColor": "#FFFFFF",
+    "fillOpacity": 0.2,
+    "opacity": 0.5,
+    "stroke": true,
+    "weight": 3
+  },
+
   }
-}
+
+
