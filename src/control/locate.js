@@ -6,6 +6,7 @@ var LocateControl = L.Control.extend({
   options: {
     circlePadding: [0, 0],
     circleStyle: {
+      clickable: false,
       color: '#136aec',
       fillColor: '#136aec',
       fillOpacity: 0.15,
@@ -18,6 +19,7 @@ var LocateControl = L.Control.extend({
     followMarkerStyle: {},
     locateOptions: {},
     markerStyle: {
+      clickable: false,
       color: '#136aec',
       fillColor: '#2a93ee',
       fillOpacity: 0.7,
