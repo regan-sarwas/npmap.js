@@ -39,8 +39,9 @@ You must have [node.js](http://nodejs.org/) installed to run the build. After in
     git clone https://github.com/nationalparkservice/npmap.js
     cd npmap.js
     npm install
+(You will get a warning of 'npm WARN package.json leaflet.markercluster@0.4.0 No repository field'.  Just install leaflet.marker-cluster individually (through downloading 'https://github.com/Leaflet/Leaflet.markercluster/archive/v0.4.0.tar.gz') and you should be fine.)
 
-Then use [Grunt](http://gruntjs.com/) to build the library:
+Install grunt with ' npm install -g grunt-cli' and then use [Grunt](http://gruntjs.com/) to build the library:
 
     grunt build
 
