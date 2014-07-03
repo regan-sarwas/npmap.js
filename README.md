@@ -8,6 +8,12 @@ Extends [Leaflet](http://leafletjs.com) to include functionality and a look-and-
 
 This library is under _very_ active development, so please help test and [report issues](https://github.com/nationalparkservice/npmap.js/issues).
 
+[[NPMap Builder]]
+
+## Builder
+
+You may also want to take a look at the [NPMap Builder](https://github.com/nationalparkservice/npmap-builder). It is a graphical interface that walks through building a map with NPMap.js.
+
 ## Thanks
 
 Heavily inspired (cough cough) by [Mapbox.js](https://github.com/mapbox/mapbox.js), and, of course, built on the great [Leaflet](http://leafletjs.com) library. Standing on the shoulders of giants. Also, many thanks to the authors of all the great plugins used in/by the library (take a look at [LICENSE.md](https://github.com/nationalparkservice/npmap.js/blob/master/LICENSE.md) for a list).
