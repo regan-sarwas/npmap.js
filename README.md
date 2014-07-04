@@ -40,7 +40,11 @@ You must have [node.js](http://nodejs.org/) installed to run the build. After in
     cd npmap.js
     npm install
 
-Then use [Grunt](http://gruntjs.com/) to build the library:
+Install the [Grunt](http://gruntjs.com/) command line tool (do this once as an admin user after installing node.js)
+
+    npm install -g grunt-cli
+
+Then use Grunt to build the library:
 
     grunt build
 
