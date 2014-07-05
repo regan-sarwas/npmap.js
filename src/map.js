@@ -258,8 +258,7 @@ var Map = L.Map.extend({
 
         content = module.content;
         icon = module.icon;
-        title = module.title;
-        divTitle.innerHTML = title;
+        title = divTitle.innerHTML = module.title;
 
         if (typeof content === 'string') {
           divContent.innerHTML = content;
@@ -775,7 +774,7 @@ var Map = L.Map.extend({
         }
       }
 
-      if (button.id.replace('npmap-modules-buttons|', '').replace(/_/g, ' ') === title) {
+      if (button.id.replace('npmap-modules-buttons_', '').replace(/_/g, ' ') === title) {
         L.DomUtil.addClass(button, 'active');
       } else {
         L.DomUtil.removeClass(button, 'active');
