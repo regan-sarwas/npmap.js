@@ -8,6 +8,10 @@ Extends [Leaflet](http://leafletjs.com) to include functionality and a look-and-
 
 This library is under _very_ active development, so please help test and [report issues](https://github.com/nationalparkservice/npmap.js/issues).
 
+## Builder
+
+You may also want to take a look at the [NPMap Builder](https://github.com/nationalparkservice/npmap-builder). It is a graphical interface that walks through building a map with NPMap.js.
+
 ## Thanks
 
 Heavily inspired (cough cough) by [Mapbox.js](https://github.com/mapbox/mapbox.js), and, of course, built on the great [Leaflet](http://leafletjs.com) library. Standing on the shoulders of giants. Also, many thanks to the authors of all the great plugins used in/by the library (take a look at [LICENSE.md](https://github.com/nationalparkservice/npmap.js/blob/master/LICENSE.md) for a list).
@@ -40,7 +44,11 @@ You must have [node.js](http://nodejs.org/) installed to run the build. After in
     cd npmap.js
     npm install
 
-Then use [Grunt](http://gruntjs.com/) to build the library:
+Install the [Grunt](http://gruntjs.com/) command line tool (do this once as an admin user after installing node.js)
+
+    npm install -g grunt-cli
+
+Then use Grunt to build the library:
 
     grunt build
 
@@ -48,7 +56,7 @@ Internally, the Grunt task uses [browserify](https://github.com/substack/node-br
 
 ## Testing
 
-NPMap.js uses the [Mocha](http://visionmedia.github.io/mocha/) JavaScript test framework and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with the following command:
+NPMap.js uses the [Mocha](http://visionmedia.github.io/mocha/) JavaScript test framework and [PhantomJS](http://phantomjs.org/) to run the tests. After installing PhantomJS, you can run the tests with the following command:
 
     grunt test
 
