@@ -44,7 +44,11 @@ You must have [node.js](http://nodejs.org/) installed to run the build. After in
     cd npmap.js
     npm install
 
-Then use [Grunt](http://gruntjs.com/) to build the library:
+Install the [Grunt](http://gruntjs.com/) command line tool (do this once as an admin user after installing node.js)
+
+    npm install -g grunt-cli
+
+Then use Grunt to build the library:
 
     grunt build
 
@@ -52,7 +56,7 @@ Internally, the Grunt task uses [browserify](https://github.com/substack/node-br
 
 ## Testing
 
-NPMap.js uses the [Mocha](http://visionmedia.github.io/mocha/) JavaScript test framework and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with the following command:
+NPMap.js uses the [Mocha](http://visionmedia.github.io/mocha/) JavaScript test framework and [PhantomJS](http://phantomjs.org/) to run the tests. After installing PhantomJS, you can run the tests with the following command:
 
     grunt test
 
