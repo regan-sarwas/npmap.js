@@ -65,6 +65,17 @@
       "type": "arcgisserver",
       "url": "http://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer"
     },
+    "shadedRelief": {
+      "attribution": "Esri, USGS",
+      "icon": "topo",
+      "maxZoom": 13,
+      "minZoom": 1,
+      "name": "Esri Shaded Relief",
+      "popup": false,
+      "tiled": true,
+      "type": "arcgisserver",
+      "url": "http://services.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer"
+    },
     "streets": {
       "attribution": "Esri",
       "dynamicAttribution": "http://static.arcgis.com/attribution/World_Street_Map?f=json",
@@ -77,7 +88,7 @@
       "url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"
     },
     "terrain": {
-      "attribution": "DeLorme, Esri, NOAA, NPS, USGS",
+      "attribution": "Esri, NOAA, USGS",
       "icon": "topo",
       "maxZoom": 17,
       "minZoom": 1,
