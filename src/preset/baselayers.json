@@ -76,6 +76,17 @@
       "type": "arcgisserver",
       "url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"
     },
+    "terrain": {
+      "attribution": "DeLorme, Esri, NOAA, NPS, USGS",
+      "icon": "topo",
+      "maxZoom": 17,
+      "minZoom": 1,
+      "name": "Esri Terrain",
+      "popup": false,
+      "tiled": true,
+      "type": "arcgisserver",
+      "url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer"
+    },
     "topographic": {
       "attribution": "Esri",
       "dynamicAttribution": "http://static.arcgis.com/attribution/World_Street_Map?f=json",
