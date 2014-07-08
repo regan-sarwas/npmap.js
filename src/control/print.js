@@ -60,62 +60,61 @@ var PrintControl = L.Control.extend({
     }
   },
   print: function() {
-    var map = this._map,
-      center = map.getCenter(),
-      options = map.options,
-      params = {
-        c: JSON.stringify({
-          lat: center.lat,
-          lng: center.lng
-        }),
-        z: map.getZoom()
-      },
-      win;
+    if ('localStorage' in window && window.localStorage !== null) {
+      var map = this._map,
+        center = map.getCenter(),
+        options = map.options,
+        printId = localStorage['npmap.printId'],
+        storage = {},
+        win;
 
-    if (options.mapId) {
-      params.mapId = options.mapId;
-    } else {
-      var configCenter = options.center,
-        config = {
+      if (typeof printId === 'undefined') {
+        printId = 0;
+      } else {
+        printId = parseInt(printId, 10) + 1;
+      }
+
+      if (options.mapId) {
+        storage.mapId = options.mapId;
+      } else {
+        var config = {
           baseLayers: [],
-          center: {
-            lat: configCenter.lat,
-            lng: configCenter.lng
-          },
+          center: options.center,
           overlays: [],
           zoom: options.zoom
-        },
-        active, i, layer;
+        }, active, i, layer;
 
-      for (i = 0; i < options.baseLayers.length; i++) {
-        layer = options.baseLayers[i];
+        for (i = 0; i < options.baseLayers.length; i++) {
+          layer = options.baseLayers[i];
 
-        if (typeof layer.L === 'object') {
-          active = L.extend({}, layer);
-          this._clean(active);
-          config.baseLayers.push(active);
-          break;
+          if (typeof layer.L === 'object') {
+            active = L.extend({}, layer);
+            this._clean(active);
+            config.baseLayers.push(active);
+            break;
+          }
         }
+
+        for (i = 0; i < options.overlays.length; i++) {
+          layer = options.overlays[i];
+
+          if (typeof layer.L === 'object') {
+            active = L.extend({}, layer);
+            this._clean(active);
+            config.overlays.push(active);
+          }
+        }
+
+        storage.config = JSON.stringify(config);
       }
 
-      for (i = 0; i < options.overlays.length; i++) {
-        layer = options.overlays[i];
-
-        if (typeof layer.L === 'object') {
-          active = L.extend({}, layer);
-          this._clean(active);
-          config.overlays.push(active);
-        }
-      }
-
-      params.b = JSON.stringify(config);
+      window.localStorage['npmap.print' + printId] = JSON.stringify(storage);
+      window.localStorage['npmap.printId'] = printId;
+      win = window.open(this.options.url + '?lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&printId=' + printId + '&zoom=' + map.getZoom(), '_blank');
+      win.focus();
+    } else {
+      this._map.notify.danger('Can\'t print because your browser does not support LocalStorage.');
     }
-
-    params = L.Util.getParamString(params);
-
-    // TODO: Base64 encode and compress string.
-    win = window.open(this.options.url + (this.options.url.indexOf('?') === -1 ? params : '&' + params.slice(1, params.length)), '_blank');
-    win.focus();
   }
 });
 
