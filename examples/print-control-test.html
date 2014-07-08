@@ -88,39 +88,62 @@
     <div id="map" style="height:7.0in;position:relative;width:100%;">
     </div>
     <script>
-      var search = window.location.search,
-        split = search.slice(1, search.length).split('&'),
-        b, c, NPMap, z;
+      // TODO: Accept mapId
+      // Grab npmap.printControl-id from the URL
+      // Use this integer to identify, on the print side, the current map
+      // Display an error message if the cache has been cleared and then the print page is loaded
+      // For browsers that don't support localStorage, display an error on both sides (origin and destination)
 
-      for (var i = 0; i < split.length; i++) {
-        var param = split[i];
+      if ('localStorage' in window && window.localStorage !== null) {
+        var search = window.location.search,
+          split = search.replace('?', '').split('&'),
+          lat, lng, NPMap, printId, storage, zoom;
 
-        if (param.indexOf('b=') === 0) {
-          b = decodeURIComponent(param.slice(2, param.length));
-        } else if (param.indexOf('c') === 0) {
-          c = decodeURIComponent(param.slice(2, param.length));
-        } else if (param.indexOf('z') === 0) {
-          z = param.slice(2, param.length);
-        }
-      }
+        for (var i = 0; i < split.length; i++) {
+          var param = split[i];
 
-      NPMap = JSON.parse(b);
-      NPMap.div = 'map';
-
-      if (c && z) {
-        NPMap.hooks = {
-          init: function(callback) {
-            NPMap.config.L.setView(JSON.parse(c), parseInt(z, 10));
-            callback();
+          if (param.indexOf('lat=') === 0) {
+            lat = parseFloat(param.replace('lat=', ''));
+          } else if (param.indexOf('lng=') === 0) {
+            lng = parseFloat(param.replace('lng=', ''));
+          } else if (param.indexOf('printId=') === 0) {
+            printId = param.replace('printId=', '');
+          } else if (param.indexOf('zoom=') === 0) {
+            zoom = parseInt(param.replace('zoom=', ''), 10);
           }
-        };
-      }
+        }
 
-      (function() {
-        var s = document.createElement('script');
-        s.src = '../dist/npmap-bootstrap.js';
-        document.body.appendChild(s);
-      })();
+        storage = JSON.parse(localStorage['npmap.print' + printId])
+
+        if (!storage) {
+          window.alert('Can\'t print because the map details could not be loaded.');
+        } else {
+          if (storage.mapId) {
+
+          } else {
+            NPMap = JSON.parse(storage.config);
+            NPMap.div = 'map';
+
+            if (!isNaN(lat) && !isNaN(lng) && !isNaN(zoom)) {
+              NPMap.hooks = {
+                init: function(callback) {
+                  NPMap.config.L.setView(new L.LatLng(lat, lng), zoom);
+                  callback();
+                }
+              };
+            }
+
+            (function() {
+              var s = document.createElement('script');
+              s.src = '../dist/npmap-bootstrap.js';
+              document.body.appendChild(s);
+            })();
+          }
+        }
+      } else {
+        // TODO: Display alert somewhere on page.
+        window.alert('Can\'t print because your browser does not support LocalStorage.');
+      }
     </script>
   </body>
 </html>
