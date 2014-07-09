@@ -1,4 +1,4 @@
-/* globals L, NPMap */
+/* globals L */
 /* jshint quotmark: false */
 
 'use strict';
@@ -68,9 +68,9 @@ var DirectionsModule = L.Class.extend({
   _dragSource: null,
   _icon: {
     iconAnchor: [13.5, 37],
-    iconRetinaUrl: NPMap.path  + 'images/module/directions/stop-{{letter}}@2x.png',
+    iconRetinaUrl: L.Icon.Default.imagePath + '/module/directions/stop-{{letter}}@2x.png',
     iconSize: [27, 37],
-    iconUrl: NPMap.path  + 'images/module/directions/stop-{{letter}}.png',
+    iconUrl: L.Icon.Default.imagePath + '/module/directions/stop-{{letter}}.png',
     popupAnchor: [0, -40]
   },
   _letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
@@ -89,7 +89,7 @@ var DirectionsModule = L.Class.extend({
     }
   },
   _addLi: function(value) {
-    var backgroundImage = 'url(' + NPMap.path + 'images/module/directions/times' + (L.Browser.retina ? '@2x' : '') + '.png)',
+    var backgroundImage = 'url(' + L.Icon.Default.imagePath + '/module/directions/times' + (L.Browser.retina ? '@2x' : '') + '.png)',
       button = document.createElement('button'),
       div = document.createElement('div'),
       input = document.createElement('input'),
@@ -161,7 +161,7 @@ var DirectionsModule = L.Class.extend({
         this.style.backgroundImage = backgroundImage;
       })
       .addListener(button, 'onmouseover', function() {
-        this.style.backgroundImage = 'url(' + NPMap.path + 'images/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
+        this.style.backgroundImage = 'url(' + L.Icon.Default.imagePath + '/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
       });
     button.style.backgroundImage = backgroundImage;
     button.type = 'button';
@@ -203,7 +203,7 @@ var DirectionsModule = L.Class.extend({
     divLi.appendChild(input);
     button.className = 'search ir';
     button.innerHTML = 'Search for a location';
-    button.style.backgroundImage = 'url(' + NPMap.path + 'images/font-awesome/search' + (L.Browser.retina ? '@2x' : '') + '.png)';
+    button.style.backgroundImage = 'url(' + L.Icon.Default.imagePath + '/font-awesome/search' + (L.Browser.retina ? '@2x' : '') + '.png)';
     button.type = 'button';
     L.DomEvent.addListener(button, 'click', function() {
       if (input.value && input.value.length > 0) {
