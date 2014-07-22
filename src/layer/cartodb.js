@@ -108,7 +108,7 @@ var CartoDbLayer = L.TileLayer.extend({
       },
       type: 'jsonp',
       url: util.buildUrl(this._urlApi, {
-        q: 'select * from ' + this.options.table + ' limit 1;'
+        q: 'select * from ' + this.options.table + ' limit 0;'
       })
     });
   },
