@@ -433,9 +433,9 @@ var Popup = L.Popup.extend({
     if (!menu.style.display || menu.style.display === 'none') {
       var to = e.toElement;
 
+      menu.style.bottom = '0';
       menu.style.display = 'block';
       menu.style.left = to.offsetLeft + 'px';
-      menu.style.top = (to.offsetTop + 18) + 'px';
     } else {
       menu.style.display = 'none';
     }
