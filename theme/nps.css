@@ -202,23 +202,23 @@
     }
 
 /* Buttons and Forms */
-.npmap input[type = 'text'] {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-  border: 1px solid #c9c9c9;
-  color: #464646;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 5px 8px;
+.npmap button, .npmap input {
+  line-height: 14px;
 }
+  .npmap input[type = 'text'] {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    border: 1px solid #c9c9c9;
+    color: #464646;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 8px;
+  }
 .npmap button, .npmap input, .npmap select, .npmap textarea {
   font-family: inherit;
   font-size: 100%;
   margin: 0;
-}
-.npmap button, .npmap input {
-  line-height: normal;
 }
 .npmap button, .npmap select {
   text-transform: none;
@@ -238,7 +238,9 @@
 .npmap input, .npmap button, .npmap select, .npmap textarea {
   font-family: inherit;
   font-size: inherit;
+  /*
   line-height: inherit;
+  */
 }
 .npmap button, .npmap input, .npmap select[multiple], .npmap textarea {
   background-image: none;
@@ -601,6 +603,7 @@
     clear: both;
     margin-top: 12px;
     padding-top: 12px;
+    position: relative;
   }
     .npmap .leaflet-popup-content .actions ul {
       padding-left: 0;
@@ -913,16 +916,14 @@
        -moz-box-shadow: 0 0 5px rgba(0,0,0,.16);
             box-shadow: 0 0 5px rgba(0,0,0,.16);
     border: none;
-    height: 21px;
-    line-height: 20px;
+    height: 19px;
     position: absolute;
     right: 2px;
     top: 2px;
     vertical-align: text-top;
-    width: 14px;
+    width: 13px;
   }
   .npmap .leaflet-control-geocoder input {
-    border: 1px solid #cbcbcb;
     padding-right: 30px;
     width: 200px;
   }
@@ -1498,7 +1499,7 @@
         background-size: 16px 16px;
         border: none;
         display: inline-block;
-        height: 25px;
+        height: 24px;
         padding: 0;
         position: absolute;
         right: 2px;
@@ -1526,7 +1527,7 @@
       display: block;
       font-weight: bold;
       line-height: 20px;
-      margin: 4px 0 0 0;
+      margin: 3px 0 0 0;
       position: absolute;
       text-align: center;
       width: 20px;
