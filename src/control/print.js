@@ -7,7 +7,7 @@ var util = require('../util/util');
 var PrintControl = L.Control.extend({
   options: {
     ui: true,
-    url: 'http://www.nps.gov/maps/print.html'
+    url: 'http://www.nps.gov/maps/print/'
   },
   initialize: function(options) {
     L.Util.setOptions(this, options);
@@ -59,62 +59,74 @@ var PrintControl = L.Control.extend({
       layer.tooltip = util.escapeHtml(layer.tooltip);
     }
   },
+  _guid: (function() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+       .toString(16)
+       .substring(1);
+    }
+
+    return function() {
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    };
+  })(),
   print: function() {
-    if ('localStorage' in window && window.localStorage !== null) {
-      var map = this._map,
-        center = map.getCenter(),
-        options = map.options,
-        printId = localStorage['npmap.printId'],
-        storage = {},
-        win;
+    var map = this._map,
+      me = this,
+      center = map.getCenter(),
+      zoom = map.getZoom(),
+      url, win;
 
-      if (typeof printId === 'undefined') {
-        printId = 0;
-      } else {
-        printId = parseInt(printId, 10) + 1;
-      }
-
-      if (options.mapId) {
-        storage.mapId = options.mapId;
-      } else {
-        var config = {
+    if (map.options.mapId) {
+      url = me.options.url + '?lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&mapId=' + map.options.mapId + '&zoom=' + zoom;
+    } else {
+      var options = map.options,
+        config = {
           baseLayers: [],
           center: options.center,
           overlays: [],
           zoom: options.zoom
-        }, active, i, layer;
+        },
+        params = {
+          key: this._guid()
+        },
+        active, i, layer;
 
-        for (i = 0; i < options.baseLayers.length; i++) {
-          layer = options.baseLayers[i];
+      for (i = 0; i < options.baseLayers.length; i++) {
+        layer = options.baseLayers[i];
 
-          if (typeof layer.L === 'object') {
-            active = L.extend({}, layer);
-            this._clean(active);
-            config.baseLayers.push(active);
-            break;
-          }
+        if (typeof layer.L === 'object') {
+          active = L.extend({}, layer);
+          me._clean(active);
+          config.baseLayers.push(active);
+          break;
         }
-
-        for (i = 0; i < options.overlays.length; i++) {
-          layer = options.overlays[i];
-
-          if (typeof layer.L === 'object') {
-            active = L.extend({}, layer);
-            this._clean(active);
-            config.overlays.push(active);
-          }
-        }
-
-        storage.config = JSON.stringify(config);
       }
 
-      window.localStorage['npmap.print' + printId] = JSON.stringify(storage);
-      window.localStorage['npmap.printId'] = printId;
-      win = window.open(this.options.url + '?lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&printId=' + printId + '&zoom=' + map.getZoom(), '_blank');
-      win.focus();
-    } else {
-      this._map.notify.danger('Can\'t print because your browser does not support LocalStorage.');
+      for (i = 0; i < options.overlays.length; i++) {
+        layer = options.overlays[i];
+
+        if (typeof layer.L === 'object') {
+          active = L.extend({}, layer);
+          me._clean(active);
+          config.overlays.push(active);
+        }
+      }
+
+      params.value = window.btoa(JSON.stringify(config));
+      url = me.options.url + '?lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&printId=' + params.key + '&zoom=' + zoom;
+      L.npmap.util._.reqwest({
+        contentType: 'application/json',
+        crossOrigin: true,
+        data: JSON.stringify(params),
+        method: 'post',
+        type: 'json',
+        url: 'http://npmap-session.herokuapp.com'
+      });
     }
+
+    win = window.open(url, '_blank');
+    win.focus();
   }
 });
 
