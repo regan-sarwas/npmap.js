@@ -78,7 +78,7 @@ var PrintControl = L.Control.extend({
       url, win;
 
     if (map.options.mapId) {
-      url = me.options.url + '?lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&mapId=' + map.options.mapId + '&zoom=' + zoom;
+      url = me.options.url + (me.options.url.indexOf('?') === -1 ? '?' : '&') + 'lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&mapId=' + map.options.mapId + '&zoom=' + zoom;
     } else {
       var options = map.options,
         config = {
@@ -114,7 +114,7 @@ var PrintControl = L.Control.extend({
       }
 
       params.value = window.btoa(JSON.stringify(config));
-      url = me.options.url + '?lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&printId=' + params.key + '&zoom=' + zoom;
+      url = me.options.url + (me.options.url.indexOf('?') === -1 ? '?' : '&') + 'lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&printId=' + params.key + '&zoom=' + zoom;
       L.npmap.util._.reqwest({
         contentType: 'application/json',
         crossOrigin: true,
