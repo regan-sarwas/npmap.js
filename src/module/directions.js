@@ -68,9 +68,9 @@ var DirectionsModule = L.Class.extend({
   _dragSource: null,
   _icon: {
     iconAnchor: [13.5, 37],
-    iconRetinaUrl: NPMap.path  + 'images/module/directions/stop-{{letter}}@2x.png',
+    iconRetinaUrl: window.L.Icon.Default.imagePath  + '/module/directions/stop-{{letter}}@2x.png',
     iconSize: [27, 37],
-    iconUrl: NPMap.path  + 'images/module/directions/stop-{{letter}}.png',
+    iconUrl: window.L.Icon.Default.imagePath  + '/module/directions/stop-{{letter}}.png',
     popupAnchor: [0, -40]
   },
   _letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
@@ -89,7 +89,7 @@ var DirectionsModule = L.Class.extend({
     }
   },
   _addLi: function(value) {
-    var backgroundImage = 'url(' + NPMap.path + 'images/module/directions/times' + (L.Browser.retina ? '@2x' : '') + '.png)',
+    var backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/module/directions/times' + (L.Browser.retina ? '@2x' : '') + '.png)',
       button = document.createElement('button'),
       div = document.createElement('div'),
       input = document.createElement('input'),
@@ -116,28 +116,7 @@ var DirectionsModule = L.Class.extend({
               me._addMarker(result);
 
               if (me._markers.length > 1) {
-                var latLngs = [];
-
-                for (var i = 0; i < me._markers.length; i++) {
-                  latLngs.push(me._markers[i].getLatLng());
-                }
-
-                route.mapbox.route(latLngs, function(route) {
-                  if (route && route.routes && route.routes.length) {
-                    me._route = new L.GeoJSON({
-                      type: 'Feature',
-                      geometry: route.routes[0].geometry,
-                      properties: {}
-                    }, {
-                      clickable: false,
-                      color: '#c16b2b',
-                      opacity: 1
-                    }).addTo(me._map);
-                    me._map.fitBounds(me._route.getBounds(), {
-                      padding: [30, 30]
-                    });
-                  }
-                });
+                me.route();
               }
             }
           }
@@ -155,13 +134,40 @@ var DirectionsModule = L.Class.extend({
     button.innerHTML = 'Remove stop';
     L.DomEvent
       .addListener(button, 'click', function() {
-        console.log(this.parentNode);
+        var li = this.parentNode,
+          letter = li.childNodes[0].innerHTML,
+          index = me._letters.indexOf(letter),
+          refresh = false,
+          ul = li.parentNode;
+
+        ul.removeChild(li);
+
+        if (ul.childNodes.length === 1) {
+          // TODO: Reset.
+        }
+        
+        // TODO: Remove the marker - if it exists.
+
+        console.log(me._markers);
+
+        for (var i = 0; i < me._markers.length; i++) {
+          var marker = me._markers[i];
+
+          if (marker._letter === letter) {
+            refresh = true;
+            me._markers = me._markers.splice(i, 1);
+          }
+        }
+
+        if (refresh && me._markers.length > 1) {
+          me.route();
+        }
       })
       .addListener(button, 'onmouseout', function() {
         this.style.backgroundImage = backgroundImage;
       })
       .addListener(button, 'onmouseover', function() {
-        this.style.backgroundImage = 'url(' + NPMap.path + 'images/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
+        this.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
       });
     button.style.backgroundImage = backgroundImage;
     button.type = 'button';
@@ -203,7 +209,7 @@ var DirectionsModule = L.Class.extend({
     divLi.appendChild(input);
     button.className = 'search ir';
     button.innerHTML = 'Search for a location';
-    button.style.backgroundImage = 'url(' + NPMap.path + 'images/font-awesome/search' + (L.Browser.retina ? '@2x' : '') + '.png)';
+    button.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/search' + (L.Browser.retina ? '@2x' : '') + '.png)';
     button.type = 'button';
     L.DomEvent.addListener(button, 'click', function() {
       if (input.value && input.value.length > 0) {
@@ -218,7 +224,8 @@ var DirectionsModule = L.Class.extend({
   _addMarker: function(result) {
     var icon = L.extend({}, this._icon),
       latLng = result.latLng,
-      letter = result.letter;
+      letter = result.letter,
+      marker;
 
     L.extend(icon, {
       iconRetinaUrl: util.handlebars(icon.iconRetinaUrl, {
@@ -228,12 +235,14 @@ var DirectionsModule = L.Class.extend({
         letter: letter
       })
     });
-    this._markers.push(new L.Marker({
+    marker = new L.Marker({
       lat: latLng[0],
       lng: latLng[1]
     }, {
       icon: new L.Icon(icon)
-    }).bindPopup('<div class="title">' + result.name + '</div>').addTo(this._map));
+    });
+    marker._letter = letter;
+    this._markers.push(marker.bindPopup('<div class="title">' + result.name + '</div>').addTo(this._map));
   },
   _clear: function() {
     var i;
@@ -290,6 +299,31 @@ var DirectionsModule = L.Class.extend({
     target._dragSource = target;
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', target.innerHTML);
+  },
+  route: function() {
+    var latLngs = [],
+      me = this;
+
+    for (var i = 0; i < me._markers.length; i++) {
+      latLngs.push(me._markers[i].getLatLng());
+    }
+
+    route.mapbox.route(latLngs, function(route) {
+      if (route && route.routes && route.routes.length) {
+        me._route = new L.GeoJSON({
+          geometry: route.routes[0].geometry,
+          properties: {},
+          type: 'Feature'
+        }, {
+          clickable: false,
+          color: '#c16b2b',
+          opacity: 1
+        }).addTo(me._map);
+        me._map.fitBounds(me._route.getBounds(), {
+          padding: [30, 30]
+        });
+      }
+    });
   }
 });
 
