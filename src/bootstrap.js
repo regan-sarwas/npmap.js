@@ -1,11 +1,11 @@
 /* global L */
 
 if (!NPMap) {
-  throw new Error('The NPMap object is required');
+  throw new Error('The NPMap object is required.');
 }
 
 if (typeof NPMap !== 'object') {
-  throw new Error('The NPMap variable cannot be a ' + typeof NPMap);
+  throw new Error('The NPMap variable cannot be a ' + typeof NPMap + '.');
 }
 
 NPMap = {
@@ -20,7 +20,8 @@ NPMap = {
 
   var dev = false,
     script = document.createElement('script'),
-    scripts = document.getElementsByTagName('script');
+    scripts = document.getElementsByTagName('script'),
+    path;
 
   function build(config) {
     function step() {
@@ -53,7 +54,7 @@ NPMap = {
     }
   }
   function callback() {
-    L.npmap.util._.appendCssFile(NPMap.path + 'npmap' + (dev ? '' : '.min') + '.css', function() {
+    L.npmap.util._.appendCssFile(path + 'npmap' + (dev ? '' : '.min') + '.css', function() {
       if (NPMap.config instanceof Array) {
         for (var i = 0; i < NPMap.config.length; i++) {
           build(NPMap.config[i]);
@@ -62,9 +63,6 @@ NPMap = {
         build(NPMap.config);
       }
     });
-  }
-  function destroyLoader() {
-
   }
   function showLoader(div) {
     var mask = document.createElement('div');
@@ -112,12 +110,12 @@ NPMap = {
     if (typeof src === 'string') {
       if (src.indexOf('npmap-bootstrap.js') !== -1) {
         dev = true;
-        NPMap.path = src.replace('npmap-bootstrap.js', '');
-        script.src = NPMap.path + 'npmap.js';
+        path = src.replace('npmap-bootstrap.js', '');
+        script.src = path + 'npmap.js';
         break;
       } else if (src.indexOf('npmap-bootstrap.min.js') !== -1) {
-        NPMap.path = src.replace('npmap-bootstrap.min.js', '');
-        script.src = NPMap.path + 'npmap.min.js';
+        path = src.replace('npmap-bootstrap.min.js', '');
+        script.src = path + 'npmap.min.js';
         break;
       }
     }
