@@ -26,6 +26,8 @@ var CartoDbLayer = L.TileLayer.extend({
     }
   },
   initialize: function(options) {
+    var me = this;
+
     if (!L.Browser.retina || !options.detectRetina) {
       options.detectRetina = false;
     }
@@ -34,15 +36,20 @@ var CartoDbLayer = L.TileLayer.extend({
     util.strict(this.options.table, 'string');
     util.strict(this.options.user, 'string');
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
-    this._build();
-  },
-  _build: function() {
-    var me = this;
-
     this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
     reqwest({
       success: function(response) {
-        var cartocss;
+        var layer = {
+          options: {},
+          stat_tag: 'API',
+          type: 'cartodb'
+        };
+
+        if (me.options.cartocss) {
+          me._cartocss = me.options.cartocss;
+        } else if (me.options.styles) {
+          me._cartocss = me._stylesToCartoCss(me.options.styles);
+        }
 
         me._hasInteractivity = false;
         me._interactivity = null;
@@ -63,16 +70,16 @@ var CartoDbLayer = L.TileLayer.extend({
           me._hasInteractivity = true;
         }
 
-        if (me.options.cartocss) {
-          cartocss = me.options.cartocss;
-        } else if (me.options.styles) {
-          cartocss = me._stylesToCartoCss(me.options.styles);
-        } else {
-          cartocss = '#layer{line-color:#d39800;line-opacity:0.8;line-width:3;marker-fill:#d39800;marker-height:8;polygon-fill:#d39800;polygon-opacity:0.2;}';
+        layer.options.sql = me._sql = (me.options.sql || ('SELECT * FROM ' + me.options.table + ';'));
+
+        if (me._cartocss) {
+          layer.options.cartocss = me._cartocss;
+          layer.options.cartocss_version = '2.1.0';
         }
 
-        me._cartocss = cartocss;
-        me._sql = (me.options.sql || ('SELECT * FROM ' + me.options.table + ';'));
+        if (me._interactivity) {
+          layer.options.interactivity = me._interactivity;
+        }
 
         reqwest({
           success: function(response) {
@@ -91,16 +98,9 @@ var CartoDbLayer = L.TileLayer.extend({
           type: 'jsonp',
           url: util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
             config: JSON.stringify({
-              layers: [{
-                options: {
-                  cartocss: me._cartocss,
-                  cartocss_version: '2.1.0',
-                  interactivity: me._interactivity,
-                  sql: me._sql
-                },
-                stat_tag: 'API',
-                type: 'cartodb'
-              }],
+              layers: [
+                layer
+              ],
               version: '1.0.0'
             })
           })
