@@ -119,26 +119,27 @@ var Map = L.Map.extend({
     me._controllingCursor = true;
     me._controllingInteractivity = true;
     me._defaultCursor = me.getContainer().style.cursor;
+    me._addEvents(me, config);
     me.on('autopanstart', function() {
       me._setCursor('');
     });
-    this.notify = humane.create({
+    me.notify = humane.create({
       baseCls: 'humane-bootstrap',
       container: map,
     });
-    this.notify.danger = this.notify.spawn({
+    me.notify.danger = me.notify.spawn({
       addnCls: 'humane-bootstrap-danger'
     });
-    this.notify.info = this.notify.spawn({
+    me.notify.info = me.notify.spawn({
       addnCls: 'humane-bootstrap-info'
     });
-    this.notify.success = this.notify.spawn({
+    me.notify.success = me.notify.spawn({
       addnCls: 'humane-bootstrap-success'
     });
-    this.notify.warning = this.notify.spawn({
+    me.notify.warning = me.notify.spawn({
       addnCls: 'humane-bootstrap-warning'
     });
-    this._progress = new nanobar({
+    me._progress = new nanobar({
       bg: '#d29700',
       id: 'npmap-progress',
       target: map
@@ -168,7 +169,9 @@ var Map = L.Map.extend({
 
           if (baseLayer.visible || typeof baseLayer.visible === 'undefined') {
             baseLayer.visible = true;
-            baseLayer.L = L.npmap.layer.zoomify(baseLayer).addTo(me);
+            baseLayer.L = L.npmap.layer.zoomify(baseLayer);
+            me._addEvents(baseLayer.L, baseLayer);
+            baseLayer.L.addTo(me);
             break;
           }
         }
@@ -187,6 +190,7 @@ var Map = L.Map.extend({
               baseLayer.L = L.npmap.layer[baseLayer.type](baseLayer);
             }
 
+            me._addEvents(baseLayer.L, baseLayer);
             me.addLayer(baseLayer.L);
           } else {
             baseLayer.visible = false;
@@ -214,6 +218,7 @@ var Map = L.Map.extend({
               overlay.L = L.npmap.layer[overlay.type](overlay);
             }
 
+            me._addEvents(overlay.L, overlay);
             me.addLayer(overlay.L);
             zIndex++;
           } else {
@@ -228,6 +233,20 @@ var Map = L.Map.extend({
     me._setupTooltip();
 
     return this;
+  },
+  _addEvents: function(obj, config) {
+    if (config.events && config.events.length) {
+      for (var i = 0; i < config.events.length; i++) {
+        var e = config.events[i],
+          context = e.context || null;
+
+        if (e.single === true) {
+          obj.once(e.type, e.fn, context);
+        } else {
+          obj.on(e.type, e.fn, context);
+        }
+      }
+    }
   },
   _initializeModules: function() {
     if (this.options && this.options.modules && L.Util.isArray(this.options.modules) && this.options.modules.length) {
