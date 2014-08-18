@@ -14,7 +14,6 @@ var SpotLayer = L.GeoJSON.extend({
 
     util.strict(options.id, 'string');
     L.Util.setOptions(this, this._toLeaflet(options));
-
     reqwest({
       success: function(response) {
         var message;
@@ -24,10 +23,10 @@ var SpotLayer = L.GeoJSON.extend({
         if (response) {
           if (response.feedMessageResponse && response.feedMessageResponse.messages && response.feedMessageResponse.messages.message) {
             var geoJson = {
-                features: [],
-                type: 'FeatureCollection'
-              },
-              messages = response.feedMessageResponse.messages.message;
+              features: [],
+              type: 'FeatureCollection'
+            },
+            messages = response.feedMessageResponse.messages.message;
 
             for (var i = 0; i < messages.length; i++) {
               message = messages[i];
@@ -45,22 +44,35 @@ var SpotLayer = L.GeoJSON.extend({
             if (geoJson.features.length) {
               me._create(me.options, geoJson);
             } else {
-              // TODO: Display nonmodal error.
+              message = 'The SPOT service returned invalid data.';
+
+              me.fire('error', {
+                message: message
+              });
+
+              if (me._map) {
+                me._map.notify.danger(message);
+              }
             }
           } else {
+            message = response.errors.error.text;
+
+            me.fire('error', {
+              message: message
+            });
+
             if (me._map) {
-              me._map.notify.danger(response.errors.error.text);
-            } else {
-              console.log('ERROR: ' + response.errors.error.text);
+              me._map.notify.danger(message);
             }
           }
         } else {
           message = 'The SPOT service is unresponsive.';
+          me.fire('error', {
+            message: message
+          });
 
           if (me._map) {
             me._map.notify.danger(message);
-          } else {
-            console.log('ERROR: ' + message);
           }
         }
       },

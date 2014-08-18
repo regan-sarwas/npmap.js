@@ -3,7 +3,7 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
+var corslite = require('corslite'),
   util = require('../util/util');
 
 var MapBoxLayer = L.TileLayer.extend({
@@ -136,35 +136,25 @@ var MapBoxLayer = L.TileLayer.extend({
         })() + from + '.json';
       }
 
-      reqwest({
-        error: function(error) {
-          me.fire('error', {
-            error: error
-          });
-        },
-        success: function(response) {
-          if (response) {
-            me._setTileJson(response);
-            me.fire('ready');
-          } else {
-            me.fire('error', {
-              error: 'Error'
-            });
-          }
-        },
-        type: 'jsonp',
-        url: (function(url) {
-          if ('https:' !== document.location.protocol) {
-            return url;
-          } else if (url.match(/(\?|&)secure/)) {
-            return url;
-          } else if (url.indexOf('?') !== -1) {
-            return url + '&secure';
-          } else {
-            return url + '?secure';
-          }
-        })(from)
-      });
+      corslite((function(url) {
+        if ('https:' !== document.location.protocol) {
+          return url;
+        } else if (url.match(/(\?|&)secure/)) {
+          return url;
+        } else if (url.indexOf('?') !== -1) {
+          return url + '&secure';
+        } else {
+          return url + '?secure';
+        }
+      })(from), function(error, response) {
+        if (error) {
+          me.fire('error', L.extend(error, {
+            message: 'There was an error loading the data from Mapbox.'
+          }));
+        } else {
+          me._setTileJson(JSON.parse(response.responseText));
+        }
+      }, true);
     } else if (typeof _ === 'object') {
       this._setTileJson(from);
     }
@@ -213,6 +203,7 @@ var MapBoxLayer = L.TileLayer.extend({
     L.extend(this.options, extend);
     this.tileJson = json;
     this.redraw();
+    me.fire('ready');
     return this;
   },
   _toLeafletBounds: function(_) {

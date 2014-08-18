@@ -9,6 +9,9 @@ var ZoomifyLayer = L.TileLayer.extend({
     continuousWorld: true,
     tolerance: 0.8
   },
+  getTileUrl: function (tilePoint) {
+    return this._url + 'TileGroup' + this._getTileGroup(tilePoint) + '/' + this._map.getZoom() + '-' + tilePoint.x + '-' + tilePoint.y + '.jpg';
+  },
   initialize: function(options) {
     var imageSize, tileSize;
 
@@ -35,9 +38,7 @@ var ZoomifyLayer = L.TileLayer.extend({
     this._imageSize.reverse();
     this._gridSize.reverse();
     this.options.maxZoom = this._gridSize.length - 1;
-  },
-  getTileUrl: function (tilePoint) {
-    return this._url + 'TileGroup' + this._getTileGroup(tilePoint) + '/' + this._map.getZoom() + '-' + tilePoint.x + '-' + tilePoint.y + '.jpg';
+    this.fire('ready');
   },
   onAdd: function(map) {
     var zoom = this._getBestFitZoom(map.getSize()),
@@ -50,12 +51,12 @@ var ZoomifyLayer = L.TileLayer.extend({
     map.setView(center, zoom - 1, true);
   },
   _addTile: function (tilePoint, container) {
-    var tilePos = this._getTilePos(tilePoint),
-      tile = this._getTile(),
+    var tile = this._getTile(),
+      tilePos = this._getTilePos(tilePoint),
+      tileSize = this.options.tileSize,
       zoom = this._map.getZoom(),
       imageSize = this._imageSize[zoom],
-      gridSize = this._gridSize[zoom],
-      tileSize = this.options.tileSize;
+      gridSize = this._gridSize[zoom];
 
     if (tilePoint.x === gridSize.x - 1) {
       tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + 'px';
@@ -96,8 +97,8 @@ var ZoomifyLayer = L.TileLayer.extend({
     return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
   },
   _getTileGroup: function (tilePoint) {
-    var zoom = this._map.getZoom(),
-      num = 0,
+    var num = 0,
+      zoom = this._map.getZoom(),
       gridSize;
 
     for (var z = 0; z < zoom; z++) {

@@ -30,22 +30,21 @@ module.exports = {
     return url;
   },
   _getMetadata: function() {
-    // TODO: Implement timeout and set `loadError` property on layer to true if there is an error.
     var me = this;
 
     reqwest({
       success: function(response) {
-        if (!response.error) {
+        if (response.error) {
+          me.fire('error', response.error);
+        } else {
           var capabilities = response.capabilities;
 
-          if (typeof capabilities === 'string') {
-            if (capabilities.toLowerCase().indexOf('query') === -1) {
-              me._hasInteractivity = false;
-            }
+          if (typeof capabilities === 'string' && capabilities.toLowerCase().indexOf('query') === -1) {
+            me._hasInteractivity = false;
           }
 
           me._metadata = response;
-          me.fire('metadata', response);
+          me.fire('ready', response);
         }
       },
       type: 'jsonp',
@@ -87,7 +86,7 @@ module.exports = {
                   description: {
                     format: 'table'
                   },
-                  title: '{{' + result.displayFieldName + '}}'
+                  title: '{{[' + result.displayFieldName + ']}}'
                 },
                 results: [
                   result.attributes
