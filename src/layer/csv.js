@@ -2,8 +2,7 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  csv2geojson = require('csv2geojson'),
+var csv2geojson = require('csv2geojson'),
   util = require('../util/util');
 
 var CsvLayer = L.GeoJSON.extend({
@@ -26,7 +25,9 @@ var CsvLayer = L.GeoJSON.extend({
         if (response) {
           me._create(options, response);
         } else {
-          // TODO: Display load error.
+          me.fire('error', {
+            message: 'There was an error loading the CSV file.'
+          });
         }
       });
     }
@@ -35,9 +36,16 @@ var CsvLayer = L.GeoJSON.extend({
     var me = this;
 
     csv2geojson.csv2geojson(csv, {}, function(error, data) {
-      L.GeoJSON.prototype.initialize.call(me, data, options);
-      me.fire('ready');
-      me._loaded = true;
+      if (error) {
+        me.fire('error', {
+          message: error
+        });
+      } else {
+        L.GeoJSON.prototype.initialize.call(me, data, options);
+        me.fire('ready');
+        me._loaded = true;
+      }
+
       return me;
     });
   }

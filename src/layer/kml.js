@@ -2,8 +2,7 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  togeojson = require('togeojson'),
+var togeojson = require('togeojson'),
   util = require('../util/util');
 
 var KmlLayer = L.GeoJSON.extend({
@@ -26,7 +25,9 @@ var KmlLayer = L.GeoJSON.extend({
         if (response) {
           me._create(options, response);
         } else {
-          // TODO: Display load error.
+          me.fire('error', {
+            message: 'There was an error loading the KML file.'
+          });
         }
       });
     }

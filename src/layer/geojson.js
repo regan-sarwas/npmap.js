@@ -21,9 +21,12 @@ var GeoJsonLayer = L.GeoJSON.extend({
       util.strict(url, 'string');
       util.loadFile(url, 'json', function(response) {
         if (response) {
+          // TODO: Do a check to make sure the GeoJSON is valid, and fire error event if it isn't.
           me._create(options, response);
         } else {
-          // TODO: Display load error.
+          me.fire('error', {
+            message: 'There was an error loading the GeoJSON file.'
+          });
         }
       });
     }
