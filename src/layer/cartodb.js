@@ -3,7 +3,7 @@
 
 'use strict';
 
-var corslite = require('corslite'),
+var reqwest = require('reqwest'),
   util = require('../util/util');
 
 var CartoDbLayer = L.TileLayer.extend({
@@ -37,14 +37,12 @@ var CartoDbLayer = L.TileLayer.extend({
     util.strict(this.options.user, 'string');
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
     this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
-    corslite(util.buildUrl(this._urlApi, {
-      q: 'select * from ' + this.options.table + ' limit 0;'
-    }), function(error, response) {
-      if (error) {
+    reqwest({
+      crossOrigin: true,
+      error: function(error) {
         me.fire('error', error);
-      } else {
-        response = JSON.parse(response.responseText);
-
+      },
+      success: function(response) {
         var layer = {
           options: {},
           stat_tag: 'API',
@@ -87,20 +85,12 @@ var CartoDbLayer = L.TileLayer.extend({
           layer.options.interactivity = me._interactivity;
         }
 
-        corslite(util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
-          config: JSON.stringify({
-            layers: [
-              layer
-            ],
-            version: '1.0.0'
-          })
-        }), function(error, response) {
-          if (error) {
+        reqwest({
+          error: function(error) {
             error.message = JSON.parse(error.response).errors[0];
             me.fire('error', error);
-          } else {
-            response = JSON.parse(response.responseText);
-
+          },
+          success: function(response) {
             var root = 'http://{s}.api.cartocdn.com/' + me.options.user + '/tiles/layergroup/' + response.layergroupid,
               template = '{z}/{x}/{y}';
 
@@ -114,10 +104,23 @@ var CartoDbLayer = L.TileLayer.extend({
             me.fire('ready');
 
             return me;
-          }
-        }, true);
-      }
-    }, true);
+          },
+          type: 'json',
+          url: util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
+            config: JSON.stringify({
+              layers: [
+                layer
+              ],
+              version: '1.0.0'
+            })
+          })
+        });
+      },
+      type: 'json',
+      url: util.buildUrl(this._urlApi, {
+        q: 'select * from ' + this.options.table + ' limit 0;'
+      })
+    });
   },
   _getGridData: function(latLng, callback) {
     var me = this;
