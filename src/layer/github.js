@@ -2,7 +2,7 @@
 
 'use strict';
 
-var corslite = require('corslite'),
+var reqwest = require('reqwest'),
   util = require('../util/util');
 
 var GitHubLayer = L.GeoJSON.extend({
@@ -23,15 +23,19 @@ var GitHubLayer = L.GeoJSON.extend({
       util.strict(options.path, 'string');
       util.strict(options.repo, 'string');
       util.strict(options.user, 'string');
-      corslite('https://api.github.com/repos/' + options.user + '/' + options.repo + '/contents/' + options.path + '?ref=' + options.branch, function(error, response) {
-        if (error) {
+      reqwest({
+        crossOrigin: true,
+        error: function(error) {
           me.fire('error', L.extend(error, {
             message: 'There was an error loading the data from GitHub.'
           }));
-        } else {
-          me._create(options, JSON.parse(window.atob(JSON.parse(response.responseText).content.replace(/\s/g, ''))));
-        }
-      }, true);
+        },
+        success: function(response) {
+          me._create(options, JSON.parse(window.atob(response.content.replace(/\s/g, ''))));
+        },
+        type: 'json',
+        url: 'https://api.github.com/repos/' + options.user + '/' + options.repo + '/contents/' + options.path + '?ref=' + options.branch
+      });
     }
   },
   _create: function(options, data) {

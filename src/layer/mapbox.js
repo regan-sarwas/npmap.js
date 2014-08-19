@@ -3,7 +3,7 @@
 
 'use strict';
 
-var corslite = require('corslite'),
+var reqwest = require('reqwest'),
   util = require('../util/util');
 
 var MapBoxLayer = L.TileLayer.extend({
@@ -136,25 +136,29 @@ var MapBoxLayer = L.TileLayer.extend({
         })() + from + '.json';
       }
 
-      corslite((function(url) {
-        if ('https:' !== document.location.protocol) {
-          return url;
-        } else if (url.match(/(\?|&)secure/)) {
-          return url;
-        } else if (url.indexOf('?') !== -1) {
-          return url + '&secure';
-        } else {
-          return url + '?secure';
-        }
-      })(from), function(error, response) {
-        if (error) {
+      reqwest({
+        crossOrigin: true,
+        error: function(error) {
           me.fire('error', L.extend(error, {
             message: 'There was an error loading the data from Mapbox.'
           }));
-        } else {
-          me._setTileJson(JSON.parse(response.responseText));
-        }
-      }, true);
+        },
+        success: function(response) {
+          me._setTileJson(response);
+        },
+        type: 'json',
+        url: (function(url) {
+          if ('https:' !== document.location.protocol) {
+            return url;
+          } else if (url.match(/(\?|&)secure/)) {
+            return url;
+          } else if (url.indexOf('?') !== -1) {
+            return url + '&secure';
+          } else {
+            return url + '?secure';
+          }
+        })(from)
+      });
     } else if (typeof _ === 'object') {
       this._setTileJson(from);
     }
