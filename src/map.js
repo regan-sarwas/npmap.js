@@ -721,6 +721,10 @@ var Map = L.Map.extend({
       config.overlays = [];
     }
 
+    if (typeof config.maxZoom !== 'number') {
+      config.maxZoom = 19;
+    }
+
     delete config.layers;
     config.zoom = typeof config.zoom === 'number' ? config.zoom : 4;
     return config;

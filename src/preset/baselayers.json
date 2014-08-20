@@ -201,6 +201,7 @@
       "detectRetina": true,
       "icon": "nps",
       "id": "nps.map-n9nxe12m,nps.gdipreks",
+      //"maxNativeZoom": 19,
       "name": "Park Tiles Imagery",
       "type": "mapbox"
     },
