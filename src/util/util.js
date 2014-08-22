@@ -608,18 +608,19 @@ module.exports = {
       }
     } else {
       reqwest({
+        crossOrigin: true,
         error: function() {
           callback(false);
         },
         success: function(response) {
-          if (response) {
-            callback(response);
+          if (response && response.success) {
+            callback(response.data);
           } else {
             callback(false);
           }
         },
-        type: 'jsonp',
-        url: 'https://npmap-proxy.herokuapp.com?callback=?&type=' + type + '&url=' + encodeURIComponent(url)
+        type: 'json',
+        url: 'http://localhost:8000/?type=' + type + '&url=' + encodeURIComponent(url)
       });
     }
   },
