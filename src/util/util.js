@@ -620,7 +620,7 @@ module.exports = {
           }
         },
         type: 'json',
-        url: 'http://localhost:8000/?type=' + type + '&url=' + encodeURIComponent(url)
+        url: 'https://npmap-proxy.herokuapp.com/?type=' + type + '&url=' + encodeURIComponent(url)
       });
     }
   },
