@@ -27,28 +27,28 @@
             return feature.properties.park === 'Yellowstone';
           },
           popup: {
-            description: 'This is {{#if type \'!==\' \'community\'}}not {{/if}}a community.',
             title: '{{name}}'
           },
           styles: {
-            'marker-name': 'star'
+            point: {
+              'marker-symbol': 'star'
+            }
           },
           type: 'geojson',
           url: 'data/gateway_points_of_interest.geojson'
         },{
           popup: {
-            description: 'The alpha code is {{Code}}',
-            title: '{{Name}}'
+            description: 'The alpha code is {{UNIT_CODE}}',
+            title: '{{UNIT_NAME}}'
           },
           styles: {
-            'marker-color': '#609321',
-            'marker-symbol': 'park'
+            point: {
+              'marker-color': '#609321',
+              'marker-symbol': 'park'
+            }
           },
           type: 'geojson',
-          url: 'data/national_parks.geojson'
-        },{
-          type: 'geojson',
-          url: 'http://nationalparkservice.github.io/data/base_data/boundaries/im_networks.geojson'
+          url: 'https://nationalparkservice.github.io/data/base_data/boundaries/parks/parks-centroids.geojson'
         }]
       };
 
