@@ -405,7 +405,7 @@ var Map = L.Map.extend({
             done();
 
             if (intervals > 98) {
-              this.notify.danger('No information to display because the operation timed out.');
+              me.notify.danger('One or more servers failed to respond.');
             }
 
             if (results.length) {
