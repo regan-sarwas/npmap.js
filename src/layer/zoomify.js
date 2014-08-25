@@ -7,7 +7,7 @@ var util = require('../util/util');
 var ZoomifyLayer = L.TileLayer.extend({
   options: {
     continuousWorld: true,
-    tolerance: 0.8
+    tolerance: 1
   },
   getTileUrl: function (tilePoint) {
     return this._url + 'TileGroup' + this._getTileGroup(tilePoint) + '/' + this._map.getZoom() + '-' + tilePoint.x + '-' + tilePoint.y + '.jpg';
@@ -38,17 +38,18 @@ var ZoomifyLayer = L.TileLayer.extend({
     this._imageSize.reverse();
     this._gridSize.reverse();
     this.options.maxZoom = this._gridSize.length - 1;
-    this.fire('ready');
   },
   onAdd: function(map) {
-    var zoom = this._getBestFitZoom(map.getSize()),
+    var mapSize = map.getSize(),
+      zoom = this._getBestFitZoom(mapSize),
       imageSize = this._imageSize[zoom],
-      center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
+      center = map.options.crs.pointToLatLng(new L.Point(imageSize.x / 2, (imageSize.y + (map.getContainer().parentNode.parentNode.childNodes[0].style.display === 'block' ? 25 : 0)) / 2), zoom);
 
     L.TileLayer.prototype.onAdd.call(this, map);
     map.options.center = center;
-    map.options.zoom = zoom - 1;
-    map.setView(center, zoom - 1, true);
+    map.options.zoom = zoom;
+    map.setView(center, zoom, false);
+    this.fire('ready');
   },
   _addTile: function (tilePoint, container) {
     var tile = this._getTile(),
@@ -82,7 +83,7 @@ var ZoomifyLayer = L.TileLayer.extend({
     while (zoom) {
       imageSize = this._imageSize[zoom];
 
-      if (imageSize.x * tolerance < mapSize.x && imageSize.y * tolerance < mapSize.y) {
+      if (((imageSize.x * tolerance) < mapSize.x) && ((imageSize.y * tolerance) < mapSize.y)) {
         return zoom;
       }
 
