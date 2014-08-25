@@ -74,11 +74,11 @@ var PrintControl = L.Control.extend({
     var map = this._map,
       me = this,
       center = map.getCenter(),
-      zoom = map.getZoom(),
-      url, win;
+      url = me.options.url + (me.options.url.indexOf('?') === -1 ? '?' : '&') + 'lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&zoom=' + map.getZoom(),
+      win;
 
     if (map.options.mapId) {
-      url = me.options.url + (me.options.url.indexOf('?') === -1 ? '?' : '&') + 'lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&mapId=' + map.options.mapId + '&zoom=' + zoom;
+      url += '&mapId=' + map.options.mapId;
     } else {
       var options = map.options,
         config = {
@@ -114,13 +114,12 @@ var PrintControl = L.Control.extend({
       }
 
       params.value = window.btoa(JSON.stringify(config));
-      url = me.options.url + (me.options.url.indexOf('?') === -1 ? '?' : '&') + 'lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&printId=' + params.key + '&zoom=' + zoom;
+      url += '&printId=' + params.key;
       L.npmap.util._.reqwest({
         contentType: 'application/json',
         crossOrigin: true,
         data: JSON.stringify(params),
         method: 'post',
-        type: 'json',
         url: 'http://npmap-session.herokuapp.com'
       });
     }
