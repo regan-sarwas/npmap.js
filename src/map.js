@@ -245,6 +245,12 @@ var Map = L.Map.extend({
         } else {
           obj.on(e.type, e.fn, context);
         }
+
+        if (e.type === 'error' && obj.errorFired) {
+          obj.fire('error', obj.errorFired);
+        } else if (e.type === 'ready' && obj.readyFired) {
+          obj.fire('ready');
+        }
       }
     }
   },

@@ -25,9 +25,12 @@ var KmlLayer = L.GeoJSON.extend({
         if (response) {
           me._create(options, response);
         } else {
-          me.fire('error', {
+          var obj = {
             message: 'There was an error loading the KML file.'
-          });
+          };
+
+          me.fire('error', obj);
+          me.errorFired = obj;
         }
       });
     }
@@ -35,6 +38,7 @@ var KmlLayer = L.GeoJSON.extend({
   _create: function(options, data) {
     L.GeoJSON.prototype.initialize.call(this, togeojson.kml(new DOMParser().parseFromString(data, 'text/xml')), options);
     this.fire('ready');
+    this.readyFired = true;
     this._loaded = true;
     return this;
   }

@@ -41,6 +41,7 @@ var CartoDbLayer = L.TileLayer.extend({
       crossOrigin: true,
       error: function(error) {
         me.fire('error', error);
+        me.errorFired = error;
       },
       success: function(response) {
         var layer = {
@@ -102,6 +103,7 @@ var CartoDbLayer = L.TileLayer.extend({
             me.setUrl(me._urlTile);
             me.redraw();
             me.fire('ready');
+            me.readyFired = true;
 
             return me;
           },

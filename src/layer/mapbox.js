@@ -139,9 +139,12 @@ var MapBoxLayer = L.TileLayer.extend({
       reqwest({
         crossOrigin: true,
         error: function(error) {
-          me.fire('error', L.extend(error, {
+          var obj = L.extend(error, {
             message: 'There was an error loading the data from Mapbox.'
-          }));
+          });
+
+          me.fire('error', obj);
+          me.errorFired = obj;
         },
         success: function(response) {
           me._setTileJson(response);
@@ -208,6 +211,7 @@ var MapBoxLayer = L.TileLayer.extend({
     this.tileJson = json;
     this.redraw();
     me.fire('ready');
+    me.readyFired = true;
     return this;
   },
   _toLeafletBounds: function(_) {

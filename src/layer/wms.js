@@ -11,6 +11,7 @@ var WmsLayer = L.TileLayer.WMS.extend({
     L.Util.setOptions(this, options);
     L.TileLayer.WMS.prototype.initialize.call(this, options.url, options);
     this.fire('ready');
+    this.readyFired = true;
     return this;
   }
 });

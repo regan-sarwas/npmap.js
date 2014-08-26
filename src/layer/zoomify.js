@@ -50,6 +50,7 @@ var ZoomifyLayer = L.TileLayer.extend({
     map.options.zoom = zoom;
     map.setView(center, zoom, false);
     this.fire('ready');
+    this.readyFired = true;
   },
   _addTile: function (tilePoint, container) {
     var tile = this._getTile(),
