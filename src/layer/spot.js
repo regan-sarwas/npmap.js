@@ -44,11 +44,15 @@ var SpotLayer = L.GeoJSON.extend({
             if (geoJson.features.length) {
               me._create(me.options, geoJson);
             } else {
-              message = 'The SPOT service returned invalid data.';
+              var obj;
 
-              me.fire('error', {
+              message = 'The SPOT service returned invalid data.';
+              obj = {
                 message: message
-              });
+              };
+
+              me.fire('error', obj);
+              me.errorFired = obj;
 
               if (me._map) {
                 me._map.notify.danger(message);
@@ -90,6 +94,7 @@ var SpotLayer = L.GeoJSON.extend({
     }
 
     this.fire('ready');
+    this.readyFired = true;
     this._loaded = true;
     return this;
   }

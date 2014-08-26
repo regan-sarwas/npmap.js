@@ -13,6 +13,7 @@ var TiledLayer = L.TileLayer.extend({
     L.Util.setOptions(this, options);
     L.TileLayer.prototype.initialize.call(this, options.url, options);
     this.fire('ready');
+    this.readyFired = true;
     return this;
   }
 });

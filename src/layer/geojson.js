@@ -24,9 +24,12 @@ var GeoJsonLayer = L.GeoJSON.extend({
           // TODO: Do a check to make sure the GeoJSON is valid, and fire error event if it isn't.
           me._create(options, response);
         } else {
-          me.fire('error', {
+          var obj = {
             message: 'There was an error loading the GeoJSON file.'
-          });
+          };
+
+          me.fire('error', obj);
+          me.errorFired = obj;
         }
       });
     }
@@ -34,6 +37,7 @@ var GeoJsonLayer = L.GeoJSON.extend({
   _create: function(options, data) {
     L.GeoJSON.prototype.initialize.call(this, data, options);
     this.fire('ready');
+    this.readyFired = true;
     this._loaded  = true;
     return this;
   }

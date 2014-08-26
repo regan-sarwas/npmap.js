@@ -66,6 +66,7 @@ var BingLayer = L.TileLayer.extend({
     }
 
     this.fire('ready');
+    this.readyFired = true;
     this._update();
   },
   _loadMetadata: function() {
@@ -82,9 +83,12 @@ var BingLayer = L.TileLayer.extend({
 
       if (meta.errorDetails) {
         if (window.console) {
-          me.fire('error', {
+          var error = {
             message: meta.errorDetails
-          });
+          };
+
+          me.fire('error', error);
+          me.errorFired = error;
         }
 
         return;

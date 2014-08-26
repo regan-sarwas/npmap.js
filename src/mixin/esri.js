@@ -36,6 +36,7 @@ module.exports = {
       success: function(response) {
         if (response.error) {
           me.fire('error', response.error);
+          me.errorFired = response.error;
         } else {
           var capabilities = response.capabilities;
 
@@ -45,6 +46,7 @@ module.exports = {
 
           me._metadata = response;
           me.fire('ready', response);
+          me.readyFired = true;
         }
       },
       type: 'jsonp',

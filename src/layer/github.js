@@ -26,9 +26,12 @@ var GitHubLayer = L.GeoJSON.extend({
       reqwest({
         crossOrigin: true,
         error: function(error) {
-          me.fire('error', L.extend(error, {
+          var obj = L.extend(error, {
             message: 'There was an error loading the data from GitHub.'
-          }));
+          });
+
+          me.fire('error', obj);
+          me.errorFired = obj;
         },
         success: function(response) {
           me._create(options, JSON.parse(window.atob(response.content.replace(/\s/g, ''))));
@@ -41,6 +44,7 @@ var GitHubLayer = L.GeoJSON.extend({
   _create: function(options, data) {
     L.GeoJSON.prototype.initialize.call(this, data, options);
     this.fire('ready');
+    this.readyFired = true;
     this._loaded = true;
     return this;
   }
