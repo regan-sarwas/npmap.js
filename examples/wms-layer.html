@@ -22,15 +22,13 @@
     <script>
       var NPMap = {
         div: 'map',
-        maxZoom: 8,
         overlays: [{
           attribution: 'NOAA',
-          format: 'img/png',
-          layers: '16',
-          opacity: 0.5,
+          format: 'image/png',
+          layers: 'RAS_RIDGE_NEXRAD',
           transparent: true,
           type: 'wms',
-          url: 'http://gis.srh.noaa.gov/arcgis/services/NDFDTemps/MapServer/WMSServer'
+          url: 'http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs'
         }]
       };
 
