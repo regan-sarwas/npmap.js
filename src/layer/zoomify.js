@@ -47,6 +47,7 @@ var ZoomifyLayer = L.TileLayer.extend({
 
     L.TileLayer.prototype.onAdd.call(this, map);
     map.options.center = center;
+    map.options.maxZoom = this.options.maxZoom;
     map.options.zoom = zoom;
     map.setView(center, zoom, false);
     this.fire('ready');
