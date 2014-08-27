@@ -114,7 +114,6 @@
   "mapbox": {
     "light": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "street",
       "id": "nps.map-sligp1fr",
       "name": "Mapbox Light",
@@ -122,7 +121,6 @@
     },
     "outdoors": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "topo",
       "id": "nps.i49i583a",
       "name": "Mapbox Outdoors",
@@ -130,7 +128,6 @@
     },
     "satellite": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a>",
-      "detectRetina": true,
       "icon": "aerial",
       "id": "nps.map-n9nxe12m",
       "maxNativeZoom": 18,
@@ -139,7 +136,6 @@
     },
     "satelliteLabels": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "aerial",
       "id": "nps.map-r3ilza09",
       "maxNativeZoom": 18,
@@ -148,7 +144,6 @@
     },
     "streets": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "street",
       "id": "nps.map-06dnxzq5",
       "name": "Mapbox Streets",
@@ -156,7 +151,6 @@
     },
     "terrain": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "topo",
       "id": "nps.map-lj6szvbq",
       "name": "Mapbox Terrain",
@@ -166,7 +160,6 @@
   "nps": {
     "darkStreets": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "nps",
       "id": "nps.gajjemg7",
       "name": "NPS Dark",
@@ -174,7 +167,6 @@
     },
     "lightStreets": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "nps",
       "id": "nps.g9ndno9j",
       "name": "NPS Light",
@@ -182,7 +174,6 @@
     },
     "neutralTerrain": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "nps",
       "id": "nps.g9nccg3d",
       "name": "NPS Neutral Terrain",
@@ -190,7 +181,6 @@
     },
     "parkTiles": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
-      "detectRetina": true,
       "icon": "nps",
       "id": "nps.2yxv8n84",
       "name": "Park Tiles",
@@ -198,7 +188,6 @@
     },
     "parkTilesImagery": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
-      "detectRetina": true,
       "icon": "nps",
       "id": "nps.map-n9nxe12m,nps.gdipreks",
       //"maxNativeZoom": 19,
@@ -207,7 +196,6 @@
     },
     "satelliteNight": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-      "detectRetina": true,
       "icon": "nps",
       "id": "nps.g9o0im10",
       "name": "NPS Satellite at Night",
