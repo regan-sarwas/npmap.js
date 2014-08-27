@@ -818,6 +818,16 @@ module.exports = {
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || '';
   },
+  // http://stackoverflow.com/a/7616755/27540
+  supportsCors: function() {
+    if ('withCredentials' in new XMLHttpRequest()) {
+      return 'yes';
+    } else if (typeof XDomainRequest !== 'undefined') {
+      return 'partial';
+    } else {
+      return 'no';
+    }
+  },
   unescapeHtml: function(unsafe) {
     return unsafe
       .replace(/&amp;/g, '&')

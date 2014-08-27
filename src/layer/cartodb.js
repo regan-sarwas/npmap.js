@@ -26,7 +26,8 @@ var CartoDbLayer = L.TileLayer.extend({
     }
   },
   initialize: function(options) {
-    var me = this;
+    var me = this,
+      supportsCors = util.supportsCors();
 
     if (!L.Browser.retina || !options.detectRetina) {
       options.detectRetina = false;
@@ -36,10 +37,9 @@ var CartoDbLayer = L.TileLayer.extend({
     util.strict(this.options.table, 'string');
     util.strict(this.options.user, 'string');
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
-    // If this needs to be https, CORS requests will fail (unless requesting page is https) for IE8 and IE9.
-    this._urlApi = 'http://' + this.options.user + '.cartodb.com/api/v2/sql';
+    this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
     reqwest({
-      crossOrigin: true,
+      crossOrigin: supportsCors === 'yes' ? true : false,
       error: function(error) {
         me.fire('error', error);
         me.errorFired = error;
@@ -88,12 +88,13 @@ var CartoDbLayer = L.TileLayer.extend({
         }
 
         reqwest({
-          crossOrigin: true,
+          crossOrigin: supportsCors === 'yes' ? true : false,
           error: function(error) {
             error.message = JSON.parse(error.response).errors[0];
             me.fire('error', error);
           },
           success: function(response) {
+            // https is not supported here. Ideally this would use whatever protocol the web page itself is using.
             var root = 'http://{s}.api.cartocdn.com/' + me.options.user + '/tiles/layergroup/' + response.layergroupid,
               template = '{z}/{x}/{y}';
 
@@ -109,9 +110,8 @@ var CartoDbLayer = L.TileLayer.extend({
 
             return me;
           },
-          type: 'json',
-          // If this needs to be https, CORS requests will fail (unless requesting page is https) for IE8 and IE9.
-          url: util.buildUrl('http://' + me.options.user + '.cartodb.com/tiles/layergroup', {
+          type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
+          url: util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
             config: JSON.stringify({
               layers: [
                 layer
@@ -121,7 +121,7 @@ var CartoDbLayer = L.TileLayer.extend({
           })
         });
       },
-      type: 'json',
+      type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
       url: util.buildUrl(this._urlApi, {
         q: 'select * from ' + this.options.table + ' limit 0;'
       })
