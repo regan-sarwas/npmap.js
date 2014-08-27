@@ -13,6 +13,8 @@ var GitHubLayer = L.GeoJSON.extend({
     branch: 'master'
   },
   initialize: function(options) {
+    var supportsCors = util.supportsCors();
+
     L.Util.setOptions(this, this._toLeaflet(options));
 
     if (typeof options.data === 'object') {
@@ -24,7 +26,7 @@ var GitHubLayer = L.GeoJSON.extend({
       util.strict(options.repo, 'string');
       util.strict(options.user, 'string');
       reqwest({
-        crossOrigin: true,
+        crossOrigin: supportsCors === 'yes' ? true : false,
         error: function(error) {
           var obj = L.extend(error, {
             message: 'There was an error loading the data from GitHub.'
@@ -34,9 +36,11 @@ var GitHubLayer = L.GeoJSON.extend({
           me.errorFired = obj;
         },
         success: function(response) {
-          me._create(options, JSON.parse(window.atob(response.content.replace(/\s/g, ''))));
+          var data = response.content || response.data.content;
+
+          me._create(options, JSON.parse(window.atob(data.replace(/\s/g, ''))));
         },
-        type: 'json',
+        type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
         url: 'https://api.github.com/repos/' + options.user + '/' + options.repo + '/contents/' + options.path + '?ref=' + options.branch
       });
     }
