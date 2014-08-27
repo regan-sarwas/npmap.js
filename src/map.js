@@ -116,10 +116,11 @@ var Map = L.Map.extend({
     config.div = map;
     config.zoomControl = false;
     L.Map.prototype.initialize.call(me, config.div, config);
+    me._addEvents(me, config);
     me._controllingCursor = true;
     me._controllingInteractivity = true;
     me._defaultCursor = me.getContainer().style.cursor;
-    me._addEvents(me, config);
+    
     me.on('autopanstart', function() {
       me._setCursor('');
     });
@@ -248,6 +249,8 @@ var Map = L.Map.extend({
 
         if (e.type === 'error' && obj.errorFired) {
           obj.fire('error', obj.errorFired);
+        } else if (e.type === 'load' && obj._loaded) {
+          obj.fire('load');
         } else if (e.type === 'ready' && obj.readyFired) {
           obj.fire('ready');
         }
