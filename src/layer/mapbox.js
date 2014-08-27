@@ -11,6 +11,7 @@ var MapBoxLayer = L.TileLayer.extend({
     require('../mixin/grid')
   ],
   options: {
+    accessToken: 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
     errorTileUrl: L.Util.emptyImageUrl,
     format: 'png',
     subdomains: [
@@ -43,18 +44,7 @@ var MapBoxLayer = L.TileLayer.extend({
       util.strictOneOf(options.format, MapBoxLayer.FORMATS);
     }
 
-    if (L.Browser.retina && options.retinaVersion) {
-      load = options.retinaVersion;
-      options.detectRetina = true;
-    } else {
-      load = options.tileJson || options.id;
-
-      // Retina is opt-in for now.
-      if (!L.Browser.retina || !options.detectRetina) {
-        options.detectRetina = false;
-      }
-    }
-
+    load = options.tileJson || options.id;
     L.Util.setOptions(this, options);
     L.TileLayer.prototype.initialize.call(this, undefined, options);
     this._hasInteractivity = false;
@@ -79,7 +69,7 @@ var MapBoxLayer = L.TileLayer.extend({
     delete this._map;
   },
   _autoScale: function() {
-    return L.Browser.retina && this.options.autoscale && this.options.detectRetina;
+    return L.Browser.retina && this.options.autoscale;
   },
   _getGridData: function(latLng, callback) {
     var me = this;
@@ -109,16 +99,17 @@ var MapBoxLayer = L.TileLayer.extend({
   },
   _loadTileJson: function(from) {
     if (typeof from === 'string') {
-      var me = this;
+      var me = this,
+        url;
 
       if (from.indexOf('/') === -1) {
         from = (function(hash) {
           var urls = (function() {
             var endpoints = [
-              'a.tiles.mapbox.com/v3/',
-              'b.tiles.mapbox.com/v3/',
-              'c.tiles.mapbox.com/v3/',
-              'd.tiles.mapbox.com/v3/'
+              'a.tiles.mapbox.com/v4/',
+              'b.tiles.mapbox.com/v4/',
+              'c.tiles.mapbox.com/v4/',
+              'd.tiles.mapbox.com/v4/'
             ];
 
             for (var i = 0; i < endpoints.length; i++) {
@@ -136,6 +127,18 @@ var MapBoxLayer = L.TileLayer.extend({
         })() + from + '.json';
       }
 
+      url = (function(url) {
+        if ('https:' !== document.location.protocol) {
+          return url;
+        } else if (url.match(/(\?|&)secure/)) {
+          return url;
+        } else if (url.indexOf('?') !== -1) {
+          return url + '&secure';
+        } else {
+          return url + '?secure';
+        }
+      })(from);
+
       reqwest({
         crossOrigin: true,
         error: function(error) {
@@ -150,17 +153,7 @@ var MapBoxLayer = L.TileLayer.extend({
           me._setTileJson(response);
         },
         type: 'json',
-        url: (function(url) {
-          if ('https:' !== document.location.protocol) {
-            return url;
-          } else if (url.match(/(\?|&)secure/)) {
-            return url;
-          } else if (url.indexOf('?') !== -1) {
-            return url + '&secure';
-          } else {
-            return url + '?secure';
-          }
-        })(from)
+        url: url + ((url.indexOf('?') === -1) ? '?' : '&') + 'access_token=' + me.options.accessToken
       });
     } else if (typeof _ === 'object') {
       this._setTileJson(from);
