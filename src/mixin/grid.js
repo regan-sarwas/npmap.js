@@ -20,16 +20,23 @@ module.exports = {
 
       if (response === 'empty') {
         callback(null, null);
-      } else if (response === 'loading') {
-        callback('loading', this._getTileGridPoint(latLng, response));
-      } else {
-        callback(response, this._getTileGridPoint(latLng, response));
+      } else  {
+        var tileGridPoint = this._getTileGridPoint(latLng, response);
+
+        // TODO: Handle if tileGridPoint contains an error.
+
+        if (response === 'loading') {
+          callback('loading', tileGridPoint);
+        } else {
+          callback(response, tileGridPoint);
+        }
       }
     } else {
       var me = this;
 
       me._cache[url] = 'loading';
       reqwest({
+        crossOrigin: true,
         error: function() {
           me._cache[url] = 'empty';
           callback(null, null);
@@ -44,13 +51,15 @@ module.exports = {
           }
         },
         timeout: 2000,
-        type: 'jsonp',
+        type: 'json',
         url: url
       });
     }
   },
   _getTileGridPoint: function(latLng, response) {
     var map = this._map;
+
+    // TODO: Handle if response.error exists.
 
     if (map && typeof response === 'object') {
       var point = map.project(latLng.wrap()),

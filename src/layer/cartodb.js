@@ -36,7 +36,8 @@ var CartoDbLayer = L.TileLayer.extend({
     util.strict(this.options.table, 'string');
     util.strict(this.options.user, 'string');
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
-    this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
+    // If this needs to be https, CORS requests will fail (unless requesting page is https) for IE8 and IE9.
+    this._urlApi = 'http://' + this.options.user + '.cartodb.com/api/v2/sql';
     reqwest({
       crossOrigin: true,
       error: function(error) {
@@ -87,6 +88,7 @@ var CartoDbLayer = L.TileLayer.extend({
         }
 
         reqwest({
+          crossOrigin: true,
           error: function(error) {
             error.message = JSON.parse(error.response).errors[0];
             me.fire('error', error);
@@ -108,7 +110,8 @@ var CartoDbLayer = L.TileLayer.extend({
             return me;
           },
           type: 'json',
-          url: util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
+          // If this needs to be https, CORS requests will fail (unless requesting page is https) for IE8 and IE9.
+          url: util.buildUrl('http://' + me.options.user + '.cartodb.com/tiles/layergroup', {
             config: JSON.stringify({
               layers: [
                 layer
