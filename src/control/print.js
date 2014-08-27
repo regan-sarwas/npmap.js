@@ -121,6 +121,7 @@ var PrintControl = L.Control.extend({
         crossOrigin: true,
         // TODO: Won't work for Internet Explorer 8/9, as posts aren't supported for CORS until Internet Explorer 10.
         //method: 'post',
+        type: 'json',
         url: 'http://npmap-session.herokuapp.com/' + L.Util.getParamString(params)
       });
     }
