@@ -88,6 +88,7 @@ var PrintControl = L.Control.extend({
           zoom: options.zoom
         },
         params = {
+          action: 'save',
           key: this._guid()
         },
         active, i, layer;
@@ -118,14 +119,18 @@ var PrintControl = L.Control.extend({
       L.npmap.util._.reqwest({
         contentType: 'application/json',
         crossOrigin: true,
-        data: JSON.stringify(params),
-        method: 'post',
-        url: 'http://npmap-session.herokuapp.com'
+        // TODO: Won't work for Internet Explorer 8/9, as posts aren't supported for CORS until Internet Explorer 10.
+        //method: 'post',
+        url: 'http://npmap-session.herokuapp.com/' + L.Util.getParamString(params)
       });
     }
 
     win = window.open(url, '_blank');
-    win.focus();
+
+    // Needed because this throws an error in Internet Explorer 8.
+    try {
+      win.focus();
+    } catch (e) {}
   }
 });
 
