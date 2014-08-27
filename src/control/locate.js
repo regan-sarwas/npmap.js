@@ -29,8 +29,6 @@ var LocateControl = L.Control.extend({
     },
     metric: true,
     onLocationError: function(context, error) {
-      L.DomUtil.removeClass(context._button, 'requesting');
-      L.DomUtil.removeClass(context._button, 'pressed');
       context._map.notify.danger(error.message);
     },
     onLocationOutsideMapBounds: function(context) {
@@ -87,8 +85,12 @@ var LocateControl = L.Control.extend({
       return map.options.maxBounds && !map.options.maxBounds.contains(me._event.latlng);
     }
     function locate() {
-      if (me.options.setView) {
-        me._locateOnNextLocationFound = true;
+      if (!me._event) {
+        L.DomUtil.addClass(me._button, 'requesting');
+        L.DomUtil.addClass(me._button, 'pressed');
+        L.DomUtil.removeClass(me._button, 'following');
+      } else {
+        visualizeLocation();
       }
 
       if (!me._active) {
@@ -101,12 +103,8 @@ var LocateControl = L.Control.extend({
         startFollowing();
       }
 
-      if (!me._event) {
-        L.DomUtil.addClass(me._button, 'requesting');
-        L.DomUtil.addClass(me._button, 'pressed');
-        L.DomUtil.removeClass(me._button, 'following');
-      } else {
-        visualizeLocation();
+      if (me.options.setView) {
+        me._locateOnNextLocationFound = true;
       }
     }
     function onLocationError(err) {
@@ -160,9 +158,9 @@ var LocateControl = L.Control.extend({
     function stopLocate() {
       map.stopLocate();
       map.off('dragstart', stopFollowing);
-      //L.DomUtil.removeClass(me._button, 'requesting');
-      L.DomUtil.removeClass(me._button, 'pressed');
       L.DomUtil.removeClass(me._button, 'following');
+      L.DomUtil.removeClass(me._button, 'pressed');
+      L.DomUtil.removeClass(me._button, 'requesting');
       resetVariables();
       me._layer.clearLayers();
       me._circleMarker = undefined;
