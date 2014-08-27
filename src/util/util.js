@@ -41,6 +41,45 @@ if (!Array.prototype.indexOf) {
   };
 }
 
+// Shim for Array.map because Internet Explorer 8 doesn't support it.
+if (!Array.prototype.map) {
+  Array.prototype.map = function (callback, thisArg) {
+    var T, A, k;
+
+    if (this == null) {
+      throw new TypeError(" this is null or not defined");
+    }
+
+    var O = Object(this);
+    var len = O.length >>> 0;
+
+    if (typeof callback !== "function") {
+      throw new TypeError(callback + " is not a function");
+    }
+
+    if (arguments.length > 1) {
+      T = thisArg;
+    }
+
+    A = new Array(len);
+    k = 0;
+
+    while (k < len) {
+      var kValue, mappedValue;
+
+      if (k in O) {
+        kValue = O[k];
+        mappedValue = callback.call(T, kValue, k, O);
+        A[k] = mappedValue;
+      }
+
+      k++;
+    }
+
+    return A;
+  };
+}
+
 // Shim for window.atob/window.btoa
 (function() {
   var decodeChars = new Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1),
@@ -620,7 +659,8 @@ module.exports = {
           }
         },
         type: 'json',
-        url: 'https://npmap-proxy.herokuapp.com/?type=' + type + '&url=' + encodeURIComponent(url)
+        // If this needs to be https, CORS requests will fail (unless requesting page is https) for IE8 and IE9.
+        url: 'http://npmap-proxy.herokuapp.com/?type=' + type + '&url=' + encodeURIComponent(url)
       });
     }
   },
