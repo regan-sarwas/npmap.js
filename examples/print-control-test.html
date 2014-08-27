@@ -107,6 +107,7 @@
           preinit: function(callback) {
             var errored = false,
               mapId = null,
+              loaded = false,
               printId = null,
               search = window.location.search.replace('?', '').split('&'),
               config, lat, lng, zoom;
@@ -115,6 +116,7 @@
               var hooks = config.hooks,
                 init;
 
+              loaded = true;
               delete config.div;
 
               if ((lat && lng) || typeof zoom !== 'undefined') {
@@ -147,7 +149,7 @@
               callback();
             }
             function showError(error) {
-              document.getElementById('map').innerHTML = '<p>' + error + '</p>';
+              document.getElementById('map').innerHTML = '<p>The map could not be loaded.</p>';
               errored = true;
             }
 
@@ -170,14 +172,14 @@
             if (mapId) {
               L.npmap.util._.reqwest({
                 error: function(error) {
-                  showError('The map could not be loaded because the mapId could not be found.');
+                  showError();
                 },
                 success: function(response) {
                   if (response) {
                     config = response;
                     load();
                   } else {
-                   showError('The map could not be loaded because the server responded with an error.');
+                   showError();
                   }
                 },
                 type: 'jsonp',
@@ -192,7 +194,7 @@
                   crossOrigin: true,
                   error: function() {
                     clearTimeout(timeout);
-                    showError('The map could not be loaded because the server responded with invalid data.');
+                    showError();
                   },
                   success: function(response) {
                     if (!config && response && response.success === true) {
@@ -202,20 +204,20 @@
                         config = JSON.parse(window.atob(response.value));
                         load();
                       } catch (e) {
-                        showError('The map could not be loaded because the server responded with invalid data.');
+                        showError();
                       }
                     } else if (!errored) {
                       doRequest();
                     }
                   },
                   type: 'json',
-                  url: 'http://npmap-session.herokuapp.com/' + printId
+                  url: 'http://npmap-session.herokuapp.com/?key=' + printId
                 });
               }
 
               timeout = window.setTimeout(function() {
-                if (!errored && !NPMap) {
-                  showError('The map could not be loaded because the server did not respond in a timely fashion.');
+                if (!errored && !loaded) {
+                  showError();
                 }
               }, 5000);
               doRequest();
