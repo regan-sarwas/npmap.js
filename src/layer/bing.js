@@ -78,7 +78,8 @@ var BingLayer = L.TileLayer.extend({
       var el = document.getElementById(cbid);
 
       me.meta = meta;
-      delete window[cbid];
+      // Cannot use delete window[cbid] because it throws an error in Internet Explorer 8.
+      window[cbid] = null;
       el.parentNode.removeChild(el);
 
       if (meta.errorDetails) {

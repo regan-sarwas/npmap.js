@@ -30,36 +30,36 @@ var GeocoderControl = L.Control.extend({
   onAdd: function(map) {
     var attribution = GeocoderControl.ATTRIBUTIONS[this.options.provider.toUpperCase()],
       container = L.DomUtil.create('div', 'leaflet-control-geocoder'),
-      button = this._button = L.DomUtil.create('button', 'search', container),
-      input = this._input = L.DomUtil.create('input', null, container),
-      stopPropagation = L.DomEvent.stopPropagation,
-      ul = this._ul = L.DomUtil.create('ul', 'leaflet-control', container);
+      stopPropagation = L.DomEvent.stopPropagation;
 
+    this._button = L.DomUtil.create('button', 'search', container);
+    this._input = L.DomUtil.create('input', null, container);
+    this._ul = L.DomUtil.create('ul', 'leaflet-control', container);
     this._initalizeNpsIndex();
-    L.DomEvent.disableClickPropagation(button);
-    L.DomEvent.disableClickPropagation(input);
-    L.DomEvent.disableClickPropagation(ul);
+    L.DomEvent.disableClickPropagation(this._button);
+    L.DomEvent.disableClickPropagation(this._input);
+    L.DomEvent.disableClickPropagation(this._ul);
     L.DomEvent
-      .on(button, 'click', this._geocodeRequest, this)
-      .on(button, 'mousewheel', stopPropagation)
-      .on(input, 'focus', function() {
+      .on(this._button, 'click', this._geocodeRequest, this)
+      .on(this._button, 'mousewheel', stopPropagation)
+      .on(this._input, 'focus', function() {
         this.value = this.value;
       })
-      .on(input, 'mousewheel', stopPropagation)
-      .on(ul, 'mousewheel', stopPropagation);
+      .on(this._input, 'mousewheel', stopPropagation)
+      .on(this._ul, 'mousewheel', stopPropagation);
 
     this._container = container;
-    button.title = 'Search';
-    input.setAttribute('aria-activedescendant', null);
-    input.setAttribute('aria-autocomplete', 'list');
-    input.setAttribute('aria-expanded', false);
-    input.setAttribute('aria-label', 'Geocode');
-    input.setAttribute('aria-owns', 'geocoder_listbox');
-    input.setAttribute('placeholder', 'Find a location');
-    input.setAttribute('role', 'combobox');
-    input.setAttribute('type', 'text');
-    ul.setAttribute('id', 'geocoder_listbox');
-    ul.setAttribute('role', 'listbox');
+    this._button.title = 'Search';
+    this._input.setAttribute('aria-activedescendant', null);
+    this._input.setAttribute('aria-autocomplete', 'list');
+    this._input.setAttribute('aria-expanded', false);
+    this._input.setAttribute('aria-label', 'Geocode');
+    this._input.setAttribute('aria-owns', 'geocoder_listbox');
+    this._input.setAttribute('placeholder', 'Find a location');
+    this._input.setAttribute('role', 'combobox');
+    this._input.setAttribute('type', 'text');
+    this._ul.setAttribute('id', 'geocoder_listbox');
+    this._ul.setAttribute('role', 'listbox');
 
     if (attribution) {
       if (L.Util.isArray(attribution)) {
@@ -159,6 +159,11 @@ var GeocoderControl = L.Control.extend({
     reqwest({
       jsonpCallbackName: 'callback',
       success: function(response) {
+        //console.log(response);
+
+// TODO: Create a node.js script that connects to CartoDB and creates indexes the geocoder can use: All parks, broken down by state, broken down by region, and broken down by I&M network. The script should upload all of these files to GitHub automatically. 
+// TODO: Also extend geocoder to support a "filter" function that can be used to filter down the list.
+
         me._bounds = {};
         me._oldValue = me._input.value;
 

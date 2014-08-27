@@ -466,6 +466,9 @@
   width: 25px;
 }
 /* IE8 and below */
+.npmap .leaflet-oldie .leaflet-control-zoom {
+  border: none;
+}
 .npmap .leaflet-oldie .leaflet-popup-tip-container {
   display: none;
 }
