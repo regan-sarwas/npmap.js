@@ -100,44 +100,7 @@ var MapBoxLayer = L.TileLayer.extend({
   _loadTileJson: function(from) {
     if (typeof from === 'string') {
       var me = this,
-        url;
-
-      if (from.indexOf('/') === -1) {
-        from = (function(hash) {
-          var urls = (function() {
-            var endpoints = [
-              'a.tiles.mapbox.com/v4/',
-              'b.tiles.mapbox.com/v4/',
-              'c.tiles.mapbox.com/v4/',
-              'd.tiles.mapbox.com/v4/'
-            ];
-
-            for (var i = 0; i < endpoints.length; i++) {
-              endpoints[i] = [document.location.protocol, '//', endpoints[i]].join('');
-            }
-
-            return endpoints;
-          })();
-
-          if (hash === undefined || typeof hash !== 'number') {
-            return urls[0];
-          } else {
-            return urls[hash % urls.length];
-          }
-        })() + from + '.json';
-      }
-
-      url = (function(url) {
-        if ('https:' !== document.location.protocol) {
-          return url;
-        } else if (url.match(/(\?|&)secure/)) {
-          return url;
-        } else if (url.indexOf('?') !== -1) {
-          return url + '&secure';
-        } else {
-          return url + '?secure';
-        }
-      })(from);
+        supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (util.supportsCors() === 'yes'));
 
       reqwest({
         crossOrigin: true,
@@ -153,9 +116,9 @@ var MapBoxLayer = L.TileLayer.extend({
           me._setTileJson(response);
         },
         type: 'json',
-        url: url + ((url.indexOf('?') === -1) ? '?' : '&') + 'access_token=' + me.options.accessToken
+        url: 'http' + (supportsCors ? 's' : '') + '://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + (supportsCors ? '&secure=1' : '')
       });
-    } else if (typeof _ === 'object') {
+    } else if (typeof from === 'object') {
       this._setTileJson(from);
     }
   },
