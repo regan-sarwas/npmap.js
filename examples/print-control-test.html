@@ -186,12 +186,12 @@
                 url: 'http://www.nps.gov/maps/builder/configs/' + mapId + '.jsonp?callback=callback'
               });
             } else if (printId) {
-              var timeout;
+              var supportsCors = L.npmap.util._.supportsCors() === 'yes',
+                timeout;
 
               function doRequest() {
                 L.npmap.util._.reqwest({
-                  contentType: 'application/json',
-                  crossOrigin: true,
+                  crossOrigin: supportsCors,
                   error: function() {
                     clearTimeout(timeout);
                     showError();
@@ -210,8 +210,8 @@
                       doRequest();
                     }
                   },
-                  type: 'json',
-                  url: 'http://npmap-session.herokuapp.com/?key=' + printId
+                  type: 'json' + (supportsCors ? '' : 'p'),
+                  url: 'https://npmap-session.herokuapp.com/?key=' + printId
                 });
               }
 
