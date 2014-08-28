@@ -91,6 +91,7 @@ var PrintControl = L.Control.extend({
           action: 'save',
           key: this._guid()
         },
+        supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (util.supportsCors() === 'yes')),
         active, i, layer;
 
       for (i = 0; i < options.baseLayers.length; i++) {
@@ -117,12 +118,11 @@ var PrintControl = L.Control.extend({
       params.value = window.btoa(JSON.stringify(config));
       url += '&printId=' + params.key;
       L.npmap.util._.reqwest({
-        contentType: 'application/json',
-        crossOrigin: true,
-        // TODO: Won't work for Internet Explorer 8/9, as posts aren't supported for CORS until Internet Explorer 10.
+        crossOrigin: supportsCors,
+        // TODO: Should be post, but posts won't work for Internet Explorer 8/9, as they aren't supported for CORS until Internet Explorer 10.
         //method: 'post',
-        type: 'json',
-        url: 'http://npmap-session.herokuapp.com/' + L.Util.getParamString(params)
+        type: 'json' + (supportsCors ? '' : 'p'),
+        url: 'https://npmap-session.herokuapp.com/' + L.Util.getParamString(params)
       });
     }
 
