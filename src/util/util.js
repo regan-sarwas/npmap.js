@@ -646,8 +646,10 @@ module.exports = {
         });
       }
     } else {
+      var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (this.supportsCors() === 'yes'));
+
       reqwest({
-        crossOrigin: true,
+        crossOrigin: supportsCors,
         error: function() {
           callback(false);
         },
@@ -658,9 +660,8 @@ module.exports = {
             callback(false);
           }
         },
-        type: 'json',
-        // If this needs to be https, CORS requests will fail (unless requesting page is https) for IE8 and IE9.
-        url: 'http://npmap-proxy.herokuapp.com/?type=' + type + '&url=' + encodeURIComponent(url)
+        type: 'json' + (supportsCors ? '' : 'p'),
+        url: 'https://npmap-proxy.herokuapp.com/?type=' + type + '&url=' + encodeURIComponent(url)
       });
     }
   },
