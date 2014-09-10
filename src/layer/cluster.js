@@ -37,6 +37,9 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
       if (me.L._loaded) {
         clearInterval(interval);
         me.addLayer(me.L);
+        me.fire('ready');
+        me.readyFired = true;
+        me._loaded  = true;
       }
     }, 0);
 
