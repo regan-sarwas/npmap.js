@@ -33,9 +33,7 @@ module.exports = ({
             //console.log(response);
             callback(response);
           },
-          //type: 'json',
-          //type: 'jsonp',
-          // TODO: JSONP not working from Mapbox. Switch to CORS?
+          type: 'json',
           url: 'http://api.tiles.mapbox.com/v3/nps.map-06dnxzq5/directions/driving/' + locations + '.json'
         });
       }
