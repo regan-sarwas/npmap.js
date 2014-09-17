@@ -120,7 +120,8 @@ var Map = L.Map.extend({
     me._controllingCursor = true;
     me._controllingInteractivity = true;
     me._defaultCursor = me.getContainer().style.cursor;
-    
+    me.getContainer().tabIndex = 1;
+
     me.on('autopanstart', function() {
       me._setCursor('');
     });

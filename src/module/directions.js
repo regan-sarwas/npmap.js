@@ -75,7 +75,16 @@ var DirectionsModule = L.Class.extend({
   },
   _letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
   _markers: [],
-  _route: null,
+  _route: [],
+  _styles: [{
+    color: '#818171',
+    opacity: 1,
+    weight: 6
+  },{
+    color: '#c16b2b',
+    opacity: 1,
+    weight: 4
+  }],
   _addDraggableListeners: function() {
     for (var i = 0; i < this._ul.childNodes.length; i++) {
       var li = this._ul.childNodes[i];
@@ -148,7 +157,7 @@ var DirectionsModule = L.Class.extend({
         
         // TODO: Remove the marker - if it exists.
 
-        console.log(me._markers);
+        //console.log(me._markers);
 
         for (var i = 0; i < me._markers.length; i++) {
           var marker = me._markers[i];
@@ -255,9 +264,12 @@ var DirectionsModule = L.Class.extend({
       this._map.removeLayer(this._markers[i]);
     }
 
-    if (this._route) {
-      this._map.removeLayer(this._route);
-      this._route = null;
+    if (this._route.length) {
+      for (i = 0; i < this._route.length; i++) {
+        this._map.removeLayer(this._route[i]);
+      }
+
+      this._route = [];
     }
   },
   _handleDragEnd: function(e) {
@@ -275,6 +287,8 @@ var DirectionsModule = L.Class.extend({
     if (e.stopPropagation) {
       e.stopPropagation();
     }
+
+    //console.log(target);
 
     if (target._dragSource != target) {
       target._dragSource.innerHTML = target.innerHTML;
@@ -310,17 +324,22 @@ var DirectionsModule = L.Class.extend({
 
     route.mapbox.route(latLngs, function(route) {
       if (route && route.routes && route.routes.length) {
-        me._route = new L.GeoJSON({
-          geometry: route.routes[0].geometry,
-          properties: {},
-          type: 'Feature'
-        }, {
-          clickable: false,
-          color: '#c16b2b',
-          opacity: 1
-        }).addTo(me._map);
-        me._map.fitBounds(me._route.getBounds(), {
-          padding: [30, 30]
+        for (var i = 0; i < me._styles.length; i++) {
+          var line = new L.GeoJSON({
+            geometry: route.routes[0].geometry,
+            properties: {},
+            type: 'Feature'
+          }, L.extend({
+            clickable: false
+          }, me._styles[i]));
+
+          me._route.push(line);
+          line.addTo(me._map);
+        }
+
+        me._map.fitBounds(me._route[0].getBounds(), {
+          paddingBottomRight: [15, 0],
+          paddingTopLeft: [15, 30]
         });
       }
     });
