@@ -122,6 +122,7 @@ _Example (Bootstrap)_:
         attribution: '<a href="http://www.esri.com">Esri</a>',
         opacity: 0.5,
         tiled: true,
+        type: 'arcgisserver',
         url: 'http://services.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Unemployment_Rate/MapServer'
       }]
     };
