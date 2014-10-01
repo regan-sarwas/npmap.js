@@ -13,7 +13,7 @@ var MapBoxLayer = L.TileLayer.extend({
   options: {
     accessToken: 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
     errorTileUrl: L.Util.emptyImageUrl,
-    format: 'png',
+    format: 'jpg90',
     subdomains: [
       'a',
       'b',
