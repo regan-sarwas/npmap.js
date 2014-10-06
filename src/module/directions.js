@@ -17,7 +17,9 @@ var DirectionsModule = L.Class.extend({
     require('../mixin/module')
   ],
   initialize: function(options) {
-    var buttonClear = document.createElement('button'),
+    var buttonAddStop = document.createElement('button'),
+      buttonClear = document.createElement('button'),
+      buttonOptions = document.createElement('button'),
       div = document.createElement('div'),
       me = this,
       p = document.createElement('p');
@@ -27,23 +29,31 @@ var DirectionsModule = L.Class.extend({
     div.appendChild(p);
     this._ul = document.createElement('ul');
     div.appendChild(this._ul);
-    this._addLiFirst();
     this._actions = document.createElement('div');
     this._actions.className = 'actions';
+    this._options = document.createElement('div');
+    this._options.className = 'clearfix';
+    buttonAddStop.className = buttonOptions.className = 'btn btn-link';
+    buttonOptions.innerHTML = 'Options';
+    L.DomEvent.addListener(buttonAddStop, 'click', function() {
+      this._addLi();
+    }, this);
+    this._options.appendChild(buttonAddStop);
+    this._options.appendChild(buttonOptions);
+    this._actions.appendChild(this._options);
     this._buttonPrimary = document.createElement('button');
     this._buttonPrimary.className = 'btn btn-primary';
-    this._buttonPrimary.innerHTML = 'Add Stop';
+    this._buttonPrimary.innerHTML = buttonAddStop.innerHTML = 'Add Stop';
     this._buttonPrimary.type = 'button';
     L.DomEvent.addListener(this._buttonPrimary, 'click', function() {
       if (me._buttonPrimary.innerHTML === 'Add Stop') {
-        var value = this._ul.childNodes[0].childNodes[1].childNodes[0].value || null;
+        var value = me._getFirstValue();
 
-        this._ul.innerHTML = '';
-        this._addLi(value);
-        this._addLi();
-        me._buttonPrimary.innerHTML = 'Get Directions';
+        me._ul.innerHTML = '';
+        me._addLi(value);
+        me._addLi();
       } else {
-
+        // TODO: Route.
       }
     }, this);
     this._actions.appendChild(this._buttonPrimary);
@@ -58,9 +68,10 @@ var DirectionsModule = L.Class.extend({
     this._disclaimer.innerHTML = 'DISCLAIMER: These directions are for planning purposes only. While the National Park Service strives to provide the most accurate information possible, please use caution when driving in unfamiliar locations and check directions against the content provided by each Park\'s website. The National Park Service assumes no responsibility for information provided by NPS partners.';
     div.appendChild(this._disclaimer);
     this.content = div;
-    this.icon = 'truck';
+    this.icon = 'car';
     this.title = this.type = 'Directions';
     this.visible = (options && options.visible) || false;
+    this._addLiFirst();
     this._addDraggableListeners();
 
     return this;
@@ -97,7 +108,7 @@ var DirectionsModule = L.Class.extend({
         .addListener(li, 'dragstart', this._handleDragStart, this);
     }
   },
-  _addLi: function(value) {
+  _addLi: function(value, focus) {
     var backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/module/directions/times' + (L.Browser.retina ? '@2x' : '') + '.png)',
       button = document.createElement('button'),
       div = document.createElement('div'),
@@ -145,31 +156,41 @@ var DirectionsModule = L.Class.extend({
       .addListener(button, 'click', function() {
         var li = this.parentNode,
           letter = li.childNodes[0].innerHTML,
-          index = me._letters.indexOf(letter),
           refresh = false,
           ul = li.parentNode;
 
         ul.removeChild(li);
 
-        if (ul.childNodes.length === 1) {
-          // TODO: Reset.
-        }
-        
-        // TODO: Remove the marker - if it exists.
+        if (ul.childNodes.length === 0) {
+          me._clear();
+        } else {
+          if (ul.childNodes.length === 1) {
+            var value = me._getFirstValue();
 
-        //console.log(me._markers);
-
-        for (var i = 0; i < me._markers.length; i++) {
-          var marker = me._markers[i];
-
-          if (marker._letter === letter) {
-            refresh = true;
-            me._markers = me._markers.splice(i, 1);
+            ul.innerHTML = '';
+            me._addLiFirst(value);
           }
-        }
 
-        if (refresh && me._markers.length > 1) {
-          me.route();
+          for (var i = 0; i < me._markers.length; i++) {
+            var marker = me._markers[i];
+
+            if (marker._letter === letter) {
+              refresh = true;
+              me._map.removeLayer(marker);
+              me._markers.splice(i, 1);
+              break;
+            }
+          }
+
+          if (refresh) {
+            me._clearRoute();
+
+            if (me._markers.length > 1) {
+              me.route();
+            }
+          }
+
+          me._refreshLetters();
         }
       })
       .addListener(button, 'onmouseout', function() {
@@ -183,8 +204,14 @@ var DirectionsModule = L.Class.extend({
     li.appendChild(div);
     li.appendChild(button);
     this._ul.appendChild(li);
+    this._options.style.display = 'block';
+    this._buttonPrimary.innerHTML = 'Get Directions';
+
+    if (focus) {
+      input.focus();
+    }
   },
-  _addLiFirst: function() {
+  _addLiFirst: function(value) {
     var button = document.createElement('button'),
       divLi = document.createElement('div'),
       input = document.createElement('input'),
@@ -208,7 +235,7 @@ var DirectionsModule = L.Class.extend({
               result.letter = 'A';
               me._ul.innerHTML = '';
               me._addLi(result.name);
-              me._addLi();
+              me._addLi(null, true);
               me._addMarker(result);
             }
           }
@@ -229,6 +256,12 @@ var DirectionsModule = L.Class.extend({
     li.appendChild(divLi);
     li.draggable = true;
     this._ul.appendChild(li);
+    this._options.style.display = 'none';
+    this._buttonPrimary.innerHTML = 'Add Stop';
+
+    if (value) {
+      input.value = value;
+    }
   },
   _addMarker: function(result) {
     var icon = L.extend({}, this._icon),
@@ -254,23 +287,26 @@ var DirectionsModule = L.Class.extend({
     this._markers.push(marker.bindPopup('<div class="title">' + result.name + '</div>').addTo(this._map));
   },
   _clear: function() {
-    var i;
-
     this._ul.innerHTML = '';
     this._addLiFirst();
-    this._buttonPrimary.innerHTML = 'Add Stop';
 
-    for (i = 0; i < this._markers.length; i++) {
+    for (var i = 0; i < this._markers.length; i++) {
       this._map.removeLayer(this._markers[i]);
     }
 
+    this._clearRoute();
+  },
+  _clearRoute: function() {
     if (this._route.length) {
-      for (i = 0; i < this._route.length; i++) {
+      for (var i = 0; i < this._route.length; i++) {
         this._map.removeLayer(this._route[i]);
       }
 
       this._route = [];
     }
+  },
+  _getFirstValue: function() {
+    return this._ul.childNodes[0].childNodes[1].childNodes[0].value || null;
   },
   _handleDragEnd: function(e) {
     e.target.style.opacity = '1';
@@ -313,6 +349,33 @@ var DirectionsModule = L.Class.extend({
     target._dragSource = target;
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', target.innerHTML);
+  },
+  _refreshLetters: function() {
+    for (var i = 0; i < this._ul.childNodes.length; i++) {
+      var childNodes = this._ul.childNodes[i].childNodes,
+        icon = L.extend({}, this._icon),
+        label = childNodes[0],
+        letter = this._letters[i],
+        marker = this._markers[i],
+        id = 'stop-' + letter;
+
+      label.htmlFor = id;
+      label.innerHTML = letter;
+      childNodes[1].childNodes[0].id = id;
+
+      if (marker) {
+        marker._letter = letter;
+        L.extend(icon, {
+          iconRetinaUrl: util.handlebars(icon.iconRetinaUrl, {
+            letter: letter
+          }),
+          iconUrl: util.handlebars(icon.iconUrl, {
+            letter: letter
+          })
+        });
+        marker.setIcon(new L.Icon(icon));
+      }
+    }
   },
   route: function() {
     var latLngs = [],

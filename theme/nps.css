@@ -1461,12 +1461,25 @@
 }
 
 /* Modules */
+#npmap-module_Directions button.btn-link {
+  color: #464646;
+}
+  #npmap-module_Directions button.btn-link:hover {
+    text-decoration: underline;
+  }
 #npmap-module_Directions .disclaimer {
   display: none;
 }
 #npmap-module_Directions .actions {
-  margin: 20px 0 0 26px;
+  margin-left: 26px;
 }
+  #npmap-module_Directions .actions div:first-child {
+    display: none;
+    margin: -12px 0 20px 0;
+  }
+    #npmap-module_Directions .actions div:first-child button {
+      padding: 0;
+    }
   #npmap-module_Directions .actions button:first-child {
     margin-right: 5px;
   }
@@ -1474,6 +1487,7 @@
   list-style-type: none;
 }
 #npmap-module_Directions ul {
+  margin-bottom: 20px;
   padding-left: 0;
 }
   #npmap-module_Directions ul li {
