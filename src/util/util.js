@@ -679,7 +679,7 @@ module.exports = {
 
           for (i = 0; i < guidArray.length; i++) {
             attrs = {
-              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
+              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/medium',
               href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
             };
             imgs.push(attrs);
@@ -754,10 +754,9 @@ module.exports = {
           imageDiv[k].style.marginRight = 'auto';
           newLink.push(document.createElement('a'));
           newLink[k].href = imageAttrs[k].href;
+          if (media[mediaIndex].target) newLink[k].target = media[mediaIndex].target;
           newImage.push(document.createElement('img'));
           newImage[k].src = imageAttrs[k].src;
-          newImage[k].style.width = imageDiv[k].style.width;
-          newImage[k].style.height = imageDiv[k].style.height;
           newLink[k].appendChild(newImage[k]);
           imageDiv[k].appendChild(newLink[k]);
           imageLi[k].appendChild(imageDiv[k]);
