@@ -756,8 +756,8 @@ module.exports = {
           newLink[k].href = imageAttrs[k].href;
           newImage.push(document.createElement('img'));
           newImage[k].src = imageAttrs[k].src;
-          newImage.style.width = imageDiv[k].style.width;
-          newImage.style.height = imageDiv[k].style.height;
+          newImage[k].style.width = imageDiv[k].style.width;
+          newImage[k].style.height = imageDiv[k].style.height;
           newLink[k].appendChild(newImage[k]);
           imageDiv[k].appendChild(newLink[k]);
           imageLi[k].appendChild(imageDiv[k]);
