@@ -733,7 +733,7 @@ module.exports = {
     }
 
     for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
-      var newAnchor = [],
+      var newLink = [],
         newImage = [];
 
       if (imageTypes[media[mediaIndex].type]) {
@@ -748,12 +748,14 @@ module.exports = {
           imageDiv[k].style.height = (250 * 0.75) + 'px';
           imageDiv[k].style.marginLeft = 'auto';
           imageDiv[k].style.marginRight = 'auto';
-          newAnchor.push(document.createElement('a'));
-          newAnchor[k].href = imageAttrs[k].href;
+          newLink.push(document.createElement('a'));
+          newLink[k].href = imageAttrs[k].href;
           newImage.push(document.createElement('img'));
           newImage[k].src = imageAttrs[k].src;
-          newAnchor[k].appendChild(newImage[k]);
-          imageDiv[k].appendChild(newAnchor[k]);
+          newImage.style.width = imageDiv[k].style.width;
+          newImage.style.height = imageDiv[k].style.height;
+          newLink[k].appendChild(newImage[k]);
+          imageDiv[k].appendChild(newLink[k]);
           imageLi[k].appendChild(imageDiv[k]);
           imageList.appendChild(imageLi[k]);
         }
