@@ -671,15 +671,15 @@ module.exports = {
       imageList = document.createElement('ul'),
       imageTypes = {
         focus: function(guids) {
-          var imgs = [],
+          var attrs, guidArray, i, //{
             regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'),
-            attrs, guidArray, i;
+            imgs = [];
 
           guidArray = guids.match(regex);
 
           for (i = 0; i < guidArray.length; i++) {
             attrs = {
-              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/proxy/lores',
+              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/medium',
               href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
             };
             imgs.push(attrs);
@@ -733,27 +733,32 @@ module.exports = {
     }
 
     for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
-      var newAnchor = [],
-        newImage = [];
+      var imgHeight = 187,
+        imgWidth = 250,
+        newImage = [],
+        newLink = [];
 
       if (imageTypes[media[mediaIndex].type]) {
         imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
+        imgHeight = media[mediaIndex].height || imgHeight;
+        imgWidth = media[mediaIndex].width || imgWidth;
 
         for (var k = 0; k < imageAttrs.length; k++) {
           imageLi.push(document.createElement('li'));
           imageLi[k].style.float = 'left';
           imageLi[k].style.display = k > 0 ? 'none' : 'inherit';
           imageDiv.push(document.createElement('div'));
-          imageDiv[k].style.width = '250px';
-          imageDiv[k].style.height = (250 * 0.75) + 'px';
+          imageDiv[k].style.width = imgWidth.toString() + 'px';
+          imageDiv[k].style.height = imgHeight + 'px';
           imageDiv[k].style.marginLeft = 'auto';
           imageDiv[k].style.marginRight = 'auto';
-          newAnchor.push(document.createElement('a'));
-          newAnchor[k].href = imageAttrs[k].href;
+          newLink.push(document.createElement('a'));
+          newLink[k].href = imageAttrs[k].href;
+          if (media[mediaIndex].target) newLink[k].target = media[mediaIndex].target;
           newImage.push(document.createElement('img'));
           newImage[k].src = imageAttrs[k].src;
-          newAnchor[k].appendChild(newImage[k]);
-          imageDiv[k].appendChild(newAnchor[k]);
+          newLink[k].appendChild(newImage[k]);
+          imageDiv[k].appendChild(newLink[k]);
           imageLi[k].appendChild(imageDiv[k]);
           imageList.appendChild(imageLi[k]);
         }
