@@ -270,7 +270,7 @@ var Map = L.Map.extend({
       this._divModules = util.getChildElementsByClassName(this._divWrapper.parentNode.parentNode, 'npmap-modules')[0];
       this._divModuleButtons = L.DomUtil.create('div', 'npmap-modules-buttons', this._container.parentNode);
       this._buttonCloseModules = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
-      this._buttonCloseModules.style['background-image'] = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/times' + (L.Browser.retina ? '@2x' : '') + '.png)';
+      this._buttonCloseModules.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/times' + (L.Browser.retina ? '@2x' : '') + '.png)';
       this._buttonCloseModules.title = 'Close';
       L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
 
@@ -298,7 +298,7 @@ var Map = L.Map.extend({
         button = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
         button.id = 'npmap-modules-buttons_' + title.replace(/ /g, '_');
         button.title = title;
-        button.style['background-image'] = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/' + icon + (L.Browser.retina ? '@2x' : '') + '.png)';
+        button.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/' + icon + (L.Browser.retina ? '@2x' : '') + '.png)';
         div.id = 'npmap-module_' + title.replace(/ /g, '_');
 
         if (typeof module.width === 'number') {
