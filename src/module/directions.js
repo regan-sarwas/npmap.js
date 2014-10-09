@@ -24,6 +24,28 @@ var DirectionsModule = L.Class.extend({
       me = this,
       p = document.createElement('p');
 
+/*
+
+<div>
+  <div>
+    <p class="intro"></p>
+    <ul class="stops"></ul>
+    <div class="actions">
+      <div>
+        <button></button>
+        <button></button>
+      </div>
+      <div class="options"></div>
+    </div>
+  </div>
+  <div>
+    <ol class="maneuvers"></ol>
+    <p class="disclaimer"></p>
+  </div>
+</div>
+
+*/
+
     L.Util.setOptions(this, options);
     p.innerHTML = 'Search for a location by address or name. Drag stops to reorder.';
     div.appendChild(p);
@@ -44,7 +66,6 @@ var DirectionsModule = L.Class.extend({
     this._buttonPrimary = document.createElement('button');
     this._buttonPrimary.className = 'btn btn-primary';
     this._buttonPrimary.innerHTML = buttonAddStop.innerHTML = 'Add Stop';
-    this._buttonPrimary.type = 'button';
     L.DomEvent.addListener(this._buttonPrimary, 'click', function() {
       if (me._buttonPrimary.innerHTML === 'Add Stop') {
         var value = me._getFirstValue();
@@ -59,11 +80,13 @@ var DirectionsModule = L.Class.extend({
     this._actions.appendChild(this._buttonPrimary);
     buttonClear.className = 'btn btn-link';
     buttonClear.innerHTML = 'clear';
-    buttonClear.type = 'button';
     L.DomEvent.addListener(buttonClear, 'click', this._clear, this);
     this._actions.appendChild(buttonClear);
     div.appendChild(this._actions);
-    this._disclaimer = document.createElement('div');
+    this._maneuvers = document.createElement('div');
+    this._maneuvers.style.display = 'none';
+    div.appendChild(this._maneuvers);
+    this._disclaimer = document.createElement('p');
     this._disclaimer.className = 'disclaimer';
     this._disclaimer.innerHTML = 'DISCLAIMER: These directions are for planning purposes only. While the National Park Service strives to provide the most accurate information possible, please use caution when driving in unfamiliar locations and check directions against the content provided by each Park\'s website. The National Park Service assumes no responsibility for information provided by NPS partners.';
     div.appendChild(this._disclaimer);
@@ -200,7 +223,6 @@ var DirectionsModule = L.Class.extend({
         this.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
       });
     button.style.backgroundImage = backgroundImage;
-    button.type = 'button';
     li.appendChild(div);
     li.appendChild(button);
     this._ul.appendChild(li);
@@ -246,7 +268,6 @@ var DirectionsModule = L.Class.extend({
     button.className = 'search ir';
     button.innerHTML = 'Search for a location';
     button.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/search' + (L.Browser.retina ? '@2x' : '') + '.png)';
-    button.type = 'button';
     L.DomEvent.addListener(button, 'click', function() {
       if (input.value && input.value.length > 0) {
         me._geocode(input);
@@ -287,6 +308,9 @@ var DirectionsModule = L.Class.extend({
     this._markers.push(marker.bindPopup('<div class="title">' + result.name + '</div>').addTo(this._map));
   },
   _clear: function() {
+    this._disclaimer.style.display = 'none';
+    this._maneuvers.innerHTML = '';
+    this._maneuvers.style.display = 'none';
     this._ul.innerHTML = '';
     this._addLiFirst();
 
@@ -385,9 +409,27 @@ var DirectionsModule = L.Class.extend({
       latLngs.push(me._markers[i].getLatLng());
     }
 
+/*
+
+<div class="pyv-directions-details-header">
+  <h2>Driving Directions to 12795 W Alameda Pkwy, Denver, CO 80228</h2>
+  <span class="route-info">Route: 11.2 mi, 17 min</span>
+  <h3 class="location-A location">
+    <span class="identifier">A</span> <span style="display:block;margin-left:30px;">4408 Decatur St, Denver, CO 80211</span>
+  </h3>
+</div>
+
+*/
+
     route.mapbox.route(latLngs, function(route) {
       if (route && route.routes && route.routes.length) {
-        for (var i = 0; i < me._styles.length; i++) {
+        var steps = route.routes[0].steps,
+          html = '<div class="maneuver-header"><h2>Driving Directions to </h2></div><ol class="maneuvers">',
+          i;
+
+        console.log(route);
+
+        for (i = 0; i < me._styles.length; i++) {
           var line = new L.GeoJSON({
             geometry: route.routes[0].geometry,
             properties: {},
@@ -399,6 +441,16 @@ var DirectionsModule = L.Class.extend({
           me._route.push(line);
           line.addTo(me._map);
         }
+
+        for (i = 0; i < steps.length; i++) {
+          var step = steps[i];
+
+          html += '<li>' + step.maneuver.instruction + '</li>';
+        }
+
+        me._maneuvers.innerHTML = html + '</ol>';
+        me._maneuvers.style.display = 'block';
+        me._disclaimer.style.display = 'block';
 
         me._map.fitBounds(me._route[0].getBounds(), {
           paddingBottomRight: [15, 0],

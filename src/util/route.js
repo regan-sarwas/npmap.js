@@ -8,8 +8,10 @@ var reqwest = require('reqwest');
 module.exports = ({
   mapbox: (function() {
     return {
-      route: function(latLngs, callback) {
+      route: function(latLngs, callback, mode) {
         var locations = '';
+
+        mode = mode || 'driving';
 
         for (var i = 0; i < latLngs.length; i++) {
           var latLng = latLngs[i];
@@ -34,7 +36,7 @@ module.exports = ({
             callback(response);
           },
           type: 'json',
-          url: 'http://api.tiles.mapbox.com/v3/nps.map-06dnxzq5/directions/driving/' + locations + '.json'
+          url: 'https://api.tiles.mapbox.com/v4/directions/mapbox.' + mode + '/' + locations + '.json?access_token=pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q&alternatives=false&instructions=html'
         });
       }
     };
