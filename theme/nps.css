@@ -1457,14 +1457,30 @@
 }
 
 /* Modules */
+#npmap-module_Directions .content div:first-child {
+  margin-bottom: 10px;
+}
 #npmap-module_Directions button.btn-link {
   color: #464646;
 }
   #npmap-module_Directions button.btn-link:hover {
     text-decoration: underline;
   }
+#npmap-module_Directions .mapbox-directions-direction, #npmap-module_Directions .mapbox-directions-way-name {
+  font-weight: bold;
+}
+#npmap-module_Directions .maneuvers {
+  border-top: 1px dotted #bdbbb1;
+  margin-top: 25px;
+  padding-top: 15px;
+}
 #npmap-module_Directions .disclaimer {
+  border-top: 1px solid #b1b0a7;
+  color: #706d5f;
   display: none;
+  font-size: 9.5px;
+  line-height: 12px;
+  padding-top: 6px;
 }
 #npmap-module_Directions .actions {
   margin-left: 26px;
@@ -1552,3 +1568,17 @@
     #npmap-module_Directions ul li input.search {
       padding-right: 30px;
     }
+#npmap-module_Directions ol {
+  counter-reset: li;
+}
+  #npmap-module_Directions ol > li {
+    list-style: none;
+  }
+  #npmap-module_Directions ol > li:before {
+    color: #b28000;
+    content: counter(li)".";
+    counter-increment: li;
+    font-weight: bold;
+    left: 20px;
+    position: absolute;
+  }
