@@ -83,9 +83,10 @@ var DirectionsModule = L.Class.extend({
     L.DomEvent.addListener(buttonClear, 'click', this._clear, this);
     this._actions.appendChild(buttonClear);
     div.appendChild(this._actions);
-    this._maneuvers = document.createElement('div');
-    this._maneuvers.style.display = 'none';
-    div.appendChild(this._maneuvers);
+    this._directions = document.createElement('div');
+    this._directions.className = 'directions';
+    this._directions.style.display = 'none';
+    div.appendChild(this._directions);
     this._disclaimer = document.createElement('p');
     this._disclaimer.className = 'disclaimer';
     this._disclaimer.innerHTML = 'DISCLAIMER: These directions are for planning purposes only. While the National Park Service strives to provide the most accurate information possible, please use caution when driving in unfamiliar locations and check directions against the content provided by each Park\'s website. The National Park Service assumes no responsibility for information provided by NPS partners.';
@@ -305,12 +306,12 @@ var DirectionsModule = L.Class.extend({
       icon: new L.Icon(icon)
     });
     marker._letter = letter;
+    marker._name = result.name;
     this._markers.push(marker.bindPopup('<div class="title">' + result.name + '</div>').addTo(this._map));
   },
   _clear: function() {
-    this._disclaimer.style.display = 'none';
-    this._maneuvers.innerHTML = '';
-    this._maneuvers.style.display = 'none';
+    this._directions.innerHTML = '';
+    this._directions.style.display = 'none';
     this._ul.innerHTML = '';
     this._addLiFirst();
 
@@ -401,6 +402,19 @@ var DirectionsModule = L.Class.extend({
       }
     }
   },
+
+
+
+  _formatDistance: function(meters) {
+    var distance = Math.round(meters / 1609.344) / 10;
+
+    if (distance === 0) {
+      return Math.round(meters * 3.28084) + ' ft';
+    } else {
+      return distance + ' mi';
+    }
+  },
+
   route: function() {
     var latLngs = [],
       me = this;
@@ -409,22 +423,11 @@ var DirectionsModule = L.Class.extend({
       latLngs.push(me._markers[i].getLatLng());
     }
 
-/*
-
-<div class="pyv-directions-details-header">
-  <h2>Driving Directions to 12795 W Alameda Pkwy, Denver, CO 80228</h2>
-  <span class="route-info">Route: 11.2 mi, 17 min</span>
-  <h3 class="location-A location">
-    <span class="identifier">A</span> <span style="display:block;margin-left:30px;">4408 Decatur St, Denver, CO 80211</span>
-  </h3>
-</div>
-
-*/
-
     route.mapbox.route(latLngs, function(route) {
       if (route && route.routes && route.routes.length) {
-        var steps = route.routes[0].steps,
-          html = '<div class="maneuver-header"><h2>Driving Directions to </h2></div><ol class="maneuvers">',
+        var first = route.routes[0],
+          steps = first.steps,
+          html = '<div class="maneuver-header"><h2>Driving Directions to ' + me._markers[me._markers.length - 1]._name + '</h2><span class="info">ROUTE: ' + Math.round(first.distance / 1609.344) + ' MI, ' + Math.round(first.duration / 60) + ' MIN </span><h3 class="location"><span class="identifier">A</span><span class="name">' + me._markers[0]._name + '</span></h3></div><ol class="maneuvers">',
           i;
 
         console.log(route);
@@ -445,12 +448,11 @@ var DirectionsModule = L.Class.extend({
         for (i = 0; i < steps.length; i++) {
           var step = steps[i];
 
-          html += '<li>' + step.maneuver.instruction + '</li>';
+          html += '<li>' + step.maneuver.instruction + (typeof step.distance === 'undefined' ? '' : '<span class="distance">' + me._formatDistance(step.distance) + '</span>') + '</li>';
         }
 
-        me._maneuvers.innerHTML = html + '</ol>';
-        me._maneuvers.style.display = 'block';
-        me._disclaimer.style.display = 'block';
+        me._directions.innerHTML = html + '</ol><div class="maneuver-footer"><h3 class="location"><span class="identifier">B</span><span class="name">' + me._markers[me._markers.length - 1]._name + '</span></h3></div>';
+        me._directions.style.display = 'block';
 
         me._map.fitBounds(me._route[0].getBounds(), {
           paddingBottomRight: [15, 0],
