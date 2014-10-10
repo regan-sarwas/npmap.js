@@ -436,7 +436,8 @@ var Map = L.Map.extend({
               if (actual.length) {
                 var popup = L.npmap.popup({
                   autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer()),
-                  maxHeight: util._getAvailableVerticalSpace(me) - 74
+                  maxHeight: util._getAvailableVerticalSpace(me) - 84,
+                  maxWidth: util._getAvailableHorizontalSpace(me) - 77
                 });
 
                 popup.setContent(popup._handleResults(actual, me.options.popup)).setLatLng(latLng).openOn(me);
