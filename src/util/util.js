@@ -205,6 +205,26 @@ module.exports = {
 
     return [this.getOuterDimensions(containers[0]).width + 20, this.getOuterDimensions(containers[1]).height + 20];
   },
+  _getAvailableHorizontalSpace: function(map) {
+    var container = map.getContainer(),
+      leftBottom = this.getChildElementsByClassName(container, 'leaflet-bottom')[0],
+      leftTop = this.getChildElementsByClassName(container, 'leaflet-top')[0],
+      leftWidth = this.getOuterDimensions(leftBottom).width,
+      available;
+
+    if (this.getOuterDimensions(leftTop).width > leftWidth) {
+      leftWidth = this.getOuterDimensions(leftTop).width;
+    }
+
+    // Should this be 'leaflet-bottom'[0].width?
+    available = this.getOuterDimensions(container).width - leftWidth - this.getOuterDimensions(this.getChildElementsByClassName(container, 'leaflet-top')[1]).width;
+
+    if (available > 249) {
+      return available;
+    } else {
+      return 250;
+    }
+  },
   _getAvailableVerticalSpace: function(map) {
     var container = map.getContainer(),
       bottomLeft = this.getChildElementsByClassName(container, 'leaflet-bottom')[0],

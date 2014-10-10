@@ -7,21 +7,36 @@ var util = require('./util/util');
 
 var Popup = L.Popup.extend({
   options: {
+    autoPanPadding: undefined,
     autoPanPaddingBottomRight: [20, 20],
     autoPanPaddingTopLeft: [20, 20],
+    maxWidth: undefined,
+    minWidth: 250,
     offset: [0, -1]
   },
   _data: [],
   _html: null,
   _results: [],
   onAdd: function(map) {
-    var content = this._content;
-
-    if (window.addEventListener) {
-      content.addEventListener('DOMMouseScroll', this._handleMouseWheel, false);
+    if (typeof this._content === 'string') {
+      var node = document.createElement('div');
+      node.innerHTML = this._content;
+      this._content = node;
     }
 
-    content.onmousewheel = this._handleMouseWheel;
+    if (window.addEventListener) {
+      this._content.addEventListener('DOMMouseScroll', this._handleMouseWheel, false);
+    }
+
+    if (typeof this.options.maxWidth === 'number') {
+      this._content.style.maxWidth = this.options.maxWidth + 'px';
+    }
+
+    if (typeof this.options.minWidth === 'number') {
+      this._content.style.minWidth = this.options.minWidth + 'px';
+    }
+
+    this._content.onmousewheel = this._handleMouseWheel;
     L.Popup.prototype.onAdd.apply(this, [
       map
     ]);
