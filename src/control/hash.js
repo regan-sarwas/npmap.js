@@ -5,7 +5,8 @@
 var util = require('../util/util');
 
 var HashControl = L.Class.extend({
-  initialize: function() {
+  initialize: function(options) {
+    this._trackHistory = options.trackHistory;
     this._supported = true;
     this._supportsHashChange = (function() {
       var docMode = window.documentMode;
@@ -88,7 +89,11 @@ var HashControl = L.Class.extend({
     var hash = this._formatHash(this._map);
 
     if (this._lastHash !== hash) {
-      this._window.location.hash = hash;
+      if (this._trackHistory) {
+        this._window.location.hash = hash;
+      } else {
+        this._window.location.replace(hash);
+      }
       this._lastHash = hash;
     }
   },
@@ -169,10 +174,10 @@ var HashControl = L.Class.extend({
 
 L.Map.addInitHook(function() {
   if (this.options.hashControl) {
-    this.hashControl = L.npmap.control.hash().addTo(this);
+    this.hashControl = L.npmap.control.hash(this.options.hashControl).addTo(this);
   }
 });
 
-module.exports = function() {
-  return new HashControl();
+module.exports = function(options) {
+  return new HashControl(options);
 };
