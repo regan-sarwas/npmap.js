@@ -51,6 +51,7 @@
       line-height: 1.1;
     }
     .npmap-modules .module h2.title {
+      color: #647630;
       font-size: 17px;
     }
     .npmap-modules .module .content {
@@ -539,14 +540,23 @@
 .npmap .leaflet-popup-content {
   font-size: 14px;
   margin: 15px;
+  width: auto !important;
 }
+  /*
+  .npmap .leaflet-popup-scrolled audio, .npmap .leaflet-popup-scrolled iframe, .npmap .leaflet-popup-scrolled img, npmap .leaflet-popup-scrolled video {
+    margin-right: 15px;
+  }
+  .npmap .leaflet-popup-scrolled .content {
+    margin-right: 15px !important;
+  }
+  */
   .npmap .leaflet-popup-content dt {
     clear: both;
     float: left;
     font-weight: bold;
   }
   .npmap .leaflet-popup-content dt:after {
-      content: ":";
+    content: ":";
   }
   .npmap .leaflet-popup-content dd {
     float: left;
@@ -564,11 +574,13 @@
   .npmap .leaflet-popup-content p {
     margin: 6px 0;
   }
+  /* TODO: Figure out a way to see if allowable width for popup is less than width of table, and, if it is, set table-layout: fixed; */
   .npmap .leaflet-popup-content table {
     border: none;
     border-collapse: collapse;
     margin: 0;
     width: 100%;
+    word-wrap: break-word;
   }
     .npmap .leaflet-popup-content table tr {
       border-bottom: 1px solid  #e1dfd7;
@@ -711,14 +723,16 @@
 .npmap .leaflet-popup-scrolled {
   border-bottom: none;
   border-top: none;
-  margin-right: 5px;
-  padding-right: 5px;
+  margin: 0;
+  padding: 15px;
 }
-  .npmap .leaflet-popup-scrolled .actions, .leaflet-popup-scrolled .content, .leaflet-popup-scrolled .title {
-    margin-right: 10px;
+  /*
+  .npmap .leaflet-popup-scrolled .actions, .npmap .leaflet-popup-scrolled .content, .npmap .leaflet-popup-scrolled .title {
+    margin-right: 15px;
   }
-  .npmap .leaflet-popup-scrolled .content img {
-    margin-right: 10px;
+  */
+  .npmap .leaflet-popup-scrolled .actions ul li {
+    margin-bottom: 0;
   }
 
 /* Tooltip */
@@ -1466,20 +1480,80 @@
   #npmap-module_Directions button.btn-link:hover {
     text-decoration: underline;
   }
-#npmap-module_Directions .mapbox-directions-direction, #npmap-module_Directions .mapbox-directions-way-name {
-  font-weight: bold;
-}
-#npmap-module_Directions .maneuvers {
+
+#npmap-module_Directions .directions {
   border-top: 1px dotted #bdbbb1;
   margin-top: 25px;
   padding-top: 15px;
 }
+  #npmap-module_Directions .directions .mapbox-directions-direction, #npmap-module_Directions .directions .mapbox-directions-way-name {
+    font-weight: bold;
+  }
+  #npmap-module_Directions .directions .maneuver-header, #npmap-module_Directions .directions .maneuver-footer {
+    background-color: #f3efe5;
+    margin-bottom: 15px;
+    padding: 8px 10px;
+  }
+    #npmap-module_Directions .directions .maneuver-header h2 {
+      color: #647630;
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 18px;
+      margin-bottom: 16px;
+      margin-top: 0;
+    }
+    #npmap-module_Directions .directions .maneuver-header .info {
+      color: #706d5f;
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    #npmap-module_Directions .directions .maneuver-header h3, #npmap-module_Directions .directions .maneuver-footer h3 {
+      color: #464646;
+      font-size: 12px;
+      line-height: 20px;
+      margin-bottom: 0;
+      min-height: 20px;
+    }
+    #npmap-module_Directions .directions .maneuver-header .location, #npmap-module_Directions .directions .maneuver-footer .location {
+      color: #464646;
+      font-size: 12px;
+      line-height: 20px;
+      margin-bottom: 0;
+      min-height: 20px;
+    }
+      #npmap-module_Directions .directions .maneuver-header .location .identifier, #npmap-module_Directions .directions .maneuver-footer .location .identifier {
+        -webkit-border-radius: 3px;
+           -moz-border-radius: 3px;
+                border-radius: 3px;
+        background-color: #000;
+        color: #fff;
+        display: block;
+        float: left;
+        font-weight: bold;
+        line-height: 20px;
+        margin-right: 6px;
+        text-align: center;
+        width: 20px;
+      }
+      #npmap-module_Directions .directions .maneuver-header .location .name, #npmap-module_Directions .directions .maneuver-footer .location .name {
+        display: block;
+        margin-left: 30px;
+      }
+  #npmap-module_Directions .directions .maneuver-footer {
+    margin-bottom: 0;
+  }
+    #npmap-module_Directions .directions .maneuver-footer .location {
+      margin-top: 0;
+    }
 #npmap-module_Directions .disclaimer {
   border-top: 1px solid #b1b0a7;
   color: #706d5f;
-  display: none;
   font-size: 9.5px;
   line-height: 12px;
+  margin-top: 47px;
   padding-top: 6px;
 }
 #npmap-module_Directions .actions {
@@ -1570,15 +1644,27 @@
     }
 #npmap-module_Directions ol {
   counter-reset: li;
+  margin-bottom: 0;
+  margin-left: 0;
+  padding-left: 0;
 }
   #npmap-module_Directions ol > li {
     list-style: none;
+    margin: 0 0 0 35px;
+    padding: 0 60px 10px 0;
+    position: relative;
   }
-  #npmap-module_Directions ol > li:before {
-    color: #b28000;
-    content: counter(li)".";
-    counter-increment: li;
-    font-weight: bold;
-    left: 20px;
-    position: absolute;
-  }
+    #npmap-module_Directions ol > li:before {
+      box-sizing: border-box;
+      color: #b28000;
+      content: counter(li)".";
+      counter-increment: li;
+      font-weight: bold;
+      left: -35px;
+      position: absolute;
+    }
+    #npmap-module_Directions ol > li .distance {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
