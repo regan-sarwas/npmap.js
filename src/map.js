@@ -710,7 +710,7 @@ var Map = L.Map.extend({
       if (c) {
         return new L.LatLng(c.lat, c.lng);
       } else {
-        return new L.LatLng(39, -96);
+        return new L.LatLng(39.06, -96.02);
       }
     })();
 
