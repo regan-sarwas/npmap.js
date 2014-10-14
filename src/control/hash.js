@@ -5,8 +5,7 @@
 var util = require('../util/util');
 
 var HashControl = L.Class.extend({
-  initialize: function(options) {
-    this._trackHistory = options.trackHistory;
+  initialize: function() {
     this._supported = true;
     this._supportsHashChange = (function() {
       var docMode = window.documentMode;
@@ -32,7 +31,7 @@ var HashControl = L.Class.extend({
   addTo: function(map) {
     if (this._supported) {
       this._map = map;
-      this._onHashChange(this);
+      this._onHashChange();
       this._startListening();
     } else {
       window.alert('Sorry, but the hash control does not work for maps that are loaded in an iframe hosted from another domain.');
@@ -47,20 +46,25 @@ var HashControl = L.Class.extend({
       this._stopListening();
     }
 
-    this._map = null;
     delete this._map.hashControl;
+    this._map = null;
   },
   _changeDefer: 100,
   _changeTimeout: null,
   _hashChangeInterval: null,
   _isListening: false,
   _lastHash: null,
+  _movingMap: false,
   _formatHash: function(map) {
     var center = map.getCenter(),
       zoom = map.getZoom(),
       precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
 
-    return '#' + [zoom, center.lat.toFixed(precision), center.lng.toFixed(precision)].join('/');
+    return '#' + [
+      zoom,
+      center.lat.toFixed(precision),
+      center.lng.toFixed(precision)
+    ].join('/');
   },
   _getParentDocumentWindow: function(el) {
     while (el.parentNode) {
@@ -73,27 +77,27 @@ var HashControl = L.Class.extend({
 
     return null;
   },
-  _onHashChange: function(context) {
-    if (!context._changeTimeout) {
-      context._changeTimeout = setTimeout(function() {
-        context._update();
-        context._changeTimeout = null;
-      }, context._changeDefer);
+  _onHashChange: function() {
+    if (!this._changeTimeout) {
+      var me = this;
+
+      this._changeTimeout = setTimeout(function() {
+        me._update();
+        me._changeTimeout = null;
+      }, this._changeDefer);
     }
   },
   _onMapMove: function() {
+    var hash;
+
     if (this._movingMap || !this._map._loaded) {
       return false;
     }
 
-    var hash = this._formatHash(this._map);
+    hash = this._formatHash(this._map);
 
     if (this._lastHash !== hash) {
-      if (this._trackHistory) {
-        this._window.location.hash = hash;
-      } else {
-        this._window.location.replace(hash);
-      }
+      this._window.location.replace(hash);
       this._lastHash = hash;
     }
   },
@@ -133,7 +137,7 @@ var HashControl = L.Class.extend({
         me._onHashChange(me);
       });
     } else {
-      clearInterval(this.hashChangeInterval);
+      clearInterval(this._hashChangeInterval);
       this._hashChangeInterval = setInterval(function() {
         me._onHashChange(me);
       }, 50);
@@ -148,6 +152,7 @@ var HashControl = L.Class.extend({
       L.DomEvent.removeListener(this._window, 'hashchange', this._onHashChange, this);
     } else {
       clearInterval(this._hashChangeInterval);
+      this._hashChangeInterval = null;
     }
 
     this._isListening = false;
@@ -167,7 +172,7 @@ var HashControl = L.Class.extend({
       this._map.setView(parsed.center, parsed.zoom);
       this._movingMap = false;
     } else {
-      this._onMapMove();
+      this._onMapMove(this._map);
     }
   }
 });
