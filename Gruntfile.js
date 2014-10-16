@@ -165,7 +165,7 @@ module.exports = function(grunt) {
     http: {
       nps: {
         options: {
-          url: 'http://ncrcms.nps.doi.net/customcf/purge/index.cfm?site=www.nps.gov&urls=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2F*&Go=Purge+These+Pages'
+          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2F*&Submit%3DSubmit'
         }
       }
     },
