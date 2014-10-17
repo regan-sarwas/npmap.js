@@ -7,14 +7,9 @@ var util = require('./util/util');
 
 var Popup = L.Popup.extend({
   options: {
-    /*
-    autoPanPadding: undefined,
+    autoPanPadding: null,
     autoPanPaddingBottomRight: [20, 20],
     autoPanPaddingTopLeft: [20, 20],
-    */
-    autoPanPadding: 0,
-    autoPanPaddingBottomRight: undefined,
-    autoPanPaddingTopLeft: undefined,
     maxWidth: undefined,
     minWidth: 250,
     offset: [0, -1]
@@ -38,8 +33,6 @@ var Popup = L.Popup.extend({
       node.innerHTML = content;
       content = node;
     }
-
-    console.log(typeof content);
 
     if (typeof this.options.maxWidth === 'number') {
       content.style.maxWidth = this.options.maxWidth + 'px';

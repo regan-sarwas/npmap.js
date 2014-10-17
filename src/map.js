@@ -440,7 +440,9 @@ var Map = L.Map.extend({
                   maxWidth: util._getAvailableHorizontalSpace(me) - 77
                 });
 
-                popup.setContent(popup._handleResults(actual, me.options.popup)).setLatLng(latLng).openOn(me);
+                popup
+                  .setContent(popup._handleResults(actual, me.options.popup))
+                  .setLatLng(latLng).openOn(me);
               }
             }
           }
