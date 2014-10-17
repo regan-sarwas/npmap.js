@@ -27,8 +27,12 @@ module.exports = function(grunt) {
     browserify: {
       all: {
         files: {
-          'dist/npmap.js': ['main.js'],
-          'dist/npmap-standalone.js': ['npmap.js']
+          'dist/npmap.js': [
+            'main.js'
+          ],
+          'dist/npmap-standalone.js': [
+            'npmap.js'
+          ]
         }
       }
     },
@@ -159,7 +163,10 @@ module.exports = function(grunt) {
         dest: 'dist/',
         expand: true,
         ext: '.min.css',
-        src: ['*.css', '!*.min.css']
+        src: [
+          '*.css',
+          '!*.min.css'
+        ]
       }
     },
     http: {
@@ -211,7 +218,6 @@ module.exports = function(grunt) {
       }
     }
   });
-
   grunt.loadNpmTasks('grunt-banner');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -224,8 +230,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-http');
   grunt.loadNpmTasks('grunt-mkdir');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
-  grunt.registerTask('deploy-nps', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http:nps']);
+   //TODO: csscomb, validation
+  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']);
+  //grunt.registerTask('deploy-nps', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http:nps']);
+  grunt.registerTask('deploy-nps', ['clean:nps', 'mkdir:nps', 'copy:nps']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
