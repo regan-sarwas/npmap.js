@@ -10,13 +10,17 @@ var Popup = L.Popup.extend({
     autoPanPadding: null,
     autoPanPaddingBottomRight: [20, 20],
     autoPanPaddingTopLeft: [20, 20],
-    maxWidth: undefined,
+    maxWidth: null,
     minWidth: 250,
     offset: [0, -1]
   },
   _data: [],
   _html: null,
   _results: [],
+  initialize: function(options) {
+    L.Util.setOptions(this, options);
+    L.Popup.prototype.initialize.call(this, this.options);
+  },
   onAdd: function(map) {
     if (window.addEventListener) {
       this._content.addEventListener('DOMMouseScroll', this._handleMouseWheel, false);
@@ -139,13 +143,14 @@ var Popup = L.Popup.extend({
       } else {
         var all = [],
           result = results[0],
+          theseResults = result.results,
           i;
 
-        if (result.results && result.results.length) {
-          for (i = 0; i < result.results.length; i++) {
+        if (theseResults && theseResults.length) {
+          for (i = 0; i < theseResults.length; i++) {
             all.push({
               layerConfig: getLayerConfig(result.layer),
-              result: result.results[i],
+              result: theseResults[i],
               resultConfig: null
             });
           }
@@ -262,28 +267,25 @@ var Popup = L.Popup.extend({
         }
       }
 
-      // TODO: Needs more work to support {string}s and possibly other config options
       if (config.media) {
-        var mediaObj, mediaDiv;
-
-        if (!divContent) {
-          divContent = L.DomUtil.create('div', 'content', div);
-        }
-
         media = [];
 
         for (var i = 0; i < config.media.length; i++) {
-          if (result[config.media[i].id]) {
+          if (result[config.media[i].id.replace('{{', '').replace('}}', '')]) {
             media.push(config.media[i]);
           }
         }
 
         if (media.length) {
-          mediaObj = util.mediaToList(result, media);
+          var mediaDiv = util.mediaToList(result, media);
 
-          if (mediaObj) {
-            mediaDiv = L.DomUtil.create('div', 'media clearfix', divContent);
-            mediaDiv.appendChild(mediaObj);
+          if (mediaDiv) {
+            if (!divContent) {
+              divContent = L.DomUtil.create('div', 'content', div);
+            }
+
+            mediaDiv.className = 'clearfix media';
+            divContent.appendChild(mediaDiv);
           }
         }
       }
