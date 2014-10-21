@@ -61,19 +61,18 @@ module.exports = {
           var target = e.target,
             map = target._map,
             container = map.getContainer(),
-            padding = util._getAutoPanPaddingTopLeft(container),
             popup = L.npmap.popup({
-              autoPanPaddingTopLeft: padding,
+              autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
               maxHeight: util._getAvailableVerticalSpace(map) - 84,
               maxWidth: util._getAvailableHorizontalSpace(map) - 77
             }),
             properties = feature.properties,
-            html;
-
-          html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
+            html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
 
           if (lastTarget) {
-            lastTarget.closePopup().unbindPopup();
+            lastTarget
+              .closePopup()
+              .unbindPopup();
             lastTarget = target;
           }
 
@@ -84,10 +83,15 @@ module.exports = {
 
             if (feature.geometry.type === 'Point') {
               popup.setContent(html);
-              target.bindPopup(popup).openPopup();
+              target
+                .bindPopup(popup)
+                .openPopup();
               lastTarget = target;
             } else {
-              popup.setContent(html).setLatLng(e.latlng.wrap()).openOn(target._map);
+              popup
+                .setContent(html)
+                .setLatLng(e.latlng.wrap())
+                .openOn(target._map);
             }
           }
         });
