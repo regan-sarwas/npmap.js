@@ -618,7 +618,7 @@ module.exports = {
           var newBase = matchArray[i].substr(1, matchArray[i].length - 5).replace(/https?:\/\//gi, ''),
             newName = newBase.substr(0, shorten) + (newBase.length > shorten ? '&hellip;' : '');
 
-          if (newBase.length-1 === shorten) {
+          if (newBase.length - 1 === shorten) {
             newName = newName.substr(0, shorten) + newBase.substr(shorten, 1);
           }
 
@@ -686,53 +686,45 @@ module.exports = {
     }
   },
   mediaToList: function(data, media) {
-    var imageDiv = [],
-      imageLi = [],
-      imageList = document.createElement('ul'),
-      imageTypes = {
+    var div = document.createElement('div'),
+      types = {
         focus: function(guids) {
-          var attrs, guidArray, i, //{
-            regex = new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'),
+          var guidArray = guids.match(new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g')),
             imgs = [];
 
-          guidArray = guids.match(regex);
-
-          for (i = 0; i < guidArray.length; i++) {
-            attrs = {
-              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/medium',
-              href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i]
-            };
-            imgs.push(attrs);
+          for (var i = 0; i < guidArray.length; i++) {
+            imgs.push({
+              href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i],
+              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/medium'
+            });
           }
 
           return imgs;
         }
       },
-      mediaNavDiv = document.createElement('div'),
-      btnDiv, imageAttrs, mediaIndex, next, prev;
+      ul = document.createElement('ul'),
+      images, next, previous;
 
     function changeImage(direction) {
-      var lis = imageList.childNodes,
+      var lis = ul.childNodes,
         maxImg = lis.length,
-        next = btnDiv.childNodes[1],
-        previous = btnDiv.childNodes[0],
-        curImg, i, li;
+        curImg, j, li;
 
-      for (i = 0; i < lis.length; i++) {
-        li = lis[i];
+      for (j = 0; j < lis.length; j++) {
+        li = lis[j];
 
         if (li.style.display !== 'none') {
-          curImg = i;
+          curImg = j;
           break;
         }
       }
 
       if ((curImg + direction) < maxImg && (curImg + direction) > -1) {
-        for (i = 0; i < lis.length; i++) {
-          li = lis[i];
+        for (j = 0; j < lis.length; j++) {
+          li = lis[j];
 
-          if (i === (curImg + direction)) {
-            li.style.display = 'inherit';
+          if (j === (curImg + direction)) {
+            li.style.display = 'block';
           } else {
             li.style.display = 'none';
           }
@@ -752,63 +744,70 @@ module.exports = {
       }
     }
 
-    for (mediaIndex = 0; mediaIndex < media.length; mediaIndex++) {
-      var imgHeight = 187,
-        imgWidth = 250,
-        newImage = [],
-        newLink = [];
+    for (var i = 0; i < media.length; i++) {
+      var config = media[i],
+        type = types[config.type];
 
-      if (imageTypes[media[mediaIndex].type]) {
-        imageAttrs = imageTypes[media[mediaIndex].type](data[media[mediaIndex].id]);
-        imgHeight = media[mediaIndex].height || imgHeight;
-        imgWidth = media[mediaIndex].width || imgWidth;
+      if (type) {
+        images = type(data[config.id.replace('{{', '').replace('}}', '')]);
 
-        for (var k = 0; k < imageAttrs.length; k++) {
-          imageLi.push(document.createElement('li'));
-          imageLi[k].style.float = 'left';
-          imageLi[k].style.display = k > 0 ? 'none' : 'inherit';
-          imageDiv.push(document.createElement('div'));
-          imageDiv[k].style.width = imgWidth.toString() + 'px';
-          imageDiv[k].style.height = imgHeight + 'px';
-          imageDiv[k].style.marginLeft = 'auto';
-          imageDiv[k].style.marginRight = 'auto';
-          newLink.push(document.createElement('a'));
-          newLink[k].href = imageAttrs[k].href;
-          if (media[mediaIndex].target) newLink[k].target = media[mediaIndex].target;
-          newImage.push(document.createElement('img'));
-          newImage[k].src = imageAttrs[k].src;
-          newLink[k].appendChild(newImage[k]);
-          imageDiv[k].appendChild(newLink[k]);
-          imageLi[k].appendChild(imageDiv[k]);
-          imageList.appendChild(imageLi[k]);
+        for (var k = 0; k < images.length; k++) {
+          var a = document.createElement('a'),
+            image = images[k],
+            img = document.createElement('img'),
+            imgStyles = [],
+            li = document.createElement('li');
+
+          if (typeof config.height === 'number') {
+            imgStyles += 'height:' + config.height + 'px;';
+          }
+
+          if (typeof config.width === 'number') {
+            imgStyles += 'width:' + config.width + 'px;';
+          }
+
+          if (imgStyles.length) {
+            img.style.cssText = imgStyles;
+          }
+
+          img.src = image.src;
+          a.appendChild(img);
+          a.href = image.href;
+          a.target = '_blank';
+          li.appendChild(a);
+          li.style.display = k > 0 ? 'none' : 'block';
+          ul.appendChild(li);
         }
       }
     }
 
-    imageList.className = 'clearfix';
-    mediaNavDiv.appendChild(imageList);
-    btnDiv = document.createElement('div');
-    btnDiv.style.float = 'right';
-    prev = document.createElement('button');
-    prev.setAttribute('class', 'btn btn-circle disabled prev');
-    prev.innerHTML = '&lt;';
-    next = document.createElement('button');
-    next.setAttribute('class', 'btn btn-circle next');
-    next.innerHTML = '&gt;';
-    L.DomEvent.addListener(prev, 'click', function() {
-      changeImage(-1);
-    });
-    L.DomEvent.addListener(next, 'click', function() {
-      changeImage(1);
-    });
-    btnDiv.appendChild(prev);
-    btnDiv.appendChild(next);
+    ul.className = 'clearfix';
+    div.appendChild(ul);
 
-    if (imageAttrs.length > 1) {
-      mediaNavDiv.appendChild(btnDiv);
+    if (ul.childNodes.length > 1) {
+      var buttons = document.createElement('div');
+
+      next = document.createElement('button');
+      previous = document.createElement('button');
+      buttons.style.float = 'right';
+      previous = document.createElement('button');
+      previous.setAttribute('class', 'btn btn-circle disabled prev');
+      previous.innerHTML = '&lt;';
+      next = document.createElement('button');
+      next.setAttribute('class', 'btn btn-circle next');
+      next.innerHTML = '&gt;';
+      L.DomEvent.addListener(previous, 'click', function() {
+        changeImage(-1);
+      });
+      L.DomEvent.addListener(next, 'click', function() {
+        changeImage(1);
+      });
+      buttons.appendChild(previous);
+      buttons.appendChild(next);
+      div.appendChild(buttons);
     }
 
-    return mediaNavDiv;
+    return div;
   },
   parseDomainFromUrl: function(url) {
     var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
