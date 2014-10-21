@@ -348,6 +348,9 @@
   text-align: center !important;
   width: 21px;
 }
+  .npmap .btn-circle.disabled:hover {
+    background: #d29700;
+  }
   .npmap .btn-circle:focus, .npmap .btn-circle:hover {
     color: #fff;
   }
@@ -696,10 +699,11 @@
     padding: 0;
   }
     .npmap .leaflet-popup-content .media ul li {
+      text-align: center;
       width: 100%;
     }
       .npmap .leaflet-popup-content .media ul li img {
-        width: 100%;
+        max-width: 100%;
       }
   .npmap .leaflet-popup-content .title {
     font-weight: bold;
