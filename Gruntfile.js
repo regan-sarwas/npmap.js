@@ -170,9 +170,64 @@ module.exports = function(grunt) {
       }
     },
     http: {
-      nps: {
+      'bootstrap-js': {
         options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2F*&Submit%3DSubmit'
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-bootstrap.js'
+        }
+      },
+      'bootstrap-js-min': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-bootstrap.min.js'
+        }
+      },
+      'core-css': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap.css'
+        }
+      },
+      'core-css-min': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap.min.css'
+        }
+      },
+      'core-js': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap.js'
+        }
+      },
+      'core-js-min': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap.min.js'
+        }
+      },
+      examples: {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fexamples%2F*&Submit%3DSubmit'
+        }
+      },
+      images: {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fimages%2F*&Submit%3DSubmit'
+        }
+      },
+      'standalone-css': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-standalone.css'
+        }
+      },
+      'standalone-css-min': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-standalone.min.css'
+        }
+      },
+      'standalone-js': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-standalone.js'
+        }
+      },
+      'standalone-js-min': {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-standalone.min.js'
         }
       }
     },
@@ -232,7 +287,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
    //TODO: csscomb, validation
   grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']);
-  grunt.registerTask('deploy-nps', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http:nps']);
+  grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
