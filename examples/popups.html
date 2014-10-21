@@ -48,14 +48,12 @@
           user: 'nps'
         },{
           attribution: 'NPMap Team',
-          /*
-          popup: '<div class="title">{{Name}}</div><div class="content" style="width:500px;"><p>{{Description}}</p><p>This popup is configured with an HTML string. It has a hardcoded width of <code>500</code>.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ultricies non tellus sit amet eleifend. Phasellus a arcu quis tellus dignissim convallis. In ipsum odio, iaculis at vestibulum ut, eleifend sit amet mi. Phasellus lacinia lobortis sapien, et fermentum metus tristique vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla urna eget dignissim rhoncus. Pellentesque in mi et elit tristique suscipit. Cras vel lacinia mi. In nec lorem mauris. Aenean ac metus fringilla nunc tristique convallis nec eget dui. Quisque tincidunt massa nisl, a semper ligula auctor eu. Nulla pretium faucibus orci.</p></div><div class="actions"><ul><li><a href="#" onclick="window.alert(\'A Test Action\');return false;">A Test Action</a></li><li><a href="#" onclick="window.alert(\'Another Test Action\');return false;">Another Test Action</a></li></ul></div>',
-          */
           popup: {
             actions: '<ul><li><a>Clicking Me Won\'t Do Anything!</a></li></ul>',
             description: {
               format: 'table'
             },
+            minWidth: 50,
             title: '{{Name}}'
           },
           type: 'geojson',
