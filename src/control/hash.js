@@ -5,7 +5,17 @@
 var util = require('../util/util');
 
 var HashControl = L.Class.extend({
+  addTo: function(map) {
+    if (this._supported) {
+      this._map = map;
+      this._onHashChange();
+      this._startListening();
+    } else {
+      window.alert('Sorry, but the hash control does not work for maps that are loaded in an iframe hosted from another domain.');
+    }
+  },
   initialize: function() {
+    this._iframe = false;
     this._supported = true;
     this._supportsHashChange = (function() {
       var docMode = window.documentMode;
@@ -17,6 +27,7 @@ var HashControl = L.Class.extend({
     if ((window.self !== window.top) && document.referrer !== '') {
       if (util.parseDomainFromUrl(document.referrer) === util.parseDomainFromUrl(window.location.href)) {
         try {
+          this._iframe = true;
           this._window = top;
         } catch (exception) {
           this._supported = false;
@@ -27,15 +38,6 @@ var HashControl = L.Class.extend({
     }
 
     return this;
-  },
-  addTo: function(map) {
-    if (this._supported) {
-      this._map = map;
-      this._onHashChange();
-      this._startListening();
-    } else {
-      window.alert('Sorry, but the hash control does not work for maps that are loaded in an iframe hosted from another domain.');
-    }
   },
   removeFrom: function() {
     if (this._changeTimeout) {
@@ -97,7 +99,13 @@ var HashControl = L.Class.extend({
     hash = this._formatHash(this._map);
 
     if (this._lastHash !== hash) {
-      this._window.location.replace(hash);
+      if (this._iframe) {
+        // TODO: This preserves browser history, and is only partially working.
+        this._window.location.hash = hash;
+      } else {
+        this._window.location.replace(hash);
+      }
+
       this._lastHash = hash;
     }
   },
