@@ -107,6 +107,10 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+## Leaflet.zoomdisplay
+
+NPMap.js uses a modified version of the [Leaflet.zoomdisplay](https://github.com/azavea/Leaflet.zoomdisplay). It is licensed under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
+
 ## Leaflet.Zoomify
 
 NPMap.js uses a modified version of the [Leaflet.Zoomify](https://github.com/turban/Leaflet.Zoomify/blob/master/L.TileLayer.Zoomify.js) plugin.

@@ -22,7 +22,8 @@ L.npmap = module.exports = {
     print: require('./src/control/print'),
     scale: require('./src/control/scale'),
     share: require('./src/control/share'),
-    switcher: require('./src/control/switcher')
+    switcher: require('./src/control/switcher'),
+    zoomdisplay: require('./src/control/zoomdisplay')
   },
   icon: {
     maki: require('./src/icon/maki'),
