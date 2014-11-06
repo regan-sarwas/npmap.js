@@ -162,7 +162,7 @@ module.exports = {
         mapExtent: JSON.stringify(this._boundsToExtent(map.getBounds())),
         returnGeometry: false,
         sr: '4326',
-        tolerance: 5
+        tolerance: 6
       };
 
     reqwest({
