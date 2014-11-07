@@ -78,7 +78,7 @@
       }
     .npmap-modules .module .title {
       border-bottom: solid 1px #B5B39C;
-      padding: 10px 9px;
+      padding: 9px 15px;
       margin: 0;
     }
 .npmap-modules-buttons .npmap-modules-buttons-button {
@@ -104,7 +104,8 @@
 }
   .npmap-map-wrapper .npmap-modules-buttons {
     bottom: 0;
-    margin: 12px -30px 0 0;
+    margin: 10px -30px 0 0;
+    pointer-events: none;
     position: absolute;
     top: 0;
     width: 30px;
@@ -126,6 +127,7 @@
       height: 24px;
       margin: 0;
       padding: 0;
+      pointer-events: auto;
       width: 24px;
     }
       .npmap-map-wrapper .npmap-modules-buttons button:hover {
