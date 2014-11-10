@@ -24,28 +24,6 @@ var DirectionsModule = L.Class.extend({
       me = this,
       p = document.createElement('p');
 
-/*
-
-<div>
-  <div>
-    <p class="intro"></p>
-    <ul class="stops"></ul>
-    <div class="actions">
-      <div>
-        <button></button>
-        <button></button>
-      </div>
-      <div class="options"></div>
-    </div>
-  </div>
-  <div>
-    <ol class="maneuvers"></ol>
-    <p class="disclaimer"></p>
-  </div>
-</div>
-
-*/
-
     L.Util.setOptions(this, options);
     p.innerHTML = 'Search for a location by address or name. Drag stops to reorder.';
     div.appendChild(p);
@@ -174,7 +152,7 @@ var DirectionsModule = L.Class.extend({
     }
 
     div.appendChild(input);
-    button.className = 'remove ir';
+    button.className = 'ir remove';
     button.innerHTML = 'Remove stop';
     L.DomEvent
       .addListener(button, 'click', function() {
@@ -327,6 +305,8 @@ var DirectionsModule = L.Class.extend({
         this._map.removeLayer(this._route[i]);
       }
 
+      this._directions.innerHTML = '';
+      this._directions.style.display = 'none';
       this._route = [];
     }
   },
