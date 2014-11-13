@@ -218,6 +218,21 @@ module.exports = function(grunt) {
         'test/index.html'
       ]
     },
+    /*
+    mount: {
+      share: {
+        options: {
+          mountPoint: '/Volumes/npmap-deploy',
+          share: {
+            folder: '/nps_prod/other/static/npmap',
+            host: 'dencmscontent'
+          },
+          username: 'nirwin',
+          password: 'It\'s ski season!'
+        }
+      }
+    },
+    */
     pkg: pkg,
     uglify: {
       npmap: {
@@ -261,9 +276,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-http');
   grunt.loadNpmTasks('grunt-mkdir');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
+  grunt.loadNpmTasks('grunt-mount');
    //TODO: csscomb, validation
   grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']);
   grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'akamai_rest_purge', 'http']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
+  //grunt.registerTask('mount', ['mount']);
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
