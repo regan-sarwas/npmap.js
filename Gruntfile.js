@@ -7,6 +7,7 @@ module.exports = function(grunt) {
   var cssNpmaki = '',
     npmaki = require('./node_modules/npmaki/_includes/maki.json'),
     pkg = require('./package.json'),
+    secrets = require('./secrets.json'),
     sizes = {
       large: 24,
       medium: 18,
@@ -24,6 +25,20 @@ module.exports = function(grunt) {
 
   grunt.util.linefeed = '\n';
   grunt.initConfig({
+    akamai_rest_purge: {
+      all: {
+        objects: [
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/*'
+        ]
+      },
+      options: {
+        action: 'invalidate',
+        auth: {
+          pass: secrets.akamai.password,
+          user: secrets.akamai.user
+        }
+      }
+    },
     browserify: {
       all: {
         files: {
@@ -273,6 +288,7 @@ module.exports = function(grunt) {
       }
     }
   });
+  grunt.loadNpmTasks('grunt-akamai-rest-purge');
   grunt.loadNpmTasks('grunt-banner');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -287,7 +303,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
    //TODO: csscomb, validation
   grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']);
-  grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'http']);
+  // 'http'
+  grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'akamai_rest_purge']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
