@@ -62,7 +62,8 @@
     "mocha": "1.18.2",
     "mocha-phantomjs": "3.3.2",
     "sinon": "1.9.0",
-    "uglify-js": "2.4.13"
+    "uglify-js": "2.4.13",
+    "grunt-mount": "^0.2.5"
   },
   "engines": {
     "node": "*"
