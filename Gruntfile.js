@@ -28,7 +28,16 @@ module.exports = function(grunt) {
     akamai_rest_purge: {
       all: {
         objects: [
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/*'
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-bootstrap.js',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-bootstrap.min.js',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap.css',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap.min.css',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap.js',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap.min.js',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-standalone.css',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-standalone.min.css',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-standalone.js',
+          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-standalone.min.js'
         ]
       },
       options: {
@@ -184,37 +193,8 @@ module.exports = function(grunt) {
         ]
       }
     },
+    // TODO: Find a better way to hit the Akamai ECCU API. Required because the CCU API doesn't support wildcards.
     http: {
-      'bootstrap-js': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-bootstrap.js'
-        }
-      },
-      'bootstrap-js-min': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-bootstrap.min.js'
-        }
-      },
-      'core-css': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap.css'
-        }
-      },
-      'core-css-min': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap.min.css'
-        }
-      },
-      'core-js': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap.js'
-        }
-      },
-      'core-js-min': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap.min.js'
-        }
-      },
       examples: {
         options: {
           url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fexamples%2F*&Submit%3DSubmit'
@@ -223,26 +203,6 @@ module.exports = function(grunt) {
       images: {
         options: {
           url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fimages%2F*&Submit%3DSubmit'
-        }
-      },
-      'standalone-css': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-standalone.css'
-        }
-      },
-      'standalone-css-min': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-standalone.min.css'
-        }
-      },
-      'standalone-js': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-standalone.js'
-        }
-      },
-      'standalone-js-min': {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_ccu.cfm?file=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fnpmap-standalone.min.js'
         }
       }
     },
@@ -303,8 +263,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
    //TODO: csscomb, validation
   grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']);
-  // 'http'
-  grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'akamai_rest_purge']);
+  grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'akamai_rest_purge', 'http']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
