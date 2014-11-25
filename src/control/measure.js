@@ -11,7 +11,7 @@ var MeasureControl = L.Control.extend({
     position: 'topleft'
   },
   onAdd: function() {
-    var liArea, liDistance;
+    var liArea, liDistance, liSelect;
 
     this._container = L.DomUtil.create('div', 'npmap-control-measure leaflet-bar leaflet-control');
     this._button = L.DomUtil.create('button', 'leaflet-bar-single', this._container);
@@ -19,10 +19,15 @@ var MeasureControl = L.Control.extend({
     this._menu = L.DomUtil.create('ul', '', this._container);
     liDistance = L.DomUtil.create('li', '', this._menu);
     liArea = L.DomUtil.create('li', '', this._menu);
+    liSelect = L.DomUtil.create('li', '', this._menu);
     this._buttonArea = L.DomUtil.create('button', '', liArea);
     this._buttonArea.innerHTML = 'Area';
     this._buttonDistance = L.DomUtil.create('button', 'pressed', liDistance);
     this._buttonDistance.innerHTML = 'Distance';
+    this._selectUnit = L.DomUtil.create('select','', liSelect);
+    this._selectUnit.innerHTML =  '<option value="Acres" class="area">Acres</option><option value="Hectares" class="area">Hectares</option>'+
+                                  '<option value="Feet" class="distance">Feet</option><option value="Meters" class="distance">Meters</option>'+
+                                  '<option value="Miles" class="distance">Miles</option>';
     this._activeMode = 'distance';
 
     L.DomEvent
@@ -50,7 +55,20 @@ var MeasureControl = L.Control.extend({
     }
   },
   _buttonAreaClick: function() {
+    this._selectUnit.innerHTML =  '<option value="Acres" class="area">Acres</option><option value="Hectares" class="area">Hectares</option>'+
+                                  '<option value="Feet" class="distance">Feet</option><option value="Meters" class="distance">Meters</option>'+
+                                  '<option value="Miles" class="distance">Miles</option>';
+    var options = this._selectUnit.options,
+    optionArea = '';
     this._buttonClick(this._buttonArea);
+    
+    for (var i=0;i < options.length; i++){
+      if (options[i].className === 'area') {
+        optionArea += '<option value="'+ options[i].value +'" class="area">'+ options[i].value +'</option>';
+      }
+    }
+    console.log(optionArea);
+    this._selectUnit.innerHTML = optionArea;
   },
   _buttonClick: function(button) {
     if (!L.DomUtil.hasClass(button, 'pressed')) {
@@ -69,7 +87,19 @@ var MeasureControl = L.Control.extend({
     }
   },
   _buttonDistanceClick: function() {
+    this._selectUnit.innerHTML =  '<option value="Acres" class="area">Acres</option><option value="Hectares" class="area">Hectares</option>'+
+   '<option value="Feet" class="distance">Feet</option><option value="Meters" class="distance">Meters</option>'+
+   '<option value="Miles" class="distance">Miles</option>';
+    var options = this._selectUnit.options,
+    optionDistance = '';
+
     this._buttonClick(this._buttonDistance);
+    for (var i=0;i<options.length;i++){
+      if (options[i].className === 'distance'){
+        optionDistance += '<option value="'+ options[i].value +'" class="area">'+ options[i].value +'</option>';
+      }
+    }
+    this._selectUnit.innerHTML = optionDistance;
   },
   _clearLastShape: function() {
     var i;
@@ -235,7 +265,6 @@ var MeasureControl = L.Control.extend({
       .on(document, 'keydown', this._keyDown, this)
       .on(map, 'click', clickFn, this)
       .on(map, 'dblclick', dblClickFn, this);
-
     this._currentCircles = this._currentTooltips = [];
 
     if (!this._layerGroup) {
@@ -292,22 +321,48 @@ var MeasureControl = L.Control.extend({
       this._startMeasuring(this._activeMode);
     }
   },
-  _toAcres: function(meters) {
-    return (meters / 4046.86).toFixed(2);
+  _toAcres: function(meters, unit) {
+    var options = this._selectUnit.options;
+    for (var i=0; i < options.length; i++){
+      var option = options[i].value;
+      debugger;
+      console.log(option);
+      if (option === 'hectares'){
+        unit = 'ha';
+        return (meters / 10000).toFixed(2), unit;
+      } else {
+        unit = 'acres';
+        return (meters / 4046.86).toFixed(2), unit;
+      }
+    }
   },
-  _toMiles: function(meters) {
-    return (meters * 0.000621371).toFixed(2);
+  _toMiles: function(meters, unit) {
+    var options = this._selectUnit.options;
+    for (var i=0; i < options.length; i++){
+      var option = options[i].value;
+      if ( option === 'miles'){
+        unit = 'mi';
+        return (meters * 0.000621371).toFixed(2), unit;
+      } else if (option === 'feet') {
+        unit = 'mi';
+        return (meters * 3.28084).toFixed(2), unit;
+      } else {
+        unit = 'meters';
+        return meters, unit;
+      }
+    }
   },
   _updateTooltipArea: function(total) {
     this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._toAcres(total) + ' acres</div>';
   },
   _updateTooltipDistance: function(total, difference) {
-    var differenceMiles = this._toMiles(difference),
-      totalMiles = this._toMiles(total),
-      text = '<div class="leaflet-measure-tooltip-total">' + totalMiles + ' mi</div>';
+    var unit = '',
+      differenceMiles = this._toMiles(difference, unit),
+      totalMiles = this._toMiles(total, unit),
+      text = '<div class="leaflet-measure-tooltip-total">' + totalMiles + unit + '</div>';
 
     if ((differenceMiles > 0) && (totalMiles !== differenceMiles)) {
-      text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceMiles + ' mi)</div>';
+      text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceMiles + ')</div>';
     }
 
     this._tooltip._icon.innerHTML = text;
