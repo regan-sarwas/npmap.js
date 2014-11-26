@@ -23,18 +23,13 @@ var FullscreenControl = L.Control.extend({
 
     if ((window.self !== window.top) && document.referrer !== '') {
       // The map is in an iframe.
+      try {
+        this._frame = window.frameElement;
 
-      if (util.parseDomainFromUrl(document.referrer) === util.parseDomainFromUrl(window.location.href)) {
-        try {
-          this._frame = window.frameElement;
-
-          if (this._frame) {
-            this._frameBody = this._getParentDocumentBody(this._frame);
-          }
-        } catch (exception) {
-          this._supported = false;
+        if (this._frame) {
+          this._frameBody = this._getParentDocumentBody(this._frame);
         }
-      } else {
+      } catch (exception) {
         this._supported = false;
       }
     }
@@ -197,7 +192,7 @@ var FullscreenControl = L.Control.extend({
 
       this._map.invalidateSize();
     } else {
-      window.alert('Sorry, but the fullscreen tool does not work for maps that are loaded in an iframe hosted from another domain.');
+      window.alert('Sorry, but the fullscreen tool does not work for maps that are loaded in an iframe hosted on another domain.');
     }
   }
 });
