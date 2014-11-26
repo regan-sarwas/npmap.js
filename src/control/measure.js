@@ -25,8 +25,7 @@ var MeasureControl = L.Control.extend({
     this._buttonDistance = L.DomUtil.create('button', 'pressed', liDistance);
     this._buttonDistance.innerHTML = 'Distance';
     this._selectUnit = L.DomUtil.create('select','', liSelect);
-    this._selectUnit.innerHTML =  '<option value="Acres" class="area">Acres</option><option value="Hectares" class="area">Hectares</option>'+
-                                  '<option value="Feet" class="distance">Feet</option><option value="Meters" class="distance">Meters</option>'+
+    this._selectUnit.innerHTML =  '<option value="Feet" class="distance" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
                                   '<option value="Miles" class="distance">Miles</option>';
     this._activeMode = 'distance';
 
@@ -55,20 +54,24 @@ var MeasureControl = L.Control.extend({
     }
   },
   _buttonAreaClick: function() {
-    this._selectUnit.innerHTML =  '<option value="Acres" class="area">Acres</option><option value="Hectares" class="area">Hectares</option>'+
-                                  '<option value="Feet" class="distance">Feet</option><option value="Meters" class="distance">Meters</option>'+
-                                  '<option value="Miles" class="distance">Miles</option>';
-    var options = this._selectUnit.options,
-    optionArea = '';
     this._buttonClick(this._buttonArea);
+    //  can just hand write it with this function.... how do I call innerHTMl only once?
+    this._selectUnit.innerHTML = '<option value="Acres" class="area">Acres</option><option value="Hectares" class="area">Hectares</option>';
+    // var options = this._selectUnit.options,
+    // optionArea = '';
     
-    for (var i=0;i < options.length; i++){
-      if (options[i].className === 'area') {
-        optionArea += '<option value="'+ options[i].value +'" class="area">'+ options[i].value +'</option>';
-      }
-    }
-    console.log(optionArea);
-    this._selectUnit.innerHTML = optionArea;
+    // for (var i=0;i < options.length; i++){
+    //   if (options[i].className === 'area') {
+    //     optionArea += '<option value="'+ options[i].value +'" class="area">'+ options[i].value +'</option>';
+    //     this._activeUnit = options[i].selected;
+    //   }
+    // }
+    // this._selectUnit.innerHTML = optionArea;
+    this._resetArea();
+    L.DomEvent
+      .on(this._selectUnit, 'click', this._updateTooltipArea)
+      .on(this._button, 'click', L.DomEvent.stopPropagation)
+      .on(this._button, 'click', L.DomEvent.preventDefault);
   },
   _buttonClick: function(button) {
     if (!L.DomUtil.hasClass(button, 'pressed')) {
@@ -87,19 +90,24 @@ var MeasureControl = L.Control.extend({
     }
   },
   _buttonDistanceClick: function() {
-    this._selectUnit.innerHTML =  '<option value="Acres" class="area">Acres</option><option value="Hectares" class="area">Hectares</option>'+
-   '<option value="Feet" class="distance">Feet</option><option value="Meters" class="distance">Meters</option>'+
-   '<option value="Miles" class="distance">Miles</option>';
-    var options = this._selectUnit.options,
-    optionDistance = '';
-
     this._buttonClick(this._buttonDistance);
-    for (var i=0;i<options.length;i++){
-      if (options[i].className === 'distance'){
-        optionDistance += '<option value="'+ options[i].value +'" class="area">'+ options[i].value +'</option>';
-      }
-    }
-    this._selectUnit.innerHTML = optionDistance;
+    this._selectUnit.innerHTML = '<option value="Feet" class="distance" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
+   '<option value="Miles" class="distance">Miles</option>';
+    // var options = this._selectUnit.options,
+    // optionDistance = '';
+
+    // for (var i=0;i<options.length;i++){
+    //   if (options[i].className === 'distance'){
+    //     optionDistance += '<option value="'+ options[i].value +'" class="area">'+ options[i].value +'</option>';
+    //     this._activeUnit = options[i].selected;
+    //   }
+    // }
+    // this._selectUnit.innerHTML = optionDistance;
+    this._resetDistance();
+    L.DomEvent
+      .on(this._selectUnit, 'click', this._updateTooltipDistance)
+      .on(this._button, 'click', L.DomEvent.stopPropagation)
+      .on(this._button, 'click', L.DomEvent.preventDefault);
   },
   _clearLastShape: function() {
     var i;
@@ -321,44 +329,46 @@ var MeasureControl = L.Control.extend({
       this._startMeasuring(this._activeMode);
     }
   },
-  _toAcres: function(meters, unit) {
+  _calculateArea: function(area, unit) {
     var options = this._selectUnit.options;
     for (var i=0; i < options.length; i++){
-      var option = options[i].value;
-      debugger;
-      console.log(option);
-      if (option === 'hectares'){
-        unit = 'ha';
-        return (meters / 10000).toFixed(2), unit;
+      var option = options[options.selectedIndex].value;
+      if (option === 'Hectares'){
+        unit = ' ha';
+        area = (area / 10000).toFixed(2);
+        return area.toLocaleString() + unit;
       } else {
-        unit = 'acres';
-        return (meters / 4046.86).toFixed(2), unit;
+        unit = ' acres';
+        area = (area / 4046.86).toFixed(2);
+        return area.toLocaleString() + unit;
       }
     }
   },
-  _toMiles: function(meters, unit) {
+  _calculateDistance: function(distance, unit) {
     var options = this._selectUnit.options;
     for (var i=0; i < options.length; i++){
-      var option = options[i].value;
-      if ( option === 'miles'){
-        unit = 'mi';
-        return (meters * 0.000621371).toFixed(2), unit;
-      } else if (option === 'feet') {
-        unit = 'mi';
-        return (meters * 3.28084).toFixed(2), unit;
+      var option = options[options.selectedIndex].value;
+      if ( option === 'Miles'){
+        unit = ' mi';
+        distance = (distance * 0.000621371).toFixed(2);
+        return distance.toLocaleString() + unit;
+      } else if (option === 'Feet') {
+        unit = ' ft';
+        distance = (distance * 3.28084).toFixed(2);
+        return distance.toLocaleString() + unit;
       } else {
-        unit = 'meters';
-        return meters, unit;
+        unit = ' meters';
+        return distance.toLocaleString() + unit;
       }
     }
   },
-  _updateTooltipArea: function(total) {
-    this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._toAcres(total) + ' acres</div>';
+  _updateTooltipArea: function(total, unit) {
+    this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateArea(total, unit) + '</div>';
   },
   _updateTooltipDistance: function(total, difference) {
     var unit = '',
-      differenceMiles = this._toMiles(difference, unit),
-      totalMiles = this._toMiles(total, unit),
+      differenceMiles = this._calculateDistance(difference, unit),
+      totalMiles = this._calculateDistance(total, unit),
       text = '<div class="leaflet-measure-tooltip-total">' + totalMiles + unit + '</div>';
 
     if ((differenceMiles > 0) && (totalMiles !== differenceMiles)) {
