@@ -26,7 +26,7 @@ var MeasureControl = L.Control.extend({
     this._buttonDistance.innerHTML = 'Distance';
     this._selectUnit = L.DomUtil.create('select','', liSelect);
     this._selectUnit.innerHTML =  '<option value="Feet" class="distance" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
-                                  '<option value="Miles" class="distance">Miles</option>';
+    '<option value="Miles" class="distance">Miles</option>';
     this._activeMode = 'distance';
 
     L.DomEvent
@@ -55,21 +55,13 @@ var MeasureControl = L.Control.extend({
   },
   _buttonAreaClick: function() {
     this._buttonClick(this._buttonArea);
-    //  can just hand write it with this function.... how do I call innerHTMl only once?
-    this._selectUnit.innerHTML = '<option value="Acres" class="area">Acres</option><option value="Hectares" class="area">Hectares</option>';
-    // var options = this._selectUnit.options,
-    // optionArea = '';
-    
-    // for (var i=0;i < options.length; i++){
-    //   if (options[i].className === 'area') {
-    //     optionArea += '<option value="'+ options[i].value +'" class="area">'+ options[i].value +'</option>';
-    //     this._activeUnit = options[i].selected;
-    //   }
-    // }
-    // this._selectUnit.innerHTML = optionArea;
-    this._resetArea();
+    this._selectUnit.innerHTML = '<option value="Acres" class="area">Acres</option>' +
+    '<option value="Hectares" class="area">Hectares</option>';
+    this._resetDistance();
+      
     L.DomEvent
-      .on(this._selectUnit, 'click', this._updateTooltipArea)
+      .on(this._selectUnit, 'click', console.log(this._selectUnit))
+      // this._startMeasuring('area')
       .on(this._button, 'click', L.DomEvent.stopPropagation)
       .on(this._button, 'click', L.DomEvent.preventDefault);
   },
@@ -87,25 +79,17 @@ var MeasureControl = L.Control.extend({
       L.DomUtil.removeClass(remove, 'pressed');
       L.DomUtil.addClass(add, 'pressed');
       this._activateMode(mode);
+      this._resetDistance();
     }
   },
   _buttonDistanceClick: function() {
     this._buttonClick(this._buttonDistance);
     this._selectUnit.innerHTML = '<option value="Feet" class="distance" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
    '<option value="Miles" class="distance">Miles</option>';
-    // var options = this._selectUnit.options,
-    // optionDistance = '';
+    this._resetArea();
 
-    // for (var i=0;i<options.length;i++){
-    //   if (options[i].className === 'distance'){
-    //     optionDistance += '<option value="'+ options[i].value +'" class="area">'+ options[i].value +'</option>';
-    //     this._activeUnit = options[i].selected;
-    //   }
-    // }
-    // this._selectUnit.innerHTML = optionDistance;
-    this._resetDistance();
     L.DomEvent
-      .on(this._selectUnit, 'click', this._updateTooltipDistance)
+      .on(this._selectUnit, 'click', this._startMeasuring('distance'))
       .on(this._button, 'click', L.DomEvent.stopPropagation)
       .on(this._button, 'click', L.DomEvent.preventDefault);
   },
@@ -249,10 +233,59 @@ var MeasureControl = L.Control.extend({
     this._currentCircles.push(circle);
     this._lastPointDistance = latLng;
   },
+  _mouseMove: function(e) {
+    var latLng = e.latlng,
+      circle;
+
+    if (!latLng || !this._lastPoint) {
+      return;
+    }
+
+    if (this._lastPointDistance) {
+      var distance;
+
+      this._tooltip = this._createTooltip(latLng);
+      this._currentTooltips.push(this._tooltip);
+
+      // if (!this._distance) {
+      //   this._distance = 0;
+      // }
+
+      this._updateTooltipPosition(latLng);
+      distance = e.latlng.distanceTo(this._lastPointDistance);
+      this._updateTooltipDistance(this._distance + distance, distance);
+      this._distance += distance;
+
+      if (!this._layerGroupPath) {
+        this._layerGroupPath = new L.Polyline([this._lastPointDistance], {
+          clickable: false,
+          color: 'red',
+          weight: 2
+        }).addTo(this._layerGroup);
+      }
+    }
+
+    // if (this._layerGroupPath) {
+    //   this._layerGroupPath.addLatLng(latLng);
+    // }
+
+    circle = new L.CircleMarker(latLng, {
+      clickable: false,
+      color: 'red',
+      fill: true,
+      fillOpacity: 1,
+      opacity: 1,
+      radius: 2,
+      weight: 1
+    }).addTo(this._layerGroup);
+    this._currentCircles.push(circle);
+    this._lastPointDistance = latLng;
+  },
   _resetArea: function() {
     this._area = 0;
     this._currentCircles = this._currentTooltips = [];
     this._lastPointArea = this._layerGroupPath = this._tooltip = undefined;
+    console.log(this._tooltip);
   },
   _resetDistance: function() {
     this._currentCircles = this._currentTooltips = [];
@@ -272,6 +305,7 @@ var MeasureControl = L.Control.extend({
     L.DomEvent
       .on(document, 'keydown', this._keyDown, this)
       .on(map, 'click', clickFn, this)
+      .on(map, 'mousemove', this._mouseMove, this)
       .on(map, 'dblclick', dblClickFn, this);
     this._currentCircles = this._currentTooltips = [];
 
@@ -285,6 +319,7 @@ var MeasureControl = L.Control.extend({
     L.DomEvent
       .off(document, 'keydown', this._keyDown, this)
       .off(map, 'click', this._mouseClickArea, this)
+      .off(map, 'mousemover', this._mouseClickArea, this)
       .off(map, 'dblclick', this._finishPathArea, this);
     this._clearLastShape();
   },
@@ -329,53 +364,58 @@ var MeasureControl = L.Control.extend({
       this._startMeasuring(this._activeMode);
     }
   },
-  _calculateArea: function(area, unit) {
-    var options = this._selectUnit.options;
+  _calculateArea: function(area) {
+    var options = this._selectUnit.options,
+    unit = '';
+
     for (var i=0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
+      
       if (option === 'Hectares'){
+        var hectares = (this._area / 10000).toFixed(2).toLocaleString();
         unit = ' ha';
-        area = (area / 10000).toFixed(2);
-        return area.toLocaleString() + unit;
+        return hectares + unit;
       } else {
+        var acres = (this._area / 4046.86).toFixed(2).toLocaleString();
         unit = ' acres';
-        area = (area / 4046.86).toFixed(2);
-        return area.toLocaleString() + unit;
+        return acres + unit;
       }
     }
   },
-  _calculateDistance: function(distance, unit) {
-    var options = this._selectUnit.options;
+  _calculateDistance: function(distance) {
+    var options = this._selectUnit.options,
+    unit = '';
     for (var i=0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
       if ( option === 'Miles'){
+        var miles = (distance * 0.000621371).toFixed(2).toLocaleString();
         unit = ' mi';
-        distance = (distance * 0.000621371).toFixed(2);
-        return distance.toLocaleString() + unit;
+        return miles + unit;
       } else if (option === 'Feet') {
+        var feet = (distance * 3.28084).toFixed(2).toLocaleString();
         unit = ' ft';
-        distance = (distance * 3.28084).toFixed(2);
-        return distance.toLocaleString() + unit;
+        return feet + unit;
       } else {
         unit = ' meters';
-        return distance.toLocaleString() + unit;
+        return distance + unit;
       }
     }
   },
-  _updateTooltipArea: function(total, unit) {
-    this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateArea(total, unit) + '</div>';
+  _updateTooltipArea: function(total) {
+    this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateArea(total) + '</div>';
   },
   _updateTooltipDistance: function(total, difference) {
-    var unit = '',
-      differenceMiles = this._calculateDistance(difference, unit),
-      totalMiles = this._calculateDistance(total, unit),
-      text = '<div class="leaflet-measure-tooltip-total">' + totalMiles + unit + '</div>';
+    var differenceMiles = this._calculateDistance(difference),
+    totalMiles = this._calculateDistance(total),
+    text = '<div class="leaflet-measure-tooltip-total">' + totalMiles + '</div>';
 
     if ((differenceMiles > 0) && (totalMiles !== differenceMiles)) {
-      text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceMiles + ')</div>';
+      text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceMiles  + ')</div>';
     }
 
-    this._tooltip._icon.innerHTML = text;
+    if (this._tooltip !== undefined){
+      this._tooltip._icon.innerHTML = text;
+    }
   },
   _updateTooltipPosition: function(latLng) {
     this._tooltip.setLatLng(latLng);
