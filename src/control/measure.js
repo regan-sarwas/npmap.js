@@ -198,21 +198,27 @@ var MeasureControl = L.Control.extend({
     }
 
     if(this._tooltip) {
+      var distance = latLng.distanceTo(this._lastPoint),
+      area = L.GeometryUtil.geodesicArea(this._layerGroupPathTemp.getLatLngs());
+
       if(!this._distance) {
         this._distance = 0;
       }
+      if(!this._area) {
+        this._area = 0;
+      }
 
       this._updateTooltipPosition(latLng);
-      var distance = latLng.distanceTo(this._lastPoint);
-      if (this._activeMode === 'area') {
-        this._updateTooltipArea(this._area);
-      } else {
+      if (this._activeMode === 'distance') {
         this._updateTooltipDistance(this._distance + distance, distance);
+      } else {
+        // this._layerGroupPathTemp.addLatLng(latLng);
+        // this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
+        this._updateTooltipArea(this._area + area);
       }
     }
   },
   _mouseClickArea: function(e){
-    console.log('area click');
     if (this._activeMode === 'area'){
       var latLng = e.latlng,
         circle;
@@ -242,95 +248,96 @@ var MeasureControl = L.Control.extend({
         weight: 1
       }).addTo(this._layerGroup);
       this._currentCircles.push(circle);
-      // this._lastPoint = latLng;
-      this._lastPointArea = latLng;
+      this._lastPoint = latLng;
 
       if (this._currentCircles.length > 2) {
         this._area = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
-
-        if (!this._tooltip) {
-          this._tooltip = this._createTooltip(latLng);
-        }
-
+        this._createTooltip(latLng);
         this._updateTooltipPosition(latLng);
         this._updateTooltipArea(this._area);
       }
 
+      if (this._layerGroupPath) {
+        this._layerGroupPath.addLatLng(latLng);
+      }
+
+      if (this._lastCircle) {
+        this._layerGroup.removeLayer(this._lastCircle);
+      }
+
+      this._lastCircle = new L.CircleMarker(latLng, {
+        clickable: false,
+        color: 'red',
+        fill: true,
+        fillOpacity: 1,
+        opacity: 1,
+        radius: 2,
+        weight: 1
+      }).addTo(this._layerGroup);
+      
       this._lastCircle.on('click', function() { this._finishPath(); }, this);
+      this._lastPoint = latLng;
     }
   },
   _mouseClickDistance: function(e) {
-    console.log('distance click');
     if (this._activeMode === 'distance'){
-    // Skip if no coordinates
-    var latLng = e.latlng;
+      var latLng = e.latlng;
 
-    if (!latLng) {
-      return;
-    }
-
-    // If we have a tooltip, update the distance and create a new tooltip, leaving the old one exactly where it is (i.e. where the user has clicked)
-    if(this._lastPointDistance && this._tooltip) {
-      if(!this._distance) {
-        this._distance = 0;
+      if (!latLng) {
+        return;
       }
 
-      this._updateTooltipPosition(latLng);
+      if(this._lastPoint && this._tooltip) {
+        var distance = latLng.distanceTo(this._lastPoint);
+        if(!this._distance) {
+          this._distance = 0;
+        }
+        this._updateTooltipPosition(latLng);
+        this._updateTooltipDistance(this._distance + distance, distance);
+        this._distance += distance;
+      }
+      this._createTooltip(latLng);
+      
+      if (this._lastPoint && !this._layerGroupPath) {
+        this._layerGroupPath = L.polyline([this._lastPoint], {
+          color: 'black',
+          weight: 2,
+          clickable: false
+        }).addTo(this._layerGroup);
+      }
 
-      var distance = latLng.distanceTo(this._lastPoint);
-      this._updateTooltipDistance(this._distance + distance, distance);
+      if (this._layerGroupPath) {
+        this._layerGroupPath.addLatLng(latLng);
+      }
 
-      this._distance += distance;
-    }
-    this._createTooltip(latLng);
-    
-    // If this is already the second click, add the location to the fix path (create one first if we don't have one)
-    if (this._lastPoint && !this._layerGroupPath) {
-      this._layerGroupPath = L.polyline([this._lastPoint], {
-        color: 'black',
-        weight: 2,
-        clickable: false
+      if (this._lastCircle) {
+        this._layerGroup.removeLayer(this._lastCircle);
+      }
+
+      this._lastCircle = new L.CircleMarker(latLng, {
+        clickable: false,
+        color: 'red',
+        fill: true,
+        fillOpacity: 1,
+        opacity: 1,
+        radius: 2,
+        weight: 1
       }).addTo(this._layerGroup);
-    }
-
-    if (this._layerGroupPath) {
-      this._layerGroupPath.addLatLng(latLng);
-    }
-
-    // Upate the end marker to the current location
-    if (this._lastCircle) {
-      this._layerGroup.removeLayer(this._lastCircle);
-    }
-
-    this._lastCircle = new L.CircleMarker(latLng, {
-      clickable: false,
-      color: 'red',
-      fill: true,
-      fillOpacity: 1,
-      opacity: 1,
-      radius: 2,
-      weight: 1
-    }).addTo(this._layerGroup);
-    
-    this._lastCircle.on('click', function() { this._finishPath(); }, this);
-
-    // Save current location as last location
-    this._lastPoint = latLng;
+      
+      this._lastCircle.on('click', function() { this._finishPath(); }, this);
+      this._lastPoint = latLng;
     }
   },
   _resetPath: function() {
     this._currentCircles = this._currentTooltips = [];
     this._lastCircle = undefined;
-    this._lastPoint = undefined;
-    this._layerGroupPath = undefined;
     this._layerGroupPathTemp = undefined;
+    this._lastPoint = this._layerGroupPath = this._tooltip = undefined;
 
     if (this._activeMode === 'area'){
       this._area = 0;
-      this._lastPointArea = this._layerGroupPath = this._tooltip = undefined;
     } else {
       this._distance = 0;
-      this._lastPointDistance = this._layerGroupPath = this._tooltip = undefined;
     }
   },
   _startMeasuring: function(type){
@@ -410,7 +417,6 @@ var MeasureControl = L.Control.extend({
       this._menu.style.display = 'block';
       this._startMeasuring(this._activeMode);
     }
-    console.log(this._activeMode);
   },
   _updateTooltipArea: function(total) {
     this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateArea(total) + '</div>';
