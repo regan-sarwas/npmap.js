@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+#map {
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.npmap-control-measure ul li select {
+	background-color: #74746a;
+	border: none;
+	color: #FFF;
+	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	height: 28px;
+}
