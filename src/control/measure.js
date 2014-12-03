@@ -78,7 +78,7 @@ var MeasureControl = L.Control.extend({
       L.DomUtil.addClass(add, 'pressed');
       this._activateMode(mode);
     }
-    this._clearLastShape();
+    this._resetPath();
   },
   _buttonDistanceClick: function() {
     this._buttonClick(this._buttonDistance);
@@ -124,7 +124,7 @@ var MeasureControl = L.Control.extend({
   },
   _createTooltip: function(position) {
     var icon = L.divIcon({
-      className: 'leaflet-measure-tooltip',
+      className: 'leaflet-measure-tooltip leaflet-measure-tooltip-total-',
       iconAnchor: [-5, -5]
     });
     this._tooltip = L.marker(position, {
@@ -171,7 +171,6 @@ var MeasureControl = L.Control.extend({
   },
   _onKeyDown: function (e) {
     if(e.keyCode === 27) {
-      // If not in path exit measuring mode, else just finish path
       if(!this._lastPoint) {
         this._toggleMeasure();
       } else {
@@ -326,7 +325,7 @@ var MeasureControl = L.Control.extend({
         weight: 1
       }).addTo(this._layerGroup);
       
-      this._lastCircle.on('click', function() { this._finishPath(); }, this);
+      this._lastCircle.on('mousemove', function() { this._finishPath(); }, this);
       this._lastPoint = latLng;
     }
   },
@@ -382,11 +381,11 @@ var MeasureControl = L.Control.extend({
       }
     }
 
-    if (this._layerGroup) {
-      this._layerGroup.clearLayers();
-    }
+    // if (this._layerGroup) {
+    //   this._layerGroup.clearLayers();
+    // }
     
-    this._clearLastShape();
+    this._resetPath();
   },
   _toggleMeasure: function () {
     var map = this._map;
