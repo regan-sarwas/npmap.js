@@ -193,6 +193,10 @@ var MeasureControl = L.Control.extend({
         fillColor: 'red',
         weight: 2
       }).addTo(this._layerGroup);
+      if (this._activeMode === 'area') {
+        this._layerGroupPathTemp.addLatLng(latLng);
+      }
+      
     } else {
       this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
     }
@@ -212,8 +216,6 @@ var MeasureControl = L.Control.extend({
       if (this._activeMode === 'distance') {
         this._updateTooltipDistance(this._distance + distance, distance);
       } else {
-        // this._layerGroupPathTemp.addLatLng(latLng);
-        // this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
         this._updateTooltipArea(this._area + area);
       }
     }
