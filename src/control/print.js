@@ -15,7 +15,7 @@ var PrintControl = L.Control.extend({
     if (this.options.ui === true) {
       this._li = L.DomUtil.create('li', '');
       this._button = L.DomUtil.create('button', 'print', this._li);
-      this._button.title = 'Print the map';
+      this._button.setAttribute('alt', 'Print the map');
       L.DomEvent.addListener(this._button, 'click', this.print, this);
     }
 

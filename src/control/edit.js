@@ -171,7 +171,7 @@ var EditControl = L.Control.extend({
 
     if (this.options.toolbar) {
       button = L.DomUtil.create('button', type, container);
-      button.title = title;
+      button.setAttribute('alt', title);
       L.DomEvent.disableClickPropagation(button);
       L.DomEvent.on(button, 'click', function() {
         if (me._activeMode && me._activeMode.handler.type === type) {
