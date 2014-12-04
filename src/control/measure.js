@@ -1,11 +1,6 @@
 /* global L */
 /* jshint camelcase: false */
 
-// need to remove red line on click
-// need to get acre running measurement working
-// need to remove clear layers
-// need to remove listeners from map if button is closed
-
 'use strict';
 
 require('leaflet-draw');
@@ -57,8 +52,7 @@ var MeasureControl = L.Control.extend({
   },
   _activateMode: function(mode) {
     this._activeMode = mode;
-    // order of this needs to changes
-    this._stopMeasuring();
+    this._resetPath();
 
     if (mode === 'area') {
       this._startMeasuring('area');
@@ -86,9 +80,6 @@ var MeasureControl = L.Control.extend({
       L.DomUtil.addClass(add, 'pressed');
       this._activateMode(mode);
     }
-
-    // order of this needs to change... 
-    // this._stopMeasuring();
     this._resetPath();
   },
   _buttonDistanceClick: function() {
@@ -117,21 +108,19 @@ var MeasureControl = L.Control.extend({
   _calculateDistance: function(val) {
     var options = this._selectUnit.options,
     unit = '';
-    if (val !== 0) {
-      for (var i=0; i < options.length; i++){
-        var option = options[options.selectedIndex].value;
-        if ( option === 'Miles'){
-          var miles = (val * 0.000621371).toFixed(2).toLocaleString();
-          unit = ' mi';
-          return miles + unit;
-        } else if (option === 'Feet') {
-          var feet = (val * 3.28084).toFixed(2).toLocaleString();
-          unit = ' ft';
-          return feet + unit;
-        } else {
-          unit = ' meters';
-          return val.toFixed(2) + unit;
-        }
+    for (var i=0; i < options.length; i++){
+      var option = options[options.selectedIndex].value;
+      if ( option === 'Miles'){
+        var miles = (val * 0.000621371).toFixed(2).toLocaleString();
+        unit = ' mi';
+        return miles + unit;
+      } else if (option === 'Feet') {
+        var feet = (val * 3.28084).toFixed(2).toLocaleString();
+        unit = ' ft';
+        return feet + unit;
+      } else {
+        unit = ' meters';
+        return val.toFixed(2) + unit;
       }
     }
   },
@@ -186,8 +175,6 @@ var MeasureControl = L.Control.extend({
     if(e.keyCode === 27) {
       if(!this._lastPoint) {
         this._toggleMeasure();
-      } else {
-        this._finishPath();
       }
     }
   },
@@ -202,8 +189,7 @@ var MeasureControl = L.Control.extend({
       this._layerGroupPathTemp = L.polyline([this._lastPoint, latLng], {
         clickable: false,
         color: 'red',
-        fillColor: 'red',
-        weight: 2
+        weight: 1
       }).addTo(this._layerGroup);
       if (this._activeMode === 'area') {
         this._layerGroupPathTemp.addLatLng(latLng);
@@ -217,10 +203,10 @@ var MeasureControl = L.Control.extend({
       var distance = latLng.distanceTo(this._lastPoint),
       area = L.GeometryUtil.geodesicArea(this._layerGroupPathTemp.getLatLngs());
 
-      if(!this._distance) {
+      if (!this._distance) {
         this._distance = 0;
       }
-      if(!this._area) {
+      if (!this._area) {
         this._area = 0;
       }
 
@@ -228,11 +214,7 @@ var MeasureControl = L.Control.extend({
       if (this._activeMode === 'distance') {
         this._updateTooltipDistance(this._distance + distance, distance);
       } else {
-        console.log(this._calculateArea(area));
-        // where is total coming from?
-        this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateArea(this._area) + '</div>'+
-        '<div class="leaflet-measure-tooltip-difference">(+' + this._calculateArea(area) + ')</div>';
-
+        this._updateTooltipArea(this._area + area, area);
       }
     }
   },
@@ -263,7 +245,7 @@ var MeasureControl = L.Control.extend({
         fillOpacity: 1,
         opacity: 1,
         radius: 2,
-        weight: 1
+        weight: 2
       }).addTo(this._layerGroup);
       this._currentCircles.push(circle);
       this._lastPoint = latLng;
@@ -272,7 +254,7 @@ var MeasureControl = L.Control.extend({
         this._area = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
         this._createTooltip(latLng);
         this._updateTooltipPosition(latLng);
-        this._updateTooltipArea(this._area);
+        this._updateTooltipArea(this._area, 0);
       }
 
       if (this._layerGroupPath) {
@@ -290,7 +272,7 @@ var MeasureControl = L.Control.extend({
         fillOpacity: 1,
         opacity: 1,
         radius: 2,
-        weight: 1
+        weight: 2
       }).addTo(this._layerGroup);
       
       this._lastCircle.on('click', function() { this._finishPath(); }, this);
@@ -317,7 +299,7 @@ var MeasureControl = L.Control.extend({
       this._createTooltip(latLng);
       
       if (this._lastPoint && !this._layerGroupPath) {
-        this._layerGroupPath = L.polyline([this._lastPoint], {
+        this._layerGroupPath = new L.polyline([this._lastPoint], {
           color: 'red',
           weight: 2,
           clickable: false
@@ -339,7 +321,7 @@ var MeasureControl = L.Control.extend({
         fillOpacity: 1,
         opacity: 1,
         radius: 2,
-        weight: 1
+        weight: 2
       }).addTo(this._layerGroup);
       
       this._lastCircle.on('click', function() { this._finishPath(); }, this);
@@ -389,7 +371,7 @@ var MeasureControl = L.Control.extend({
     L.DomEvent
       .off(document, 'keydown', this._onKeyDown, this)
       .off(map, 'mousemove', this._mouseMove, this)
-      .off(map, 'click', this._toggleMeasure, this)
+      .off(map, 'click', this._mouseClickArea, this)
       .off(map, 'dblclick', this._finishPath, this);
 
     if (this._activeMode === 'distance'){
@@ -401,7 +383,6 @@ var MeasureControl = L.Control.extend({
     if (this._layerGroup) {
       this._layerGroup.clearLayers();
     }
-    
     this._resetPath();
   },
   _toggleMeasure: function () {
@@ -427,6 +408,7 @@ var MeasureControl = L.Control.extend({
       }
 
       this._doubleClickZoom = null;
+      console.log(L.DomUtil);
     } else {
       L.DomUtil.addClass(this._button, 'pressed');
       map._container.style.cursor = 'crosshair';
@@ -435,17 +417,25 @@ var MeasureControl = L.Control.extend({
       this._menu.style.display = 'block';
       this._startMeasuring(this._activeMode);
     }
-    // delete map events here... 
   },
-  _updateTooltipArea: function(total) {
-    this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateArea(total) + '</div>';
+  _updateTooltipArea: function(total, difference) {
+    var totalArea = this._calculateArea(total),
+      differenceArea = this._calculateArea(difference);
+
+    var text = '<div class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
+    console.log()
+    if (differenceArea !== totalArea && difference !== 0) {
+      text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceArea + ')</div>';
+    }
+
+    this._tooltip._icon.innerHTML = text;
   },
   _updateTooltipDistance: function(total, difference) {
     var totalDistance = this._calculateDistance(total),
       differenceDistance = this._calculateDistance(difference);
 
     var text = '<div class="leaflet-measure-tooltip-total">' + totalDistance + '</div>';
-    if (differenceDistance !== totalDistance) {
+    if (differenceDistance !== totalDistance && difference !== 0) {
       text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceDistance + ')</div>';
     }
 
