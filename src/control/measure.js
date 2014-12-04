@@ -15,14 +15,16 @@ var MeasureControl = L.Control.extend({
 
     this._container = L.DomUtil.create('div', 'npmap-control-measure leaflet-bar leaflet-control');
     this._button = L.DomUtil.create('button', 'leaflet-bar-single', this._container);
-    this._button.title = 'Measure distance or calculate area';
+    this._button.setAttribute('alt', 'Measure distance or calculate area');
     this._menu = L.DomUtil.create('ul', '', this._container);
     liDistance = L.DomUtil.create('li', '', this._menu);
     liArea = L.DomUtil.create('li', '', this._menu);
     this._buttonArea = L.DomUtil.create('button', '', liArea);
     this._buttonArea.innerHTML = 'Area';
+    this._buttonArea.setAttribute('alt', 'Calculate area');
     this._buttonDistance = L.DomUtil.create('button', 'pressed', liDistance);
     this._buttonDistance.innerHTML = 'Distance';
+    this._buttonDistance.setAttribute('alt', 'Measure distance');
     this._activeMode = 'distance';
 
     L.DomEvent

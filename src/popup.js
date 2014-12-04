@@ -225,6 +225,14 @@ var Popup = L.Popup.extend({
         }
       }
 
+      // TODO: Wrap title in an h3 (I believe?) with a zIndex of -1 and give it focus when popup is shown.
+
+
+
+
+
+
+
       if (config.title) {
         obj = null;
 

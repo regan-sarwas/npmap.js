@@ -33,7 +33,7 @@ var GeocoderControl = L.Control.extend({
       stopPropagation = L.DomEvent.stopPropagation;
 
     this._button = L.DomUtil.create('button', 'search', container);
-    this._input = L.DomUtil.create('input', null, container);
+    this._input = L.DomUtil.create('input', '', container);
     this._ul = L.DomUtil.create('ul', 'leaflet-control', container);
     this._initalizeNpsIndex();
     L.DomEvent.disableClickPropagation(this._button);
@@ -49,7 +49,7 @@ var GeocoderControl = L.Control.extend({
       .on(this._ul, 'mousewheel', stopPropagation);
 
     this._container = container;
-    this._button.title = 'Search';
+    this._button.setAttribute('alt', 'Search');
     this._input.setAttribute('aria-activedescendant', null);
     this._input.setAttribute('aria-autocomplete', 'list');
     this._input.setAttribute('aria-expanded', false);

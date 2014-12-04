@@ -8,7 +8,7 @@ var ShareControl = L.Control.extend({
   initialize: function() {
     this._li = L.DomUtil.create('li', '');
     this._button = L.DomUtil.create('button', 'share', this._li);
-    this._button.title = 'Share the map';
+    this._button.setAttribute('alt', 'Share the map');
     L.DomEvent.addListener(this._button, 'click', this.share, this);
 
     return this;

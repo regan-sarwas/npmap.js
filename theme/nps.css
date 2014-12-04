@@ -23,9 +23,14 @@
     text-align: left;
     text-indent: -999em;
   }
+
+  /* TODO: Come up with a color that fits into the NPS graphic identity */
+
+  /*
   .npmap a:focus, .npmap button:focus, .npmap div:focus, .npmap input:focus {
-    outline-color: #b28000 !important; /* Only necessary because NPS Bootstrap isn't updated yet */
+    outline-color: #b28000 !important;  Only necessary because NPS Bootstrap isn't updated yet 
   }
+  */
 .npmap-modules {
   -webkit-box-shadow: 2px 0 2px rgba(0,0,0,.2);
      -moz-box-shadow: 2px 0 2px rgba(0,0,0,.2);

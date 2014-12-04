@@ -25,8 +25,7 @@ var SmallZoomControl = L.Control.extend({
   _createButton: function(title, clsName, container, handler, context) {
     var button = L.DomUtil.create('button', clsName, container);
 
-    button.title = title;
-
+    button.setAttribute('alt', title);
     L.DomEvent.disableClickPropagation(button);
     L.DomEvent
       .on(button, 'click', L.DomEvent.preventDefault)
