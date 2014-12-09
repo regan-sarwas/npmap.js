@@ -25,6 +25,36 @@
       "type": "bing"
     }
   },
+  "cartodb": {
+    "darkMatter": {
+      "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
+      "icon": "street",
+      "name": "CartoDB Dark Matter",
+      "type": "tiled",
+      "url": "http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
+    },
+    "darkMatterNoLabels": {
+      "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
+      "icon": "street",
+      "name": "CartoDB Dark Matter (No Labels)",
+      "type": "tiled",
+      "url": "http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"
+    },
+    "positron": {
+      "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
+      "icon": "street",
+      "name": "CartoDB Positron",
+      "type": "tiled",
+      "url": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
+    },
+    "positronNoLabels": {
+      "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
+      "icon": "street",
+      "name": "CartoDB Positron (No Labels)",
+      "type": "tiled",
+      "url": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
+    }
+  },
   "esri": {
     "gray": {
       "attribution": "Copyright: &copy;2013 Esri, DeLorme, NAVTEQ",
