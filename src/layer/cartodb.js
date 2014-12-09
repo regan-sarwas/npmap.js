@@ -48,6 +48,7 @@ var CartoDbLayer = L.TileLayer.extend({
     reqwest({
       crossOrigin: supportsCors === 'yes' ? true : false,
       error: function(error) {
+        error.message = JSON.parse(error.response).error[0];
         me.fire('error', error);
         me.errorFired = error;
       },
@@ -97,7 +98,7 @@ var CartoDbLayer = L.TileLayer.extend({
         reqwest({
           crossOrigin: supportsCors === 'yes' ? true : false,
           error: function(error) {
-            error.message = JSON.parse(error.response).errors[0];
+            error.message = JSON.parse(error.response).error[0];
             me.fire('error', error);
           },
           success: function(response) {
