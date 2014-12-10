@@ -3,14 +3,131 @@
 
 'use strict';
 
-require('leaflet-draw');
+L.Polyline.include({
+  intersects: function () {
+    debugger;
+    var points = this._layerGroupPath,
+      len = points ? points.length : 0,
+      i, p, p1;
+
+    if (this._tooFewPointsForIntersection()) {
+      return false;
+    }
+
+    for (i = len - 1; i >= 3; i--) {
+      p = points[i - 1];
+      p1 = points[i];
+
+
+      if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  // Check for intersection if new latlng was added to this polyline.
+  // NOTE: does not support detecting intersection for degenerate cases.
+  newLatLngIntersects: function (latLng, skipFirst) {
+    // Cannot check a polyline for intersecting lats/lngs when not added to the map
+    if (!this._map) {
+      return false;
+    }
+
+    return this.newPointIntersects(this._map.latLngToLayerPoint(latLng), skipFirst);
+  },
+
+  // Check for intersection if new point was added to this polyline.
+  // newPoint must be a layer point.
+  // NOTE: does not support detecting intersection for degenerate cases.
+  newPointIntersects: function (newPoint, skipFirst) {
+    var points = this._layerGroupPath,
+      len = points ? points.length : 0,
+      lastPoint = points ? points[len - 1] : null,
+      // The previous previous line segment. Previous line segment doesn't need testing.
+      maxIndex = len - 2;
+
+    if (this._tooFewPointsForIntersection(1)) {
+      return false;
+    }
+
+    return this._lineSegmentsIntersectsRange(lastPoint, newPoint, maxIndex, skipFirst ? 1 : 0);
+  },
+
+  // Polylines with 2 sides can only intersect in cases where points are collinear (we don't support detecting these).
+  // Cannot have intersection when < 3 line segments (< 4 points)
+  _tooFewPointsForIntersection: function (extraPoints) {
+    var points = this._layerGroupPath,
+      len = points ? points.length : 0;
+    // Increment length by extraPoints if present
+    len += extraPoints || 0;
+
+    return !this._layerGroupPath || len <= 3;
+  },
+
+  // Checks a line segment intersections with any line segments before its predecessor.
+  // Don't need to check the predecessor as will never intersect.
+  _lineSegmentsIntersectsRange: function (p, p1, maxIndex, minIndex) {
+    var points = this._layerGroupPath,
+      p2, p3;
+
+    minIndex = minIndex || 0;
+
+    // Check all previous line segments (beside the immediately previous) for intersections
+    for (var j = maxIndex; j > minIndex; j--) {
+      p2 = points[j - 1];
+      p3 = points[j];
+
+      if (L.LineUtil.segmentsIntersect(p, p1, p2, p3)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+});
+
+L.Polygon.include({
+  // Checks a polygon for any intersecting line segments. Ignores holes.
+  intersects: function () {
+    debugger;
+    var polylineIntersects,
+      points = this._layerGroupPath,
+      len, firstPoint, lastPoint, maxIndex;
+
+    if (this._tooFewPointsForIntersection()) {
+      return false;
+    }
+
+    polylineIntersects = L.Polyline.prototype.intersects.call(this);
+
+    // If already found an intersection don't need to check for any more.
+    if (polylineIntersects) {
+      return true;
+    }
+
+    len = points.length;
+    firstPoint = points[0];
+    lastPoint = points[len - 1];
+    maxIndex = len - 2;
+
+    // Check the line segment between last and first point. Don't need to check the first line segment (minIndex = 1)
+    return this._lineSegmentsIntersectsRange(lastPoint, firstPoint, maxIndex, 1);
+  }
+});
 
 var MeasureControl = L.Control.extend({
   includes: L.Mixin.Events,
   options: {
+    allowIntersection: false,
+    drawError: {
+      color: 'orange',
+      timeout: 1000
+    },
     position: 'topleft'
   },
-  onAdd: function () {
+  onAdd: function() {
     var liArea, liDistance, liSelect;
 
     this._container = L.DomUtil.create('div', 'npmap-control-measure leaflet-bar leaflet-control');
@@ -23,9 +140,9 @@ var MeasureControl = L.Control.extend({
     liArea = L.DomUtil.create('li', '', this._menu);
     liSelect = L.DomUtil.create('li', '', this._menu);
 
-    this._buttonArea = L.DomUtil.create('button', '', liArea);
+    this._buttonArea = L.DomUtil.create('button', 'polygon', liArea);
     this._buttonArea.innerHTML = 'Area';
-    this._buttonDistance = L.DomUtil.create('button', 'pressed', liDistance);
+    this._buttonDistance = L.DomUtil.create('button', 'pressed polyline', liDistance);
     this._buttonDistance.innerHTML = 'Distance';
     this._selectUnit = L.DomUtil.create('select','', liSelect);
     this._selectUnit.innerHTML =  '<option value="Feet" class="distance" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
@@ -39,7 +156,6 @@ var MeasureControl = L.Control.extend({
       .on(this._button, 'click', this._toggleMeasure, this)
       .on(this._button, 'dblclick', L.DomEvent.stopPropagation)
       .on(this._button, 'dblclick', L.DomEvent.preventDefault)
-
       .on(this._buttonArea, 'click', this._buttonAreaClick, this)
       .on(this._buttonDistance, 'click', this._buttonDistanceClick, this)
 
@@ -48,7 +164,6 @@ var MeasureControl = L.Control.extend({
       .on(this._menu, 'dblclick', L.DomEvent.stopPropagation);
 
     return this._container;
-    // remove listener so that can't measure on button
   },
   _activateMode: function(mode) {
     this._activeMode = mode;
@@ -184,17 +299,18 @@ var MeasureControl = L.Control.extend({
     if (!latLng || !this._lastPoint) {
       return;
     }
-    
+
     if (!this._layerGroupPathTemp) {
-      this._layerGroupPathTemp = L.polyline([this._lastPoint, latLng], {
+      this._layerGroupTemp = L.layerGroup().addTo(this._map);
+      this._layerGroupPathTemp = new L.polyline([this._lastPoint, latLng], {
         clickable: false,
         color: 'red',
-        weight: 1
-      }).addTo(this._layerGroup);
+        weight: 1.5,
+        dashArray: '6,3'
+      }).addTo(this._layerGroupTemp);
       if (this._activeMode === 'area') {
         this._layerGroupPathTemp.addLatLng(latLng);
       }
-      
     } else {
       this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
     }
@@ -206,78 +322,83 @@ var MeasureControl = L.Control.extend({
       if (!this._distance) {
         this._distance = 0;
       }
-      if (!this._area) {
-        this._area = 0;
-      }
 
       this._updateTooltipPosition(latLng);
       if (this._activeMode === 'distance') {
         this._updateTooltipDistance(this._distance + distance, distance);
       } else {
-        this._updateTooltipArea(this._area + area, area);
+        this._updateTooltipArea(this._area + area);
       }
     }
   },
-  _mouseClickArea: function(e){
-    if (this._activeMode === 'area'){
-      var latLng = e.latlng,
-        circle;
+  _mouseClickArea: function (e) {
+    var latLng = e.latlng,
+      circle,
+      markersLength = this._currentCircles.length;
 
-      if (!latLng) {
-        return;
-      }
-
-      if (this._layerGroupPath) {
-        this._layerGroupPath.addLatLng(latLng);
-      } else {
-        this._layerGroupPath = new L.Polygon([latLng], {
-          clickable: false,
-          color: 'red',
-          fillColor: 'red',
-          weight: 2
-        }).addTo(this._layerGroup);
-      }
-
-      circle = new L.CircleMarker(latLng, {
-        clickable: false,
-        color: 'red',
-        fill: true,
-        fillOpacity: 1,
-        opacity: 1,
-        radius: 2,
-        weight: 2
-      }).addTo(this._layerGroup);
-      this._currentCircles.push(circle);
-      this._lastPoint = latLng;
-
-      if (this._currentCircles.length > 2) {
-        this._area = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
-        this._createTooltip(latLng);
-        this._updateTooltipPosition(latLng);
-        this._updateTooltipArea(this._area, 0);
-      }
-
-      if (this._layerGroupPath) {
-        this._layerGroupPath.addLatLng(latLng);
-      }
-
-      if (this._lastCircle) {
-        this._layerGroup.removeLayer(this._lastCircle);
-      }
-
-      this._lastCircle = new L.CircleMarker(latLng, {
-        clickable: false,
-        color: 'red',
-        fill: true,
-        fillOpacity: 1,
-        opacity: 1,
-        radius: 2,
-        weight: 2
-      }).addTo(this._layerGroup);
-      
-      this._lastCircle.on('click', function() { this._finishPath(); }, this);
-      this._lastPoint = latLng;
+    if (!latLng) {
+      return;
     }
+    if (this._layerGroupPath) {
+      var intersects = this._layerGroupPath.newLatLngIntersects(latLng);
+      if (markersLength > 2 && intersects){
+        this._tooltip._icon.innerHTML = '<p style="color:red">Error: Lines cannot cross!</p>';
+        return;
+      } else {
+        this._layerGroupPath.addLatLng(latLng);
+      }
+    } else {
+      this._layerGroupPath = new L.Polygon([latLng], {
+        clickable: false,
+        color: 'red',
+        fillColor: 'red',
+        weight: 2,
+      }).addTo(this._layerGroup);
+    }
+
+    circle = new L.CircleMarker(latLng, {
+      clickable: false,
+      color: 'red',
+      fill: true,
+      fillOpacity: 1,
+      opacity: 1,
+      radius: 2,
+      weight: 2
+    }).addTo(this._layerGroup);
+    this._currentCircles.push(circle);
+    this._lastPoint = latLng;
+
+    if (this._currentCircles.length > 2) {
+      var latLngs = this._layerGroupPath.getLatLngs();
+      this._area = L.GeometryUtil.geodesicArea(latLngs);
+      this._createTooltip(latLng);
+      this._updateTooltipPosition(latLng);
+      this._updateTooltipArea(this._area);
+    }
+
+    if (this._layerGroupPath) {
+      this._layerGroupPath.addLatLng(latLng);
+    }
+
+    if (this._lastCircle) {
+      this._layerGroup.removeLayer(this._lastCircle);
+    }
+
+    this._lastCircle = new L.CircleMarker(latLng, {
+      clickable: false,
+      color: 'red',
+      fill: true,
+      fillOpacity: 1,
+      opacity: 1,
+      radius: 2,
+      weight: 2
+    }).addTo(this._layerGroup);
+  
+    this._lastCircle.on('click', function() {
+      this._finishPath();
+    }, this);
+    
+    this._lastPoint = latLng;
   },
   _mouseClickDistance: function(e) {
     if (this._activeMode === 'distance'){
@@ -371,7 +492,7 @@ var MeasureControl = L.Control.extend({
     L.DomEvent
       .off(document, 'keydown', this._onKeyDown, this)
       .off(map, 'mousemove', this._mouseMove, this)
-      .off(map, 'click', this._mouseClickArea, this)
+      .off(map, 'click', clickFn, this)
       .off(map, 'dblclick', this._finishPath, this);
 
     if (this._activeMode === 'distance'){
@@ -408,7 +529,6 @@ var MeasureControl = L.Control.extend({
       }
 
       this._doubleClickZoom = null;
-      console.log(L.DomUtil);
     } else {
       L.DomUtil.addClass(this._button, 'pressed');
       map._container.style.cursor = 'crosshair';
@@ -418,17 +538,10 @@ var MeasureControl = L.Control.extend({
       this._startMeasuring(this._activeMode);
     }
   },
-  _updateTooltipArea: function(total, difference) {
-    var totalArea = this._calculateArea(total),
-      differenceArea = this._calculateArea(difference);
+  _updateTooltipArea: function(total) {
+    var totalArea = this._calculateArea(total);
 
-    var text = '<div class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
-    console.log()
-    if (differenceArea !== totalArea && difference !== 0) {
-      text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceArea + ')</div>';
-    }
-
-    this._tooltip._icon.innerHTML = text;
+    this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
   },
   _updateTooltipDistance: function(total, difference) {
     var totalDistance = this._calculateDistance(total),
