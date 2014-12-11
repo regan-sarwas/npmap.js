@@ -7,12 +7,21 @@ var topojson = require('../util/topojson'),
   util = require('../util/util');
 
 module.exports = {
+  _types: {
+    'LineString': 'line',
+    'Point': 'point',
+    'Polygon': 'polygon'
+  },
   addData: function(feature) {
     if (/\btopology\b/i.test(feature.type)) {
       for (var prop in feature.objects) {
-        L.GeoJSON.prototype.addData.call(this, topojson.feature(feature, feature.objects[prop]));
+        var geojson = topojson.feature(feature, feature.objects[prop]);
+
+        this._checkGeometryType(geojson);
+        L.GeoJSON.prototype.addData.call(this, geojson);
       }
     } else {
+      this._checkGeometryType(feature);
       L.GeoJSON.prototype.addData.call(this, feature);
     }
   },
@@ -31,6 +40,19 @@ module.exports = {
 
     if (attribution && this._map.attributionControl) {
       this._map.attributionControl.addAttribution(attribution);
+    }
+  },
+  _checkGeometryType: function(feature) {
+    if (!this._geometryTypes) {
+      this._geometryTypes = [];
+    }
+
+    if (feature.geometry && feature.geometry.type) {
+      var type = this._types[feature.geometry.type];
+
+      if (this._geometryTypes.indexOf(type) === -1) {
+        this._geometryTypes.push(type);
+      }
     }
   },
   _removeAttribution: function() {
