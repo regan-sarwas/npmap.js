@@ -5,6 +5,53 @@
 require('leaflet-draw');
 require('leaflet-geometryutil');
 
+// document.addEventListener('DOMContentLoaded', function(){
+L.GeometryUtil.readableDistance = function (distance, unit) {
+  document.addEventListener('DOMContentLoaded', function(callback){
+    var select = document.getElementsByTagName('select')[0],
+    opt = select.options;
+    console.log(opt);
+    for (var i=0; i < opt.length; i++){
+      var option = opt[opt.selectedIndex].value;
+      if ( option === 'Miles'){
+        var miles = (distance * 0.000621371).toFixed(2).toLocaleString();
+        unit = ' mi';
+        return miles + unit;
+      } else if (option === 'Feet') {
+        var feet = (distance * 3.28084).toFixed(2).toLocaleString();
+        unit = ' ft';
+        return feet + unit;
+      } else {
+        unit = ' meters';
+        return distance.toFixed(2) + unit;
+      }
+    }
+    callback();
+  });
+};
+
+L.GeometryUtil.readableArea = function (distance, unit) {
+  document.addEventListener('DOMContentLoaded', function() {
+    var select = document.getElementsByTagName('select')[0],
+    opt = select.options;
+    console.log(opt);
+
+    for (var i=0; i < opt.length; i++){
+      var option = opt[opt.selectedIndex].value;
+    
+      if (option === 'Hectares'){
+        var hectares = (distance/ 10000).toFixed(2).toLocaleString();
+        unit = ' ha';
+        return hectares + unit;
+      } else {
+        var acres = (distance/ 4046.86).toFixed(2).toLocaleString();
+        unit = ' acres';
+        return acres + unit;
+      }
+    }
+  });
+};
+
 var MeasureControl = L.Control.Draw.extend({
   includes: L.Mixin.Events,
   options: {
@@ -20,12 +67,14 @@ var MeasureControl = L.Control.Draw.extend({
         weight: 2,
       },
       showArea: true,
+      metric:true
     },
     polyline: {
       shapeOptions: {
         weight: 2,
       },
       showLength: true,
+      metric:true,
     },
     position:'topleft',
     toolbar: true
@@ -60,7 +109,7 @@ var MeasureControl = L.Control.Draw.extend({
     this._buttonDistance = L.DomUtil.create('button', 'pressed polyline', liDistance);
     this._buttonDistance.innerHTML = 'Distance';
     this._selectUnit = L.DomUtil.create('select','', liSelect);
-    this._selectUnit.id = 'units'
+    // this._selectUnit.id = 'units';
     this._selectUnit.innerHTML =  '<option value="Feet" class="polyline" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
     '<option value="Miles" class="distance">Miles</option>';
 
@@ -237,50 +286,4 @@ L.Map.addInitHook(function() {
 
 module.exports = function(options) {
   return new MeasureControl(options);
-};
-
-
-L.GeometryUtil.readableDistance = (function (distance, unit) {
-  document.addEventListener('DOMContentLoaded', function() {
-    var select = document.getElementsByTagName('select')[0];
-    // var select = document.getElementsById('units'),
-    var opt = select.options;
-    for (var i=0; i < opt.length; i++){
-      var option = opt[opt.selectedIndex].value;
-      if ( option === 'Miles'){
-        var miles = (distance * 0.000621371).toFixed(2).toLocaleString();
-        unit = ' mi';
-        return miles + unit;
-      } else if (option === 'Feet') {
-        var feet = (distance * 3.28084).toFixed(2).toLocaleString();
-        unit = ' ft';
-        return feet + unit;
-      } else {
-        unit = ' meters';
-        return distance.toFixed(2) + unit;
-      }
-    }
-  });
-})();
-
-L.GeometryUtil.readableArea = function (distance, unit) {
-  document.addEventListener('DOMContentLoaded', function() {
-    var select = document.getElementsByTagName('select')[0],
-    opt = select.options;
-    console.log(opt);
-
-    for (var i=0; i < opt.length; i++){
-      var option = opt[opt.selectedIndex].value;
-      
-      if (option === 'Hectares'){
-        var hectares = (distance/ 10000).toFixed(2).toLocaleString();
-        unit = ' ha';
-        return hectares + unit;
-      } else {
-        var acres = (distance/ 4046.86).toFixed(2).toLocaleString();
-        unit = ' acres';
-        return acres + unit;
-      }
-    }
-  });
 };
