@@ -37,7 +37,7 @@ var FullscreenControl = L.Control.extend({
     // TODO: Also add ARIA attributes.
     this._li = L.DomUtil.create('li', '');
     this._button = L.DomUtil.create('button', 'fullscreen enter', this._li);
-    this._button.title = 'Enter fullscreen';
+    this._button.setAttribute('alt', 'Enter fullscreen');
     L.DomEvent.addListener(this._button, 'click', this.fullscreen, this);
 
     return this;
@@ -108,7 +108,7 @@ var FullscreenControl = L.Control.extend({
         this._isFullscreen = false;
         L.DomUtil.removeClass(this._button, 'exit');
         L.DomUtil.addClass(this._button, 'enter');
-        this._button.title = 'Enter fullscreen';
+        this._button.setAttribute('alt', 'Enter fullscreen');
         this._map.fire('exitfullscreen');
 
         if (this._frame && window.postMessage) {
@@ -174,7 +174,7 @@ var FullscreenControl = L.Control.extend({
         this._isFullscreen = true;
         L.DomUtil.removeClass(this._button, 'enter');
         L.DomUtil.addClass(this._button, 'exit');
-        this._button.title = 'Exit fullscreen';
+        this._button.setAttribute('alt', 'Exit fullscreen');
         this._map.fire('enterfullscreen');
 
         if (this._frame && window.postMessage) {

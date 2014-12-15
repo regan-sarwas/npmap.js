@@ -112,7 +112,7 @@ var OverviewControl = L.Control.extend({
         stop = L.DomEvent.stopPropagation;
 
     button.innerHTML = html;
-    button.title = title;
+    button.setAttribute('alt', title);
 
     L.DomEvent
       .on(button, 'click', stop)
@@ -304,10 +304,10 @@ var OverviewControl = L.Control.extend({
 
     if (!this._minimized) {
       this._minimize();
-      this._toggleDisplayButton.title = 'Show Overview';
+      this._toggleDisplayButton.setAttribute('alt', 'Show Overview');
     } else {
       this._restore();
-      this._toggleDisplayButton.title = 'Hide Overview';
+      this._toggleDisplayButton.setAttribute('alt', 'Hide Overview');
     }
   }
 });

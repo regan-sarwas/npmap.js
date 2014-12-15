@@ -20,6 +20,13 @@ var CartoDbLayer = L.TileLayer.extend({
       3
     ]
   },
+  statics: {
+    GEOMETRY_TYPES: {
+      'st_multilinestring': 'line',
+      'st_multipolygon': 'polygon',
+      'st_point': 'point'
+    }
+  },
   _update: function() {
     if (this._urlTile) {
       L.TileLayer.prototype._update.call(this);
@@ -41,6 +48,7 @@ var CartoDbLayer = L.TileLayer.extend({
     reqwest({
       crossOrigin: supportsCors === 'yes' ? true : false,
       error: function(error) {
+        error.message = JSON.parse(error.response).error[0];
         me.fire('error', error);
         me.errorFired = error;
       },
@@ -90,7 +98,7 @@ var CartoDbLayer = L.TileLayer.extend({
         reqwest({
           crossOrigin: supportsCors === 'yes' ? true : false,
           error: function(error) {
-            error.message = JSON.parse(error.response).errors[0];
+            error.message = JSON.parse(error.response).error[0];
             me.fire('error', error);
           },
           success: function(response) {
@@ -124,6 +132,25 @@ var CartoDbLayer = L.TileLayer.extend({
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
       url: util.buildUrl(this._urlApi, {
         q: 'select * from ' + this.options.table + ' limit 0;'
+      })
+    });
+    reqwest({
+      crossOrigin: supportsCors === 'yes' ? true : false,
+      success: function(response) {
+        me._geometryTypes = [];
+
+        if (response && response.rows && response.rows.length) {
+          var geometryType = response.rows[0].st_geometrytype;
+
+          if (geometryType) {
+            me._geometryTypes.push(CartoDbLayer.GEOMETRY_TYPES[geometryType.toLowerCase()]);
+          }
+        }
+      },
+      type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
+      url: util.buildUrl(this._urlApi, {
+        //q: 'select DISTINCT ST_GeometryType(the_geom) from ' + this.options.table + ' where the_geom IS NOT NULL;'
+        q: 'select ST_GeometryType(the_geom) from ' + this.options.table + ' where the_geom IS NOT NULL limit 1;'
       })
     });
   },
