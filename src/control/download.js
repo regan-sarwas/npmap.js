@@ -8,7 +8,7 @@ var DownloadControl = L.Control.extend({
   initialize: function() {
     this._li = L.DomUtil.create('li', '');
     this._button = L.DomUtil.create('button', 'download', this._li);
-    this._button.title = 'Download data';
+    this._button.setAttribute('alt', 'Download data');
     L.DomEvent.addListener(this._button, 'click', this.download, this);
 
     return this;

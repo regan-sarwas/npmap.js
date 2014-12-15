@@ -104,6 +104,8 @@ var Map = L.Map.extend({
       toolbarRight = L.DomUtil.create('ul', 'right'),
       zoomifyMode = false;
 
+    // For accessibility purposes.
+    map.tabIndex = 0;
     config = me._toLeaflet(config);
     config.div.insertBefore(npmap, config.div.hasChildNodes() ? config.div.childNodes[0] : null);
     npmap.appendChild(modules);
@@ -120,7 +122,6 @@ var Map = L.Map.extend({
     me._controllingCursor = true;
     me._controllingInteractivity = true;
     me._defaultCursor = me.getContainer().style.cursor;
-    me.getContainer().tabIndex = 1;
 
     me.on('autopanstart', function() {
       me._setCursor('');
@@ -271,7 +272,7 @@ var Map = L.Map.extend({
       this._divModuleButtons = L.DomUtil.create('div', 'npmap-modules-buttons', this._container.parentNode);
       this._buttonCloseModules = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
       this._buttonCloseModules.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/times' + (L.Browser.retina ? '@2x' : '') + '.png)';
-      this._buttonCloseModules.title = 'Close';
+      this._buttonCloseModules.setAttribute('alt', 'Close');
       L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
 
       for (i = 0; i < modules.length; i++) {
@@ -297,7 +298,7 @@ var Map = L.Map.extend({
 
         button = L.DomUtil.create('button', 'npmap-modules-buttons-button', this._divModuleButtons);
         button.id = 'npmap-modules-buttons_' + title.replace(/ /g, '_');
-        button.title = title;
+        button.setAttribute('alt', title);
         button.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/' + icon + (L.Browser.retina ? '@2x' : '') + '.png)';
         div.id = 'npmap-module_' + title.replace(/ /g, '_');
 

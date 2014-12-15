@@ -4,58 +4,6 @@
 
 require('leaflet-draw');
 
-// L.GeometryUtil = L.GeometryUtil.L.extend({
-//   readableArea: function (area, isMetric) {
-//     var areaStr, unit;
-//     if (isMetric) {
-//       // need to figure out way to get measure-units div
-//       var opt = document.getElementById('measure-units').options;
-//       for (var i=0; i < opt.length; i++){
-//         var option = opt[opt.selectedIndex].value;
-//         if (option === 'Hectares'){
-//           var hectares = (area/ 10000).toFixed(2).toLocaleString();
-//           unit = ' ha';
-//           areaStr = hectares + unit;
-//           return areaStr;
-//         } else {
-//           var acres = (area/ 4046.86).toFixed(2).toLocaleString();
-//           unit = ' acres';
-//           areaStr =  acres + unit;
-//           return areaStr;
-//         }
-//       }
-//     }
-
-//     return areaStr;
-//   },
-
-//   readableDistance: function (distance, isMetric) {
-//     var distanceStr, unit;
-//     if (isMetric) {
-//     // need to figure out way to get measure-units div
-//       var opt = document.getElementById('measure-units').options;
-//       for (var i=0; i < opt.length; i++){
-//         var option = opt[opt.selectedIndex].value;
-//         if ( option === 'Miles'){
-//           var miles = (distance * 0.000621371).toFixed(2).toLocaleString();
-//           unit = ' mi';
-//           distanceStr =  miles + unit;
-//           return distanceStr;
-//         } else if (option === 'Feet') {
-//           var feet = (distance * 3.28084).toFixed(2).toLocaleString();
-//           unit = ' ft';
-//           distanceStr = feet + unit;
-//           return distanceStr;
-//         } else {
-//           unit = ' m';
-//           distanceStr = distance.toFixed(2) + unit;
-//           return distanceStr;
-//         }
-//       }
-//     }
-//   }
-// });
-
 var MeasureControl = L.Control.extend({
   includes: L.Mixin.Events,
   options: {
@@ -92,7 +40,6 @@ var MeasureControl = L.Control.extend({
     L.Util.setOptions(this, options);
     this._activeMode = null;
     this._drawnItems = new L.FeatureGroup();
-    // this._tooltip = new L.Tooltip();
     this._modes = {};
 
     return this;
@@ -109,7 +56,6 @@ var MeasureControl = L.Control.extend({
     this._button.title = '';
 
     this._menu = L.DomUtil.create('ul', '', container);
-
     liDistance = L.DomUtil.create('li', '', this._menu);
     liArea = L.DomUtil.create('li', '', this._menu);
     liSelect = L.DomUtil.create('li', '', this._menu);
@@ -209,16 +155,6 @@ var MeasureControl = L.Control.extend({
       L.DomUtil.removeClass(remove, 'pressed');
       L.DomUtil.addClass(add, 'pressed');
     }
-  },
-  _createTooltip:function(position){
-  var icon = L.divIcon({
-      className: 'leaflet-measure-tooltip',
-      iconAnchor: [-5, -5]
-    });
-    this._tooltip = L.marker(position, {
-      icon: icon,
-      clickable: false
-    }).addTo(this._layerGroup);
   },
   _buttonDistanceClick: function() {
     this._selectUnit.innerHTML = '<option value="Feet" class="distance" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
