@@ -105,7 +105,7 @@ var Map = L.Map.extend({
       zoomifyMode = false;
 
     // For accessibility purposes.
-    map.tabIndex = 1;
+    map.tabIndex = 0;
     config = me._toLeaflet(config);
     config.div.insertBefore(npmap, config.div.hasChildNodes() ? config.div.childNodes[0] : null);
     npmap.appendChild(modules);
@@ -122,7 +122,7 @@ var Map = L.Map.extend({
     me._controllingCursor = true;
     me._controllingInteractivity = true;
     me._defaultCursor = me.getContainer().style.cursor;
-    me.getContainer().tabIndex = 1;
+    me.getContainer().tabIndex = 0;
 
     me.on('autopanstart', function() {
       me._setCursor('');
