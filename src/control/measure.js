@@ -1,8 +1,6 @@
 /* global L */
 /* jshint camelcase: false */
 
-// get area measurement
-// if don't draw circle then dont create tooltip
 'use strict';
 
 require('leaflet-draw');
@@ -19,17 +17,18 @@ var MeasureControl = L.Control.extend({
       },
       shapeOptions: {
         color: 'rgb(255, 0, 0)',
-        weight: 2,
+        weight: 4,
       },
-      showMetric: true,
-      repeatMode: true
+      showMetric: false,
+      repeatMode: false
     },
     polyline: {
       shapeOptions: {
         color: 'rgb(255, 0, 0)',
-        weight: 2,
+        weight: 4,
       },
-      repeatMode: true
+      showMetric: false,
+      repeatMode: false
     },
     position:'topleft'
   },
@@ -60,6 +59,7 @@ var MeasureControl = L.Control.extend({
     this._buttonArea.innerHTML = 'Area';
     this._buttonDistance = L.DomUtil.create('button', 'polyline', liDistance);
     this._buttonDistance.innerHTML = 'Distance';
+    this._clicked = 'polyline';
     this._selectUnit = L.DomUtil.create('select','measure-units', liSelect);
     this._selectUnit.id = 'measure-units';
     this._selectUnit.innerHTML =  '<option value="Feet" class="polyline" selected>Feet</option><option value="Meters" class="polyline">Meters</option>'+
@@ -92,13 +92,6 @@ var MeasureControl = L.Control.extend({
     map.on('draw:created', function(e) {
       me._drawnGroup.addLayer(e.layer);
     });
-    map.on('draw:drawstart', function() {
-      if (editShape) {
-        editShape.editing.disable();
-        editId = null;
-        editShape = null;
-      }
-    });
 
     return container;
   },
@@ -112,10 +105,12 @@ var MeasureControl = L.Control.extend({
       var add = this._buttonArea,
         mode = button.className,
         remove = this._buttonDistance;
+      this._clicked = 'polygon';
 
       if (mode === 'polyline') {
         add = this._buttonDistance;
         remove = this._buttonArea;
+        this._clicked = 'polyline';
       }
 
       L.DomUtil.removeClass(remove, 'pressed');
@@ -127,16 +122,6 @@ var MeasureControl = L.Control.extend({
     this._selectUnit.innerHTML = '<option value="Feet" class="distance" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
    '<option value="Miles" class="polyline">Miles</option>';
     this._buttonClick(this._buttonDistance);
-  },
-  _createTooltip: function(position) {
-    var icon = L.divIcon({
-      className: 'leaflet-measure-tooltip',
-      iconAnchor: [-5, -5]
-    });
-    this._tooltip = L.marker(position, {
-      icon: icon,
-      clickable: false
-    }).addTo(this._drawnGroup);
   },
   _calculateArea: function(val) {
     var options = this._selectUnit.options,
@@ -175,43 +160,221 @@ var MeasureControl = L.Control.extend({
       }
     }
   },
-  _clearLastShape: function() {
-    var i;
+  _createTooltip: function(position) {
+    var icon = L.divIcon({
+      className: 'leaflet-measure-tooltip',
+      iconAnchor: [-5, -5]
+    });
+    this._tooltip = L.marker(position, {
+      icon: icon,
+      clickable: false
+    }).addTo(this._drawnGroup);
+  },
+  _onKeyDown: function (e) {
+    if(e.keyCode === 27) {
+      if(!this._lastPoint) {
+        this._toggleMeasure();
+      }
+    }
+  },
+  _mouseMove: function(e) {
+    var latLng = e.latlng;
+
+    if (!latLng || !this._lastPoint) {
+      return;
+    }
+
+    if (!this._layerGroupPathTemp) {
+      this._layerGroupPathTemp = L.polyline([this._lastPoint, latLng]);
+
+      if (this._clicked === 'polygon') {
+        this._layerGroupPathTemp.addLatLng(latLng);
+      }
+    } else {
+      this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
+    }
+
+    if(this._tooltip) {
+      var distance = latLng.distanceTo(this._lastPoint),
+      area = L.GeometryUtil.geodesicArea(this._layerGroupPathTemp.getLatLngs());
+
+      if (!this._distance) {
+        this._distance = 0;
+      }
+
+      this._updateTooltipPosition(latLng);
+      if (this._clicked === 'polyline') {
+        this._updateTooltipDistance(this._distance + distance, distance);
+      } else {
+        this._updateTooltipArea(this._area + area);
+      }
+    }
+  },
+  _mouseClickArea: function (e) {
+    var latLng = e.latlng,
+      circle;
+
+    if (!latLng) {
+      return;
+    }
+    if (this._layerGroupPath) {
+      this._layerGroupPath.addLatLng(latLng);
+    } else {
+      this._layerGroupPath = new L.Polygon([], this.options.shapeOptions);
+      this._area = 0;
+    }
+
+    circle = new L.CircleMarker(latLng);
+    this._currentCircles.push(circle);
+    this._lastPoint = latLng;
+
+    if (this._currentCircles.length > 2) {
+      this._createTooltip(latLng);
+      this._updateTooltipPosition(latLng);
+      var latLngs = this._layerGroupPath.getLatLngs();
+      this._area = L.GeometryUtil.geodesicArea(latLngs);
+      this._updateTooltipArea(this._area);
+    }
+
+    if (this._layerGroupPath) {
+      this._layerGroupPath.addLatLng(latLng);
+    }
 
     if (this._lastCircle) {
       this._drawnGroup.removeLayer(this._lastCircle);
     }
-    if (this._drawnGroup && this._drawnGroupPathTemp) {
-      this._drawnGroup.removeLayer(this._drawnGroupPathTemp);
+
+    this._lastCircle = new L.CircleMarker(latLng);
+    
+    this._lastCircle.on('click', function() {
+      this._handlerDeactivated();
+    }, this);
+    
+    this._lastPoint = latLng;
+  },
+  _mouseClickDistance: function(e) {
+    if (this._clicked === 'polyline'){
+      var latLng = e.latlng;
+
+      if (!latLng) {
+        return;
+      }
+
+      if(this._lastPoint && this._tooltip) {
+        var distance = latLng.distanceTo(this._lastPoint);
+        
+        if(!this._distance) {
+          this._distance = 0;
+        }
+        this._updateTooltipPosition(latLng);
+        this._updateTooltipDistance(this._distance + distance, distance);
+        this._distance += distance;
+      }
+      this._createTooltip(latLng);
+
+      if (this._layerGroupPath) {
+        this._layerGroupPath.addLatLng(latLng);
+      }
+
+      if (this._lastCircle) {
+        this._drawnGroup.removeLayer(this._lastCircle);
+      }
+
+      this._lastCircle = new L.CircleMarker(latLng, {});
+
+      this._lastCircle.on('click', function() { this._handlerDeactivated(); }, this);
+      this._lastPoint = latLng;
+    }
+  },
+  _startMeasuring: function(type){
+    var clickFn = (type === 'polygon' ? this._mouseClickArea : this._mouseClickDistance),
+    map = this._map;
+
+    if (typeof this._doubleClickZoom === 'undefined' || this._doubleClickZoom === null) {
+      this._doubleClickZoom = map.doubleClickZoom.enabled();
     }
 
-    // if (this._activeMode === 'Distance') {
-    if (this._tooltip) {
-      this._drawnGroup.removeLayer(this._tooltip);
-    }
-    // }
+    map.doubleClickZoom.disable();
 
-    // if (this._drawnGroupPath) {
-    //   this._drawnGroup.removeLayer(this._drawnGroupPath);
-    //   this._drawnGroupPath = null;
-    // }
+    this._currentCircles = this._currentTooltips = [];
 
-    if (this._currentCircles) {
-      for (i = 0; i < this._currentCircles.length; i++) {
-        this._drawnGroup.removeLayer(this._currentCircles[i]);
+    L.DomEvent
+      .on(document, 'keydown', this._onKeyDown, this)
+      .on(map, 'mousemove', this._mouseMove, this)
+      .on(map, 'click', clickFn, this)
+      .on(map, 'dblclick', this._handlerDeactivated, this);
+  },
+  _stopMeasuring: function(type) {
+    var clickFn = (type === 'polygon' ? this._mouseClickArea : this._mouseClickDistance),
+    map = this._map;
+
+    if (this._clicked === 'polyline'){
+      if (this._doubleClickZoom) {
+        this._map.doubleClickZoom.enable();
       }
     }
 
-    if (this._currentTooltips.length) {
-      for (i = 0; i < this._currentTooltips.length; i++) {
-        this._drawnGroup.removeLayer(this._currentTooltips[i]);
-      }
+    if (this._drawnGroup) {
+      this._drawnGroup.clearLayers();
     }
-    this._drawnGroup.clearLayers();
-    this._currentTooltips.clearLayers();
-    this._currentCircles.clearLayers();
 
-    this._resetPath();
+    // this._handlerDeactivated();
+
+    L.DomEvent
+      .off(document, 'keydown', this._onKeyDown, this)
+      .off(map, 'mousemove', this._handlerDeactivated, this)
+      .off(map, 'click', this._handlerDeactivated, this)
+      .off(map, 'dblclick', this._handlerDeactivated, this);
+  },
+  _toggleMeasure: function () {
+    var map = this._map;
+
+    if (L.DomUtil.hasClass(this._button, 'pressed')) {
+      L.DomUtil.removeClass(this._button, 'pressed');
+      map._container.style.cursor = '';
+      map._controllingCursor = map._controllingInteractivity = true;
+      this._menu.style.display = 'none';
+      
+      this._stopMeasuring(this._clicked);
+      this._drawnGroup.clearLayers();
+
+      this._layerGroupPathTemp = null;
+      this._layerGroupPath = null;
+
+      if (this._doubleClickZoom) {
+        map.doubleClickZoom.enable();
+      }
+
+      this._doubleClickZoom = null;
+
+    } else {
+      L.DomUtil.addClass(this._button, 'pressed');
+      // map._container.style.cursor = 'crosshair';
+      // map._controllingCursor = false;
+      // map._controllingInteractivity = false;
+      this._menu.style.display = 'block';
+      this._startMeasuring(this._clicked);
+    }
+  },
+  _updateTooltipArea: function(total) {
+    var totalArea = this._calculateArea(total);
+
+    this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
+  },
+  _updateTooltipDistance: function(total, difference) {
+    var totalDistance = this._calculateDistance(total),
+      differenceDistance = this._calculateDistance(difference);
+
+    var text = '<div class="leaflet-measure-tooltip-total">' + totalDistance + '</div>';
+    if (differenceDistance !== totalDistance && difference !== 0) {
+      text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceDistance + ')</div>';
+    }
+    console.log(difference);
+
+    this._tooltip._icon.innerHTML = text;
+  },
+  _updateTooltipPosition: function(position) {
+    this._tooltip.setLatLng(position);
   },
   _handlerActivated: function(e) {
     if (this._activeMode && this._activeMode.handler.enabled()) {
@@ -222,127 +385,18 @@ var MeasureControl = L.Control.extend({
     this.fire('enable');
   },
   _handlerDeactivated: function() {
+    if (this._clicked === 'polygon'){
+      this._area = 0;
+    } else {
+      this._distance = 0;
+    }
     this._activeMode = null;
-    this.fire('disable');
-  },
-  _startMeasuring: function(type){
-    var clickFn = (type === 'polygon' ? this._mouseClickArea : this._mouseClickDistance),
-    map = this._map;
-
-    // this._currentCircles = this._currentTooltips = [];
-
-    // if(!this._drawnGroup) {
-    //   this._drawnGroup = L.drawnGroup().addTo(map);
-    // }
-
-    // if(!this._points) {
-    //   this._points = [];
-    // }
-    if (typeof this._doubleClickZoom === 'undefined' || this._doubleClickZoom === null) {
-      this._doubleClickZoom = map.doubleClickZoom.enabled();
-    }
-
-    map.doubleClickZoom.disable();
-
-    L.DomEvent
-      // .on(document, 'keydown', this._onKeyDown, this)
-      .on(map, 'click', clickFn, this);
-  },
-  _mouseClickArea: function (e) {
-    if (this._activeMode.button.innerHTML === 'Area'){
-      console.log('Area');
-      var latLng = e.latlng;
-
-      if (!latLng) {
-        return;
-      }
-
-      if (this._tooltip) {
-        var latLngs = this._drawnGroup.getLatLngs();
-        this._area = L.GeometryUtil.geodesicArea(latLngs);
-        this._createTooltip(latLng);
-        this._updateTooltipPosition(latLng);
-        this._updateTooltipArea(this._area);
-      }
-    
-      this._createTooltip(latLng);
-      this._lastPoint = latLng;
-    }
-  },
-  // _onKeyDown: function (e) {
-  //   if(e.keyCode === 27) {
-  //     if(!this._lastPoint) {
-  //       this._toggleMeasure();
-  //     }
-  //   }
-  // },
-  _mouseClickDistance: function(e) {
-    if (this._activeMode.button.innerHTML === 'Distance'){
-      var latLng = e.latlng;
-
-      if (!latLng) {
-        return;
-      }
-
-      if(this._lastPoint && this._tooltip) {
-        var distance = latLng.distanceTo(this._lastPoint);
-        if(!this._distance) {
-          this._distance = 0;
-        }
-        this._updateTooltipPosition(latLng);
-        this._updateTooltipDistance(this._distance + distance, distance);
-        this._distance += distance;
-      }
-      this._createTooltip(latLng);
-      
-      // if (this._lastPoint && !this._drawnGroupPath) {
-      //   this._drawnGroupPath = new L.polyline([this._lastPoint], {
-      //     color: 'red',
-      //     weight: 2,
-      //     clickable: false
-      //   }).addTo(this._drawnGroup);
-      // }
-
-      // if (this._drawnGroupPath) {
-      //   this._drawnGroupPath.addLatLng(latLng);
-      // }
-
-      // if (this._lastCircle) {
-      //   this._drawnGroup.removeLayer(this._lastCircle);
-      // }
-
-      // this._lastCircle = new L.CircleMarker(latLng, {
-      //   clickable: false,
-      //   color: 'red',
-      //   fill: true,
-      //   fillOpacity: 1,
-      //   opacity: 1,
-      //   radius: 2,
-      //   weight: 2
-      // }).addTo(this._drawnGroup);
-      
-      // this._lastCircle.on('click', function() { this._finishPath(); }, this);
-      this._lastPoint = latLng;
-    }
-  },
-  _resetPath: function() {
-    this._drawnGroupPath = null;
     this._currentCircles = this._currentTooltips = [];
     this._lastCircle = undefined;
-    this._lastPoint = this._drawnGroupPath = this._tooltip = undefined;
+    this._layerGroupPathTemp = undefined;
+    this._lastPoint = this._layerGroupPath = this._tooltip = undefined;
+    this.fire('disable');
 
-    // if ( === 'Distance'){
-    if (this._doubleClickZoom) {
-      this._map.doubleClickZoom.enable();
-    }
-    // }
-
-    // console.log(this._activeMode.button.innerHTML);
-    // if (this._activeMode.button.innerHTML === 'Area'){
-    //   this._area = 0;
-    // } else {
-    //   this._distance = 0;
-    // }
   },
   _initializeMode: function(button, handler) {
     var type = handler.type,
@@ -363,50 +417,6 @@ var MeasureControl = L.Control.extend({
     this._modes[type].handler
       .on('disabled', this._handlerDeactivated, this)
       .on('enabled', this._handlerActivated, this);
-  },
-  _toggleMeasure: function() {
-    var map = this._map;
-
-    if (L.DomUtil.hasClass(this._button, 'pressed')) {
-      L.DomUtil.removeClass(this._button, 'pressed');
-      this._menu.style.display = 'none';
-      // map._container.style.cursor = '';
-      // map._controllingCursor = map._controllingInteractivity = true;
-      this._clearLastShape();
-
-      if (this._doubleClickZoom) {
-        map.doubleClickZoom.enable();
-      }
-
-      this._doubleClickZoom = null;
-    } else {
-      L.DomUtil.addClass(this._button, 'pressed');
-      this._menu.style.display = 'block';
-
-      L.DomEvent
-        // .on(document, 'keydown', this._onKeyDown, this)
-        .on(map, 'click', this._startMeasuring, this);
-    }
-  },
-  _updateTooltipArea: function(total) {
-    debugger;
-    var totalArea = this._calculateArea(total);
-
-    this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
-  },
-  _updateTooltipDistance: function(total, difference) {
-    var totalDistance = this._calculateDistance(total),
-      differenceDistance = this._calculateDistance(difference);
-
-    var text = '<div class="leaflet-measure-tooltip-total">' + totalDistance + '</div>';
-    if (differenceDistance !== totalDistance && difference !== 0) {
-      text += '<div class="leaflet-measure-tooltip-difference">(+' + differenceDistance + ')</div>';
-    }
-
-    this._tooltip._icon.innerHTML = text;
-  },
-  _updateTooltipPosition: function(position) {
-    this._tooltip.setLatLng(position);
   }
 });
 
