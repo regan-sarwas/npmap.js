@@ -128,8 +128,7 @@ var CartoDbLayer = L.TileLayer.extend({
             }
           },
           type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-          // /api/v1/map
-          url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
+          url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
             config: JSON.stringify({
               layers: [
                 layer
