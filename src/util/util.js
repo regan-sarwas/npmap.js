@@ -47,14 +47,14 @@ if (!Array.prototype.map) {
     var T, A, k;
 
     if (this == null) {
-      throw new TypeError(" this is null or not defined");
+      throw new TypeError(' this is null or not defined');
     }
 
     var O = Object(this);
     var len = O.length >>> 0;
 
-    if (typeof callback !== "function") {
-      throw new TypeError(callback + " is not a function");
+    if (typeof callback !== 'function') {
+      throw new TypeError(callback + ' is not a function');
     }
 
     if (arguments.length > 1) {
@@ -681,7 +681,9 @@ module.exports = {
           }
         },
         type: 'json' + (supportsCors ? '' : 'p'),
-        url: 'https://npmap-proxy.herokuapp.com/?type=' + type + '&url=' + encodeURIComponent(url)
+        url: '//npmap-proxy.herokuapp.com/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+        // TODO: This isn't working properly for IE8.
+        //url: 'https://npmap-proxy.herokuapp.com/?type=' + type + '&url=' + encodeURIComponent(url)
       });
     }
   },
