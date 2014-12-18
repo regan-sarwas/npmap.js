@@ -682,8 +682,6 @@ module.exports = {
         },
         type: 'json' + (supportsCors ? '' : 'p'),
         url: '//npmap-proxy.herokuapp.com/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
-        // TODO: This isn't working properly for IE8.
-        //url: 'https://npmap-proxy.herokuapp.com/?type=' + type + '&url=' + encodeURIComponent(url)
       });
     }
   },
