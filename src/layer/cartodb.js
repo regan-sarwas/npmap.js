@@ -102,7 +102,8 @@ var CartoDbLayer = L.TileLayer.extend({
             me.fire('error', error);
           },
           success: function(response) {
-            // https is not supported here. Ideally this would use whatever protocol the web page itself is using.
+            // TODO: https is not supported here, so this will throw an error and/or be blocked if page is using https.
+            // (continued) Ideally this would use whatever protocol the web page itself is using.
             var root = 'http://{s}.api.cartocdn.com/' + me.options.user + '/tiles/layergroup/' + response.layergroupid,
               template = '{z}/{x}/{y}';
 
@@ -119,7 +120,7 @@ var CartoDbLayer = L.TileLayer.extend({
             return me;
           },
           type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-          url: util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
+          url: util.buildUrl('//' + me.options.user + '.cartodb.com/tiles/layergroup', {
             config: JSON.stringify({
               layers: [
                 layer
@@ -130,9 +131,9 @@ var CartoDbLayer = L.TileLayer.extend({
         });
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: util.buildUrl(this._urlApi, {
+      url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
         q: 'select * from ' + this.options.table + ' limit 0;'
-      })
+      }))) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
     reqwest({
       crossOrigin: supportsCors === 'yes' ? true : false,
@@ -148,10 +149,9 @@ var CartoDbLayer = L.TileLayer.extend({
         }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: util.buildUrl(this._urlApi, {
-        //q: 'select DISTINCT ST_GeometryType(the_geom) from ' + this.options.table + ' where the_geom IS NOT NULL;'
+      url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
         q: 'select ST_GeometryType(the_geom) from ' + this.options.table + ' where the_geom IS NOT NULL limit 1;'
-      })
+      }))) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
   },
   _getGridData: function(latLng, callback) {
