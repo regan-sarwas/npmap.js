@@ -55,9 +55,10 @@ var CartoDbLayer = L.TileLayer.extend({
       success: function(response) {
         var layer = {
           options: {},
-          stat_tag: 'API',
           type: 'cartodb'
         };
+
+        response = response.data;
 
         if (me.options.cartocss) {
           me._cartocss = me.options.cartocss;
@@ -93,6 +94,13 @@ var CartoDbLayer = L.TileLayer.extend({
 
         if (me._interactivity) {
           layer.options.interactivity = me._interactivity;
+
+          /*
+          layer.options.attributes = {
+            columns: me._interactivity,
+            id: 'cartodb_id'
+          }
+          */
         }
 
         reqwest({
@@ -102,32 +110,33 @@ var CartoDbLayer = L.TileLayer.extend({
             me.fire('error', error);
           },
           success: function(response) {
-            // TODO: https is not supported here, so this will throw an error and/or be blocked if page is using https.
-            // (continued) Ideally this would use whatever protocol the web page itself is using.
-            var root = 'http://{s}.api.cartocdn.com/' + me.options.user + '/tiles/layergroup/' + response.layergroupid,
-              template = '{z}/{x}/{y}';
+            if (response && response.success && response.data) {
+              var root = window.location.protocol + '//' + '{s}.' + response.data.cdn_url[window.location.protocol.replace(':', '')] + '/' + me.options.user + '/api/v1/map/' + response.data.layergroupid,
+                template = '{z}/{x}/{y}';
 
-            if (me._hasInteractivity && me._interactivity.length) {
-              me._urlGrid = root + '/0/' + template + '.grid.json';
+              if (me._hasInteractivity && me._interactivity.length) {
+                me._urlGrid = root + '/0/' + template + '.grid.json';
+              }
+
+              me._urlTile = root + '/' + template + '.png';
+              me.setUrl(me._urlTile);
+              me.redraw();
+              me.fire('ready');
+              me.readyFired = true;
+
+              return me;
             }
-
-            me._urlTile = root + '/' + template + '.png';
-            me.setUrl(me._urlTile);
-            me.redraw();
-            me.fire('ready');
-            me.readyFired = true;
-
-            return me;
           },
           type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-          url: util.buildUrl('//' + me.options.user + '.cartodb.com/tiles/layergroup', {
+          // /api/v1/map
+          url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl('https://' + me.options.user + '.cartodb.com/tiles/layergroup', {
             config: JSON.stringify({
               layers: [
                 layer
               ],
-              version: '1.0.0'
+              version: '1.0.1'
             })
-          })
+          }))) + (supportsCors === 'yes' ? '' : '&callback=?')
         });
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
