@@ -99,8 +99,7 @@ var MapBoxLayer = L.TileLayer.extend({
   },
   _loadTileJson: function(from) {
     if (typeof from === 'string') {
-      var me = this,
-        supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (util.supportsCors() === 'yes'));
+      var me = this;
 
       reqwest({
         crossOrigin: true,
@@ -116,7 +115,7 @@ var MapBoxLayer = L.TileLayer.extend({
           me._setTileJson(response);
         },
         type: 'json',
-        url: 'http' + (supportsCors ? 's' : '') + '://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + (supportsCors ? '&secure=1' : '')
+        url: '//a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + (window.location.protocol === 'https:' ? '&secure=1' : '')
       });
     } else if (typeof from === 'object') {
       this._setTileJson(from);

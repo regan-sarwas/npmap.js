@@ -10,17 +10,19 @@ var SpotLayer = L.GeoJSON.extend({
     require('../mixin/geojson')
   ],
   initialize: function(options) {
-    var me = this;
+    var me = this,
+      supportsCors = util.supportsCors();
 
     util.strict(options.id, 'string');
     L.Util.setOptions(this, this._toLeaflet(options));
     reqwest({
+      crossOrigin: supportsCors === 'yes' ? true : false,
       success: function(response) {
         var message;
 
-        response = response.response;
+        if (response && response.data && response.data.response) {
+          response = response.data.response;
 
-        if (response) {
           if (response.feedMessageResponse && response.feedMessageResponse.messages && response.feedMessageResponse.messages.message) {
             var geoJson = {
               features: [],
@@ -80,8 +82,8 @@ var SpotLayer = L.GeoJSON.extend({
           }
         }
       },
-      type: 'jsonp',
-      url: 'https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + '/message?callback=?&dir=DESC&sort=timeInMili'
+      type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
+      url: '//npmap-proxy.herokuapp.com/?type=json&url=' + encodeURIComponent('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + '/message?dir=DESC&sort=timeInMili') + (supportsCors === 'yes' ? '' : '&callback=?')
     });
 
     return this;
