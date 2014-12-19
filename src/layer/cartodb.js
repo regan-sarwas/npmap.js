@@ -89,7 +89,7 @@ var CartoDbLayer = L.TileLayer.extend({
 
         if (me._cartocss) {
           layer.options.cartocss = me._cartocss;
-          layer.options.cartocss_version = '2.1.0';
+          layer.options.cartocss_version = '2.1.1';
         }
 
         if (me._interactivity) {
