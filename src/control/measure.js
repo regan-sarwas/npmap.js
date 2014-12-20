@@ -1,7 +1,7 @@
 /* global L */
 /* jshint camelcase: false */
 
-// remove tooltip if intersecting lines
+// remove tooltip if intersecting
 'use strict';
 
 require('leaflet-draw');
