@@ -48,6 +48,7 @@ module.exports = function(grunt) {
                   'npmap.css', 
                   'npmap.min.css', 
                   'npmap.js', 
+                  'npmap.min.js',
                   'npmap-standalone.css',
                   'npmap-standalone.min.css', 
                   'npmap-standalone.js', 
