@@ -1,8 +1,7 @@
 /* global afterEach, beforeEach, describe, expect, it, L, sinon */
 
 describe('L.npmap.icon', function() {
-  var element,
-    server;
+  var element, server;
 
   afterEach(function() {
     element = null;
@@ -13,6 +12,9 @@ describe('L.npmap.icon', function() {
     server = sinon.fakeServer.create();
   });
   describe('maki', function() {
+
+  });
+  describe('npmaki', function() {
 
   });
 });
