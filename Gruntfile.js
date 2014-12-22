@@ -4,24 +4,9 @@
 module.exports = function(grunt) {
   'use strict';
 
-  var npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js';
-
-  /**
-   * Read the dev dependencies to detect and register suite of grunt
-   * tasks, assuming they follow the `grunt-` naming convention
-   */
-  var loadNpmTasks = function() {
-      var gruntTasks = Object.keys(pkg.devDependencies).filter(function(moduleName) { 
-          return /(^grunt-)/.test(moduleName);
-      });
-
-      gruntTasks.forEach(function(task) {
-          grunt.loadNpmTasks(task);
-      });
-  }
-  
   var cssNpmaki = '',
     npmaki = require('./node_modules/npmaki/_includes/maki.json'),
+    npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js',
     pkg = require('./package.json'),
     secrets = require('./secrets.json'),
     sizes = {
@@ -29,6 +14,16 @@ module.exports = function(grunt) {
       medium: 18,
       small: 12
     };
+
+  function loadNpmTasks() {
+    var gruntTasks = Object.keys(pkg.devDependencies).filter(function(moduleName) {
+      return /(^grunt-)/.test(moduleName);
+    });
+
+    gruntTasks.forEach(function(task) {
+      grunt.loadNpmTasks(task);
+    });
+  }
 
   for (var i = 0; i < npmaki.length; i++) {
     var icon = npmaki[i];
@@ -43,16 +38,20 @@ module.exports = function(grunt) {
   grunt.initConfig({
     akamai_rest_purge: {
       all: {
-        objects: ['npmap-bootstrap.js', 
-                  'npmap-bootstrap.min.js', 
-                  'npmap.css', 
-                  'npmap.min.css', 
-                  'npmap.js', 
-                  'npmap.min.js',
-                  'npmap-standalone.css',
-                  'npmap-standalone.min.css', 
-                  'npmap-standalone.js', 
-                  'npmap-standalone.min.js'].map(function(fileName) { return npmapBaseUrl + '/<%= pkg.version %>/' + fileName; })
+        objects: [
+          'npmap-bootstrap.js',
+          'npmap-bootstrap.min.js',
+          'npmap.css',
+          'npmap.min.css',
+          'npmap.js',
+          'npmap.min.js',
+          'npmap-standalone.css',
+          'npmap-standalone.min.css',
+          'npmap-standalone.js',
+          'npmap-standalone.min.js'
+        ].map(function(fileName) {
+          return npmapBaseUrl + '/<%= pkg.version %>/' + fileName;
+        })
       },
       options: {
         action: 'invalidate',
@@ -232,21 +231,6 @@ module.exports = function(grunt) {
         'test/index.html'
       ]
     },
-    /*
-    mount: {
-      share: {
-        options: {
-          mountPoint: '/Volumes/npmap-deploy',
-          share: {
-            folder: '/nps_prod/other/static/npmap',
-            host: 'dencmscontent'
-          },
-          username: 'nirwin',
-          password: 'It\'s ski season!'
-        }
-      }
-    },
-    */
     pkg: pkg,
     uglify: {
       npmap: {
@@ -279,11 +263,8 @@ module.exports = function(grunt) {
   });
 
   loadNpmTasks();
-
-   //TODO: csscomb, validation
-  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']);
+  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
   grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'akamai_rest_purge', 'http']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
-  //grunt.registerTask('mount', ['mount']);
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
