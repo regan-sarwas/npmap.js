@@ -60,11 +60,11 @@ Internally, the Grunt task uses [browserify](https://github.com/substack/node-br
 
 ## Testing
 
-NPMap.js uses the [Mocha](http://visionmedia.github.io/mocha/) JavaScript test framework and [PhantomJS](http://phantomjs.org/) to run the tests. After installing PhantomJS, you can run the tests with the following command:
+NPMap.js uses the [Mocha](http://mochajs.org) JavaScript test framework, with the [expect.js](https://github.com/Automattic/expect.js) assertion library, and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with the following command:
 
     grunt test
 
-We are working on increasing test coverage.
+We are working on expanding test coverage for the library.
 
 ## Documentation
 
