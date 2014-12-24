@@ -8,12 +8,12 @@ module.exports = function(grunt) {
     npmaki = require('./node_modules/npmaki/_includes/maki.json'),
     npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js',
     pkg = require('./package.json'),
-    secrets = require('./secrets.json'),
     sizes = {
       large: 24,
       medium: 18,
       small: 12
-    };
+    },
+    secrets;
 
   function loadNpmTasks() {
     var gruntTasks = Object.keys(pkg.devDependencies).filter(function(moduleName) {
@@ -33,6 +33,14 @@ module.exports = function(grunt) {
       cssNpmaki += '.' + icon.icon + '-' + prop + '-2x {background-image: url(images/icon/npmaki/' + icon.icon + '-' + sizes[prop] + '@2x.png);}\n';
     }
   }
+
+  (function() {
+    try {
+      secrets = require('./secrets.json');
+    } catch (e) {
+      secrets = require('./secrets.json.sample');
+    }
+  })();
 
   grunt.util.linefeed = '\n';
   grunt.initConfig({
