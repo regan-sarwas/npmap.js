@@ -44,7 +44,7 @@ You must have [node.js](http://nodejs.org/) installed to run the build. After in
     cd npmap.js
     npm install
 
-Install the [Grunt](http://gruntjs.com/) command line tool (do this once as an admin user after installing node.js)
+Install the [Grunt](http://gruntjs.com/) command line tool (do this once as an admin user after installing node.js):
 
     npm install -g grunt-cli
 
