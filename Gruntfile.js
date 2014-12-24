@@ -38,7 +38,7 @@ module.exports = function(grunt) {
     try {
       secrets = require('./secrets.json');
     } catch (e) {
-      secrets = require('./secrets.json.sample');
+      secrets = require('./secrets.sample.json');
     }
   })();
 
