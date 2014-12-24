@@ -13,7 +13,7 @@ var MeasureControl = L.Control.extend({
       allowIntersection: false,
       drawError: {
         color: '#f06eaa',
-        timeout: 1000,
+        timeout: 400,
         message: '<p style="width:200px !important"><strong>Oh snap!<strong> you can\'t draw that!</p>'
       },
       shapeOptions: {
@@ -98,23 +98,6 @@ var MeasureControl = L.Control.extend({
 
     return container;
   },
-  _selectVal: function(){
-    var tooltip = document.getElementsByClassName('leaflet-measure-tooltip-total'),
-    total;
-    console.log(tooltip.length);
-    for (var i=0; i < tooltip.length;i++){
-      var value = tooltip[i].innerHTML;
-      total = parseInt(value, 10);
-      
-      if (this._clicked === 'polyline'){
-        console.log(total);
-        this._updateTooltipDistance(total, 0);
-      } else {
-        console.log(total);
-        this._updateTooltipArea(total, 0);
-      }
-    }
-  },
   _buttonAreaClick: function() {
     this._selectUnit.innerHTML = '<option value="Acres" class="area">Acres</option>' +
     '<option value="Hectares" class="polygon">Hectares</option>';
@@ -138,14 +121,14 @@ var MeasureControl = L.Control.extend({
     }
   },
   _buttonDistanceClick: function() {
-    this._selectUnit.innerHTML = '<option value="Feet" class="distance" selected>Feet</option><option value="Meters" class="distance">Meters</option>'+
+    this._selectUnit.innerHTML = '<option value="Feet" class="distance" selected>Feet</option>' +
+   '<option value="Meters" class="distance">Meters</option>' +
    '<option value="Miles" class="polyline">Miles</option>';
     this._buttonClick(this._buttonDistance);
   },
   _createTooltip: function(position) {
     var icon = L.divIcon({
       className: 'leaflet-measure-tooltip',
-      id:'draw-tooltip-total',
       iconAnchor: [-5, -5]
     });
     this._tooltip = L.marker(position, {
@@ -269,7 +252,6 @@ var MeasureControl = L.Control.extend({
 
       if (this._clicked === 'polygon') {
         this._updateTooltipArea(this._area + area, area);
-        console.log(area);
       } else {
         this._updateTooltipDistance(this._distance + distance, distance);
       }
@@ -301,7 +283,6 @@ var MeasureControl = L.Control.extend({
       this._currentCircles.push(circle);
       this._lastPointArea = latLng;
       this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
-      console.log(this._lastPointArea);
 
       if (this._currentCircles.length > 2){
         this._createTooltip(latLng);
@@ -337,6 +318,27 @@ var MeasureControl = L.Control.extend({
       this._lastCircle = new L.CircleMarker(latLng);
       this._lastCircle.on('click', function() { this._handlerDeactivated(); }, this);
       this._lastPoint = latLng;
+    }
+  },
+  _selectVal: function(){
+    var tooltip = document.getElementsByClassName('leaflet-measure-tooltip-total'),
+    i = 0,
+    total;
+
+    if (this._clicked === 'polyline'){
+      for (i; i < tooltip.length;i++){
+        total = parseInt(tooltip[i].innerHTML, 10);
+        this._calculateDistance(total);
+        console.log(this._calculateDistance(total));
+        this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateDistance(total) + '</div>';
+      }
+    }
+    if (this._clicked === 'polygon'){
+      for (i; i < tooltip.length;i++){
+        total = parseInt(tooltip[i].innerHTML, 10);
+        this._calculateArea(total);
+        this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateArea(total) + '</div>';
+      }
     }
   },
   _startMeasuring: function(type){
