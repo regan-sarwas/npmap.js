@@ -48,9 +48,9 @@ Install the [Grunt](http://gruntjs.com/) command line tool (do this once as an a
 
     npm install -g grunt-cli
 
-Copy secrets.json.sample to a file called secrets.json for development and testing:
+Copy secrets.sample.json to a file called secrets.json for development and testing:
 
-    cp secrets.json.sample secrets.json
+    cp secrets.sample.json secrets.json
 
 Then use Grunt to build the library:
 
