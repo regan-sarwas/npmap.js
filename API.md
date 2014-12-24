@@ -11,21 +11,23 @@ _Arguments_:
 The first, and only, argument is required. It must be a map config object with the following properties:
 
 * (Required) `div` (Object or String): Either an HTML element or the id of an HTML element to render the map into.
-* (Optional) `baseLayers` (Array): An array of baseLayer configuration objects OR [baseLayer preset](#baseLayer-presets) strings.
-* (Optional) `editControl` (Boolean): Defaults to `undefined`.
-* (Optional) `fullscreenControl` (Boolean): Defaults to `undefined`.
+* (Optional) `baseLayers` (Array): An array of baseLayer configuration objects AND/OR [baseLayer preset](#baseLayer-presets) strings.
+* (Optional) `editControl` (Boolean or Object): Defaults to `undefined`.
+* (Optional) `events` (Array): An array of event objects to attach to the map.
+* (Optional) `fullscreenControl` (Boolean or Object): Defaults to `undefined`.
 * (Optional) `geocoderControl` (Boolean or Object): Defaults to `undefined`.
-* (Optional) `homeControl` (Boolean): Defaults to `true`.
+* (Optional) `hashControl` (Boolean): Defaults to `undefined`.
+* (Optional) `homeControl` (Boolean or Object): Defaults to `true`.
 * (Optional) `hooks` (Object): Add `init` and/or `preinit` hooks to the map. These must be functions that accept a `callback` parameter, and execute the `callback` function.
-* (Optional) `legendControl` (Boolean): Defaults to `undefined`.
-* (Optional) `locateControl` (Boolean): Defaults to `undefined`.
-* (Optional) `measureControl` (Boolean): Defaults to `undefined`.
-* (Optional) `overlays` (Array): An array of overlay configuration objects OR overlay preset strings..
+* (Optional) `legendControl` (Boolean or Object): Defaults to `undefined`.
+* (Optional) `locateControl` (Boolean or Object): Defaults to `undefined`.
+* (Optional) `measureControl` (Boolean or Object): Defaults to `undefined`.
+* (Optional) `overlays` (Array): An array of overlay configuration objects.
 * (Optional) `overviewControl` (Boolean or Object): Defaults to `undefined`.
-* (Optional) `printControl` (Boolean): Defaults to `undefined`.
-* (Optional) `scaleControl` (Boolean): Defaults to `undefined`.
-* (Optional) `shareControl` (Boolean): Defaults to `undefined`.
-* (Optional) `smallzoomControl` (Boolean): Defaults to `true`.
+* (Optional) `printControl` (Boolean or Object): Defaults to `undefined`.
+* (Optional) `scaleControl` (Boolean or Object): Defaults to `undefined`.
+* (Optional) `smallzoomControl` (Boolean or Object): Defaults to `true`.
+* (Optional) `zoomdisplayControl` (Boolean or Object): Defaults to `undefined`.
 
 You can also (optionally) provide any of the options supported by [`L.Map`](http://leafletjs.com/reference.html#map-options).
 
@@ -45,10 +47,11 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Getting Started](http://www.nps.gov/npmap/npmap.js/latest/examples/basic.html)
-* [Load Hooks](http://www.nps.gov/npmap/npmap.js/latest/examples/hooks.html)
-* [Multiple Maps on One Page](http://www.nps.gov/npmap/npmap.js/latest/examples/multiple-maps.html)
-* [Using Notifications](http://www.nps.gov/npmap/npmap.js/latest/examples/notifications.html)
+* [Getting Started](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/basic.html)
+* [Events](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/events.html)
+* [Hooks](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/hooks.html)
+* [Multiple Maps on One Page](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/multiple-maps.html)
+* [Using Notifications](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/notifications.html)
 
 # Layers
 
@@ -85,7 +88,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [baseLayer Presets](http://www.nps.gov/npmap/npmap.js/latest/examples/baselayer-presets.html)
+* [baseLayer Presets](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/baselayer-presets.html)
 
 ## L.npmap.layer.arcgisserver(config: object)
 
@@ -103,7 +106,7 @@ The first, and only, argument is required. It must be a layer config object with
 * (Required) `tiled` (Boolean): Should be `true` if the service is tiled and `false` if it is not.
 * (Required) `url` (String): A URL string ending with "MapServer" for the ArcGIS Server service.
 * (Optional) `attribution` (String): An attribution string for the layer. HTML is allowed.
-* (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
+* (Optional) `clickable` (Boolean): Should interactivity (click) operations be enabled for this layer? Defaults to `true`.
 * (Optional) `description` (String): Descriptive text for the layer. Used in legends, modules, and controls.
 * (Optional) `dynamicAttribution` (String): The URL of a [dynamic attribution](http://blogs.esri.com/esri/arcgis/2012/08/15/dynamic-attribution-is-here/) endpoint for the service.
 * (Optional) `layers` (String): A comma-delimited string of the ArcGIS Server integer layer identifiers to bring into the NPMap.js layer.
@@ -142,7 +145,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [ArcGIS Server Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/arcgisserver-layer.html)
+* [ArcGIS Server Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/arcgisserver-layer.html)
 
 ## L.npmap.layer.bing(config: object)
 
@@ -167,6 +170,7 @@ _Example (Bootstrap)_:
     var NPMap = {
       div: 'map',
       baseLayers: [{
+        layer: 'aerialwithlabels',
         type: 'bing'
       }]
     };
@@ -177,11 +181,13 @@ _Example (API)_:
       div: 'map'
     });
 
-    L.npmap.layer.bing().addTo(map);
+    L.npmap.layer.bing({
+      layer: 'aerialwithlabels'
+    }).addTo(map);
 
 _Working Examples_:
 
-* [Bing Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/bing-layer.html)
+* [Bing Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/bing-layer.html)
 
 ## L.npmap.layer.cartodb(config: object)
 
@@ -201,8 +207,6 @@ The first, and only, argument is required. It must be a layer config object with
 * (Optional) `interactivity` (String): A comma-delimited string of fields to pull from CartoDB for interactivity (available via mouseover and click operations).
 * (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
 * (Optional) `sql` (String): A SQL query to pass to CartoDB.
-
-NOTE: If you specify a SQL query via the `sql` property, you _must_ also specify the `interactivity` property.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
@@ -233,7 +237,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [CartoDB Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/cartodb-layer.html)
+* [CartoDB Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/cartodb-layer.html)
 
 ## L.npmap.layer.csv(config: object)
 
@@ -266,7 +270,7 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
 2. `style`
 3. `onEachFeature`
 
-These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overwritten by NPMap.js.
 
 _Example (Bootstrap)_:
 
@@ -290,8 +294,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [CSV Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/csv-layer.html)
-* [CSV Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/csv-layer-clustered.html)
+* [CSV Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/csv-layer.html)
+* [CSV Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/csv-layer-clustered.html)
 
 ## L.npmap.layer.geojson(config: object)
 
@@ -324,7 +328,7 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
 2. `style`
 3. `onEachFeature`
 
-These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overwritten by NPMap.js.
 
 _Example (Bootstrap)_:
 
@@ -348,14 +352,14 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [GeoJSON Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/geojson-layer.html)
-* [GeoJSON Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/geojson-layer-clustered.html)
+* [GeoJSON Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/geojson-layer.html)
+* [GeoJSON Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/geojson-layer-clustered.html)
 
 ## L.npmap.layer.github(config: object)
 
 Create a GitHub layer and add it to a map.
 
-NOTE: This layer handler utilizes the GitHub API to pull data in. This API is limited to 60 requests per hour. For production apps, you will want to setup a [GitHub Pages](http://pages.github.com/) site and utilize the CSV, GeoJSON, or KML layer handlers.
+NOTE: This layer handler utilizes the GitHub API to pull data in. This API is limited to 60 requests per hour, so GitHub layers should only be used in development maps. For production maps, you should setup a [GitHub Pages](http://pages.github.com/) site and utilize the CSV, GeoJSON, or KML layer handlers.
 
 _Arguments_:
 
@@ -375,7 +379,7 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
 2. `style`
 3. `onEachFeature`
 
-These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overwritten by NPMap.js.
 
 _Example (Bootstrap)_:
 
@@ -405,13 +409,13 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [GitHub Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/github-layer.html)
+* [GitHub Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/github-layer.html)
 
 ## L.npmap.layer.kml(config: object)
 
 Create a KML layer and add it to a map.
 
-NOTE: For NPMap.js to load KML data, the data must be properly formatted.
+NOTE: For NPMap.js to load KML data, the data must be formatted properly.
 
 _Arguments_:
 
@@ -438,7 +442,7 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
 2. `style`
 3. `onEachFeature`
 
-These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overwritten by NPMap.js.
 
 _Example (Bootstrap)_:
 
@@ -462,8 +466,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [KML Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer.html)
-* [KML Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/latest/examples/kml-layer-clustered.html)
+* [KML Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/kml-layer.html)
+* [KML Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/kml-layer-clustered.html)
 
 ## L.npmap.layer.mapbox(config: object)
 
@@ -485,7 +489,6 @@ AND
 * (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
 * (Optional) `format` (String): One of the following: `jpg70`, `jpg80`, `jpg90`, `png`, `png32`, `png64`, `png128`, or `png256`. Dfaults to `png`.
 * (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
-* (Optional) `retinaVersion` (String): The id ("account.id") of the MapBox map or tileset designed specifically for retina devices. If provided, this will be used if the map is loaded on a retina screen. It will be ignored otherwise.
 
 You can also (optionally) provide any of the options supported by [`L.TileLayer`](http://leafletjs.com/reference.html#tilelayer).
 
@@ -511,7 +514,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Mapbox Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/mapbox-layer.html)
+* [Mapbox Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/mapbox-layer.html)
 
 ## L.npmap.layer.spot(config: object)
 
@@ -536,7 +539,7 @@ You can also (optionally) provide any of the options supported by [`L.GeoJSON`](
 2. `style`
 3. `onEachFeature`
 
-These three options are not supported because they are used internally by NPMap.js. If provided, they will be overridden by NPMap.js.
+These three options are not supported because they are used internally by NPMap.js. If provided, they will be overwritten by NPMap.js.
 
 _Example (Bootstrap)_:
 
@@ -560,7 +563,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [SPOT Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/spot-layer.html)
+* [SPOT Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/spot-layer.html)
 
 ## L.npmap.layer.tiled(config: object)
 
@@ -571,10 +574,10 @@ _Arguments_:
 The first, and only, argument is required, and must be a layer config object with the following properties:
 
 * (Required) `url` (String): The templated URL string. Accepted parameters are:
-  * `{{s}}`
-  * `{{x}}`
-  * `{{y}}`
-  * `{{z}}`
+  * `{{s}}`: Subdomain
+  * `{{x}}`: X coordinate
+  * `{{y}}`: Y coordinate
+  * `{{z}}`: Zoom level
 * (Optional) `attribution` (String): The attribution string for this layer. HTML is accepted.
 * (Optional) `name` (String): A name for your layer. Used by a variety of map [controls](#controls), if present.
 
@@ -604,7 +607,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Tiled Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/tiled-layer.html)
+* [Tiled Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/tiled-layer.html)
 
 ## L.npmap.layer.wms(config: object)
 
@@ -626,7 +629,10 @@ _Example (Bootstrap)_:
     var NPMap = {
       div: 'map',
       overlays: [{
+        attribution: 'NOAA',
+        format: 'image/png',
         layers: 'RAS_RIDGE_NEXRAD',
+        transparent: true,
         type: 'wms',
         url: 'http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs'
       }]
@@ -639,13 +645,16 @@ _Example (API)_:
     });
 
     L.npmap.layer.wms({
+      attribution: 'NOAA',
+      format: 'image/png',
       layers: 'RAS_RIDGE_NEXRAD',
+      transparent: true,
       url: 'http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs'
     }).addTo(map);
 
 _Working Examples_:
 
-* [WMS Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/wms-layer.html)
+* [WMS Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/wms-layer.html)
 
 ## L.npmap.layer.zoomify(config: object)
 
@@ -692,18 +701,9 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Zoomify Layer](http://www.nps.gov/npmap/npmap.js/latest/examples/zoomify-layer.html)
+* [Zoomify Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/zoomify-layer.html)
 
 <h1 id="controls">Controls</h1>
-
-
-
-
-
-
-
-
-
 
 ## L.npmap.editControl(config: object)
 
@@ -715,7 +715,7 @@ Create a fullscreen control that toggles the map in and out of fullscreen mode a
 
 ## L.npmap.geocoderControl(config: object)
 
-Create a geocoder control that searches through an index of Parks and pulls in more detailed location information from a geocoding service and add it to a map
+Create a geocoder control that searches through both an index of National Parks and a more detailed geocoding service and add it to a map
 
 _Arguments_:
 
@@ -726,8 +726,23 @@ You can also (optionally) provide any of the options supported by [`L.Control`](
 _Example_:
 
     var NPMap = {
-      ...
+      div: 'map',
       geocoderControl: true
+    };
+
+## L.npmap.hashControl(config: object)
+
+Create a control that updates the URL with current location and zoom information and add it to a map.
+
+_Arguments_:
+
+No arguments are accepted.
+
+_Example_:
+
+    var NPMap = {
+      div: 'map',
+      hashControl: true
     };
 
 ## L.npmap.homeControl(config: object)
@@ -741,11 +756,13 @@ You can (optionally) provide any of the options supported by [`L.Control`](http:
 _Example_:
 
     var NPMap = {
-      ...
+      div: 'map',
       homeControl: true
     };
 
 ## L.npmap.legendControl(config: object)
+
+## L.npmap.locateControl(config: object)
 
 ## L.npmap.measureControl(config: object)
 
@@ -770,7 +787,7 @@ You can also (optionally) provide any of the options supported by [`L.Control`](
 _Example_:
 
     var NPMap = {
-      ...
+      div: 'map',
       overviewControl: {
         layer: 'mapbox-light'
       }
@@ -779,8 +796,6 @@ _Example_:
 ## L.npmap.printControl(config: object)
 
 ## L.npmap.scaleControl(config: object)
-
-## L.npmap.shareControl(config: object)
 
 ## L.npmap.smallzoomControl(config: object)
 
@@ -793,13 +808,19 @@ You can (optionally) provide any of the options supported by [`L.Control`](http:
 _Example_:
 
     var NPMap = {
-      ...
+      div: 'map',
       smallzoomControl: true
     }
 
 ## L.npmap.switcherControl(config: object)
 
 The switcher control is used and controlled internally by NPMap.js. It is created and added to your map when more than one layer config is present in the `baseLayers` config of your map configuration object.
+
+## L.npmap.zoomdisplayControl(config: object)
+
+<h1 id="modules">Modules</h1>
+
+Docs for `L.npmap.module` coming soon.
 
 # Icons
 
@@ -813,9 +834,11 @@ The switcher control is used and controlled internally by NPMap.js. It is create
 
 ## NPS
 
+* `nps-darkStreets`
 * `nps-lightStreets`
 * `nps-neutralTerrain`
 * `nps-parkTiles`
+* `nps-parkTilesImagery`
 * `nps-satelliteNight`
 
 ## Bing
@@ -824,29 +847,40 @@ The switcher control is used and controlled internally by NPMap.js. It is create
 * `bing-aerialLabels`
 * `bing-roads`
 
+## CartoDB
+
+* `cartodb-darkMatter`
+* `cartodb-darkMatterNoLabels`
+* `cartodb-positron`
+* `cartodb-positronNoLabels`
+
 ## Esri
 
 * `esri-gray`
-* `esri-grayLabels`
 * `esri-imagery`
-* `esri-imageryLabels`
 * `esri-nationalGeographic`
 * `esri-oceans`
-* `esri-oceansLabels`
+* `esri-shadedRelief`
 * `esri-streets`
+* `esri-terrain`
 * `esri-topographic`
 
 ## Mapbox
 
-* `mapbox-satelliteLabels`
 * `mapbox-light`
 * `mapbox-outdoors`
 * `mapbox-satellite`
+* `mapbox-satelliteLabels`
 * `mapbox-streets`
 * `mapbox-terrain`
 
+## OpenStreetMap
+
+* `openstreetmap`
+
 ## Stamen
 
+* `stamen-terrain`
 * `stamen-toner`
 * `stamen-watercolor`
 
@@ -922,10 +956,6 @@ The content for each of the sections of a popup should be specified individually
             id: '',
             type: 'focus'
           }],
-
-
-          media: '<ul><li><img src=""></li><li><iframe src=""></iframe></li></ul>',
-
           // No HTML, but Handlebars is supported
           more: '{{}}',
           // {String} or {Function} (that returns a {String}) - supports Handlebars and HTML )
@@ -940,20 +970,17 @@ The content for each of the sections of a popup should be specified individually
       }]
     };
 
-You can also specify a fixed width for your popup by passing a `width` property into the popup config object:
+If you are embedding media (images, audio, and/or video) in your popup, you should hardcode the height and width of the media in your HTML so NPMap.js can size the popup appropriately:
 
     var NPMap = {
       ...
       overlays: [{
         ...
         popup: {
-          title: 'This is a Title',
-          width: 300
+          description: '<img src="{{img_url}}" style="height:300px;width:400px;">'
         }
       }]
     };
-
-This can be useful if you want to embed fixed width media (images, videos, etc.) into the popup.
 
 You can see examples of configuring popups for overlays in the [popups](https://github.com/nationalparkservice/npmap.js/blob/master/examples/popups.html) example map.
 
@@ -1012,7 +1039,7 @@ Take a look at the [Styling Vectors example](https://github.com/nationalparkserv
 <ul>
   <li>NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It acts as a complement to the larger <a href="http://leafletjs.com/reference.html">Leaflet</a> API.</li>
   <li>NPMap.js adds an <code>L</code> property to every map config object and layer (overlay or baselayer) passed in via the <code>NPMap</code> configuration object. You can use this property to interact programatically with objects created by Leaflet. A few examples:<ul>
-    <li><code>NPMap.config.L</code> or <code>NPMap.config[0].L</code> will get a reference to the <code><a href="http://leafletjs.com/reference.html#map-class">L.Map</a></code> object</li>
+    <li><code>NPMap.config.L</code> will get a reference to the <code><a href="http://leafletjs.com/reference.html#map-class">L.Map</a></code> object</li>
     <li><code>NPMap.config.baseLayers[0].L</code> will get a reference to the Leaflet layer object for the first baseLayer</li>
     <li><code>NPMap.config.overlays[0].L</code> will get a reference to the Leaflet layer object for the first overlay</li>
   </ul></li>
