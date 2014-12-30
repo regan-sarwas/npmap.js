@@ -1,7 +1,6 @@
 /* global L */
 /* jshint camelcase: false */
 
-// remove tooltip if intersecting
 'use strict';
 
 require('leaflet-draw');
@@ -79,6 +78,7 @@ var MeasureControl = L.Control.extend({
       .on(this._selectUnit, 'change', L.DomEvent.stopPropagation)
       .on(this._selectUnit, 'change', L.DomEvent.preventDefault)
 
+      .on(this._map, 'mousemove', this._mouseMove, this)
       .on(this._menu, 'click', L.DomEvent.stopPropagation)
       .on(this._menu, 'click', L.DomEvent.preventDefault)
       .on(this._menu, 'dblclick', L.DomEvent.stopPropagation);
@@ -99,8 +99,8 @@ var MeasureControl = L.Control.extend({
     return container;
   },
   _buttonAreaClick: function() {
-    this._selectUnit.innerHTML = '<option value="Acres" class="area">Acres</option>' +
-    '<option value="Hectares" class="polygon">Hectares</option>';
+    this._selectUnit.innerHTML = '<option value="acre" class="area">Acres</option>' +
+    '<option value="ha" class="polygon">Hectares</option>';
     this._buttonClick(this._buttonArea);
   },
   _buttonClick: function(button) {
@@ -121,9 +121,9 @@ var MeasureControl = L.Control.extend({
     }
   },
   _buttonDistanceClick: function() {
-    this._selectUnit.innerHTML = '<option value="Feet" class="distance" selected>Feet</option>' +
-   '<option value="Meters" class="distance">Meters</option>' +
-   '<option value="Miles" class="polyline">Miles</option>';
+    this._selectUnit.innerHTML = '<option value="ft" class="distance" selected>Feet</option>' +
+   '<option value="m" class="distance">Meters</option>' +
+   '<option value="mi" class="polyline">Miles</option>';
     this._buttonClick(this._buttonDistance);
   },
   _createTooltip: function(position) {
@@ -187,7 +187,7 @@ var MeasureControl = L.Control.extend({
 
     this._currentCircles = [];
     this._lastCircle = undefined;
-    this._layerGroupPathTemp = undefined;
+    this._layerGroupPathTemp = this._layerGroupPathTempArea = undefined;
     this._lastPoint = undefined;
 
     if (this._clicked === 'polygon'){
@@ -224,41 +224,55 @@ var MeasureControl = L.Control.extend({
   _mouseMove: function(e) {
     var latLng = e.latlng;
 
+    console.log(this._lastPoint);
     if (!latLng || !this._lastPoint) {
       return;
     }
+    if (this._clicked === 'polyline'){
+      if (!this._layerGroupPathTemp){
+        this._layerGroupPathTemp = L.polyline([this._lastPoint, latLng]);
+      } else {
+        this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
+      }
 
-    if (!this._layerGroupPathTemp) {
-      this._layerGroupPathTemp = L.polyline([this._lastPoint, latLng]);
+      if (this._tooltip) {
+        var distance = latLng.distanceTo(this._lastPoint);
 
-      // if (this._clicked === 'polygon') {
-      //   this._layerGroupPathTemp.addLatLng(latLng);
-      // }
-    } else {
-      this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
+        if (!this._distance) {
+          this._distance = 0;
+        }
+        this._updateTooltipPosition(latLng);
+        this._updateTooltipDistance(this._distance + distance, distance);
+      }
     }
 
-    if (this._tooltip) {
-      var distance = latLng.distanceTo(this._lastPoint),
-      area = L.GeometryUtil.geodesicArea(this._layerGroupPathTemp.getLatLngs());
-
-      if (!this._distance) {
-        this._distance = 0;
-      }
-      // if (!this._area) {
-      //   this._area = 0;
-      // }
-      this._updateTooltipPosition(latLng);
-
-      if (this._clicked === 'polygon') {
-        this._updateTooltipArea(this._area + area, area);
+    if (this._clicked === 'polygon') {
+      if (this._layerGroupPathTempArea){
+        this._layerGroupPathTempArea.addLatLng(latLng);
+        this._layerGroupPathTempArea.spliceLatLngs(0, 2, this._lastPoint, latLng);
       } else {
-        this._updateTooltipDistance(this._distance + distance, distance);
+        this._layerGroupPathTempArea = L.polygon([this._lastPoint, latLng]);
+      }
+      // this._area = L.GeometryUtil.geodesicArea(this._layerGroupPathTempArea.getLatLngs()); 
+      // if (!this._layerGroupPathTempArea) {
+      //  this._layerGroupPathTempArea = L.polygon([latLng]);
+      //  console.log(this._layerGroupPathTempArea);
+      //  this._layerGroupPathTempArea.addLatLng(latLng);
+      
+      if (this._tooltip) {
+        var area = L.GeometryUtil.geodesicArea(this._layerGroupPathTempArea.getLatLngs());
+
+        if (!this._area) {
+          this._area = 0;
+        }
+        this._updateTooltipPosition(latLng);
+        this._updateTooltipArea(this._area + area, area);
       }
     }
   },
   _mouseClickArea: function(e){
     if (this._clicked === 'polygon'){
+
       var latLng = e.latlng,
       circle;
 
@@ -267,7 +281,6 @@ var MeasureControl = L.Control.extend({
       }
       
       if (this._layerGroupPath){
-        // does not measure if the polylin intersects
         if (this._pointLength === document.getElementsByClassName('leaflet-div-icon').length){
           return;
         } else {
@@ -281,10 +294,12 @@ var MeasureControl = L.Control.extend({
       circle = new L.CircleMarker(latLng);
 
       this._currentCircles.push(circle);
-      this._lastPointArea = latLng;
+      this._lastPoint = latLng;
       this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
 
       if (this._currentCircles.length > 2){
+        L.DomEvent
+          .on(this._map, 'mousemove', this._mouseMove, this);
         this._createTooltip(latLng);
         this._updateTooltipPosition(latLng);
         this._updateTooltipArea(this._area, 0);
@@ -321,24 +336,24 @@ var MeasureControl = L.Control.extend({
     }
   },
   _selectVal: function(){
-    var tooltip = document.getElementsByClassName('leaflet-measure-tooltip-total'),
+    var tooltips = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip-total'),
     i = 0,
-    total;
-
-    if (this._clicked === 'polyline'){
-      for (i; i < tooltip.length;i++){
-        total = parseInt(tooltip[i].innerHTML, 10);
-        this._calculateDistance(total);
-        console.log(this._calculateDistance(total));
-        this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateDistance(total) + '</div>';
+    newCalculation = '';
+    console.log(tooltips.length);
+    // if (this._selectUnit)
+    for (i; i < tooltips.length; i++){
+      if (this._clicked === 'polyline'){
+        var tooltip = tooltips[i].innerHTML;
+        newCalculation = this._calculateDistance(parseInt(tooltip, 10));
+        tooltip = newCalculation;
       }
-    }
-    if (this._clicked === 'polygon'){
-      for (i; i < tooltip.length;i++){
-        total = parseInt(tooltip[i].innerHTML, 10);
-        this._calculateArea(total);
-        this._tooltip._icon.innerHTML = '<div class="leaflet-measure-tooltip-total">' + this._calculateArea(total) + '</div>';
+      
+      if (this._clicked === 'polygon'){
+        var tooltip = tooltips[i].innerHTML;
+        tooltip=this._calculateArea(parseInt(tooltip, 10));
       }
+      debugger;
+      console.log(tooltips);
     }
   },
   _startMeasuring: function(type){
@@ -411,18 +426,17 @@ var MeasureControl = L.Control.extend({
     var totalArea = this._calculateArea(total),
       differenceArea = this._calculateArea(difference),
       text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
-    
+
     if (differenceArea !== totalArea && difference !== 0) {
       text += '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">(+' + differenceArea + ')</div>';
     }
-
     this._tooltip._icon.innerHTML = text;
   },
   _updateTooltipDistance: function(total, difference) {
     var totalDistance = this._calculateDistance(total),
       differenceDistance = this._calculateDistance(difference),
       text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + totalDistance + '</div>';
-    
+
     if (differenceDistance !== totalDistance && difference !== 0) {
       text += '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">(+' + differenceDistance + ')</div>';
     }
