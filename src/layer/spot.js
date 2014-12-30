@@ -30,6 +30,30 @@ var SpotLayer = L.GeoJSON.extend({
             },
             messages = response.feedMessageResponse.messages.message;
 
+            if (response.feedMessageResponse.count === 1) {
+                geoJson.features.push({
+                geometry: {
+                  coordinates: [messages.longitude, messages.latitude],
+                  type: 'Point'
+                },
+                properties: messages,
+                type: 'Feature'
+              });
+            } else {
+              for (var i = 0; i < messages.length; i++) {
+                message = messages[i];
+
+                geoJson.features.push({
+                  geometry: {
+                    coordinates: [message.longitude, message.latitude],
+                    type: 'Point'
+                  },
+                  properties: message.messageContent,
+                  type: 'Feature'
+                });
+              }
+            }
+
             for (var i = 0; i < messages.length; i++) {
               message = messages[i];
 
