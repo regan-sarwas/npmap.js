@@ -148,11 +148,15 @@ var CartoDbLayer = L.TileLayer.extend({
       success: function(response) {
         me._geometryTypes = [];
 
-        if (response && response.rows && response.rows.length) {
-          var geometryType = response.rows[0].st_geometrytype;
+        if (response && response.success && response.data) {
+          response = response.data;
 
-          if (geometryType) {
-            me._geometryTypes.push(CartoDbLayer.GEOMETRY_TYPES[geometryType.toLowerCase()]);
+          if (response && response.rows && response.rows.length) {
+            var geometryType = response.rows[0].st_geometrytype;
+
+            if (geometryType) {
+              me._geometryTypes.push(CartoDbLayer.GEOMETRY_TYPES[geometryType.toLowerCase()]);
+            }
           }
         }
       },

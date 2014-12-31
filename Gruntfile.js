@@ -6,13 +6,24 @@ module.exports = function(grunt) {
 
   var cssNpmaki = '',
     npmaki = require('./node_modules/npmaki/_includes/maki.json'),
+    npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js',
     pkg = require('./package.json'),
-    secrets = require('./secrets.json'),
     sizes = {
       large: 24,
       medium: 18,
       small: 12
-    };
+    },
+    secrets;
+
+  function loadNpmTasks() {
+    var gruntTasks = Object.keys(pkg.devDependencies).filter(function(moduleName) {
+      return /(^grunt-)/.test(moduleName);
+    });
+
+    gruntTasks.forEach(function(task) {
+      grunt.loadNpmTasks(task);
+    });
+  }
 
   for (var i = 0; i < npmaki.length; i++) {
     var icon = npmaki[i];
@@ -23,22 +34,32 @@ module.exports = function(grunt) {
     }
   }
 
+  (function() {
+    try {
+      secrets = require('./secrets.json');
+    } catch (e) {
+      secrets = require('./secrets.sample.json');
+    }
+  })();
+
   grunt.util.linefeed = '\n';
   grunt.initConfig({
     akamai_rest_purge: {
       all: {
         objects: [
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-bootstrap.js',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-bootstrap.min.js',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap.css',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap.min.css',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap.js',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap.min.js',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-standalone.css',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-standalone.min.css',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-standalone.js',
-          'http://www.nps.gov/npmap/npmap.js/<%= pkg.version %>/npmap-standalone.min.js'
-        ]
+          'npmap-bootstrap.js',
+          'npmap-bootstrap.min.js',
+          'npmap.css',
+          'npmap.min.css',
+          'npmap.js',
+          'npmap.min.js',
+          'npmap-standalone.css',
+          'npmap-standalone.min.css',
+          'npmap-standalone.js',
+          'npmap-standalone.min.js'
+        ].map(function(fileName) {
+          return npmapBaseUrl + '/<%= pkg.version %>/' + fileName;
+        })
       },
       options: {
         action: 'invalidate',
@@ -218,21 +239,6 @@ module.exports = function(grunt) {
         'test/index.html'
       ]
     },
-    /*
-    mount: {
-      share: {
-        options: {
-          mountPoint: '/Volumes/npmap-deploy',
-          share: {
-            folder: '/nps_prod/other/static/npmap',
-            host: 'dencmscontent'
-          },
-          username: 'nirwin',
-          password: 'It\'s ski season!'
-        }
-      }
-    },
-    */
     pkg: pkg,
     uglify: {
       npmap: {
@@ -263,24 +269,10 @@ module.exports = function(grunt) {
       }
     }
   });
-  grunt.loadNpmTasks('grunt-akamai-rest-purge');
-  grunt.loadNpmTasks('grunt-banner');
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-compress');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-csslint');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-http');
-  grunt.loadNpmTasks('grunt-mkdir');
-  grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.loadNpmTasks('grunt-mount');
-   //TODO: csscomb, validation
-  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']);
+
+  loadNpmTasks();
+  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
   grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'akamai_rest_purge', 'http']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
-  //grunt.registerTask('mount', ['mount']);
   grunt.registerTask('test', ['mocha_phantomjs']);
 };

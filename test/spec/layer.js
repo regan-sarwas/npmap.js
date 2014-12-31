@@ -1,8 +1,7 @@
 /* global afterEach, beforeEach, describe, expect, it, L, sinon */
 
 describe('L.npmap.layer', function() {
-  var element,
-    server;
+  var element, server;
 
   afterEach(function() {
     element = null;
@@ -15,7 +14,13 @@ describe('L.npmap.layer', function() {
   describe('arcgisserver', function() {
 
   });
+  describe('bing', function() {
+
+  });
   describe('cartodb', function() {
+
+  });
+  describe('csv', function() {
 
   });
   describe('geojson', function() {
@@ -30,7 +35,16 @@ describe('L.npmap.layer', function() {
   describe('mapbox', function() {
 
   });
+  describe('spot', function() {
+
+  });
   describe('tiled', function() {
+
+  });
+  describe('wms', function() {
+
+  });
+  describe('zoomify', function() {
 
   });
 });
