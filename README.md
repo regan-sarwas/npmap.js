@@ -44,9 +44,13 @@ You must have [node.js](http://nodejs.org/) installed to run the build. After in
     cd npmap.js
     npm install
 
-Install the [Grunt](http://gruntjs.com/) command line tool (do this once as an admin user after installing node.js)
+Install the [Grunt](http://gruntjs.com/) command line tool (do this once as an admin user after installing node.js):
 
     npm install -g grunt-cli
+
+Copy secrets.sample.json to a file called secrets.json for development and testing:
+
+    cp secrets.sample.json secrets.json
 
 Then use Grunt to build the library:
 
@@ -56,11 +60,11 @@ Internally, the Grunt task uses [browserify](https://github.com/substack/node-br
 
 ## Testing
 
-NPMap.js uses the [Mocha](http://visionmedia.github.io/mocha/) JavaScript test framework and [PhantomJS](http://phantomjs.org/) to run the tests. After installing PhantomJS, you can run the tests with the following command:
+NPMap.js uses the [Mocha](http://mochajs.org) JavaScript test framework, with the [expect.js](https://github.com/Automattic/expect.js) assertion library, and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with the following command:
 
     grunt test
 
-We are working on increasing test coverage.
+We are working on expanding test coverage for the library.
 
 ## Documentation
 
