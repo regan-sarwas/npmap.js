@@ -29,21 +29,39 @@
           type: 'arcgisserver',
           url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
         }],
-        maxZoom: 13,
         overlays: [{
-          /*
-          /*
-              http://mapservices.nps.gov/arcgis/rest/services/WildlandFire/FireOccurrence/FeatureServer
-              http://koop.dc.esri.com/github/colemanm/hurricanes/fl_2004_hurricanes/FeatureServer/0/query
-              http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0 (used in Esri Leaflet examples)
-              http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0
-          
-          attribution: 'Esri',
-          name: 'Heritage Trees Portland',
-          type: 'arcgisserver',
-          url: 'http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0'
+          attribution: 'Wildland Fire',
+          name: 'Fire Points',
+          styles: {
+            point: {
+              'marker-color': '#ff0000',
+              'marker-symbol': 'fire-station'
+            }
+          },
+          type: 'geojson',
+          // ArcGIS Server does not yet support GeoJSON, so pass through proxy.
+          url: 'https://npmap-arcgis-proxy.herokuapp.com/layer2geojson?url=http://mobilegis.nps.gov/arcgis/rest/services/IncidentDataCollection_3/FeatureServer/1'
         },{
-          */
+          attribution: 'Land Resources Division',
+          name: 'National Parks',
+          type: 'geojson',
+          url: 'https://npmap-arcgis-proxy.herokuapp.com/layer2geojson?url=http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/3'
+        },{
+          attribution: 'Great Smoky Mountains National Park',
+          name: 'Restrooms',
+          popup: {
+            title: '{{Name}}'
+          },
+          styles: {
+            point: {
+              'marker-library': 'npmaki',
+              'marker-symbol': 'restroom-white'
+            }
+          },
+          type: 'geojson',
+          // ArcGIS Online now supports GeoJSON, so hit the service directly.
+          url: 'http://services1.arcgis.com/fBc8EJBxQRMcHlei/ArcGIS/rest/services/GRSM_RESTROOMS/FeatureServer/0/query?f=geojson&outSR=4326&where=OBJECTID+IS+NOT+NULL'
+        },{
           attribution: 'Esri',
           layers: '2',
           name: 'National Parks',
