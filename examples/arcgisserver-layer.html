@@ -87,25 +87,27 @@
           popup: {
             actions: '<ul><li><a href="#" onclick="window.alert(\'Clicked!\');return false;">Click Me</a></li></ul>',
             description: function(data) {
+              var html = '<table><tbody>';
+
               if (typeof data.CAT === 'undefined') {
-                return '' +
-                  '<table><tbody>' +
-                    '<tr><td>Stage</td><td>{{STAGE}}</td></tr>' +
-                    '<tr><td>Day</td><td>{{DAY}}</td></tr>' +
-                    '<tr><td>Time</td><td>{{TIME}}</td></tr>' +
-                    '<tr><td>Pressure</td><td>{{PRESSURE}}</td></tr>' +
-                    '<tr><td>Wind Speed (Knots)</td><td>{{WINDSPEED}}</td></tr>' +
-                  '</tbody></table>';
+                html += '' +
+                  '<tr><td>Stage</td><td>{{STAGE}}</td></tr>' +
+                  '<tr><td>Day</td><td>{{DAY}}</td></tr>' +
+                  '<tr><td>Time</td><td>{{TIME}}</td></tr>' +
+                  '<tr><td>Pressure</td><td>{{PRESSURE}}</td></tr>' +
+                  '<tr><td>Wind Speed (Knots)</td><td>{{WINDSPEED}}</td></tr>' +
+                '';
               } else {
-                return '' +
-                  '<table><tbody>' +
-                    '<tr><td>Category</td><td>{{CAT}}</td></tr>' +
-                    '<tr><td>Date</td><td>{{Date_date}}</td></tr>' +
-                    '<tr><td>Start Time</td><td>{{Time}}</td></tr>' +
-                    '<tr><td>End Time</td><td>{{EndTime}}</td></tr>' +
-                    '<tr><td>Wind Speed (Knots)</td><td>{{WIND_KTS}}</td></tr>' +
-                  '</tbody></table>';
+                html += '' +
+                  '<tr><td>Category</td><td>{{CAT}}</td></tr>' +
+                  '<tr><td>Date</td><td>{{Date_date}}</td></tr>' +
+                  '<tr><td>Start Time</td><td>{{Time}}</td></tr>' +
+                  '<tr><td>End Time</td><td>{{EndTime}}</td></tr>' +
+                  '<tr><td>Wind Speed (Knots)</td><td>{{WIND_KTS}}</td></tr>' +
+                '';
               }
+
+              return html + '</tbody></table>';
             },
             title: function(data) {
               if (typeof data.CAT === 'undefined') {
