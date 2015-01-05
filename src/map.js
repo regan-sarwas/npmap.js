@@ -188,7 +188,7 @@ var Map = L.Map.extend({
             baseLayerSet = true;
 
             if (baseLayer.type === 'arcgisserver') {
-              baseLayer.L = L.npmap.layer[baseLayer.type][baseLayer.tiled === true ? 'tiled' : 'dynamic'](baseLayer);
+              baseLayer.L = me._createArcGisServerLayer(baseLayer);
             } else {
               baseLayer.L = L.npmap.layer[baseLayer.type](baseLayer);
             }
@@ -216,7 +216,7 @@ var Map = L.Map.extend({
             overlay.zIndex = zIndex;
 
             if (overlay.type === 'arcgisserver') {
-              overlay.L = L.npmap.layer[overlay.type][overlay.tiled === true ? 'tiled' : 'dynamic'](overlay);
+              overlay.L = me._createArcGisServerLayer(overlay);
             } else {
               overlay.L = L.npmap.layer[overlay.type](overlay);
             }
@@ -258,6 +258,9 @@ var Map = L.Map.extend({
         }
       }
     }
+  },
+  _createArcGisServerLayer: function(config) {
+    return L.npmap.layer[config.type][config.tiled === true ? 'tiled' : 'dynamic'](config);
   },
   _initializeModules: function() {
     if (this.options && this.options.modules && L.Util.isArray(this.options.modules) && this.options.modules.length) {
