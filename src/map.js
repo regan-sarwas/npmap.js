@@ -675,9 +675,9 @@ var Map = L.Map.extend({
               var name = baseLayer.split('-');
 
               if (name[1]) {
-                baseLayer = baselayerPresets[name[0]][name[1]];
+                baseLayer = util.clone(baselayerPresets[name[0]][name[1]]);
               } else {
-                baseLayer = baselayerPresets[name];
+                baseLayer = util.clone(baselayerPresets[name]);
               }
             }
 
@@ -700,7 +700,7 @@ var Map = L.Map.extend({
         if (visible) {
           return config.baseLayers;
         } else {
-          var active = baselayerPresets.nps.parkTiles;
+          var active = util.clone(baselayerPresets.nps.parkTiles);
           active.visible = true;
           active.zIndex = 0;
           return [
@@ -731,7 +731,7 @@ var Map = L.Map.extend({
         var overlay = config.overlays[j];
 
         if (typeof overlay === 'string') {
-          overlay = config.overlays[j] = overlayPresets[overlay];
+          overlay = config.overlays[j] = util.clone(overlayPresets[overlay]);
         }
       }
     } else if (!config.overlays || !L.Util.isArray(config.overlays)) {

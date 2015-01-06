@@ -294,6 +294,10 @@ module.exports = {
 
     e.returnValue = false;
   },
+  clone: function(obj) {
+    // One problem with this: http://stackoverflow.com/questions/11491938/issues-with-date-when-using-json-stringify-and-json-parse/11491993#11491993.
+    return JSON.parse(JSON.stringify(obj));
+  },
   dataToList: function(data, fields) {
     var dl = document.createElement('dl');
 
