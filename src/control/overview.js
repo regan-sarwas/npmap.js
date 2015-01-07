@@ -29,7 +29,7 @@ var OverviewControl = L.Control.extend({
       if (typeof options.layer === 'string') {
         var name = options.layer.split('-');
 
-        options.layer = baselayerPresets[name[0]][name[1]];
+        options.layer = util.clone(baselayerPresets[name[0]][name[1]]);
       }
 
       L.Util.setOptions(this, options);

@@ -29,21 +29,39 @@
           type: 'arcgisserver',
           url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
         }],
-        maxZoom: 13,
         overlays: [{
-          /*
-          /*
-              http://mapservices.nps.gov/arcgis/rest/services/WildlandFire/FireOccurrence/FeatureServer
-              http://koop.dc.esri.com/github/colemanm/hurricanes/fl_2004_hurricanes/FeatureServer/0/query
-              http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0 (used in Esri Leaflet examples)
-              http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0
-          
-          attribution: 'Esri',
-          name: 'Heritage Trees Portland',
-          type: 'arcgisserver',
-          url: 'http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0'
+          attribution: 'Wildland Fire',
+          name: 'Fire Points',
+          styles: {
+            point: {
+              'marker-color': '#ff0000',
+              'marker-symbol': 'fire-station'
+            }
+          },
+          type: 'geojson',
+          // ArcGIS Server does not yet support GeoJSON, so pass through proxy.
+          url: 'https://npmap-arcgis-proxy.herokuapp.com/layer2geojson?url=http://mobilegis.nps.gov/arcgis/rest/services/IncidentDataCollection_3/FeatureServer/1'
         },{
-          */
+          attribution: 'Land Resources Division',
+          name: 'National Parks',
+          type: 'geojson',
+          url: 'https://npmap-arcgis-proxy.herokuapp.com/layer2geojson?url=http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/3'
+        },{
+          attribution: 'Great Smoky Mountains National Park',
+          name: 'Restrooms',
+          popup: {
+            title: '{{Name}}'
+          },
+          styles: {
+            point: {
+              'marker-library': 'npmaki',
+              'marker-symbol': 'restroom-white'
+            }
+          },
+          type: 'geojson',
+          // ArcGIS Online now supports GeoJSON, so hit the service directly.
+          url: 'http://services1.arcgis.com/fBc8EJBxQRMcHlei/ArcGIS/rest/services/GRSM_RESTROOMS/FeatureServer/0/query?f=geojson&outSR=4326&where=OBJECTID+IS+NOT+NULL'
+        },{
           attribution: 'Esri',
           layers: '2',
           name: 'National Parks',
@@ -69,25 +87,27 @@
           popup: {
             actions: '<ul><li><a href="#" onclick="window.alert(\'Clicked!\');return false;">Click Me</a></li></ul>',
             description: function(data) {
+              var html = '<table><tbody>';
+
               if (typeof data.CAT === 'undefined') {
-                return '' +
-                  '<table><tbody>' +
-                    '<tr><td>Stage</td><td>{{STAGE}}</td></tr>' +
-                    '<tr><td>Day</td><td>{{DAY}}</td></tr>' +
-                    '<tr><td>Time</td><td>{{TIME}}</td></tr>' +
-                    '<tr><td>Pressure</td><td>{{PRESSURE}}</td></tr>' +
-                    '<tr><td>Wind Speed (Knots)</td><td>{{WINDSPEED}}</td></tr>' +
-                  '</tbody></table>';
+                html += '' +
+                  '<tr><td>Stage</td><td>{{STAGE}}</td></tr>' +
+                  '<tr><td>Day</td><td>{{DAY}}</td></tr>' +
+                  '<tr><td>Time</td><td>{{TIME}}</td></tr>' +
+                  '<tr><td>Pressure</td><td>{{PRESSURE}}</td></tr>' +
+                  '<tr><td>Wind Speed (Knots)</td><td>{{WINDSPEED}}</td></tr>' +
+                '';
               } else {
-                return '' +
-                  '<table><tbody>' +
-                    '<tr><td>Category</td><td>{{CAT}}</td></tr>' +
-                    '<tr><td>Date</td><td>{{Date_date}}</td></tr>' +
-                    '<tr><td>Start Time</td><td>{{Time}}</td></tr>' +
-                    '<tr><td>End Time</td><td>{{EndTime}}</td></tr>' +
-                    '<tr><td>Wind Speed (Knots)</td><td>{{WIND_KTS}}</td></tr>' +
-                  '</tbody></table>';
+                html += '' +
+                  '<tr><td>Category</td><td>{{CAT}}</td></tr>' +
+                  '<tr><td>Date</td><td>{{Date_date}}</td></tr>' +
+                  '<tr><td>Start Time</td><td>{{Time}}</td></tr>' +
+                  '<tr><td>End Time</td><td>{{EndTime}}</td></tr>' +
+                  '<tr><td>Wind Speed (Knots)</td><td>{{WIND_KTS}}</td></tr>' +
+                '';
               }
+
+              return html + '</tbody></table>';
             },
             title: function(data) {
               if (typeof data.CAT === 'undefined') {
