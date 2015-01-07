@@ -1,7 +1,3 @@
-// need to reset distance and area
-// need to not round the numbers when changing units...
-
-
 /* global L */
 /* jshint camelcase: false */
 'use strict';
@@ -9,7 +5,7 @@
 require('leaflet-draw');
 
 var MeasureControl = L.Control.extend({
-  includes: L.Mixin.Events, //what is this?!?
+  includes: L.Mixin.Events,
   options: {
     polygon: {
       allowIntersection: false,
@@ -49,7 +45,6 @@ var MeasureControl = L.Control.extend({
     me = this;
 
     this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', container);
-    this._button.title = ''; // do I need this?
 
     this._menu = L.DomUtil.create('ul', '', container);
     liDistance = L.DomUtil.create('li', '', this._menu);
@@ -70,7 +65,7 @@ var MeasureControl = L.Control.extend({
     this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
     this._initializeMode(this._buttonArea, new L.Draw.Polygon(map, this.options.polygon));
     
-    L.DomEvent //help... what does this mean?
+    L.DomEvent
       .on(this._button, 'click', this._toggleMeasure, this)
       .on(this._button, 'click', L.DomEvent.stopPropagation)
       .on(this._button, 'click', L.DomEvent.preventDefault)
@@ -88,9 +83,10 @@ var MeasureControl = L.Control.extend({
       .on(this._menu, 'dblclick', L.DomEvent.stopPropagation);
 
     map.addLayer(this._drawnGroup);
-
+    
     map.on('draw:created', function(e) { //do I need this?
       me._drawnGroup.addLayer(e.layer);
+      me._drawnGroup.type = e.layerType;
     });
     map.on('draw:drawstart', function() { //why do I need this?
       if (editShape) {
@@ -144,7 +140,6 @@ var MeasureControl = L.Control.extend({
   _calculateArea: function(val) {
     var options = this._selectUnit.options,
     unit = '';
-    console.log(this._pastUnit);
 
     if (this._pastUnit === '' || this._pastUnit === 'meters') {
       this._pastUnit = 'acres';
@@ -152,24 +147,27 @@ var MeasureControl = L.Control.extend({
 
     for (var i=0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
-      if (this._pastUnit === 'acres'){
-        if (option === 'ha'){
-          var hectares = (val * 0.404686).toFixed(2).toLocaleString();
-          unit = ' ha';
-          return hectares + unit;
-        } else if (option === 'acres'){
-          var acres = (val / 4046.86).toFixed(2).toLocaleString();
+      //if (this._drawnGroup.type === 'polygon'){
+      if (option !== undefined) {
+        if (this._pastUnit === 'acres'){
+          if (option === 'ha'){
+            var hectares = (val * 0.404686).toFixed(2).toLocaleString();
+            unit = ' ha';
+            return hectares + unit;
+          } else if (option === 'acres'){
+            var acres = (val / 4046.86).toFixed(2).toLocaleString();
+            unit = ' acres';
+            return acres + unit;
+          }
+        } else if (this._pastUnit === 'ha' && option === 'acres') {
+          var ha2acres = (val * 2.47105).toFixed(2).toLocaleString();
           unit = ' acres';
-          return acres + unit;
+          return ha2acres + unit;
+        } else if (this._pastUnit === 'acres' && option === 'ha'){
+          var acre2ha = (val * 0.404686).toFixed(2).toLocaleString();
+          unit = ' ha';
+          return acre2ha + unit;
         }
-      } else if (this._pastUnit === 'ha' && option === 'acres') {
-        var ha2acres = (val * 2.47105).toFixed(2).toLocaleString();
-        unit = ' acres';
-        return ha2acres + unit;
-      } else if (this._pastUnit === 'acres' && option === 'ha'){
-        var acre2ha = (val * 0.404686).toFixed(2).toLocaleString();
-        unit = ' ha';
-        return acre2ha + unit;
       }
     }
   },
@@ -183,49 +181,51 @@ var MeasureControl = L.Control.extend({
 
     for (var i=0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
-
-      if (this._pastUnit === 'meters'){
-        if (option === 'mi'){
-          var miles = (val * 0.000621371).toFixed(2).toLocaleString();
-          unit = ' mi';
-          return miles + unit;
-        } else if (option === 'ft') {
-          var feet = (val * 3.28084).toFixed(2).toLocaleString();
-          unit = ' ft';
-          return feet + unit;
-        } else if (option === 'meters'){
-          unit = ' meters';
-          return val.toFixed(2) + unit;
-        }
-      } else if (this._pastUnit === 'mi') {
-        if (option === 'ft') {
-          var miles2Ft = (val * 5280).toFixed(2).toLocaleString();
-          unit = ' ft';
-          return miles2Ft + unit;
-        } else if (option === 'meters'){
-          var miles2M = (val * 1609.34).toFixed(2).toLocaleString();
-          unit = ' meters';
-          return miles2M + unit;
-        }
-      } else if (this._pastUnit === 'ft') {
-        if (option === 'mi') {
-          var ft2Miles = (val / 5280).toFixed(2).toLocaleString();
-          unit = ' ft';
-          return ft2Miles + unit;
-        } else if (option === 'meters'){
-          var ft2Meters = (val * 0.3048).toFixed(2).toLocaleString();
-          unit = ' meters';
-          return ft2Meters + unit;
+      //if (this._drawnGroup.type === 'polyline'){
+      if (option !== undefined){
+        //DRY!
+        if (this._pastUnit === 'meters'){
+          if (option === 'mi'){
+            var miles = (val * 0.000621371).toFixed(2).toLocaleString();
+            unit = ' mi';
+            return miles + unit;
+          } else if (option === 'ft') {
+            var feet = (val * 3.28084).toFixed(2).toLocaleString();
+            unit = ' ft';
+            return feet + unit;
+          } else if (option === 'meters'){
+            unit = ' meters';
+            return val.toFixed(2) + unit;
+          }
+        } else if (this._pastUnit === 'mi') {
+          if (option === 'ft') {
+            var miles2Ft = (val * 5280).toFixed(2).toLocaleString();
+            unit = ' ft';
+            return miles2Ft + unit;
+          } else if (option === 'meters'){
+            var miles2M = (val * 1609.34).toFixed(2).toLocaleString();
+            unit = ' meters';
+            return miles2M + unit;
+          }
+        } else if (this._pastUnit === 'ft') {
+          if (option === 'mi') {
+            var ft2Miles = (val / 5280).toFixed(2).toLocaleString();
+            unit = ' ft';
+            return ft2Miles + unit;
+          } else if (option === 'meters'){
+            var ft2Meters = (val * 0.3048).toFixed(2).toLocaleString();
+            unit = ' meters';
+            return ft2Meters + unit;
+          }
         }
       }
     }
   },
   _handlerActivated: function(e) {
     if (this._activeMode && this._activeMode.handler.enabled()) {
-      this._activeMode.handler.disable(); //is this working/doI need?
+      this._activeMode.handler.disable();
     }
-    this._activeMode = this._modes[e.handler]; //do I need this?
-
+    this._activeMode = this._modes[e.handler];
     this.fire('enable');
   },
   _handlerDeactivated: function() {
@@ -296,11 +296,12 @@ var MeasureControl = L.Control.extend({
     }
 
     if (this._clicked === 'polygon') {
-      if (this._layerGroupPathTempArea){
-        this._layerGroupPathTempArea.addLatLng(latLng);
+      if (!this._layerGroupPathTempArea){
+        this._layerGroupPathTempArea = L.polygon([this._lastPoint, latLng]);
       } else {
-        this._layerGroupPathTempArea = L.polygon([latLng]);
+        this._layerGroupPathTempArea.spliceLatLngs(0, 2, this._lastPoint, latLng);
       }
+        // this._layerGroupPathTempArea.addLatLng(latLng);
 
       if (!this._area) {
         this._area = 0;
@@ -312,7 +313,6 @@ var MeasureControl = L.Control.extend({
         
         this._updateTooltipPosition(latLng);
         this._updateTooltipArea(this._tempArea);
-        this._layerGroupPathTempArea.spliceLatLngs(0, 2, this._lastPoint, latLng);
       }
       this._tempArea = 0;
     }
@@ -355,33 +355,6 @@ var MeasureControl = L.Control.extend({
       this._lastPoint = latLng;
     }
   },
-      
-  //     if (this._layerGroupPath){
-  //       // does not measure if the polyline intersects
-  //       if (this._pointLength === document.getElementsByClassName('leaflet-div-icon').length){
-  //         return;
-  //       } else {
-  //         this._layerGroupPath.addLatLng(latLng);
-  //       }
-  //     } else {
-  //       this._layerGroupPath = L.polygon([latLng]);
-  //     }
-  //     this._area = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
-
-  //     circle = new L.CircleMarker(latLng);
-
-  //     this._currentCircles.push(circle);
-  //     this._lastPointArea = latLng;
-  //     this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
-
-  //     if (this._currentCircles.length > 2){
-  //       L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
-  //       this._createTooltip(latLng);
-  //       this._updateTooltipPosition(latLng);
-  //       this._updateTooltipArea(this._area);
-  //     }
-  //   }
-  // },
   _mouseClickDistance: function(e) {
     if (this._clicked === 'polyline'){
       var latLng = e.latlng;
@@ -392,11 +365,6 @@ var MeasureControl = L.Control.extend({
 
       if (this._lastPoint && this._tooltip) {
         var distance = latLng.distanceTo(this._lastPoint);
-        
-        console.log(this._distance);
-        // if (!this._distance) {
-        //   this._distance = 0;
-        // }
         this._updateTooltipPosition(latLng);
         this._updateTooltipDistance(this._distance + distance, distance);
         this._distance += distance;
@@ -424,39 +392,38 @@ var MeasureControl = L.Control.extend({
         newDistance, newArea, measurement, newMeasurement,
         newTotal = total[i];
 
-        if (newDifference === undefined){
-          newDifference = 0;
+        if (newDifference === undefined || newDifference === null){
+          tooltip[i].innerHTML = '';
         } else {
-          newDifference = difference[i].innerHTML;
-          newMeasurement = this._calculateDistance(newDifference.match(/\d+\.\d\d(?!\d)/)[0]);
+          newDifference = this._calculateDistance(difference[i].innerHTML.match(/\d+\.\d\d(?!\d)/)[0]);
+          console.log(newMeasurement);
         }
 
         if (newTotal === undefined){
-          newTotal = 0;
-          return;
+          newTotal = tooltip[i].innerHTML = '';
         } else {
-          newTotal = total[i].innerHTML;
-          measurement = newTotal.match(/\d+\.\d\d(?!\d)/)[0];
+          newTotal = total[i].innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
         }
         console.log(newTotal);
 
-        if (this._clicked === 'polyline'){
+        if (this._drawnGroup.type === 'polyline'){ //this._drawnl
           newDistance = this._calculateDistance(measurement);
-          newDifference = this._calculateDistance(newMeasurement);
-          // this._updateTooltipDistance(newDistance);
-          tooltip[i].innerHTML = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + newDistance + '</div>';
-          if (newDistance !== newDifference && newDifference !== 0) {
-            tooltip[i].innerHTML += '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">' + newDifference +'</div>';
-          }
+          newMeasurement = this._calculateDistance(newDifference);
+          
+          // if (newDistance === 0){
+          //   tooltip[i].innerHTML = '';
+          // } else {
+          tooltip[i].innerHTML = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + newDistance + '</div>'+
+            '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">' + newMeasurement +'</div>';
+          // }
         }
         
-        if (this._clicked === 'polygon'){
+        if (this._drawnGroup.type === 'polygon'){
           newArea = this._calculateArea(measurement);
           tooltip[i].innerHTML = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + newArea + '</div>';
-          console.log(newArea);
         }
         this._pastUnit = newTotal.match(/[a-z]+/)[0];
-        console.log(this._pastUnit);
+        debugger;
       }
     }
   },
