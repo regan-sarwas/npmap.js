@@ -1,10 +1,10 @@
 # Upgrading
 
-Upgrading to NPMap.js (any version of NPMap >= 2.0.0) from an old version of the NPMap library (any version < 2.0.0) requires some minor changes to the NPMap configuration object.
+Upgrading to NPMap.js (any version of NPMap >= 2.0.0) from an old version of the NPMap library (any version < 2.0.0) requires some minor changes.
 
 ## Changes
 
-The NPMap variable no longer needs a `config` property, and it can now be either an object (one map) or an array (multiple maps).
+**The NPMap variable no longer needs a `config` property, and it can now be either an object (one map) or an array (multiple maps).**
 
 Legacy:
 
@@ -26,10 +26,11 @@ NPMap.js:
       div: 'map2'
     }];
 
-The `zoomRange` property is no longer an object and is now broken up into two individual properties: `minZoom` and `maxZoom`.
+**The `zoomRange` property is no longer an object and is now broken up into two individual properties: `minZoom` and `maxZoom`.**
 
 Legacy:
 
+    ...
     zoomRange: {
       max: 15,
       min: 7
@@ -37,12 +38,13 @@ Legacy:
 
 NPMap.js:
 
+    ...
     minZoom: 7,
     maxZoom: 15
 
 Some more notes:
 
-1. The `api` config property is no longer needed
+1. The `api` config property is no longer needed and will be ignored, if provided
 2. The `events` config property is now named `hooks`
 3. The `InfoBox` config property is now named `popup`
 4. The `layers` config property is now named `overlays`

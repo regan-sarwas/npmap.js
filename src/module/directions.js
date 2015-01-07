@@ -310,6 +310,15 @@ var DirectionsModule = L.Class.extend({
       this._route = [];
     }
   },
+  _formatDistance: function(meters) {
+    var distance = Math.round(meters / 1609.344) / 10;
+
+    if (distance === 0) {
+      return Math.round(meters * 3.28084) + ' ft';
+    } else {
+      return distance + ' mi';
+    }
+  },
   _getFirstValue: function() {
     return this._ul.childNodes[0].childNodes[1].childNodes[0].value || null;
   },
@@ -382,19 +391,6 @@ var DirectionsModule = L.Class.extend({
       }
     }
   },
-
-
-
-  _formatDistance: function(meters) {
-    var distance = Math.round(meters / 1609.344) / 10;
-
-    if (distance === 0) {
-      return Math.round(meters * 3.28084) + ' ft';
-    } else {
-      return distance + ' mi';
-    }
-  },
-
   route: function() {
     var latLngs = [],
       me = this;
