@@ -417,7 +417,7 @@ var MeasureControl = L.Control.extend({
 
         if (this._drawnGroup.type === 'polyline'){
           var newDistance = this._calculateDistance(newTotal),
-          newMeasurement = this._calculateDistance(newDifference)
+          newMeasurement = this._calculateDistance(newDifference);
           text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + newDistance + '</div>';
 
           if (newMeasurement !== 0) {
@@ -498,19 +498,13 @@ var MeasureControl = L.Control.extend({
       this._startMeasuring('polyline');
     }
   },
-  _updateTooltipArea: function(total, difference) {
+  _updateTooltipArea: function(total) {
     var totalArea = this._calculateArea(total),
-      differenceArea = this._calculateArea(difference),
       text;
 
     if (totalArea !== 0){
-      text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
+      this._tooltip._icon.innerHTML = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
     }
-
-    if (differenceArea !== totalArea && difference !== 0) {
-      text += '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">(+' + differenceArea + ')</div>';
-    }
-    this._tooltip._icon.innerHTML = text;
   },
   _updateTooltipDistance: function(total, difference) {
     var totalDistance = this._calculateDistance(total),
