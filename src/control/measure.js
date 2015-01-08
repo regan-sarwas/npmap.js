@@ -302,19 +302,19 @@ var MeasureControl = L.Control.extend({
         this._layerGroupPathTempArea.spliceLatLngs(0, 2, this._lastPoint, latLng);
       }
         // this._layerGroupPathTempArea.addLatLng(latLng);
-
-      if (!this._area) {
-        this._area = 0;
-      }
       
-      if (this._tooltip && this._currentCircles > 2) {
+      if (this._tooltip) {
         this._tempArea = L.GeometryUtil.geodesicArea(this._layerGroupPathTempArea.getLatLngs());
         console.log(this._tempArea);
         
         this._updateTooltipPosition(latLng);
-        this._updateTooltipArea(this._tempArea);
+        this._updateTooltipArea(this._area, this._tempArea);
+
+        if (this._currentCircles >3){
+        debugger;
+          
+        }
       }
-      this._tempArea = 0;
     }
   },
   _mouseClickArea: function(e) {
@@ -330,9 +330,9 @@ var MeasureControl = L.Control.extend({
         if (this._pointLength === document.getElementsByClassName('leaflet-div-icon').length) {
           return;
         } else {
-          // if (!this._area) {
-          //   this._area = 0;
-          // }
+          if (!this._area) {
+            this._area = 0;
+          }
 
           this._layerGroupPath.addLatLng(latLng);
 
@@ -340,11 +340,13 @@ var MeasureControl = L.Control.extend({
           this._currentCircles.push(circle);
           
           this._area = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
+          var area = L.GeometryUtil.geodesicArea(L.polygon([this._lastPoint, latLng]));
+          console.log(area);
           
           if (this._currentCircles.length > 2){
             L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
             this._updateTooltipPosition(latLng);
-            this._updateTooltipArea(this._area);
+            this._updateTooltipArea(this._area, this._area + 10);
           }
         }
       } else {
@@ -388,42 +390,44 @@ var MeasureControl = L.Control.extend({
       for (i; i < tooltip.length; i++){
         var total = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip-total'),
         difference = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip-difference'),
-        newDifference = difference[i],
-        newDistance, newArea, measurement, newMeasurement,
-        newTotal = total[i];
+        dif = difference[i],
+        newDifference,
+        newTotal,
+        tot = total[i];
 
-        if (newDifference === undefined || newDifference === null){
-          tooltip[i].innerHTML = '';
+        if (dif === undefined || dif === null){
+          dif = null;
         } else {
-          newDifference = this._calculateDistance(difference[i].innerHTML.match(/\d+\.\d\d(?!\d)/)[0]);
-          console.log(newMeasurement);
+          newDifference = dif.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
         }
 
-        if (newTotal === undefined){
-          newTotal = tooltip[i].innerHTML = '';
+        if (tot === undefined || tot === ''){
+          tot = '';
         } else {
-          newTotal = total[i].innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
+          newTotal = tot.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
         }
-        console.log(newTotal);
 
-        if (this._drawnGroup.type === 'polyline'){ //this._drawnl
-          newDistance = this._calculateDistance(measurement);
-          newMeasurement = this._calculateDistance(newDifference);
+        if (this._drawnGroup.type === 'polyline'){
+          var newDistance = this._calculateDistance(newTotal),
+          newMeasurement = this._calculateDistance(newDifference),
+          text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + newDistance + '</div>';
           
-          // if (newDistance === 0){
-          //   tooltip[i].innerHTML = '';
-          // } else {
-          tooltip[i].innerHTML = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + newDistance + '</div>'+
-            '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">' + newMeasurement +'</div>';
-          // }
+          console.log(newMeasurement);
+
+          if (newMeasurement !== 0) {
+            text += '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">(+' + newMeasurement +')</div>';
+          }
         }
         
         if (this._drawnGroup.type === 'polygon'){
-          newArea = this._calculateArea(measurement);
-          tooltip[i].innerHTML = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + newArea + '</div>';
+          var newArea = this._calculateArea(newTotal),
+          newAreaMeasure = this._calculateArea(newDifference);
+
+          console.log(newAreaMeasure);
+
+          text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + newArea + '</div>';
         }
-        this._pastUnit = newTotal.match(/[a-z]+/)[0];
-        debugger;
+        this._pastUnit = total[0].innerHTML.match(/[a-z]+/)[0];
       }
     }
   },
@@ -489,10 +493,18 @@ var MeasureControl = L.Control.extend({
       this._startMeasuring('polyline');
     }
   },
-  _updateTooltipArea: function(total) {
+  _updateTooltipArea: function(total, difference) {
     var totalArea = this._calculateArea(total),
-      text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
+      differenceArea = this._calculateArea(difference),
+      text;
 
+    if (totalArea !== 0){
+      text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
+    }
+    
+    if (differenceArea !== totalArea && difference !== 0) {
+      text += '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">(+' + differenceArea + ')</div>';
+    }
     this._tooltip._icon.innerHTML = text;
   },
   _updateTooltipDistance: function(total, difference) {
