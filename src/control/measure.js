@@ -183,64 +183,67 @@ var MeasureControl = L.Control.extend({
     }).addTo(this._drawnGroup);
   },
   _calculateArea: function(val) {
-    var options = this._selectUnit.options;
+    var options = this._selectUnit.options,
+    unitChange;
 
     for (var i = 0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
       if (option !== undefined) {
         if (this._pastUnit === 'acres'){
           if (option === 'ha'){
-            var hectares = (val * 0.0001).toFixed(2).toLocaleString();
-            return hectares + ' ' + option;
+            unitChange = val * 0.0001;
+            return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'acres'){
-            var meter2ha = (val * 0.000247105).toFixed(2).toLocaleString();
-            return meter2ha + ' ' + option;
+            unitChange = val * 0.000247;
+            return unitChange.toFixed(2) + ' ' + option;
           }
         } else if (this._pastUnit === 'ha')
           if (option === 'acres') {
-            var ha2acres = (val * 2.47105).toFixed(2).toLocaleString();
-            return ha2acres + ' ' + option;
+            unitChange = val * 2.47105;
+            return unitChange.toFixed(2) + ' ' + option;
           }
       }
     }
   },
   _calculateDistance: function(val) {
-    var options = this._selectUnit.options;
-    //refactor unitChange... and 
+    var options = this._selectUnit.options,
+    unitChange;
+
     for (var i = 0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
       if (option !== undefined){
         if (this._pastUnit === 'meters'){
           if (option === 'mi'){
-            var miles = (val * 0.000621371).toFixed(2).toLocaleString();
-            return miles + ' ' + option;
+            unitChange = val * 0.000621371;
+            return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'ft') {
-            var feet = (val * 3.28084).toFixed(2).toLocaleString();
-            return feet + ' ' + option;
+            unitChange = val * 3.28084;
+            return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'meters'){
-            console.log(val);
-            return val.toFixed(2) + ' ' + option;
+            unitChange = val;
+            return unitChange.toFixed(2) + ' ' + option;
           }
         } else if (this._pastUnit === 'mi') {
           if (option === 'ft') {
-            var miles2Ft = (val * 5280).toFixed(2).toLocaleString();
-            return miles2Ft + ' ' + option;
+            unitChange = val * 5280;
+            return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'meters'){
-            var miles2M = (val * 1609.34).toFixed(2).toLocaleString();
-            return miles2M + ' ' + option;
+            unitChange = val * 1609.34;
+            return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'mi'){
-            var mi = (val * 1609.34).toFixed(2).toLocaleString();
-            return mi + ' ' + option;
+            unitChange = val * 1609.34;
+            return unitChange.toFixed(2) + ' ' + option;
           }
         } else if (this._pastUnit === 'ft') {
           if (option === 'mi') {
-            var ft2Miles = (val * 0.000189394).toFixed(2).toLocaleString();
-            return ft2Miles + ' ' + option;
+            unitChange = val * 0.000189394;
+            return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'meters'){
-            var ft2Meters = (val * 0.3048).toFixed(2).toLocaleString();
-            return ft2Meters + ' ' + option;
+            unitChange = val * 0.3048;
+            return unitChange.toFixed(2)+ ' ' + option;
           } else if (option === 'ft'){
-            return val + ' ' + option;
+            unitChange = val;
+            return unitChange.toFixed(2) + ' ' + option;
           }
         }
       }
@@ -252,7 +255,6 @@ var MeasureControl = L.Control.extend({
     }
     this._activeMode = this._modes[e.handler];
     this.fire('enable');
-    this._pastUnit = '';
   },
   _handlerDeactivated: function() {
     this._activeMode = null;
