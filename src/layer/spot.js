@@ -30,9 +30,12 @@ var SpotLayer = L.GeoJSON.extend({
             },
             messages = response.feedMessageResponse.messages.message;
 
+            if (!L.Util.isArray(messages)) {
+              messages = [messages];
+            }
+
             for (var i = 0; i < messages.length; i++) {
               message = messages[i];
-
               geoJson.features.push({
                 geometry: {
                   coordinates: [message.longitude, message.latitude],
