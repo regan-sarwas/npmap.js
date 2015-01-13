@@ -83,7 +83,7 @@ var MeasureControl = L.Control.extend({
       .on(this._selectUnit, 'change', L.DomEvent.stopPropagation)
       .on(this._selectUnit, 'change', L.DomEvent.preventDefault)
       .on(this._selectUnit, 'click', L.DomEvent.stopPropagation)
-      .on(this._selectUnit, 'click', L.DomEvent.preventDefault)
+      // .on(this._selectUnit, 'click', L.DomEvent.preventDefault)
 
       .on(this._map, 'mousemove', this._mouseMove, this)
       .on(this._menu, 'click', L.DomEvent.stopPropagation)
@@ -319,14 +319,16 @@ var MeasureControl = L.Control.extend({
           
           if (this._currentCircles.length > 1) {
             this._updateTooltipPosition(latLng);
-            this._updateTooltipArea(this._area);
+            if (this._tooltip !== undefined){
+              this._updateTooltipArea(this._area);
+            }
             L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
           }
         }
       } else {
         this._layerGroupPath = L.polygon([latLng]);
       }
-
+      
       this._createTooltip(latLng);
       this._lastPoint = latLng;
     }
@@ -351,7 +353,9 @@ var MeasureControl = L.Control.extend({
       if (this._lastPoint && this._tooltip) {
         var distance = latLng.distanceTo(this._lastPoint);
         this._updateTooltipPosition(latLng);
-        this._updateTooltipDistance(this._distance + distance, distance);
+        if (this._tooltip !== undefined){
+          this._updateTooltipDistance(this._distance + distance, distance);
+        }
         this._distance += distance;
       }
       this._createTooltip(latLng);
@@ -383,13 +387,14 @@ var MeasureControl = L.Control.extend({
       }
       this._pastUnit = total[0].innerHTML.match(/[a-z]+/)[0];
     }
-    console.log(this._pastUnit);
   },
   _selectUnitArea: function(tooltip){
     if (tooltip.innerHTML !== ''){
-      console.log(tooltip);
       var newArea,
-      newTotal;
+      newTotal,
+      options = this._selectUnit.options;
+  
+      this._pastUnit = options[options.selectedIndex].value;
 
       if (tooltip !== undefined || tooltip !== null){
         newTotal = tooltip.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
@@ -400,7 +405,6 @@ var MeasureControl = L.Control.extend({
       if (newArea !== undefined){
         tooltip.innerHTML = newArea;
       }
-      console.log(tooltip);
     }
   },
   _selectUnitDistance: function(tooltip){
@@ -428,7 +432,6 @@ var MeasureControl = L.Control.extend({
           difference.innerHTML = '(+' + newDifference + ')';
         }
       }
-      // this._pastUnit = total[0].innerHTML.match(/[a-z]+/)[0];
     }
   },
   _startMeasuring: function(type){
