@@ -2,58 +2,7 @@
 /* jshint camelcase: false */
 'use strict';
 
-// area not changing
-
-
 require('leaflet-draw');
-
-// var GeometryUtil = L.GeometryUtil
-
-// L.GeometryUtil.prototype.readablearea = function(area, isMetric){
-//   isMetric = true;
-//   var areaStr, unit,
-//     opt = document.getElementById('measure-units').options;
-//   for (var i=0; i < opt.length; i++){
-//     var option = opt[opt.selectedIndex].value;
-//     if (option === 'Hectares'){
-//       var hectares = (area/ 10000).toFixed(2).toLocaleString();
-//       unit = ' ha';
-//       areaStr = hectares + unit;
-//       return areaStr;
-//     } else {
-//       var acres = (area/ 4046.86).toFixed(2).toLocaleString();
-//       unit = ' acres';
-//       areaStr =  acres + unit;
-//       return areaStr;
-//     }
-//   }
-
-//   return areaStr;
-// };
-
-// L.GeometryUtil.prototype.readabledistance = function(distance, isMetric){
-//   isMetric = true;
-//   var distanceStr, unit,
-//   opt = document.getElementById('measure-units').options;
-//   for (var i=0; i < opt.length; i++){
-//     var option = opt[opt.selectedIndex].value;
-//     if ( option === 'Miles'){
-//       var miles = (distance * 0.000621371).toFixed(2).toLocaleString();
-//       unit = ' mi';
-//       distanceStr =  miles + unit;
-//       return distanceStr;
-//     } else if (option === 'Feet') {
-//       var feet = (distance * 3.28084).toFixed(2).toLocaleString();
-//       unit = ' ft';
-//       distanceStr = feet + unit;
-//       return distanceStr;
-//     } else {
-//       unit = ' m';
-//       distanceStr = distance.toFixed(2) + unit;
-//       return distanceStr;
-//     }
-//   }
-// };
 
 var MeasureControl = L.Control.extend({
   includes: L.Mixin.Events,
