@@ -75,11 +75,15 @@ var MeasureControl = L.Control.extend({
       .on(this._button, 'click', L.DomEvent.preventDefault)
       .on(this._button, 'dblclick', L.DomEvent.stopPropagation)
       .on(this._button, 'dblclick', L.DomEvent.preventDefault)
+
       .on(this._buttonArea, 'click', this._buttonAreaClick, this)
       .on(this._buttonDistance, 'click', this._buttonDistanceClick, this)
+
       .on(this._selectUnit, 'change', this._selectVal, this)
       .on(this._selectUnit, 'change', L.DomEvent.stopPropagation)
       .on(this._selectUnit, 'change', L.DomEvent.preventDefault)
+      .on(this._selectUnit, 'click', L.DomEvent.stopPropagation)
+      .on(this._selectUnit, 'click', L.DomEvent.preventDefault)
 
       .on(this._map, 'mousemove', this._mouseMove, this)
       .on(this._menu, 'click', L.DomEvent.stopPropagation)
