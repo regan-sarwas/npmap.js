@@ -61,16 +61,17 @@ var MeasureControl = L.Control.extend({
     this._selectUnit.id = 'measure-units';
     this._selectUnit.innerHTML =  '<option value="ft" class="polyline">Feet</option><option value="meters" class="polyline" selected>Meters</option>'+
     '<option value="mi" class="polyline">Miles</option>';
+    this._listeners(map, me);
 
     this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
     this._initializeMode(this._buttonArea, new L.Draw.Polygon(map, this.options.polygon));
-    this._listeners(map, me);
 
     return container;
   },
   _listeners: function(map, me){
     L.DomEvent
       .on(this._button, 'click', this._toggleMeasure, this)
+
       .on(this._button, 'click', L.DomEvent.stopPropagation)
       .on(this._button, 'click', L.DomEvent.preventDefault)
       .on(this._button, 'dblclick', L.DomEvent.stopPropagation)
@@ -80,8 +81,7 @@ var MeasureControl = L.Control.extend({
       .on(this._buttonDistance, 'click', this._buttonDistanceClick, this)
 
       .on(this._selectUnit, 'change', this._selectVal, this)
-      .on(this._selectUnit, 'change', L.DomEvent.stopPropagation)
-      .on(this._selectUnit, 'change', L.DomEvent.preventDefault)
+      .disableClickPropagation(this._selectUnit)
       .on(this._selectUnit, 'click', L.DomEvent.stopPropagation)
       .on(this._selectUnit, 'click', L.DomEvent.preventDefault)
 
@@ -91,6 +91,7 @@ var MeasureControl = L.Control.extend({
       .on(this._menu, 'dblclick', L.DomEvent.stopPropagation);
 
     map.addLayer(this._drawnGroup);
+
 
     map.on('draw:created', function(e) {
       me._drawnGroup.addLayer(e.layer);
