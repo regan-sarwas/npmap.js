@@ -56,7 +56,7 @@ var MeasureControl = L.Control.extend({
     this._buttonDistance = L.DomUtil.create('button', 'pressed polyline', liDistance);
     this._clicked = 'polyline';
     this._buttonDistance.innerHTML = 'Distance';
-    
+
     this._selectUnit = L.DomUtil.create('select','measure-units', liSelect);
     this._selectUnit.id = 'measure-units';
     this._selectUnit.innerHTML =  '<option value="ft" class="polyline">Feet</option><option value="meters" class="polyline" selected>Meters</option>'+
@@ -81,17 +81,16 @@ var MeasureControl = L.Control.extend({
       .on(this._buttonDistance, 'click', this._buttonDistanceClick, this)
 
       .on(this._selectUnit, 'change', this._selectVal, this)
+      .on(this._selectUnit, 'change', L.DomEvent.stopPropagation)
+      .on(this._selectUnit, 'change', L.DomEvent.preventDefault)
       .disableClickPropagation(this._selectUnit)
-      .on(this._selectUnit, 'click', L.DomEvent.stopPropagation)
-      .on(this._selectUnit, 'click', L.DomEvent.preventDefault)
 
-      .on(this._map, 'mousemove', this._mouseMove, this)
       .on(this._menu, 'click', L.DomEvent.stopPropagation)
       .on(this._menu, 'click', L.DomEvent.preventDefault)
-      .on(this._menu, 'dblclick', L.DomEvent.stopPropagation);
+      .on(this._menu, 'dblclick', L.DomEvent.stopPropagation)
+      .on(this._map, 'mousemove', this._mouseMove, this);
 
     map.addLayer(this._drawnGroup);
-
 
     map.on('draw:created', function(e) {
       me._drawnGroup.addLayer(e.layer);
@@ -100,6 +99,8 @@ var MeasureControl = L.Control.extend({
   _buttonAreaClick: function() {
     this._selectUnit.innerHTML = '<option value="acres" class="area">Acres</option>' +
     '<option value="ha" class="polygon">Hectares</option>';
+    this._buttonDistance.disabled = false;
+    this._buttonArea.disabled = true;
     this._buttonClick(this._buttonArea);
     this._pastUnit = 'meters';
   },
@@ -124,7 +125,10 @@ var MeasureControl = L.Control.extend({
     this._selectUnit.innerHTML = '<option value="ft" class="distance">Feet</option>' +
    '<option value="meters" class="distance" selected>Meters</option>' +
    '<option value="mi" class="polyline">Miles</option>';
+    this._buttonDistance.disabled = true;
+    this._buttonArea.disabled = false;
     this._buttonClick(this._buttonDistance);
+    this._pastUnit = 'meters';
   },
   _createTooltip: function(position) {
     var icon = L.divIcon({
@@ -168,6 +172,8 @@ var MeasureControl = L.Control.extend({
     var options = this._selectUnit.options,
     unitChange;
 
+    console.log(this._pastUnit);
+
     for (var i = 0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
       if (option !== undefined){
@@ -190,7 +196,7 @@ var MeasureControl = L.Control.extend({
             unitChange = val * 1609.34;
             return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'mi'){
-            unitChange = val * 1609.34;
+            unitChange = val;
             return unitChange.toFixed(2) + ' ' + option;
           }
         } else if (this._pastUnit === 'ft') {
@@ -277,7 +283,7 @@ var MeasureControl = L.Control.extend({
       this._area = 0;
     }
         
-    if (this._tooltip && this._currentCircles.length > 1) {
+    if (this._tooltip && this._currentCircles.length > 2) {
       this._updateTooltipPosition(latLng);
       this._updateTooltipArea(this._area);
     }
@@ -391,6 +397,7 @@ var MeasureControl = L.Control.extend({
         }
       }
       this._pastUnit = this._selectUnit.options[this._selectUnit.options.selectedIndex].value;
+      
     }
   },
   _selectUnitArea: function(tooltip){
