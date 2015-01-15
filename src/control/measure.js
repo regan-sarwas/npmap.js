@@ -1,3 +1,10 @@
+/*
+    TODO:
+      1. Last units for area/distance should be preserved. So if distance is "Miles", then you toggle to area and back to distance, "Miles" should be selected.
+      2. The first tooltip that has nothing in it is still displaying. This should not display.
+*/
+
+
 /* global L */
 /* jshint camelcase: false */
 'use strict';
@@ -12,24 +19,24 @@ var MeasureControl = L.Control.extend({
       drawError: {
         color: '#f06eaa',
         timeout: 400,
-        message: '<p style="width:200px !important"><strong>Oh snap!<strong> you can\'t draw that!</p>'
+        message: 'Invalid geometry'
       },
       shapeOptions: {
         color: 'rgb(255, 0, 0)',
-        weight: 2,
+        weight: 2
       },
       repeatMode: true
     },
     polyline: {
       shapeOptions: {
         color: 'rgb(255, 0, 0)',
-        weight: 2,
+        weight: 2
       },
       repeatMode: true
     },
     position:'topleft'
   },
-  initialize: function(map, options){
+  initialize: function(map, options) {
     L.Util.setOptions(this, options);
     this._activeMode = null;
     this._drawnGroup = new L.FeatureGroup();
@@ -39,60 +46,45 @@ var MeasureControl = L.Control.extend({
 
     return this;
   },
-  onAdd: function(map){
+  onAdd: function(map) {
     var  container = L.DomUtil.create('div', 'npmap-control-measure leaflet-bar leaflet-control'),
-    liArea, liDistance, liSelect,
-    me = this;
-
-    this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', container);
+      me = this,
+      liArea, liDistance, liSelect;
 
     this._menu = L.DomUtil.create('ul', '', container);
-    liDistance = L.DomUtil.create('li', '', this._menu);
     liArea = L.DomUtil.create('li', '', this._menu);
+    liDistance = L.DomUtil.create('li', '', this._menu);
     liSelect = L.DomUtil.create('li', '', this._menu);
-
+    this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', container);
     this._buttonArea = L.DomUtil.create('button', 'polygon', liArea);
     this._buttonArea.innerHTML = 'Area';
     this._buttonDistance = L.DomUtil.create('button', 'pressed polyline', liDistance);
-    this._clicked = 'polyline';
     this._buttonDistance.innerHTML = 'Distance';
-    
+    this._clicked = 'polyline';
     this._selectUnit = L.DomUtil.create('select','measure-units', liSelect);
     this._selectUnit.id = 'measure-units';
-    this._selectUnit.innerHTML =  '<option value="ft" class="polyline">Feet</option><option value="meters" class="polyline" selected>Meters</option>'+
-    '<option value="mi" class="polyline">Miles</option>';
+    this._selectUnit.innerHTML =  '' +
+      '<option value="ft" class="polyline">Feet</option>' +
+      '<option value="meters" class="polyline" selected>Meters</option>' +
+      '<option value="mi" class="polyline">Miles</option>' +
+    '';
     this._listeners(map, me);
-
     this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
     this._initializeMode(this._buttonArea, new L.Draw.Polygon(map, this.options.polygon));
 
     return container;
   },
-  _listeners: function(map, me){
+  _listeners: function(map, me) {
     L.DomEvent
       .on(this._button, 'click', this._toggleMeasure, this)
-
-      .on(this._button, 'click', L.DomEvent.stopPropagation)
-      .on(this._button, 'click', L.DomEvent.preventDefault)
-      .on(this._button, 'dblclick', L.DomEvent.stopPropagation)
-      .on(this._button, 'dblclick', L.DomEvent.preventDefault)
-
+      .disableClickPropagation(this._button)
       .on(this._buttonArea, 'click', this._buttonAreaClick, this)
       .on(this._buttonDistance, 'click', this._buttonDistanceClick, this)
-
       .on(this._selectUnit, 'change', this._selectVal, this)
-      .disableClickPropagation(this._selectUnit)
-      .on(this._selectUnit, 'click', L.DomEvent.stopPropagation)
-      .on(this._selectUnit, 'click', L.DomEvent.preventDefault)
-
       .on(this._map, 'mousemove', this._mouseMove, this)
-      .on(this._menu, 'click', L.DomEvent.stopPropagation)
-      .on(this._menu, 'click', L.DomEvent.preventDefault)
-      .on(this._menu, 'dblclick', L.DomEvent.stopPropagation);
+      .disableClickPropagation(this._menu);
 
     map.addLayer(this._drawnGroup);
-
-
     map.on('draw:created', function(e) {
       me._drawnGroup.addLayer(e.layer);
     });
@@ -126,17 +118,6 @@ var MeasureControl = L.Control.extend({
    '<option value="mi" class="polyline">Miles</option>';
     this._buttonClick(this._buttonDistance);
   },
-  _createTooltip: function(position) {
-    var icon = L.divIcon({
-      className: 'leaflet-measure-tooltip unit-'+ this._Unit,
-      iconAnchor: [-5, -5]
-    });
-
-    this._tooltip = L.marker(position, {
-      icon: icon,
-      clickable: false
-    }).addTo(this._drawnGroup);
-  },
   _calculateArea: function(val) {
     var options = this._selectUnit.options,
     unitChange;
@@ -165,48 +146,54 @@ var MeasureControl = L.Control.extend({
     }
   },
   _calculateDistance: function(val) {
-    var options = this._selectUnit.options,
-    unitChange;
+    var options = this._selectUnit.options;
 
     for (var i = 0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
-      if (option !== undefined){
-        if (this._pastUnit === 'meters'){
+
+      if (option !== undefined) {
+        var unitChange;
+
+        if (this._pastUnit === 'meters') {
           if (option === 'mi'){
             unitChange = val * 0.000621371;
-            return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'ft') {
             unitChange = val * 3.28084;
-            return unitChange.toFixed(2) + ' ' + option;
-          } else if (option === 'meters'){
+          } else if (option === 'meters') {
             unitChange = val;
-            return unitChange.toFixed(2) + ' ' + option;
           }
         } else if (this._pastUnit === 'mi') {
           if (option === 'ft') {
             unitChange = val * 5280;
-            return unitChange.toFixed(2) + ' ' + option;
-          } else if (option === 'meters'){
+          } else if (option === 'meters') {
             unitChange = val * 1609.34;
-            return unitChange.toFixed(2) + ' ' + option;
           } else if (option === 'mi'){
             unitChange = val * 1609.34;
-            return unitChange.toFixed(2) + ' ' + option;
           }
         } else if (this._pastUnit === 'ft') {
           if (option === 'mi') {
             unitChange = val * 0.000189394;
-            return unitChange.toFixed(2) + ' ' + option;
-          } else if (option === 'meters'){
+          } else if (option === 'meters') {
             unitChange = val * 0.3048;
-            return unitChange.toFixed(2)+ ' ' + option;
           } else if (option === 'ft'){
             unitChange = val;
-            return unitChange.toFixed(2) + ' ' + option;
           }
         }
+
+        return unitChange.toFixed(2) + ' ' + option;
       }
     }
+  },
+  _createTooltip: function(position) {
+    var icon = L.divIcon({
+      className: 'leaflet-measure-tooltip unit-'+ this._Unit,
+      iconAnchor: [-5, -5]
+    });
+
+    this._tooltip = L.marker(position, {
+      clickable: false,
+      icon: icon
+    }).addTo(this._drawnGroup);
   },
   _handlerActivated: function(e) {
     if (this._activeMode && this._activeMode.handler.enabled()) {
@@ -219,13 +206,10 @@ var MeasureControl = L.Control.extend({
   _handlerDeactivated: function() {
     this._activeMode = null;
     this.fire('disable');
-
     this._lastCircle = undefined;
     this._currentCircles = [];
-
     this._layerGroupPathTemp = this._layerGroupPath = undefined;
     this._lastPoint = undefined;
-
     this._area = 0;
     this._distance = 0;
   },
@@ -234,8 +218,8 @@ var MeasureControl = L.Control.extend({
       me = this;
 
     this._modes[type] = {};
-    this._modes[type].handler = handler;
     this._modes[type].button = this._buttonDistance;
+    this._modes[type].handler = handler;
 
     L.DomEvent.on(button, 'click', function() {
       if (me._activeMode === type) {
@@ -267,7 +251,7 @@ var MeasureControl = L.Control.extend({
       this._mouseArea(latLng);
     }
   },
-  _mouseArea: function(latLng){
+  _mouseArea: function(latLng) {
     this._layerGroupPath.addLatLng(latLng);
 
     if (this._currentCircles !== undefined){
@@ -282,7 +266,7 @@ var MeasureControl = L.Control.extend({
       this._updateTooltipArea(this._area);
     }
   },
-  _mouseDistance: function(latLng){
+  _mouseDistance: function(latLng) {
     if (!this._layerGroupPathTemp){
       this._layerGroupPathTemp = L.polyline([this._lastPoint, latLng]);
     } else {
@@ -302,38 +286,41 @@ var MeasureControl = L.Control.extend({
   _mouseClickArea: function(e) {
     if (this._clicked === 'polygon'){
       var latLng = e.latlng,
-      circle;
+        circle;
 
       this._Unit = 'acres';
 
       if (!latLng) {
         return;
       }
-      
+
       if (this._layerGroupPath ) {
         if (this._pointLength === document.getElementsByClassName('leaflet-div-icon').length) {
           return;
         } else {
-          this._layerGroupPath.addLatLng(latLng);
-          var metersSq = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
-          this._area = metersSq * 0.000247105;
+          var metersSq;
 
+          this._layerGroupPath.addLatLng(latLng);
+          metersSq = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
+          this._area = metersSq * 0.000247105;
           circle = new L.CircleMarker(latLng);
           this._currentCircles.push(circle);
           this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
           
           if (this._currentCircles.length > 1) {
             this._updateTooltipPosition(latLng);
+
             if (this._tooltip !== undefined){
               this._updateTooltipArea(this._area);
             }
+
             L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
           }
         }
       } else {
         this._layerGroupPath = L.polygon([latLng]);
       }
-      
+
       this._createTooltip(latLng);
       this._lastPoint = latLng;
     }
@@ -341,6 +328,7 @@ var MeasureControl = L.Control.extend({
   _mouseClickDistance: function(e) {
     if (this._clicked === 'polyline'){
       var latLng = e.latlng;
+
       this._Unit = 'meters';
 
       if (!latLng) {
@@ -363,6 +351,7 @@ var MeasureControl = L.Control.extend({
         }
         this._distance += distance;
       }
+
       this._createTooltip(latLng);
 
       if (this._lastCircle) {
@@ -374,7 +363,7 @@ var MeasureControl = L.Control.extend({
       this._lastCircle.on('click', function() { this._handlerDeactivated(); }, this);
     }
   },
-  _selectVal: function(){
+  _selectVal: function() {
     var area = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip unit-acres'),
       distance = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip unit-meters'),
       total = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip-total');
@@ -382,7 +371,8 @@ var MeasureControl = L.Control.extend({
     if (this._selectUnit){
       for (var i = 0; i < total.length; i++) {
         var parentElement = total[i].parentNode;
-        if (area.indexOf(parentElement) > -1){
+
+        if (area.indexOf(parentElement) > -1) {
           this._selectUnitArea(total[i]);
         }
        
@@ -390,13 +380,13 @@ var MeasureControl = L.Control.extend({
           this._selectUnitDistance(total[i]);
         }
       }
+
       this._pastUnit = this._selectUnit.options[this._selectUnit.options.selectedIndex].value;
     }
   },
-  _selectUnitArea: function(tooltip){
-    if (tooltip.innerHTML !== ''){
-      var newArea,
-      newTotal;
+  _selectUnitArea: function(tooltip) {
+    if (tooltip.innerHTML !== '') {
+      var newArea, newTotal;
 
       if (tooltip !== undefined || tooltip !== null){
         newTotal = tooltip.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
@@ -409,56 +399,54 @@ var MeasureControl = L.Control.extend({
       }
     }
   },
-  _selectUnitDistance: function(tooltip){
+  _selectUnitDistance: function(tooltip) {
     var total = tooltip.innerHTML;
-    if (total !== ''){
-      var newDistance,
-      newMeasurement,
-      newTotal,
-      difference = L.npmap.util._.getNextSibling(tooltip),
-      newDifference;
 
-      if (tooltip !== undefined){
+    if (total !== '') {
+      var difference = L.npmap.util._.getNextSibling(tooltip),
+        newDifference, newDistance, newMeasurement, newTotal;
+
+      if (tooltip !== undefined) {
         newTotal = tooltip.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
         newDistance = this._calculateDistance(newTotal);
       }
 
-      if (difference !== null){
+      if (difference !== null) {
         newMeasurement = difference.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
         newDifference = this._calculateDistance(newMeasurement);
       }
 
-      if (newDistance !== undefined){
+      if (newDistance !== undefined) {
         tooltip.innerHTML = newDistance;
+
         if (difference !== null) {
           difference.innerHTML = '(+' + newDifference + ')';
         }
       }
     }
   },
-  _startMeasuring: function(type){
+  _startMeasuring: function(type) {
     var clickFn = (type === 'polygon' ? this._mouseClickArea : this._mouseClickDistance),
-    map = this._map;
+      map = this._map;
 
     if (typeof this._doubleClickZoom === 'undefined' || this._doubleClickZoom === null) {
       this._doubleClickZoom = map.doubleClickZoom.enabled();
     }
-    map.doubleClickZoom.disable();
 
+    map.doubleClickZoom.disable();
     this._currentCircles = [];
     this._tooltip = undefined;
-
     L.DomEvent
       .on(document, 'keydown', this._onKeyDown, this)
-      .on(map, 'mousemove', this._mouseMove, this)
       .on(map, 'click', clickFn, this)
-      .on(map, 'dblclick', this._handlerDeactivated, this);
+      .on(map, 'dblclick', this._handlerDeactivated, this)
+      .on(map, 'mousemove', this._mouseMove, this);
   },
   _stopMeasuring: function(type) {
     var clickFn = (type === 'polygon' ? this._mouseClickArea : this._mouseClickDistance),
-    map = this._map;
+      map = this._map;
 
-    if (this._clicked === 'polyline'){
+    if (this._clicked === 'polyline') {
       if (this._doubleClickZoom) {
         this._map.doubleClickZoom.enable();
       }
@@ -470,9 +458,9 @@ var MeasureControl = L.Control.extend({
 
     L.DomEvent
       .off(document, 'keydown', this._onKeyDown, this)
-      .off(map, 'mousemove', this._mouseMove, this)
       .off(map, 'click', clickFn, this)
-      .off(map, 'dblclick', this._handlerDeactivated, this);
+      .off(map, 'dblclick', this._handlerDeactivated, this)
+      .off(map, 'mousemove', this._mouseMove, this);
   },
   _toggleMeasure: function() {
     var map = this._map;
@@ -497,10 +485,7 @@ var MeasureControl = L.Control.extend({
     }
   },
   _updateTooltipArea: function(total) {
-    var totalArea = this._calculateArea(total),
-      text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + totalArea + '</div>';
-
-    this._tooltip._icon.innerHTML = text;
+    this._tooltip._icon.innerHTML = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + this._calculateArea(total) + '</div>';
   },
   _updateTooltipDistance: function(total, difference) {
     var totalDistance = this._calculateDistance(total),
