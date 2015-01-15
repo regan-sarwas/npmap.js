@@ -79,43 +79,58 @@ module.exports = {
         lastTarget;
 
       config.onEachFeature = function(feature, layer) {
+        var clicks = 0;
+
         layer.on('click', function(e) {
-          var target = e.target,
-            map = target._map,
-            container = map.getContainer(),
-            popup = L.npmap.popup({
-              autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
-              maxHeight: util._getAvailableVerticalSpace(map) - 84,
-              maxWidth: util._getAvailableHorizontalSpace(map) - 77
-            }),
-            properties = feature.properties,
-            html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
+          clicks = 0;
 
-          if (lastTarget) {
-            lastTarget
-              .closePopup()
-              .unbindPopup();
-            lastTarget = target;
-          }
+          setTimeout(function() {
+            var target = e.target,
+              map = target._map;
 
-          if (html) {
-            if (typeof html === 'string') {
-              html = util.unescapeHtml(html);
-            }
-
-            if (feature.geometry.type === 'Point') {
-              popup.setContent(html);
-              target
-                .bindPopup(popup)
-                .openPopup();
-              lastTarget = target;
+            if (clicks) {
+              e.type = 'dblclick';
+              map.fireEvent('dblclick', e);
             } else {
-              popup
-                .setContent(html)
-                .setLatLng(e.latlng.wrap())
-                .openOn(target._map);
+              var container = map.getContainer(),
+                popup = L.npmap.popup({
+                  autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
+                  maxHeight: util._getAvailableVerticalSpace(map) - 84,
+                  maxWidth: util._getAvailableHorizontalSpace(map) - 77
+                }),
+                properties = feature.properties,
+                html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
+
+              if (lastTarget) {
+                lastTarget
+                  .closePopup()
+                  .unbindPopup();
+                lastTarget = target;
+              }
+
+              if (html) {
+                if (typeof html === 'string') {
+                  html = util.unescapeHtml(html);
+                }
+
+                if (feature.geometry.type === 'Point') {
+                  popup.setContent(html);
+                  target
+                    .bindPopup(popup)
+                    .openPopup();
+                  lastTarget = target;
+                } else {
+                  popup
+                    .setContent(html)
+                    .setLatLng(e.latlng.wrap())
+                    .openOn(target._map);
+                }
+              }
             }
-          }
+          }, 200);
+        });
+        layer.on('dblclick', function() {
+          clicks++;
         });
         layer.on('mouseout', function(e) {
           if (activeTip) {
