@@ -172,8 +172,6 @@ var MeasureControl = L.Control.extend({
     var options = this._selectUnit.options,
     unitChange;
 
-    console.log(this._pastUnit);
-
     for (var i = 0; i < options.length; i++){
       var option = options[options.selectedIndex].value;
       if (option !== undefined){
@@ -329,8 +327,8 @@ var MeasureControl = L.Control.extend({
           this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
           
           if (this._currentCircles.length > 1) {
-            this._updateTooltipPosition(latLng);
-            if (this._tooltip !== undefined){
+            if (this._tooltip.innerHTML !== ''){
+              this._updateTooltipPosition(latLng);
               this._updateTooltipArea(this._area);
             }
             L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
@@ -363,8 +361,8 @@ var MeasureControl = L.Control.extend({
 
       if (this._lastPoint && this._tooltip) {
         var distance = latLng.distanceTo(this._lastPoint);
-        this._updateTooltipPosition(latLng);
-        if (this._tooltip !== undefined){
+        if (this._tooltip.innerHTML !== ''){
+          this._updateTooltipPosition(latLng);
           this._updateTooltipDistance(this._distance + distance, distance);
         }
         this._distance += distance;
