@@ -79,43 +79,61 @@ module.exports = {
         lastTarget;
 
       config.onEachFeature = function(feature, layer) {
+        var clicks = 0;
+
         layer.on('click', function(e) {
           var target = e.target,
-            map = target._map,
-            container = map.getContainer(),
-            popup = L.npmap.popup({
-              autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
-              maxHeight: util._getAvailableVerticalSpace(map) - 84,
-              maxWidth: util._getAvailableHorizontalSpace(map) - 77
-            }),
-            properties = feature.properties,
-            html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
+            map = target._map;
 
-          if (lastTarget) {
-            lastTarget
-              .closePopup()
-              .unbindPopup();
-            lastTarget = target;
+          if (map._controllingInteractivity) {
+            clicks = 0;
+
+            setTimeout(function() {
+              if (!clicks) {
+                var container = map.getContainer(),
+                  popup = L.npmap.popup({
+                    autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
+                    maxHeight: util._getAvailableVerticalSpace(map) - 84,
+                    maxWidth: util._getAvailableHorizontalSpace(map) - 77
+                  }),
+                  properties = feature.properties,
+                  html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
+
+                if (lastTarget) {
+                  lastTarget
+                    .closePopup()
+                    .unbindPopup();
+                  lastTarget = target;
+                }
+
+                if (html) {
+                  if (typeof html === 'string') {
+                    html = util.unescapeHtml(html);
+                  }
+
+                  if (feature.geometry.type === 'Point') {
+                    popup.setContent(html);
+                    target
+                      .bindPopup(popup)
+                      .openPopup();
+                    lastTarget = target;
+                  } else {
+                    popup
+                      .setContent(html)
+                      .setLatLng(e.latlng.wrap())
+                      .openOn(target._map);
+                  }
+                }
+              }
+            }, 200);
+          } else {
+            map.fireEvent('click', e);
           }
-
-          if (html) {
-            if (typeof html === 'string') {
-              html = util.unescapeHtml(html);
-            }
-
-            if (feature.geometry.type === 'Point') {
-              popup.setContent(html);
-              target
-                .bindPopup(popup)
-                .openPopup();
-              lastTarget = target;
-            } else {
-              popup
-                .setContent(html)
-                .setLatLng(e.latlng.wrap())
-                .openOn(target._map);
-            }
-          }
+        });
+        layer.on('dblclick', function(e) {
+          clicks++;
+          e.containerPoint = e.target._map.latLngToContainerPoint(e.latlng);
+          e.target._map.fireEvent('dblclick', e);
         });
         layer.on('mouseout', function(e) {
           if (activeTip) {
