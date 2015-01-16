@@ -113,13 +113,14 @@ var MeasureControl = L.Control.extend({
       L.DomUtil.addClass(add, 'pressed');
       this._startMeasuring(mode);
       this._clicked = mode;
+      console.log(this._clicked);
     }
   },
   _buttonDistanceClick: function() {
     this._selectUnit.innerHTML = '' +
-      '<option value="ft" class="distance">Feet</option>' +
-      '<option value="meters" class="distance" selected>Meters</option>' +
       '<option value="mi" class="polyline">Miles</option>' +
+      '<option value="meters" class="distance" selected>Meters</option>' +
+      '<option value="ft" class="distance">Feet</option>' +
     '';
     this._buttonDistance.disabled = true;
     this._buttonArea.disabled = false;
@@ -358,7 +359,7 @@ var MeasureControl = L.Control.extend({
         this._distance += distance;
       }
 
-      if (distance !== 0){
+      if (this._distance !== 0){
         this._createTooltip(latLng);
       }
 
@@ -491,7 +492,9 @@ var MeasureControl = L.Control.extend({
       L.DomUtil.addClass(this._button, 'pressed');
       this._menu.style.display = 'block';
       this._buttonDistance.click();
-      this._startMeasuring('polyline');
+      this._clicked = 'polyline';
+      this._startMeasuring(this._clicked);
+      // this._startMeasuring('polyline');
     }
   },
   _updateTooltipArea: function(total) {
