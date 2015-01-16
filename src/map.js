@@ -460,7 +460,7 @@ var Map = L.Map.extend({
       changed = true;
     }
 
-    me.on('dblclick', function(e) {
+    me.on('dblclick', function() {
       clicks++;
     });
     me.on('click', function(e) {
