@@ -139,9 +139,11 @@ var SwitcherControl = L.Control.extend({
     if (this._list.style.display && this._list.style.display === 'none') {
       this._list.style.display = 'block';
       L.DomUtil.addClass(this._activeDropdown, 'open');
+      this._active.setAttribute('aria-expanded', true);
     } else {
       this._list.style.display = 'none';
       L.DomUtil.removeClass(this._activeDropdown, 'open');
+      this._active.setAttribute('aria-expanded', false);
     }
   },
   _update: function() {
