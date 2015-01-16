@@ -86,9 +86,33 @@ _Example (API)_:
       user: 'nps'
     }).addTo(map);
 
+You can add events to a layer by adding an `events` array to the config. The array should contain event objects with `fn` and `type` properties. These objects can also be given a `single` property if the event should only be fired one time. An example:
+
+    var NPMap = {
+      div: 'map',
+      overlays: [{
+        events: [{
+          fn: function() {
+            console.log('tileloadstart');
+          },
+          type: 'tileloadstart'
+        }],
+        table: 'parks',
+        type: 'cartodb',
+        user: 'nps'
+      }]
+    };
+
+Supported event "types" include all of the Leaflet layer events for a given layer type, as well as:
+
+* `error`: Fired when a layer error occurs. Passes the error event object to the event function.
+* `load`: Fired when a layer is loaded. Only available for layers that extend `L.GeoJson`.
+* `ready`: Fires when a layer is "ready".
+
 _Working Examples_:
 
 * [baseLayer Presets](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/baselayer-presets.html)
+* [Events](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/events.html)
 
 ## L.npmap.layer.arcgisserver(config: object)
 
@@ -867,8 +891,12 @@ Docs for `L.npmap.module` coming soon.
 
 ## Mapbox
 
+* `mapbox-dark`
+* `mapbox-emerald`
+* `mapbox-highContrast`
 * `mapbox-light`
 * `mapbox-outdoors`
+* `mapbox-pencil`
 * `mapbox-satellite`
 * `mapbox-satelliteLabels`
 * `mapbox-streets`
@@ -1038,7 +1066,7 @@ Take a look at the [Styling Vectors example](https://github.com/nationalparkserv
 
 <ul>
   <li>NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It acts as a complement to the larger <a href="http://leafletjs.com/reference.html">Leaflet</a> API.</li>
-  <li>NPMap.js adds an <code>L</code> property to every map config object and layer (overlay or baselayer) passed in via the <code>NPMap</code> configuration object. You can use this property to interact programatically with objects created by Leaflet. A few examples:<ul>
+  <li>NPMap.js adds an <code>L</code> property to every map config object and layer (baselayer or overlay) passed in via the <code>NPMap</code> object. You can use this property to interact programatically with objects created by Leaflet. A few examples:<ul>
     <li><code>NPMap.config.L</code> will get a reference to the <code><a href="http://leafletjs.com/reference.html#map-class">L.Map</a></code> object</li>
     <li><code>NPMap.config.baseLayers[0].L</code> will get a reference to the Leaflet layer object for the first baseLayer</li>
     <li><code>NPMap.config.overlays[0].L</code> will get a reference to the Leaflet layer object for the first overlay</li>

@@ -15,8 +15,8 @@ var HomeControl = L.Control.extend({
       button = L.DomUtil.create('button', 'leaflet-bar-single', container);
 
     button.setAttribute('alt', 'Pan/zoom to initial extent');
-    L.DomEvent.disableClickPropagation(button);
     L.DomEvent
+      .disableClickPropagation(button)
       .on(button, 'click', L.DomEvent.preventDefault)
       .on(button, 'click', this.toHome, this);
 

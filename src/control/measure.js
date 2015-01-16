@@ -1,11 +1,7 @@
 /*
     TODO:
-         TODO:
-    2. Last units for area/distance should be preserved. So if distance is "Miles", then you toggle to area and back to distance, "Miles" should be selected.
-    
-    3. The first tooltip that has nothing in it is still displaying. This should not display.
-    4. Put in options, the ability to choose default units.  If none is selected then all show up. 
-    Ability to select only one type of measurement.
+      1. Last units for area/distance should be preserved. So if distance is "Miles", then you toggle to area and back to distance, "Miles" should be selected.
+      2. The first tooltip that has nothing in it is still displaying. This should not display.
 */
 
 
@@ -44,9 +40,8 @@ var MeasureControl = L.Control.extend({
     L.Util.setOptions(this, options);
     this._activeMode = null;
     this._drawnGroup = new L.FeatureGroup();
-    // this._pastUnit = '';
+    this._pastUnit = '';
     this._Unit = '';
-    this._clicked = 'polyline';
     this._modes = {};
 
     return this;
@@ -68,8 +63,8 @@ var MeasureControl = L.Control.extend({
     this._selectUnit = L.DomUtil.create('select','measure-units', liSelect);
     this._selectUnit.id = 'measure-units';
     this._selectUnit.innerHTML =  '' +
-      '<option value="mi" class="polyline" selected>Miles</option>' +
-      '<option value="meters" class="polyline" >Meters</option>' +
+      '<option value="mi" class="polyline">Miles</option>' +
+      '<option value="meters" class="polyline" selected>Meters</option>' +
       '<option value="ft" class="polyline">Feet</option>' +
     '';
     this._listeners(map, me);
@@ -94,24 +89,14 @@ var MeasureControl = L.Control.extend({
     });
   },
   _buttonAreaClick: function() {
+    this._selectUnit.innerHTML = '' +
+      '<option value="acres" class="area">Acres</option>' +
+      '<option value="ha" class="polygon">Hectares</option>' +
+    '';
     this._buttonDistance.disabled = false;
     this._buttonArea.disabled = true;
     this._buttonClick(this._buttonArea);
-
-    // if unit the pastUnit and option equal that choses unit
-    // if (!unit){} else {}
-    this._selectUnit.innerHTML = '' +
-      '<option value="acres" class="area" selected>Acres</option>' +
-      '<option value="ha" class="polygon">Hectares</option>' +
-    '' ;
-
-    if (!this._pastUnit){
-      this._pastUnit = 'acres';
-      this._optionArea = 'acres';
-    } else {
-      this._pastUnit = this._optionArea;
-    }
-    console.log(this._pastUnit);
+    this._pastUnit = 'meters';
   },
   _buttonClick: function(button) {
     if (!L.DomUtil.hasClass(button, 'pressed')) {
@@ -131,48 +116,39 @@ var MeasureControl = L.Control.extend({
     }
   },
   _buttonDistanceClick: function() {
+    this._selectUnit.innerHTML = '' +
+      '<option value="ft" class="distance">Feet</option>' +
+      '<option value="meters" class="distance" selected>Meters</option>' +
+      '<option value="mi" class="polyline">Miles</option>' +
+    '';
     this._buttonDistance.disabled = true;
     this._buttonArea.disabled = false;
     this._buttonClick(this._buttonDistance);
-
-    // if unit the pastUnit and option equal that choses unit
-    // if (!unit){} else {}
-    this._selectUnit.innerHTML = '' +
-      '<option value="mi" class="polyline" selected>Miles</option>' +
-      '<option value="meters" class="distance">Meters</option>' +
-      '<option value="ft" class="distance">Feet</option>' +
-    '';
-    if (!this._pastUnit){
-      this._pastUnit = 'meters';
-      this._optionDistance = 'mi'
-    } else {
-      this._pastUnit = this._optionDistance;
-    }
-    console.log(this._pastUnit);
+    this._pastUnit = 'meters';
   },
   _calculateArea: function(val) {
     var options = this._selectUnit.options,
       unitChange;
 
     for (var i = 0; i < options.length; i++) {
-      this._optionArea = options[options.selectedIndex].value;
+      var option = options[options.selectedIndex].value;
 
-      if (this._optionArea !== undefined) {
+      if (option !== undefined) {
         if (this._pastUnit === 'acres' || this._pastUnit === 'meters'){
-          if (this._optionArea === 'ha'){
+          if (option === 'ha'){
             unitChange = val * 0.404686;
-          } else if (this._optionArea === 'acres') {
+          } else if (option === 'acres') {
             unitChange = val;
           }
         } else if (this._pastUnit === 'ha') {
-          if (this._optionArea === 'acres') {
+          if (option === 'acres') {
             unitChange = val * 2.47105;
-          } else if (this._optionArea === 'ha'){
+          } else if (option === 'ha'){
             unitChange = val;
           }
         }
 
-        return unitChange.toFixed(2) + ' ' + this._optionArea;
+        return unitChange.toFixed(2) + ' ' + option;
       }
     }
   },
@@ -180,38 +156,38 @@ var MeasureControl = L.Control.extend({
     var options = this._selectUnit.options;
 
     for (var i = 0; i < options.length; i++){
-      this._optionDistance = options[options.selectedIndex].value;
+      var option = options[options.selectedIndex].value;
 
-      if (this._optionDistance !== undefined) {
+      if (option !== undefined) {
         var unitChange;
 
         if (this._pastUnit === 'meters') {
-          if (this._optionDistance === 'mi'){
+          if (option === 'mi'){
             unitChange = val * 0.000621371;
-          } else if (this._optionDistance === 'ft') {
+          } else if (option === 'ft') {
             unitChange = val * 3.28084;
-          } else if (this._optionDistance === 'meters') {
+          } else if (option === 'meters') {
             unitChange = val;
           }
         } else if (this._pastUnit === 'mi') {
-          if (this._optionDistance === 'ft') {
+          if (option === 'ft') {
             unitChange = val * 5280;
-          } else if (this._optionDistance === 'meters') {
+          } else if (option === 'meters') {
             unitChange = val * 1609.34;
-          } else if (this._optionDistance === 'mi'){
+          } else if (option === 'mi'){
             unitChange = val;
           }
         } else if (this._pastUnit === 'ft') {
-          if (this._optionDistance === 'mi') {
+          if (option === 'mi') {
             unitChange = val * 0.000189394;
-          } else if (this._optionDistance === 'meters') {
+          } else if (option === 'meters') {
             unitChange = val * 0.3048;
-          } else if (this._optionDistance === 'ft'){
+          } else if (option === 'ft'){
             unitChange = val;
           }
         }
 
-        return unitChange.toFixed(2) + ' ' + this._optionDistance;
+        return unitChange.toFixed(2) + ' ' + option;
       }
     }
   },
@@ -365,13 +341,13 @@ var MeasureControl = L.Control.extend({
         return;
       }
 
-      // if (this._pastUnit === '' || this._pastUnit === 'acres' || this._pastUnit === 'ha'){
-      //   this._pastUnit = 'meters';
-      // }
+      if (this._pastUnit === '' || this._pastUnit === 'acres' || this._pastUnit === 'ha'){
+        this._pastUnit = 'meters';
+      }
 
-      // if (!this._tooltip) {
-      //   this._tooltip = this._createTooltip(latLng);
-      // }
+      if (!this._tooltip) {
+        this._tooltip = this._createTooltip(latLng);
+      }
 
       if (this._lastPoint && this._tooltip) {
         var distance = latLng.distanceTo(this._lastPoint);
@@ -382,9 +358,9 @@ var MeasureControl = L.Control.extend({
         this._distance += distance;
       }
 
-      // if (distance === 0){
+      if (distance !== 0){
         this._createTooltip(latLng);
-      // }
+      }
 
       if (this._lastCircle) {
         this._drawnGroup.removeLayer(this._lastCircle);
@@ -516,7 +492,6 @@ var MeasureControl = L.Control.extend({
       this._menu.style.display = 'block';
       this._buttonDistance.click();
       this._startMeasuring('polyline');
-      this._pastUnit = 'meters';
     }
   },
   _updateTooltipArea: function(total) {
