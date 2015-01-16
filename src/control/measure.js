@@ -28,15 +28,11 @@ var MeasureControl = L.Control.extend({
     this._activeMode = 'distance';
 
     L.DomEvent
-      .on(this._button, 'click', L.DomEvent.stopPropagation)
-      .on(this._button, 'click', L.DomEvent.preventDefault)
+      .disableClickPropagation(this._button)
+      .disableClickPropagation(this._menu)
       .on(this._button, 'click', this._toggleMeasure, this)
-      .on(this._button, 'dblclick', L.DomEvent.stopPropagation)
       .on(this._buttonArea, 'click', this._buttonAreaClick, this)
-      .on(this._buttonDistance, 'click', this._buttonDistanceClick, this)
-      .on(this._menu, 'click', L.DomEvent.stopPropagation)
-      .on(this._menu, 'click', L.DomEvent.preventDefault)
-      .on(this._menu, 'dblclick', L.DomEvent.stopPropagation);
+      .on(this._buttonDistance, 'click', this._buttonDistanceClick, this);
 
     return this._container;
   },
@@ -55,7 +51,9 @@ var MeasureControl = L.Control.extend({
     this._buttonClick(this._buttonArea);
   },
   _buttonClick: function(button) {
-    if (!L.DomUtil.hasClass(button, 'pressed')) {
+    if (L.DomUtil.hasClass(button, 'pressed')) {
+      this._map._controllingInteractivity = true;
+    } else {
       var add = this._buttonArea,
         mode = button.innerHTML.toLowerCase(),
         remove = this._buttonDistance;
@@ -68,6 +66,7 @@ var MeasureControl = L.Control.extend({
       L.DomUtil.removeClass(remove, 'pressed');
       L.DomUtil.addClass(add, 'pressed');
       this._activateMode(mode);
+      this._map._controllingInteractivity = false;
     }
   },
   _buttonDistanceClick: function() {
