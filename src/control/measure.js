@@ -1,7 +1,11 @@
 /*
     TODO:
-      1. Last units for area/distance should be preserved. So if distance is "Miles", then you toggle to area and back to distance, "Miles" should be selected.
-      2. The first tooltip that has nothing in it is still displaying. This should not display.
+         TODO:
+    2. Last units for area/distance should be preserved. So if distance is "Miles", then you toggle to area and back to distance, "Miles" should be selected.
+    
+    3. The first tooltip that has nothing in it is still displaying. This should not display.
+    4. Put in options, the ability to choose default units.  If none is selected then all show up. 
+    Ability to select only one type of measurement.
 */
 
 
@@ -40,8 +44,9 @@ var MeasureControl = L.Control.extend({
     L.Util.setOptions(this, options);
     this._activeMode = null;
     this._drawnGroup = new L.FeatureGroup();
-    this._pastUnit = '';
+    // this._pastUnit = '';
     this._Unit = '';
+    this._clicked = 'polyline';
     this._modes = {};
 
     return this;
@@ -63,9 +68,9 @@ var MeasureControl = L.Control.extend({
     this._selectUnit = L.DomUtil.create('select','measure-units', liSelect);
     this._selectUnit.id = 'measure-units';
     this._selectUnit.innerHTML =  '' +
+      '<option value="mi" class="polyline" selected>Miles</option>' +
+      '<option value="meters" class="polyline" >Meters</option>' +
       '<option value="ft" class="polyline">Feet</option>' +
-      '<option value="meters" class="polyline" selected>Meters</option>' +
-      '<option value="mi" class="polyline">Miles</option>' +
     '';
     this._listeners(map, me);
     this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
@@ -89,14 +94,24 @@ var MeasureControl = L.Control.extend({
     });
   },
   _buttonAreaClick: function() {
-    this._selectUnit.innerHTML = '' +
-      '<option value="acres" class="area">Acres</option>' +
-      '<option value="ha" class="polygon">Hectares</option>' +
-    '';
     this._buttonDistance.disabled = false;
     this._buttonArea.disabled = true;
     this._buttonClick(this._buttonArea);
-    this._pastUnit = 'meters';
+
+    // if unit the pastUnit and option equal that choses unit
+    // if (!unit){} else {}
+    this._selectUnit.innerHTML = '' +
+      '<option value="acres" class="area" selected>Acres</option>' +
+      '<option value="ha" class="polygon">Hectares</option>' +
+    '' ;
+
+    if (!this._pastUnit){
+      this._pastUnit = 'acres';
+      this._optionArea = 'acres';
+    } else {
+      this._pastUnit = this._optionArea;
+    }
+    console.log(this._pastUnit);
   },
   _buttonClick: function(button) {
     if (!L.DomUtil.hasClass(button, 'pressed')) {
@@ -116,39 +131,48 @@ var MeasureControl = L.Control.extend({
     }
   },
   _buttonDistanceClick: function() {
-    this._selectUnit.innerHTML = '' +
-      '<option value="ft" class="distance">Feet</option>' +
-      '<option value="meters" class="distance" selected>Meters</option>' +
-      '<option value="mi" class="polyline">Miles</option>' +
-    '';
     this._buttonDistance.disabled = true;
     this._buttonArea.disabled = false;
     this._buttonClick(this._buttonDistance);
-    this._pastUnit = 'meters';
+
+    // if unit the pastUnit and option equal that choses unit
+    // if (!unit){} else {}
+    this._selectUnit.innerHTML = '' +
+      '<option value="mi" class="polyline" selected>Miles</option>' +
+      '<option value="meters" class="distance">Meters</option>' +
+      '<option value="ft" class="distance">Feet</option>' +
+    '';
+    if (!this._pastUnit){
+      this._pastUnit = 'meters';
+      this._optionDistance = 'mi'
+    } else {
+      this._pastUnit = this._optionDistance;
+    }
+    console.log(this._pastUnit);
   },
   _calculateArea: function(val) {
     var options = this._selectUnit.options,
       unitChange;
 
     for (var i = 0; i < options.length; i++) {
-      var option = options[options.selectedIndex].value;
+      this._optionArea = options[options.selectedIndex].value;
 
-      if (option !== undefined) {
+      if (this._optionArea !== undefined) {
         if (this._pastUnit === 'acres' || this._pastUnit === 'meters'){
-          if (option === 'ha'){
+          if (this._optionArea === 'ha'){
             unitChange = val * 0.404686;
-          } else if (option === 'acres') {
+          } else if (this._optionArea === 'acres') {
             unitChange = val;
           }
         } else if (this._pastUnit === 'ha') {
-          if (option === 'acres') {
+          if (this._optionArea === 'acres') {
             unitChange = val * 2.47105;
-          } else if (option === 'ha'){
+          } else if (this._optionArea === 'ha'){
             unitChange = val;
           }
         }
 
-        return unitChange.toFixed(2) + ' ' + option;
+        return unitChange.toFixed(2) + ' ' + this._optionArea;
       }
     }
   },
@@ -156,38 +180,38 @@ var MeasureControl = L.Control.extend({
     var options = this._selectUnit.options;
 
     for (var i = 0; i < options.length; i++){
-      var option = options[options.selectedIndex].value;
+      this._optionDistance = options[options.selectedIndex].value;
 
-      if (option !== undefined) {
+      if (this._optionDistance !== undefined) {
         var unitChange;
 
         if (this._pastUnit === 'meters') {
-          if (option === 'mi'){
+          if (this._optionDistance === 'mi'){
             unitChange = val * 0.000621371;
-          } else if (option === 'ft') {
+          } else if (this._optionDistance === 'ft') {
             unitChange = val * 3.28084;
-          } else if (option === 'meters') {
+          } else if (this._optionDistance === 'meters') {
             unitChange = val;
           }
         } else if (this._pastUnit === 'mi') {
-          if (option === 'ft') {
+          if (this._optionDistance === 'ft') {
             unitChange = val * 5280;
-          } else if (option === 'meters') {
+          } else if (this._optionDistance === 'meters') {
             unitChange = val * 1609.34;
-          } else if (option === 'mi'){
+          } else if (this._optionDistance === 'mi'){
             unitChange = val;
           }
         } else if (this._pastUnit === 'ft') {
-          if (option === 'mi') {
+          if (this._optionDistance === 'mi') {
             unitChange = val * 0.000189394;
-          } else if (option === 'meters') {
+          } else if (this._optionDistance === 'meters') {
             unitChange = val * 0.3048;
-          } else if (option === 'ft'){
+          } else if (this._optionDistance === 'ft'){
             unitChange = val;
           }
         }
 
-        return unitChange.toFixed(2) + ' ' + option;
+        return unitChange.toFixed(2) + ' ' + this._optionDistance;
       }
     }
   },
@@ -315,10 +339,8 @@ var MeasureControl = L.Control.extend({
           this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
           
           if (this._currentCircles.length > 1) {
-            if (this._tooltip.innerHTML !== '') {
-              this._updateTooltipPosition(latLng);
-              this._updateTooltipArea(this._area);
-            }
+            this._updateTooltipPosition(latLng);
+            this._updateTooltipArea(this._area);
 
             L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
           }
@@ -327,7 +349,9 @@ var MeasureControl = L.Control.extend({
         this._layerGroupPath = L.polygon([latLng]);
       }
 
-      this._createTooltip(latLng);
+      if (this._currentCircles.length > 0){
+        this._createTooltip(latLng);
+      }
       this._lastPoint = latLng;
     }
   },
@@ -341,26 +365,26 @@ var MeasureControl = L.Control.extend({
         return;
       }
 
-      if (this._pastUnit === '' || this._pastUnit === 'acres' || this._pastUnit === 'ha'){
-        this._pastUnit = 'meters';
-      }
+      // if (this._pastUnit === '' || this._pastUnit === 'acres' || this._pastUnit === 'ha'){
+      //   this._pastUnit = 'meters';
+      // }
 
-      if (!this._tooltip) {
-        this._tooltip = this._createTooltip(latLng);
-      }
+      // if (!this._tooltip) {
+      //   this._tooltip = this._createTooltip(latLng);
+      // }
 
       if (this._lastPoint && this._tooltip) {
         var distance = latLng.distanceTo(this._lastPoint);
 
-        if (this._tooltip.innerHTML !== '') {
-          this._updateTooltipPosition(latLng);
-          this._updateTooltipDistance(this._distance + distance, distance);
-        }
+        this._updateTooltipPosition(latLng);
+        this._updateTooltipDistance(this._distance + distance, distance);
 
         this._distance += distance;
       }
 
-      this._createTooltip(latLng);
+      // if (distance === 0){
+        this._createTooltip(latLng);
+      // }
 
       if (this._lastCircle) {
         this._drawnGroup.removeLayer(this._lastCircle);
@@ -492,6 +516,7 @@ var MeasureControl = L.Control.extend({
       this._menu.style.display = 'block';
       this._buttonDistance.click();
       this._startMeasuring('polyline');
+      this._pastUnit = 'meters';
     }
   },
   _updateTooltipArea: function(total) {
