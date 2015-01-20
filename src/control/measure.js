@@ -11,21 +11,21 @@ var MeasureControl = L.Control.extend({
       allowIntersection: false,
       drawError: {
         color: '#f06eaa',
-        timeout: 400,
-        message: 'Invalid geometry'
+        message: 'Invalid geometry',
+        timeout: 400
       },
+      repeatMode: true,
       shapeOptions: {
         color: 'rgb(255, 0, 0)',
         weight: 2
-      },
-      repeatMode: true
+      }
     },
     polyline: {
+      repeatMode: true,
       shapeOptions: {
         color: 'rgb(255, 0, 0)',
         weight: 2
-      },
-      repeatMode: true
+      }
     },
     position:'topleft'
   },
@@ -33,180 +33,148 @@ var MeasureControl = L.Control.extend({
     L.Util.setOptions(this, options);
     this._activeMode = null;
     this._drawnGroup = new L.FeatureGroup();
-    this._pastUnit = '';
-    this._Unit = '';
+    this._lastUnitArea = 'acres';
+    this._lastUnitDistance = 'miles';
     this._modes = {};
 
     return this;
   },
   onAdd: function(map) {
-    var  container = L.DomUtil.create('div', 'npmap-control-measure leaflet-bar leaflet-control'),
-      me = this,
+    var me = this,
       liArea, liDistance, liSelect;
 
-    this._menu = L.DomUtil.create('ul', '', container);
+    this._container = L.DomUtil.create('div', 'npmap-control-measure leaflet-bar leaflet-control');
+    this._menu = L.DomUtil.create('ul', '', this._container);
     liArea = L.DomUtil.create('li', '', this._menu);
     liDistance = L.DomUtil.create('li', '', this._menu);
     liSelect = L.DomUtil.create('li', '', this._menu);
-    this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', container);
+    this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', this._container);
     this._buttonArea = L.DomUtil.create('button', 'polygon', liArea);
     this._buttonArea.innerHTML = 'Area';
     this._buttonDistance = L.DomUtil.create('button', 'pressed polyline', liDistance);
     this._buttonDistance.innerHTML = 'Distance';
-    this._selectUnit = L.DomUtil.create('select','measure-units', liSelect);
-    this._selectUnit.id = 'measure-units';
-   
-    this._listeners(map, me);
-    this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
-    this._initializeMode(this._buttonArea, new L.Draw.Polygon(map, this.options.polygon));
-
-    return container;
-  },
-  _listeners: function(map, me) {
-    L.DomEvent
-      .on(this._button, 'click', this._toggleMeasure, this)
-      .disableClickPropagation(this._button)
-      .on(this._buttonArea, 'click', this._buttonAreaClick, this)
-      .on(this._buttonDistance, 'click', this._buttonDistanceClick, this)
-      .on(this._selectUnit, 'change', this._selectVal, this)
-      .on(this._map, 'mousemove', this._mouseMove, this)
-      .disableClickPropagation(this._menu);
-
-    map.addLayer(this._drawnGroup);
-    map.on('draw:created', function(e) {
-      me._drawnGroup.addLayer(e.layer);
-    });
-  },
-  _buttonAreaClick: function() {
-    if (this._optionArea === 'ha'){
-      this._selectUnit.innerHTML = '' +
-      '<option value="acres" class="area">Acres</option>' +
-      '<option value="ha" class="polygon" selected>Hectares</option>' +
+    this._selectUnitArea = L.DomUtil.create('select', 'measure-units', liSelect);
+    this._selectUnitArea.innerHTML = '' +
+      '<option value="acres" selected>Acres</option>' +
+      '<option value="ha">Hectares</option>' +
     '';
-    } else {
-      this._selectUnit.innerHTML = '' +
-        '<option value="acres" class="area" selected>Acres</option>' +
-        '<option value="ha" class="polygon">Hectares</option>' +
-      '';
-    }
-    this._buttonDistance.disabled = false;
-    this._buttonArea.disabled = true;
-    this._buttonClick(this._buttonArea);
-    this._selectVal();
-  },
-  _buttonClick: function(button) {
-    if (!L.DomUtil.hasClass(button, 'pressed')) {
-      var add = this._buttonArea,
-        mode = button.className,
-        remove = this._buttonDistance;
+    this._selectUnitDistance = L.DomUtil.create('select','measure-units', liSelect);
+    this._selectUnitDistance.innerHTML = '' +
+      '<option value="mi" selected>Miles</option>' +
+      '<option value="meters" class="distance">Meters</option>' +
+      '<option value="ft" class="distance">Feet</option>' +
+    '';
+    this._setupListeners(map, me);
+    this._initializeMode(this._buttonArea, new L.Draw.Polygon(map, this.options.polygon));
+    this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
 
-      if (mode === 'polyline') {
+    return this._container;
+  },
+  /*
+  _buttonAreaClick: function() {
+    //this._buttonDistance.disabled = false;
+    //this._buttonArea.disabled = true;
+    this._buttonClick(this._buttonArea);
+    //this._selectVal();
+  },
+  */
+  _buttonClick: function(e, manual) {
+    var button = e.target;
+
+    if (manual || !L.DomUtil.hasClass(button, 'pressed')) {
+      var add, mode, remove;
+
+      if (button.innerHTML.toLowerCase() === 'distance') {
         add = this._buttonDistance;
+        mode = 'distance';
         remove = this._buttonArea;
+        this._selectUnitArea.style.display = 'none';
+        this._selectUnitDistance.style.display = 'block';
+      } else {
+        add = this._buttonArea;
+        mode = 'area';
+        remove = this._buttonDistance;
+        this._selectUnitArea.style.display = 'block';
+        this._selectUnitDistance.style.display = 'none';
       }
 
-      L.DomUtil.removeClass(remove, 'pressed');
       L.DomUtil.addClass(add, 'pressed');
+      L.DomUtil.removeClass(remove, 'pressed');
       this._startMeasuring(mode);
-      this._clicked = mode;
     }
   },
+  /*
   _buttonDistanceClick: function() {
-
-    if (this._optionDistance === 'mi'){
-      this._selectUnit.innerHTML = '' +
-        '<option value="mi" class="polyline" selected>Miles</option>' +
-        '<option value="meters" class="distance">Meters</option>' +
-        '<option value="ft" class="distance">Feet</option>' +
-      '';
-    } else if (this._optionDistance === 'ft'){
-      this._selectUnit.innerHTML = '' +
-        '<option value="mi" class="polyline" selected>Miles</option>' +
-        '<option value="meters" class="distance">Meters</option>' +
-        '<option value="ft" class="distance" selected>Feet</option>' +
-      '';
-    } else {
-      this._selectUnit.innerHTML = '' +
-        '<option value="mi" class="polyline">Miles</option>' +
-        '<option value="meters" class="distance" selected>Meters</option>' +
-        '<option value="ft" class="distance">Feet</option>' +
-      '';
-    }
-
-    this._buttonDistance.disabled = true;
-    this._buttonArea.disabled = false;
+    //this._buttonArea.disabled = false;
+    //this._buttonDistance.disabled = true;
     this._buttonClick(this._buttonDistance);
-    this._pastUnit = 'meters';
-    this._selectVal();
+    //this._pastUnit = 'm';
+    //this._selectVal();
   },
+  */
   _calculateArea: function(val) {
-    var options = this._selectUnit.options,
-      unitChange;
+    var options = this._selectUnitArea.options;
 
     for (var i = 0; i < options.length; i++) {
-      this._optionArea = options[options.selectedIndex].value;
+      var selected = options[options.selectedIndex].value,
+        unitChange;
 
-      if (this._optionArea !== undefined) {
-        if (this._pastUnit === 'acres' || this._pastUnit === 'meters'){
-          if (this._optionArea === 'ha'){
-            unitChange = val * 0.404686;
-          } else if (this._optionArea === 'acres') {
-            unitChange = val;
-          }
-        } else if (this._pastUnit === 'ha') {
-          if (this._optionArea === 'acres') {
-            unitChange = val * 2.47105;
-          } else if (this._optionArea === 'ha'){
-            unitChange = val;
-          }
+      if (this._lastUnitArea === 'acres') {
+        if (selected === 'ha') {
+          unitChange = val * 0.404686;
+        } else if (selected === 'acres') {
+          unitChange = val;
         }
-
-        return unitChange.toFixed(2) + ' ' + this._optionArea;
+      } else if (this._lastUnitArea === 'ha') {
+        if (selected === 'acres') {
+          unitChange = val * 2.47105;
+        } else if (selected === 'ha') {
+          unitChange = val;
+        }
       }
+
+      return unitChange.toFixed(2) + ' ' + selected;
     }
   },
   _calculateDistance: function(val) {
-    var options = this._selectUnit.options;
+    var options = this._selectUnitDistance.options;
 
-    for (var i = 0; i < options.length; i++){
-      this._optionDistance = options[options.selectedIndex].value;
+    for (var i = 0; i < options.length; i++) {
+      var selected = options[options.selectedIndex].value,
+        unitChange;
 
-      if (this._optionDistance !== undefined) {
-        var unitChange;
-
-        if (this._pastUnit === 'meters') {
-          if (this._optionDistance === 'mi'){
-            unitChange = val * 0.000621371;
-          } else if (this._optionDistance === 'ft') {
-            unitChange = val * 3.28084;
-          } else if (this._optionDistance === 'meters') {
-            unitChange = val;
-          }
-        } else if (this._pastUnit === 'mi') {
-          if (this._optionDistance === 'ft') {
-            unitChange = val * 5280;
-          } else if (this._optionDistance === 'meters') {
-            unitChange = val * 1609.34;
-          } else if (this._optionDistance === 'mi'){
-            unitChange = val;
-          }
-        } else if (this._pastUnit === 'ft') {
-          if (this._optionDistance === 'mi') {
-            unitChange = val * 0.000189394;
-          } else if (this._optionDistance === 'meters') {
-            unitChange = val * 0.3048;
-          } else if (this._optionDistance === 'ft'){
-            unitChange = val;
-          }
+      if (this._pastUnit === 'meters') {
+        if (selected === 'mi') {
+          unitChange = val * 0.000621371;
+        } else if (selected === 'ft') {
+          unitChange = val * 3.28084;
+        } else if (selected === 'meters') {
+          unitChange = val;
         }
-
-        return unitChange.toFixed(2) + ' ' + this._optionDistance;
+      } else if (this._pastUnit === 'mi') {
+        if (selected === 'ft') {
+          unitChange = val * 5280;
+        } else if (selected === 'meters') {
+          unitChange = val * 1609.34;
+        } else if (selected === 'mi') {
+          unitChange = val;
+        }
+      } else if (this._pastUnit === 'ft') {
+        if (selected === 'mi') {
+          unitChange = val * 0.000189394;
+        } else if (selected === 'meters') {
+          unitChange = val * 0.3048;
+        } else if (selected === 'ft') {
+          unitChange = val;
+        }
       }
+
+      return unitChange.toFixed(2) + ' ' + selected;
     }
   },
   _createTooltip: function(position) {
     var icon = L.divIcon({
-      className: 'leaflet-measure-tooltip unit-'+ this._Unit,
+      className: 'leaflet-measure-tooltip unit-'+ this._unit,
       iconAnchor: [-5, -5]
     });
 
@@ -237,10 +205,10 @@ var MeasureControl = L.Control.extend({
     var type = handler.type,
       me = this;
    
-    this._modes[type] = {};
-    this._modes[type].button = this._buttonDistance;
-    this._modes[type].handler = handler;
-
+    this._modes[type] = {
+      button: button,
+      handler: handler
+    };
     L.DomEvent.on(button, 'click', function() {
       if (me._activeMode === type) {
         me._modes[type].handler.disable();
@@ -248,35 +216,15 @@ var MeasureControl = L.Control.extend({
         me._modes[type].handler.enable();
       }
     }, this._modes[type].handler);
-
     this._modes[type].handler
       .on('disabled', this._handlerDeactivated, this)
       .on('enabled', this._handlerActivated, this);
-  },
-  _onKeyDown: function (e) {
-    if(e.keyCode === 27) {
-      this._toggleMeasure();
-    }
-  },
-  _mouseMove: function(e) {
-    var latLng = e.latlng;
-
-    if (!latLng || !this._lastPoint) {
-      return;
-    }
-
-    if (this._clicked === 'polyline') {
-      this._mouseDistance(latLng);
-    } else {
-      this._mouseArea(latLng);
-    }
   },
   _mouseArea: function(latLng) {
     this._layerGroupPath.addLatLng(latLng);
 
     if (this._currentCircles !== undefined) {
-      var metersSq = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
-      this._area = metersSq * 0.000247105;
+      this._area = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs()) * 0.000247105;
     } else {
       this._area = 0;
     }
@@ -286,35 +234,14 @@ var MeasureControl = L.Control.extend({
       this._updateTooltipArea(this._area);
     }
   },
-  _mouseDistance: function(latLng) {
-    if (!this._layerGroupPathTemp) {
-      this._layerGroupPathTemp = L.polyline([this._lastPoint, latLng]);
-    } else {
-      this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
-    }
-
-    if (this._tooltip) {
-      var distance = latLng.distanceTo(this._lastPoint);
-
-      if (!this._distance) {
-        this._distance = 0;
-      }
-      this._updateTooltipPosition(latLng);
-      this._updateTooltipDistance(this._distance + distance, distance);
-    }
-  },
   _mouseClickArea: function(e) {
-    if (this._clicked === 'polygon'){
+    if (L.DomUtil.hasClass(this._buttonArea, 'pressed')) {
       var latLng = e.latlng,
         circle;
 
-      this._Unit = 'acres';
+      this._unit = this._lastUnitArea;
 
-      if (!latLng) {
-        return;
-      }
-
-      if (this._layerGroupPath ) {
+      if (this._layerGroupPath) {
         if (this._pointLength === document.getElementsByClassName('leaflet-div-icon').length) {
           return;
         } else {
@@ -330,7 +257,6 @@ var MeasureControl = L.Control.extend({
           if (this._currentCircles.length > 1) {
             this._updateTooltipPosition(latLng);
             this._updateTooltipArea(this._area);
-
             L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
           }
         }
@@ -338,40 +264,32 @@ var MeasureControl = L.Control.extend({
         this._layerGroupPath = L.polygon([latLng]);
       }
 
-      if (this._currentCircles.length > 0){
+      if (this._currentCircles.length > 0) {
         this._createTooltip(latLng);
       }
+
       this._lastPoint = latLng;
     }
   },
   _mouseClickDistance: function(e) {
-    if (this._clicked === 'polyline'){
+    if (L.DomUtil.hasClass(this._buttonDistance, 'pressed')) {
       var latLng = e.latlng;
 
-      this._Unit = 'meters';
-
-      if (!latLng) {
-        return;
-      }
-
-      // if (this._pastUnit === '' || this._pastUnit === 'acres' || this._pastUnit === 'ha'){
-      //   this._pastUnit = 'meters';
-      // }
+      this._unit = this._lastUnitDistance;
 
       if (!this._tooltip) {
         this._tooltip = this._createTooltip(latLng);
       }
 
-      if (this._lastPoint && this._tooltip) {
+      if (this._lastPoint) {
         var distance = latLng.distanceTo(this._lastPoint);
 
         this._updateTooltipPosition(latLng);
         this._updateTooltipDistance(this._distance + distance, distance);
-
         this._distance += distance;
       }
 
-      if (this._distance !== 0){
+      if (this._distance !== 0) {
         this._createTooltip(latLng);
       }
 
@@ -379,30 +297,48 @@ var MeasureControl = L.Control.extend({
         this._drawnGroup.removeLayer(this._lastCircle);
       }
 
-      this._lastCircle = new L.CircleMarker(latLng);
       this._lastPoint = latLng;
-      this._lastCircle.on('click', function() {
-        this._handlerDeactivated();
-      }, this);
+      this._lastCircle = new L.CircleMarker(latLng);
+      this._lastCircle.on('click', this._handlerDeactivated(), this);
     }
   },
-  _selectVal: function() {
-    var area = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip unit-acres'),
-      distance = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip unit-meters'),
-      total = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip-total');
-    if (this._selectUnit) {
-      for (var i = 0; i < total.length; i++) {
-        var parentElement = total[i].parentNode;
+  _mouseDistance: function(latLng) {
+    if (this._layerGroupPathTemp) {
+      this._layerGroupPathTemp.spliceLatLngs(0, 2, this._lastPoint, latLng);
+    } else {
+      this._layerGroupPathTemp = L.polyline([
+        this._lastPoint,
+        latLng
+      ]);
+    }
 
-        if (area.indexOf(parentElement) > -1) {
-          this._selectUnitArea(total[i]);
-        }
-        if (distance.indexOf(parentElement) > -1) {
-          this._selectUnitDistance(total[i]);
-        }
+    if (this._tooltip) {
+      var distance = latLng.distanceTo(this._lastPoint);
+
+      if (!this._distance) {
+        this._distance = 0;
       }
 
-      this._pastUnit = this._selectUnit.options[this._selectUnit.options.selectedIndex].value;
+      this._updateTooltipPosition(latLng);
+      this._updateTooltipDistance(this._distance + distance, distance);
+    }
+  },
+  _mouseMove: function(e) {
+    var latLng = e.latlng;
+
+    if (!latLng || !this._lastPoint) {
+      return;
+    }
+
+    if (L.DomUtil.hasClass(this._buttonDistance, 'pressed')) {
+      this._mouseDistance(latLng);
+    } else {
+      this._mouseArea(latLng);
+    }
+  },
+  _onKeyDown: function (e) {
+    if (e.keyCode === 27) {
+      this._toggleMeasure();
     }
   },
   _selectUnitArea: function(tooltip) {
@@ -421,56 +357,80 @@ var MeasureControl = L.Control.extend({
     }
   },
   _selectUnitDistance: function(tooltip) {
-    if (this._clicked === 'polyline'){
-      var total = tooltip.innerHTML;
+    var total = tooltip.innerHTML;
 
-      if (total !== '') {
-        var difference = L.npmap.util._.getNextSibling(tooltip),
-          newDifference, newDistance, newMeasurement, newTotal;
+    if (total !== '') {
+      var difference = L.npmap.util._.getNextSibling(tooltip),
+        newDifference, newDistance, newMeasurement, newTotal;
 
-        if (tooltip !== undefined) {
-          newTotal = tooltip.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
-          newDistance = this._calculateDistance(newTotal);
-        }
+      if (tooltip !== undefined) {
+        newTotal = tooltip.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
+        newDistance = this._calculateDistance(newTotal);
+      }
+
+      if (difference !== null) {
+        newMeasurement = difference.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
+        newDifference = this._calculateDistance(newMeasurement);
+      }
+
+      if (newDistance !== undefined) {
+        tooltip.innerHTML = newDistance;
 
         if (difference !== null) {
-          newMeasurement = difference.innerHTML.match(/\d+\.\d\d(?!\d)/)[0];
-          newDifference = this._calculateDistance(newMeasurement);
-        }
-
-        if (newDistance !== undefined) {
-          tooltip.innerHTML = newDistance;
-
-          if (difference !== null) {
-            difference.innerHTML = '(+' + newDifference + ')';
-          }
+          difference.innerHTML = '(+' + newDifference + ')';
         }
       }
     }
   },
+  _selectVal: function() {
+    var area = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip unit-acres'),
+      distance = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip unit-meters'),
+      total = L.npmap.util._.getElementsByClassName('leaflet-measure-tooltip-total');
+
+    if (this._selectUnit) {
+      for (var i = 0; i < total.length; i++) {
+        var parentElement = total[i].parentNode;
+
+        if (area.indexOf(parentElement) > -1) {
+          this._selectUnitArea(total[i]);
+        }
+        if (distance.indexOf(parentElement) > -1) {
+          this._selectUnitDistance(total[i]);
+        }
+      }
+
+      this._pastUnit = this._selectUnit.options[this._selectUnit.options.selectedIndex].value;
+    }
+  },
+  _setupListeners: function(map, me) {
+    L.DomEvent
+      .on(this._button, 'click', this._toggleMeasure, this)
+      .disableClickPropagation(this._button)
+      .on(this._buttonArea, 'click', this._buttonClick, this)
+      .on(this._buttonDistance, 'click', this._buttonClick, this)
+      .on(this._map, 'mousemove', this._mouseMove, this)
+      .disableClickPropagation(this._menu);
+    map.addLayer(this._drawnGroup);
+    map.on('draw:created', function(e) {
+      me._drawnGroup.addLayer(e.layer);
+    });
+  },
   _startMeasuring: function(type) {
-    var clickFn = (type === 'polygon' ? this._mouseClickArea : this._mouseClickDistance),
+    var fn = (type === 'area' ? this._mouseClickArea : this._mouseClickDistance),
       map = this._map;
 
-    map.doubleClickZoom.disable();
     this._currentCircles = [];
     this._tooltip = undefined;
 
     L.DomEvent
       .on(document, 'keydown', this._onKeyDown, this)
-      .on(map, 'click', clickFn, this)
+      .on(map, 'click', fn, this)
       .on(map, 'dblclick', this._handlerDeactivated, this)
       .on(map, 'mousemove', this._mouseMove, this);
   },
   _stopMeasuring: function(type) {
-    var clickFn = (type === 'polygon' ? this._mouseClickArea : this._mouseClickDistance),
+    var fn = (type === 'area' ? this._mouseClickArea : this._mouseClickDistance),
       map = this._map;
-
-    if (this._clicked === 'polyline') {
-      if (this._doubleClickZoom) {
-        this._map.doubleClickZoom.enable();
-      }
-    }
 
     if (this._drawnGroup) {
       this._drawnGroup.clearLayers();
@@ -478,7 +438,7 @@ var MeasureControl = L.Control.extend({
 
     L.DomEvent
       .off(document, 'keydown', this._onKeyDown, this)
-      .off(map, 'click', clickFn, this)
+      .off(map, 'click', fn, this)
       .off(map, 'dblclick', this._handlerDeactivated, this)
       .off(map, 'mousemove', this._mouseMove, this);
   },
@@ -491,31 +451,42 @@ var MeasureControl = L.Control.extend({
       this._activeMode.handler.disable();
       this._stopMeasuring(this._clicked);
       this._drawnGroup.clearLayers();
-
-      if (this._doubleClickZoom) {
-        map.doubleClickZoom.enable();
-      }
-
-      this._doubleClickZoom = null;
+      map._controllingInteractivity = true;
     } else {
       L.DomUtil.addClass(this._button, 'pressed');
       this._menu.style.display = 'block';
-      this._buttonDistance.click();
-      this._clicked = 'polyline';
-      this._startMeasuring(this._clicked);
-      this._pastUnit = 'meters';
+      
+      if (L.DomUtil.hasClass(this._buttonArea, 'pressed')) {
+        this._buttonClick({
+          target: this._buttonArea
+        }, true);
+      } else {
+        this._buttonClick({
+          target: this._buttonDistance
+        }, true);
+      }
+
+      map._controllingInteractivity = false;
     }
   },
   _updateTooltipArea: function(total) {
-    this._tooltip._icon.innerHTML = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + this._calculateArea(total) + '</div>';
+    this._tooltip._icon.innerHTML = '' +
+      '<div class="leaflet-measure-tooltip-total" id="draw-tooltip-total">' +
+        this._calculateArea(total) +
+      '</div>' +
+    '';
   },
   _updateTooltipDistance: function(total, difference) {
-    var totalDistance = this._calculateDistance(total),
-      differenceDistance = this._calculateDistance(difference),
+    var differenceDistance = this._calculateDistance(difference),
+      totalDistance = this._calculateDistance(total),
       text = '<div id="draw-tooltip-total" class="leaflet-measure-tooltip-total">' + totalDistance + '</div>';
 
-    if (differenceDistance !== totalDistance && difference !== 0) {
-      text += '<div id="draw-tooltip-difference" class="leaflet-measure-tooltip-difference">(+' + differenceDistance + ')</div>';
+    if ((differenceDistance !== totalDistance) && (difference !== 0)) {
+      text += '' +
+        '<div class="leaflet-measure-tooltip-difference" id="draw-tooltip-difference">' +
+          '(+' + differenceDistance + ')' +
+        '</div>' +
+      '';
     }
 
     this._tooltip._icon.innerHTML = text;
