@@ -184,11 +184,11 @@
       "name": "Mapbox Pencil",
       "type": "mapbox"
     },
-    "runBikeHike": {
+    "runBikeAndHike": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "topo",
       "id": "nps.kp9mndj7",
-      "name": "Mapbox Run, Bike, Hike",
+      "name": "Mapbox Run, Bike, and Hike",
       "type": "mapbox"
     },
     "satellite": {
