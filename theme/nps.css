@@ -1077,12 +1077,13 @@
 }
 .npmap-control-measure ul {
   display: none;
-  left: 24px;
+  height: 28px;
+  left: 26px;
   list-style: none;
   margin: 0;
   padding: 0;
   position: absolute;
-  top: 0;
+  top: -1px;
   white-space: nowrap;
   z-index: -1;
 }
@@ -1131,6 +1132,7 @@
 .leaflet-draw-tooltip {
   visibility: hidden !important;
 }
+
   .leaflet-draw-tooltip:before {
     visibility: hidden !important;
   }
@@ -1153,12 +1155,15 @@
   white-space: nowrap;
   width: auto !important;
 }
-.npmap .leaflet-measure-tooltip-total {
-  font-weight: bold;
-}
-.npmap .leaflet-measure-tooltip-difference {
-  color: #777;
-}
+  .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-difference span:last-child, .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-total span:last-child  {
+    display: none;
+  }
+  .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-difference {
+    color: #777;
+  }
+  .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-total {
+    font-weight: bold;
+  }
 
 /* Overview Control */
 .npmap .leaflet-control-overview {
