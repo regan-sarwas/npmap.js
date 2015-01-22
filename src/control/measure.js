@@ -231,12 +231,7 @@ var MeasureControl = L.Control.extend({
     this._activePoint = null;
     this._activeTooltip = null;
     this._layerGroupPath = null;
-    this._layerGroupPathTemp = null;
-    
-    if (this._tempTooltip) {
-      this._removeTempTooltip();
-    }
-
+    this._tempTooltip = null;
     this.fire('disable');
   },
   _initializeMode: function(button, handler) {
@@ -251,41 +246,43 @@ var MeasureControl = L.Control.extend({
       .on('enabled', this._handlerActivated, this);
   },
   _mouseClickArea: function(e) {
-    if (L.DomUtil.hasClass(this._buttonArea, 'pressed')) {
-      var latLng = e.latlng,
-        circle;
+    /*
+    var latLng = e.latlng,
+      circle;
 
-      this._unit = this._lastUnitArea;
+    console.log('mouseClickArea');
 
-      if (this._layerGroupPath) {
-        if (this._pointLength === document.getElementsByClassName('leaflet-div-icon').length) {
-          return;
-        } else {
-          var metersSq;
-
-          this._layerGroupPath.addLatLng(latLng);
-          metersSq = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
-          this._area = metersSq * 0.000247105;
-          circle = new L.CircleMarker(latLng);
-          this._currentCircles.push(circle);
-          this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
-          
-          if (this._currentCircles.length > 1) {
-            this._updateTooltipPosition(latLng);
-            this._updateTooltipArea(this._area);
-            L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
-          }
-        }
+    if (this._layerGroupPath) {
+      if (this._pointLength === document.getElementsByClassName('leaflet-div-icon').length) {
+        return;
       } else {
-        this._layerGroupPath = L.polygon([latLng]);
-      }
+        var metersSq;
 
-      if (this._currentCircles.length > 0) {
-        this._createTooltip(latLng);
+        this._layerGroupPath.addLatLng(latLng);
+        metersSq = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
+        this._area = metersSq * 0.000247105;
+        circle = new L.CircleMarker(latLng);
+        this._currentCircles.push(circle);
+        this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
+        
+        if (this._currentCircles.length > 1) {
+          this._updateTooltipPosition(latLng);
+          this._updateTooltipArea(this._area);
+          L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
+        }
       }
-
-      this._activePoint = latLng;
+    } else {
+      this._layerGroupPath = new L.Polygon([
+        latLng
+      ]);
     }
+
+    if (this._currentCircles.length > 0) {
+      this._createTooltip(latLng);
+    }
+
+    this._activePoint = latLng;
+    */
   },
   _mouseClickDistance: function(e) {
     var latLng = e.latlng;
@@ -303,7 +300,6 @@ var MeasureControl = L.Control.extend({
 
     if (this._tempTooltip) {
       this._removeTempTooltip();
-      // TODO: Also remove tempPath?
     }
   },
   _mouseMove: function(e) {
@@ -338,15 +334,6 @@ var MeasureControl = L.Control.extend({
   _mouseMoveDistance: function(latLng) {
     var distance = this._calculateDistance(this._activeUnitDistance, latLng.distanceTo(this._activePoint)),
       html = this._buildTooltipDistance(this._distance + distance);
-
-    if (this._layerGroupPathTemp) {
-      this._layerGroupPathTemp.spliceLatLngs(0, 2, this._activePoint, latLng);
-    } else {
-      this._layerGroupPathTemp = new L.Polyline([
-        this._activePoint,
-        latLng
-      ]);
-    }
 
     if (this._tempTooltip) {
       this._updateTooltip(latLng, html, this._tempTooltip);
@@ -485,7 +472,8 @@ var MeasureControl = L.Control.extend({
     tooltip = tooltip || this._activeTooltip;
     tooltip.setLatLng(latLng);
     tooltip._icon.innerHTML = html;
-  },
+  }
+  /*
   _updateTooltipArea: function(total) {
     this._activeTooltip._icon.innerHTML = '' +
       '<div class="leaflet-measure-tooltip-total">' +
@@ -496,6 +484,7 @@ var MeasureControl = L.Control.extend({
   _updateTooltipPosition: function(latLng) {
     this._activeTooltip.setLatLng(latLng);
   }
+  */
 });
 
 L.Map.mergeOptions({
