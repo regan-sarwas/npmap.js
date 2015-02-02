@@ -50,11 +50,9 @@
           attribution: 'NPMap Team',
           popup: {
             actions: '<ul><li><a>Clicking Me Won\'t Do Anything!</a></li></ul>',
-            description: {
-              format: 'table'
-            },
+            description: "I am {{#ifCond Name '===' 'A Rectangle'}}indeed{{else}}not{{/ifCond}} a rectangle! (Verified by a custom Handlebars helper.)",
             minWidth: 50,
-            title: '{{Name}}'
+            title: '{{toUpperCase Name}}'
           },
           type: 'geojson',
           url: 'data/rectangle.geojson'
@@ -71,7 +69,7 @@
             }
           },
           type: 'geojson',
-          url: 'http://www.nps.gov/npmap/support/library/examples/data/national-parks.geojson'
+          url: 'data/national-parks.geojson'
         }],
         zoom: 6
       };

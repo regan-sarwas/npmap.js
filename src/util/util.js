@@ -5,8 +5,40 @@
 var handlebars = require('handlebars'),
   reqwest = require('reqwest');
 
+// {{#ifCond Name '===' 'A Rectangle'}}true{{else}}false{{/ifCond}}
+handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
+  switch (operator) {
+  case '!=':
+    return (v1 != v2) ? options.fn(this) : options.inverse(this);
+  case '!==':
+    return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+  case '==':
+    return (v1 == v2) ? options.fn(this) : options.inverse(this);
+  case '===':
+    return (v1 === v2) ? options.fn(this) : options.inverse(this);
+  case '<':
+    return (v1 < v2) ? options.fn(this) : options.inverse(this);
+  case '<=':
+    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+  case '>':
+    return (v1 > v2) ? options.fn(this) : options.inverse(this);
+  case '>=':
+    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+  case '&&':
+    return (v1 && v2) ? options.fn(this) : options.inverse(this);
+  case '||':
+    return (v1 || v2) ? options.fn(this) : options.inverse(this);
+  default:
+    return options.inverse(this);
+  }
+});
+// {{toLowerCase 'Test'}}
 handlebars.registerHelper('toLowerCase', function(str) {
   return str.toLowerCase();
+});
+// {{toUpperCase 'Test'}}
+handlebars.registerHelper('toUpperCase', function(str) {
+  return str.toUpperCase();
 });
 
 // Shim for Array.indexOf
