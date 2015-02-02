@@ -246,6 +246,24 @@ var MeasureControl = L.Control.extend({
       .on('enabled', this._handlerActivated, this);
   },
   _mouseClickArea: function(e) {
+    var latLng = e.latLng;
+
+    // TODO: Geometry edits are not contained in _drawnGroup.
+
+    if (!this._activePolygon) {
+      var layers = this._drawnGroup.getLayers();
+
+      console.log(layers.length);
+      //this._activePolygon = layers[layers.length - 1];
+    }
+
+    //console.log(this._activePolygon);
+    //console.log(L.GeometryUtil.geodesicArea(this._activePolygon.getLatLngs()));
+
+    //console.log(this._activePolygon);
+    //console.log(this._activePolygon.getLatLngs().length);
+
+
     /*
     var latLng = e.latlng,
       circle;
