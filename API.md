@@ -1014,10 +1014,10 @@ If you are embedding media (images, audio, and/or video) in your popup, you shou
 
 <ul>
   <li>ifCond<pre><code>// Available operators include '!=', '!==', '==', '===', '&lt;', '&lt;=', '&gt;', '&gt;=', '&&', and '||'.
-    description: "I am {{#ifCond Name '===' 'A Rectangle'}}indeed{{else}}not{{/ifCond}} a rectangle! (Verified by a custom Handlebars helper.)"
+description: "I am {{#ifCond Name '===' 'A Rectangle'}}indeed{{else}}not{{/ifCond}} a rectangle! (Verified by a custom Handlebars helper.)"
   </code></pre></li>
-  <li>toLowerCase: `title: '{{toUpperCase Name}}'`</li>
-  <li>toUpperCase: `title: '{{toUpperCase Name}}'`</li>
+  <li>toLowerCase: <code>title: '{{toUpperCase Name}}'</code></li>
+  <li>toUpperCase: <code>title: '{{toUpperCase Name}}'</code></li>
 </ul>
 
 You can see examples of configuring popups for overlays in the [popups](https://github.com/nationalparkservice/npmap.js/blob/master/examples/popups.html) example map.
