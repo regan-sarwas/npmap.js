@@ -1013,7 +1013,7 @@ If you are embedding media (images, audio, and/or video) in your popup, you shou
 [HTML](http://en.wikipedia.org/wiki/HTML) and [Handlebars](http://handlebarsjs.com/) are supported for most popup elements. NPMap.js also adds a number of "helpers" to Handlebars. These helpers can be used to format popups:
 
 <ul>
-  <li>ifCond<pre><code>// Available operators include '!=', '!==', '==', '===', '&lt;', '&lt;=', '&gt;', '&gt;=', '&&', and '||'.
+  <li>ifCond<pre><code>// Available operators include '!=', '!==', '==', '===', '&lt;', '&lt;=', '&gt;', '&gt;=', '&&', and '||'
 description: "I am {{#ifCond Name '===' 'A Rectangle'}}indeed{{else}}not{{/ifCond}} a rectangle! (Verified by a custom Handlebars helper.)"</code></pre></li>
   <li>toLowerCase<pre><code>title: '{{toUpperCase Name}}'</code></pre></li>
   <li>toUpperCase<pre><code>title: '{{toUpperCase Name}}'</code></pre></li>
