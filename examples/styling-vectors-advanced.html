@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>CartoDB Layer | Examples | NPMap.js</title>
+    <title>Styling Vectors (Advanced) | Examples | NPMap.js</title>
     <style>
       body {
         margin: 0;
@@ -30,24 +30,23 @@
           attribution: 'NPMap Team',
           events: [{
             fn: function() {
-              overlay = NPMap.config.overlays[0];
-              overlay.L.setStyle({
-                'color': '#fff',
-                'weight': 6,
-                'dashArray': '3,7',
-                'lineCap': 'round'
-              });
-              overlay.L = L.npmap.layer.geojson(overlay).addTo(NPMap.config.L);
+              var me = this;
+
+              L.npmap.layer.geojson({
+                color: '#cc6677',
+                dashArray: '3,7',
+                data: me.toGeoJSON(),
+                lineCap: 'round',
+                weight: 6
+              }).addTo(NPMap.config.L);
             },
             type: 'ready'
           }],
           name: 'Roads',
           styles: {
             line: {
-              'stroke': '#CC6677',
-              'weight': 6,
-              'lineCap': 'round',
-              'dashArray': '3,7'
+              'stroke': '#fff',
+              'stroke-width': 6
             }
           },
           type: 'geojson',
