@@ -1155,7 +1155,7 @@
   white-space: nowrap;
   width: auto !important;
 }
-  .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-difference span:last-child, .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-total span:last-child  {
+  .npmap .leaflet-measure-tooltip div.leaflet-measure-tooltip-distance span:last-child {
     display: none;
   }
   .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-difference {

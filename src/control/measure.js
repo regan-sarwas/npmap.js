@@ -35,6 +35,7 @@ var MeasureControl = L.Control.extend({
     L.Util.setOptions(this, options);
     this._activeMode = null;
     this._activePoint = null;
+    this._activePolygon = null;
     this._activeTooltip = null;
     this._activeUnitArea = 'ac';
     this._activeUnitDistance = 'mi';
@@ -77,6 +78,17 @@ var MeasureControl = L.Control.extend({
     this._setupListeners();
 
     return this._container;
+  },
+  _buildTooltipArea: function(total) {
+    return '' +
+      '<div class="leaflet-measure-tooltip-area">' +
+        '<div class="leaflet-measure-tooltip-total">' +
+          '<span>' +
+            total.toFixed(2) + ' ' + this._activeUnitArea +
+          '</span>' +
+        '</div>' +
+      '</div>' +
+    '';
   },
   _buildTooltipDistance: function(total, difference) {
     var html = '' +
@@ -140,31 +152,41 @@ var MeasureControl = L.Control.extend({
       this._startMeasuring(mode);
     }
   },
-  _calculateArea: function(val) {
-    var options = this._selectUnitArea.options;
+  _calculateArea: function(to, val, from) {
+    from = from || 'm';
 
-    for (var i = 0; i < options.length; i++) {
-      var selected = options[options.selectedIndex].value,
-        unitChange;
-
-      if (this._lastUnitArea === 'acres') {
-        if (selected === 'ha') {
-          unitChange = val * 0.404686;
-        } else if (selected === 'acres') {
-          unitChange = val;
+    if (from !== to) {
+      if (from === 'ac') {
+        switch (to) {
+        case 'ha':
+          val = val / 2.47105;
+          break;
+        case 'm':
+          val = val * 4046.85642;
+          break;
         }
-      } else if (this._lastUnitArea === 'ha') {
-        if (selected === 'acres') {
-          unitChange = val * 2.47105;
-        } else if (selected === 'ha') {
-          unitChange = val;
+      } else if (from === 'ha') {
+        switch (to) {
+        case 'ac':
+          val = val * 2.47105;
+          break;
+        case 'm':
+          val = val * 10000;
+          break;
+        }
+      } else if (from === 'm') {
+        switch (to) {
+        case 'ac':
+          val = val / 4046.85642;
+          break;
+        case 'ha':
+          val = val / 10000;
+          break;
         }
       }
-
-      return unitChange.toFixed(2) + ' ' + selected;
     }
 
-    return null;
+    return val;
   },
   _calculateDistance: function(to, val, from) {
     from = from || 'm';
@@ -224,12 +246,13 @@ var MeasureControl = L.Control.extend({
     this.fire('enable');
   },
   _handlerDeactivated: function() {
+    this._activeMode = null;
+    this._activePoint = null;
+    this._activePolygon = null;
+    this._activeTooltip = null;
     this._area = 0;
     this._currentCircles = [];
     this._distance = 0;
-    this._activeMode = null;
-    this._activePoint = null;
-    this._activeTooltip = null;
     this._layerGroupPath = null;
     this._tempTooltip = null;
     this.fire('disable');
@@ -246,61 +269,34 @@ var MeasureControl = L.Control.extend({
       .on('enabled', this._handlerActivated, this);
   },
   _mouseClickArea: function(e) {
-    var latLng = e.latLng;
+    // TODO: Geometry edits are not contained in _drawnGroup, but can and should be.
 
-    // TODO: Geometry edits are not contained in _drawnGroup.
+    var latLng = e.latlng;
 
-    if (!this._activePolygon) {
-      var layers = this._drawnGroup.getLayers();
+    if (this._activePolygon) {
+      var latLngs;
 
-      console.log(layers.length);
-      //this._activePolygon = layers[layers.length - 1];
-    }
+      this._activePolygon.addLatLng(latLng);
+      latLngs = this._activePolygon.getLatLngs();
 
-    //console.log(this._activePolygon);
-    //console.log(L.GeometryUtil.geodesicArea(this._activePolygon.getLatLngs()));
-
-    //console.log(this._activePolygon);
-    //console.log(this._activePolygon.getLatLngs().length);
-
-
-    /*
-    var latLng = e.latlng,
-      circle;
-
-    console.log('mouseClickArea');
-
-    if (this._layerGroupPath) {
-      if (this._pointLength === document.getElementsByClassName('leaflet-div-icon').length) {
-        return;
-      } else {
-        var metersSq;
-
-        this._layerGroupPath.addLatLng(latLng);
-        metersSq = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs());
-        this._area = metersSq * 0.000247105;
-        circle = new L.CircleMarker(latLng);
-        this._currentCircles.push(circle);
-        this._pointLength = document.getElementsByClassName('leaflet-div-icon').length;
-        
-        if (this._currentCircles.length > 1) {
-          this._updateTooltipPosition(latLng);
-          this._updateTooltipArea(this._area);
-          L.DomEvent.on(this._map, 'mousemove', this._mouseMove, this);
+      if (latLngs.length > 2) {
+        if (this._activeTooltip) {
+          this._drawnGroup.removeLayer(this._activeTooltip);
         }
+
+        this._area = this._calculateArea(this._activeUnitArea, L.GeometryUtil.geodesicArea(latLngs));
+        this._activeTooltip = this._createTooltip(latLng, this._buildTooltipArea(this._area));
       }
     } else {
-      this._layerGroupPath = new L.Polygon([
+      this._activePolygon = new L.Polygon([
         latLng
       ]);
+      this._area = 0;
     }
 
-    if (this._currentCircles.length > 0) {
-      this._createTooltip(latLng);
+    if (this._tempTooltip) {
+      this._removeTempTooltip();
     }
-
-    this._activePoint = latLng;
-    */
   },
   _mouseClickDistance: function(e) {
     var latLng = e.latlng;
@@ -327,27 +323,9 @@ var MeasureControl = L.Control.extend({
       return;
     }
 
-    if (L.DomUtil.hasClass(this._buttonArea, 'pressed')) {
-      //this._mouseMoveArea(latLng);
-    } else {
+    if (!L.DomUtil.hasClass(this._buttonArea, 'pressed')) {
       this._mouseMoveDistance(latLng);
     }
-  },
-  _mouseMoveArea: function(latLng) {
-    /*
-    this._layerGroupPath.addLatLng(latLng);
-
-    if (this._currentCircles !== undefined) {
-      this._area = L.GeometryUtil.geodesicArea(this._layerGroupPath.getLatLngs()) * 0.000247105;
-    } else {
-      this._area = 0;
-    }
-
-    if (this._activeTooltip && this._currentCircles.length > 2) {
-      this._updateTooltipPosition(latLng);
-      this._updateTooltipArea(this._area);
-    }
-    */
   },
   _mouseMoveDistance: function(latLng) {
     var distance = this._calculateDistance(this._activeUnitDistance, latLng.distanceTo(this._activePoint)),
@@ -364,17 +342,26 @@ var MeasureControl = L.Control.extend({
       this._toggleMeasure();
     }
   },
-  _onSelectUnitArea: function(tooltip) {
+  _onSelectUnitArea: function() {
+    var tooltips = util.getElementsByClassName('leaflet-measure-tooltip-area');
+
     this._lastUnitArea = this._activeUnitArea;
-    this._activeUnitArea = this._selectUnitDistance.options[this._selectUnitArea.selectedIndex].value;
+    this._activeUnitArea = this._selectUnitArea.options[this._selectUnitArea.selectedIndex].value;
+
+    for (var i = 0; i < tooltips.length; i++) {
+      var tooltip = tooltips[i],
+        node = tooltip.childNodes[0].childNodes[0];
+
+      tooltip.parentNode.innerHTML = this._buildTooltipArea(this._calculateArea(this._activeUnitArea, parseFloat(node.innerHTML), this._lastUnitArea));
+    }
 
     /*
-    if (tooltip && tooltip.innerHTML !== '') {
-      var total = tooltip.innerHTML.match(/\d+\.\d\d(?!\d)/)[0],
-        area = this._calculateArea(total);
+    if (this._activeTooltip) {
+      this._distance = parseFloat(this._activeTooltip._icon.childNodes[0].childNodes[0].childNodes[1].innerHTML);
 
-      if (area !== null) {
-        tooltip.innerHTML = area;
+      // TODO: You should really just update this._tempTooltip with the new distance.
+      if (this._tempTooltip) {
+        this._removeTempTooltip();
       }
     }
     */
