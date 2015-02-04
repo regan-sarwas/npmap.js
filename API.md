@@ -1,4 +1,6 @@
-# Map
+# <a name="TOC">Table of Contents</a>
+
+1. [L.npmap.map](#map)
 
 ## L.npmap.map(config: object)
 
@@ -52,6 +54,8 @@ _Working Examples_:
 * [Hooks](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/hooks.html)
 * [Multiple Maps on One Page](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/multiple-maps.html)
 * [Using Notifications](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/notifications.html)
+
+**[[⬆]]](#toc)
 
 # Layers
 
