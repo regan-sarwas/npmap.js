@@ -37,6 +37,8 @@
    * [baseLayer](#baselayer)
 * [Utils](#utils)
 * [Concepts](#concepts)
+   * [Bootstrap vs. API](#bootstrap-vs-api)
+   * [Multiple Maps](#multiple-maps)
    * [Using Popups](#using-popups)
    * [Using Tooltips](#using-tooltips)
    * [Styling Vectors](#styling-vectors)
@@ -1130,6 +1132,45 @@ Understanding a few fundamental concepts will help you get the most out of NPMap
 
 **[[⬆]](#toc)**
 
+### <a name="bootstrap-vs-api">Bootstrap vs. API</a>
+
+There are three ways to use NPMap.js: The "Bootstrap" method, the "API" method, and the "Hybrid" method.
+
+#### Bootstrap
+
+To create a map using the Bootstrap method, create an `NPMap` config object and add configuration properties to it as documented above. Then load `npmap-bootstrap.js` and NPMap.js takes over from there.
+
+This method is the recommended (and easiest!) way to create maps with NPMap.js, and it takes full advantage of the power of NPMap.js. This method includes "extras" like a spinning loading indicator and automatic loading of `npmap.css`.
+
+#### API
+
+It is also possible to create maps by interacting directly with the NPMap.js API in a way similar to other more "traditional" web mapping libraries like Google Maps and the ArcGIS JavaScript API. This method requires a manual load of both `npmap.css` and `npmap.js`, and it lacks the "extras" that come along with the Bootstrap method. It also requires at least a general understanding of JavaScript.
+
+#### Hybrid
+
+The NPMap team builds many of its maps using a hybrid approach that uses `npmap-bootstrap.js` to do the initial configuration and load of a map and then takes advantage of NPMap.js' [hooks](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/baselayer-presets.html) and API to add custom functionality. This approach gets the best of both worlds: Easy initial configuration with advanced programmatic access for complete control. This approach also has an added benefit of consistency. Every map built using this hybrid approach is laid out ("scaffolded") in a consistent way.
+
+This hybrid approach is possible because NPMap.js exposes the underlying [Map](#map), [Layer](#layer), [Control](#control), and [Module](#module) objects so they can be interacted with programatically after they are initialized.
+
+For example, once NPMap.js creates a map it exposes the internal map object via a `L` property on the `NPMap.config` object. This means you can access the object like this: `NPMap.config.L`.
+
+You can also access the `baseLayers` and `overlays` objects that NPMap.js has initialized in a similar way:
+
+* `NPMap.config.baseLayers[0].L` gets a reference to the layer object for the first baseLayer
+* `NPMap.config.overlays[0].L` gets a reference to the layer object for the first overlay
+
+**[[⬆]](#toc)**
+
+### <a name="multiple-maps">Multiple Maps</a>
+
+Unlike previous versions of the NPMap library, the Bootstrap method supports adding multiple maps to the same web page. To add multiple maps, make the `NPMap` config object an array of map configuration objects:
+
+    var NPMap = [{
+      div: 'map-1'
+    },{
+      div: 'map-2'
+    }];
+
 ### <a name="using-popups">Using Popups</a>
 
 Popups display when you click on a feature in an overlay. Each popup is made up of three markup sections, with each having one or more nested subsection:
@@ -1286,24 +1327,5 @@ If you prefer not to use the simplestyle specification, you can utilize the out-
 **An important note**: Style properties cascade. This means that if a "marker-symbol" property is passed in via the data source (e.g. a GeoJSON feature's properties) and a "marker-color" property is passed in via the overlay config object, the geometry will be styled with both the "marker-symbol" AND "marker-color" properties unless the "ignoreFeatureStyles" property is present.
 
 Take a look at the [Styling Vectors example](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/styling-vectors.html) to see an example of using the different configuration options to style vector data.
-
-**[[⬆]](#toc)**
-
-## <a name="notes">Notes</a>
-
-<ul>
-  <li>NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It acts as a complement to the larger <a href="http://leafletjs.com/reference.html">Leaflet</a> API.</li>
-  <li>NPMap.js adds an <code>L</code> property to every map config object and layer (baselayer or overlay) passed in via the <code>NPMap</code> object. You can use this property to interact programatically with objects created by Leaflet. A few examples:<ul>
-    <li><code>NPMap.config.L</code> will get a reference to the <code><a href="http://leafletjs.com/reference.html#map-class">L.Map</a></code> object</li>
-    <li><code>NPMap.config.baseLayers[0].L</code> will get a reference to the Leaflet layer object for the first baseLayer</li>
-    <li><code>NPMap.config.overlays[0].L</code> will get a reference to the Leaflet layer object for the first overlay</li>
-  </ul></li>
-  <li>Unlike previous versions of the NPMap library, <code>npmap-bootstrap.js</code> now supports adding multiple maps to a page. Just make the <code>NPMap</code> property an array of map configuration objects:<pre><code>var NPMap = [{
-  div: 'example-map-1'
-},{
-  div: 'example-map-2'
-}];
-</code></pre></li>
-</ul>
 
 **[[⬆]](#toc)**
