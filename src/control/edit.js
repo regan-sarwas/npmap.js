@@ -28,6 +28,12 @@ var EditControl = L.Control.extend({
       }
     },
     polygon: {
+      allowIntersection: false,
+      drawError: {
+        color: 'orange',
+        timeout: 1000,
+        notify: 'bah'
+      },
       metric: false
     },
     polyline: {
@@ -44,6 +50,7 @@ var EditControl = L.Control.extend({
     this._activeMode = null;
     this._featureGroup = new L.FeatureGroup();
     this._modes = {};
+    
     return this;
   },
   onAdd: function(map) {
