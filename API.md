@@ -1171,6 +1171,8 @@ Unlike previous versions of the NPMap library, the Bootstrap method supports add
       div: 'map-2'
     }];
 
+**[[⬆]](#toc)**
+
 ### <a name="using-popups">Using Popups</a>
 
 Popups display when you click on a feature in an overlay. Each popup is made up of three markup sections, with each having one or more nested subsection:
