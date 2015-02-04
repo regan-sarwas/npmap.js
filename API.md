@@ -55,7 +55,7 @@ _Working Examples_:
 * [Multiple Maps on One Page](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/multiple-maps.html)
 * [Using Notifications](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/notifications.html)
 
-**[[⬆]]](#toc)
+**[[⬆]]](#toc)**
 
 # Layers
 
