@@ -1,5 +1,6 @@
 /* global L */
 /* jshint camelcase: false */
+
 'use strict';
 
 var util = require('../util/util');
@@ -268,9 +269,8 @@ var MeasureControl = L.Control.extend({
       .on('disabled', this._handlerDeactivated, this)
       .on('enabled', this._handlerActivated, this);
   },
+  // TODO: Add circlemarkers at the vertices, and make these clickable to finish the measurement.
   _mouseClickArea: function(e) {
-    // TODO: Geometry edits are not contained in _drawnGroup, but can and should be.
-
     var latLng = e.latlng;
 
     if (this._activePolygon) {
@@ -298,6 +298,7 @@ var MeasureControl = L.Control.extend({
       this._removeTempTooltip();
     }
   },
+  // TODO: Add circlemarkers at the vertices, and make these clickable to finish the measurement.
   _mouseClickDistance: function(e) {
     var latLng = e.latlng;
 
