@@ -733,9 +733,33 @@ _Working Examples_:
 
 Create an edit control that supports adding markup shapes (points, lines, and polygons), and add it to a map.
 
-## L.npmap.fullscreenControl(config: object)
+_Arguments_:
+
+Docs coming soon.
+
+You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
+
+_Example_:
+
+    var NPMap = {
+      div: 'map',
+      editControl: true
+    };
+
+## L.npmap.fullscreenControl()
 
 Create a fullscreen control that toggles the map in and out of fullscreen mode and add it to a map.
+
+_Arguments_:
+
+No arguments are accepted.
+
+_Example_:
+
+    var NPMap = {
+      div: 'map',
+      fullscreenControl: true
+    };
 
 ## L.npmap.geocoderControl(config: object)
 
@@ -745,8 +769,6 @@ _Arguments_:
 
 * (Optional) `provider` (String): Which supported provider should be used? Defaults to `esri`. Valid options are `bing`, `esri`, `mapquest`, and `nominatim`.
 
-You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
-
 _Example_:
 
     var NPMap = {
@@ -754,7 +776,7 @@ _Example_:
       geocoderControl: true
     };
 
-## L.npmap.hashControl(config: object)
+## L.npmap.hashControl()
 
 Create a control that updates the URL with current location and zoom information and add it to a map.
 
@@ -786,9 +808,66 @@ _Example_:
 
 ## L.npmap.legendControl(config: object)
 
+Create a control to display a legend on the map.
+
+_Arguments_:
+
+The first, and only, argument is required, and must be a config object with the following property:
+
+* (Required) `html` (String): An HTML string to add to the control.
+
+You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
+
+_Example_:
+
+    var NPMap = {
+      div: 'map',
+      html: '<ul><li>Overlay 1</li><li>Overlay 2</li></ul>'
+    }
+
 ## L.npmap.locateControl(config: object)
 
+Uses the web browser's geolocate functionality to display your current location.
+
+_Arguments_:
+
+You can (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
+
+_Example_:
+
+    var NPMap = {
+      div: 'map',
+      locateControl: true
+    };
+
 ## L.npmap.measureControl(config: object)
+
+Create a control that supports drawing area and distance measurements on the map.
+
+_Arguments_:
+
+The first, and only, argument is optional, and must be a config object with the following properties:
+
+* (Optional) `units` (Object): An object, with one or both `area` (Array) and `distance` (Array) properties that let NPMap.js know which units to support with the control. Valid area units are acres (`ac`) and hectares (`ha`). Valid distance units are feet (`f`), meters (`m`), and miles (`mi`). The control defaults to all available area and distance units.
+
+You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
+
+_Example_:
+
+    var NPMap = {
+      div: 'map',
+      measureControl: {
+        units: {
+          area: [
+            'ac'
+          ],
+          distance: [
+            'mi',
+            'f'
+          ]
+        }
+      }
+    };
 
 ## L.npmap.overviewControl(config: object)
 
@@ -796,7 +875,7 @@ Create a map control that provides context for the currently-visible area of the
 
 _Arguments_:
 
-The first, and only, argument is required, and must be a config object with the following properties:
+The first, and only, argument is optional, and must be a config object with the following properties:
 
 * (Optional) `autoToggleDisplay` (Boolean): Should the overview hide automatically if the parent map bounds does not fit within the bounds of the overview map? Defaults to `false`.
 * (Optional) `height` (Number): The height of the overview map. Defaults to 150 pixels.

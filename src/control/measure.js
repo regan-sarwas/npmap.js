@@ -30,55 +30,121 @@ var MeasureControl = L.Control.extend({
         weight: 2
       }
     },
-    position:'topleft'
+    position: 'topleft',
+    units: {
+      area: [
+        'ac',
+        'ha'
+      ],
+      distance: [
+        'mi',
+        'ft',
+        'm'
+      ]
+    }
   },
-  initialize: function(map, options) {
+  // TODO: Also store conversion formulas here.
+  units: {
+    area: {
+      'ac': 'Acres',
+      'ha': 'Hectares'
+    },
+    distance: {
+      'ft': 'Feet',
+      'm': 'Meters',
+      'mi': 'Miles'
+    }
+  },
+  initialize: function(options) {
     L.Util.setOptions(this, options);
     this._activeMode = null;
     this._activePoint = null;
     this._activePolygon = null;
     this._activeTooltip = null;
-    this._activeUnitArea = 'ac';
-    this._activeUnitDistance = 'mi';
-    this._drawnGroup = new L.FeatureGroup();
-    this._lastUnitArea = 'ac';
-    this._lastUnitDistance = 'mi';
+    this._featureGroup = new L.FeatureGroup();
     this._modes = {};
+
+    if (this.options && this.options.units) {
+      var unit;
+
+      if (this.options.units.area && this.options.units.area.length) {
+        // TODO: Verify this is a supported unit.
+        unit = this.options.units.area[0];
+        this._activeUnitArea = unit;
+        this._lastUnitArea = unit;
+      }
+
+      if (this.options.units.distance && this.options.units.distance.length) {
+        // TODO: Verify this is a supported unit.
+        unit = this.options.units.distance[0];
+        this._activeUnitDistance = unit;
+        this._lastUnitDistance = unit;
+      }
+    }
 
     return this;
   },
   onAdd: function(map) {
-    var liArea, liDistance, liSelect;
+    if (this._activeUnitArea || this._activeUnitDistance) {
+      var liSelect = document.createElement('li'),
+        html, i, unit;
 
-    this._container = L.DomUtil.create('div', 'leaflet-bar leaflet-control npmap-control-measure');
-    this._map = map;
-    this._menu = L.DomUtil.create('ul', '', this._container);
-    liArea = L.DomUtil.create('li', '', this._menu);
-    liDistance = L.DomUtil.create('li', '', this._menu);
-    liSelect = L.DomUtil.create('li', '', this._menu);
-    this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', this._container);
-    this._buttonArea = L.DomUtil.create('button', '', liArea);
-    this._buttonArea.innerHTML = 'Area';
-    this._buttonDistance = L.DomUtil.create('button', '', liDistance);
-    this._buttonDistance.innerHTML = 'Distance';
-    this._selectUnitArea = L.DomUtil.create('select', '', liSelect);
-    this._selectUnitArea.innerHTML = '' +
-      '<option value="ac" selected>Acres</option>' +
-      '<option value="ha">Hectares</option>' +
-    '';
-    this._selectUnitDistance = L.DomUtil.create('select','', liSelect);
-    this._selectUnitDistance.innerHTML = '' +
-      '<option value="mi" selected>Miles</option>' +
-      '<option value="m" class="distance">Meters</option>' +
-      '<option value="ft" class="distance">Feet</option>' +
-    '';
+      this._container = L.DomUtil.create('div', 'leaflet-bar leaflet-control npmap-control-measure');
+      this._map = map;
+      this._menu = L.DomUtil.create('ul', '', this._container);
+      this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', this._container);
 
-    map.addLayer(this._drawnGroup);
-    this._initializeMode(this._buttonArea, new L.Draw.Polygon(map, this.options.polygon));
-    this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
-    this._setupListeners();
+      if (this._activeUnitArea) {
+        var liArea = L.DomUtil.create('li', '', this._menu);
 
-    return this._container;
+        html = '';
+        this._buttonArea = L.DomUtil.create('button', 'pressed', liArea);
+        this._buttonArea.innerHTML = 'Area';
+        this._selectUnitArea = L.DomUtil.create('select', '', liSelect);
+
+        // TODO: Verify this is a supported unit.
+        for (i = 0; i < this.options.units.area.length; i++) {
+          unit = this.options.units.area[i];
+          html += '<option value="' + unit + '"' + (i === 0 ? ' selected' : '') + '>' + this.units.area[unit] + '</option>';
+        }
+
+        this._selectUnitArea.innerHTML = html;
+      }
+
+      if (this._activeUnitDistance) {
+        var liDistance = L.DomUtil.create('li', '', this._menu),
+          me = this;
+
+        html = '';
+        this._buttonDistance = L.DomUtil.create('button', (function() {
+          if (me._buttonArea) {
+            return '';
+          } else {
+            return 'pressed';
+          }
+        })(), liDistance);
+        this._buttonDistance.innerHTML = 'Distance';
+        this._selectUnitDistance = L.DomUtil.create('select', '', liSelect);
+
+        // TODO: Verify this is a supported unit.
+        for (i = 0; i < this.options.units.distance.length; i++) {
+          unit = this.options.units.distance[i];
+          html += '<option value="' + unit + '"' + (i === 0 ? ' selected' : '') + '>' + this.units.distance[unit] + '</option>';
+        }
+
+        this._selectUnitDistance.innerHTML = html;
+      }
+
+      this._menu.appendChild(liSelect);
+      map.addLayer(this._featureGroup);
+      this._initializeMode(this._buttonArea, new L.Draw.Polygon(map, this.options.polygon));
+      this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
+      this._setupListeners();
+
+      return this._container;
+    } else {
+      throw new Error('No valid units specified for measure control!');
+    }
   },
   _buildTooltipArea: function(total) {
     return '' +
@@ -133,23 +199,35 @@ var MeasureControl = L.Control.extend({
       if (button.innerHTML.toLowerCase() === 'distance') {
         add = this._buttonDistance;
         mode = 'distance';
-        remove = this._buttonArea;
-        this._selectUnitArea.style.display = 'none';
+
+        if (this._selectUnitArea) {
+          this._selectUnitArea.style.display = 'none';
+          remove = this._buttonArea;
+          this._modes.polygon.handler.disable();
+        }
+
         this._selectUnitDistance.style.display = 'block';
-        this._modes.polygon.handler.disable();
         this._modes.polyline.handler.enable();
       } else {
         add = this._buttonArea;
         mode = 'area';
-        remove = this._buttonDistance;
+
+        if (this._selectUnitDistance) {
+          this._selectUnitDistance.style.display = 'none';
+          remove = this._buttonDistance;
+          this._modes.polyline.handler.disable();
+        }
+
         this._selectUnitArea.style.display = 'block';
-        this._selectUnitDistance.style.display = 'none';
-        this._modes.polyline.handler.disable();
         this._modes.polygon.handler.enable();
       }
 
       L.DomUtil.addClass(add, 'pressed');
-      L.DomUtil.removeClass(remove, 'pressed');
+
+      if (remove) {
+        L.DomUtil.removeClass(remove, 'pressed');
+      }
+
       this._startMeasuring(mode);
     }
   },
@@ -236,7 +314,7 @@ var MeasureControl = L.Control.extend({
           -5
         ]
       })
-    }).addTo(this._drawnGroup);
+    }).addTo(this._featureGroup);
   },
   _handlerActivated: function(e) {
     if (this._activeMode && this._activeMode.handler.enabled()) {
@@ -281,7 +359,7 @@ var MeasureControl = L.Control.extend({
 
       if (latLngs.length > 2) {
         if (this._activeTooltip) {
-          this._drawnGroup.removeLayer(this._activeTooltip);
+          this._featureGroup.removeLayer(this._activeTooltip);
         }
 
         this._area = this._calculateArea(this._activeUnitArea, L.GeometryUtil.geodesicArea(latLngs));
@@ -394,7 +472,7 @@ var MeasureControl = L.Control.extend({
     }
   },
   _removeTempTooltip: function() {
-    this._drawnGroup.removeLayer(this._tempTooltip);
+    this._featureGroup.removeLayer(this._tempTooltip);
     this._tempTooltip = null;
   },
   _setupListeners: function() {
@@ -403,13 +481,22 @@ var MeasureControl = L.Control.extend({
     L.DomEvent
       .disableClickPropagation(this._button)
       .disableClickPropagation(this._menu)
-      .on(this._button, 'click', this._toggleMeasure, this)
-      .on(this._buttonArea, 'click', this._buttonClick, this)
-      .on(this._buttonDistance, 'click', this._buttonClick, this)
-      .on(this._selectUnitArea, 'change', this._onSelectUnitArea, this)
-      .on(this._selectUnitDistance, 'change', this._onSelectUnitDistance, this);
+      .on(this._button, 'click', this._toggleMeasure, this);
+
+    if (this._buttonArea) {
+      L.DomEvent
+        .on(this._buttonArea, 'click', this._buttonClick, this)
+        .on(this._selectUnitArea, 'change', this._onSelectUnitArea, this);
+    }
+
+    if (this._buttonDistance) {
+      L.DomEvent
+        .on(this._buttonDistance, 'click', this._buttonClick, this)
+        .on(this._selectUnitDistance, 'change', this._onSelectUnitDistance, this);
+    }
+
     this._map.on('draw:created', function(e) {
-      me._drawnGroup.addLayer(e.layer);
+      me._featureGroup.addLayer(e.layer);
     });
   },
   _startMeasuring: function(type) {
@@ -442,13 +529,13 @@ var MeasureControl = L.Control.extend({
       this._menu.style.display = 'none';
       this._activeMode.handler.disable();
       this._stopMeasuring(this._clicked);
-      this._drawnGroup.clearLayers();
+      this._featureGroup.clearLayers();
       map._controllingInteractivity = true;
     } else {
       L.DomUtil.addClass(this._button, 'pressed');
       this._menu.style.display = 'block';
-      
-      if (L.DomUtil.hasClass(this._buttonArea, 'pressed')) {
+
+      if (this._buttonArea && L.DomUtil.hasClass(this._buttonArea, 'pressed')) {
         this._buttonClick({
           target: this._buttonArea
         }, true);
@@ -476,7 +563,7 @@ L.Map.addInitHook(function() {
   if (this.options.measureControl) {
     var options = {};
 
-    if (typeof this.options.measureControl === 'object'){
+    if (typeof this.options.measureControl === 'object') {
       options = this.options.measureControl;
     }
 

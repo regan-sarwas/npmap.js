@@ -1096,7 +1096,7 @@
       vertical-align: middle;
     }
       .npmap-control-measure ul li select {
-        margin: 0 5px;
+        margin-left: 5px;
       }
       .npmap-control-measure ul li select:first-child {
         display: none;
@@ -1105,7 +1105,7 @@
       background-color: #919187 !important;
       border: none !important;
       border-radius: 0 !important;
-      color: #FFF !important;
+      color: #fff !important;
       display: block !important;
       font-size: 11px !important;
       height: 28px !important;
