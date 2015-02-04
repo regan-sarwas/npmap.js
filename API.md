@@ -1,8 +1,8 @@
-# <a name="TOC">Table of Contents</a>
+# <a name="toc">Table of Contents</a>
 
 1. [L.npmap.map](#map)
 
-## L.npmap.map(config: object)
+## <a name="map">L.npmap.map(config: object)</a>
 
 Create and configure a map with baseLayers, overlays, and controls.
 
