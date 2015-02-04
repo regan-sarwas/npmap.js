@@ -1,6 +1,10 @@
 # <a name="toc">Table of Contents</a>
 
 1. [L.npmap.map](#map)
+1. [Layers](#layers)
+   1. [arcgisserver](#arcgisserver)
+   1. [bing](#bing)
+   1. [cartodb](#cartodb)
 
 ## <a name="map">L.npmap.map(config: object)</a>
 
@@ -55,9 +59,9 @@ _Working Examples_:
 * [Multiple Maps on One Page](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/multiple-maps.html)
 * [Using Notifications](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/notifications.html)
 
-**[[⬆]]](#toc)**
+**[[⬆]](#toc)**
 
-# Layers
+## <a name="layers">Layers</a>
 
 Layers can be added to a map via either the `baseLayers` or `overlays` configs. Only one baseLayer can be visible at a time. Multiple overlays can be visible at the same time.
 
@@ -93,7 +97,7 @@ _Example (API)_:
 You can add events to a layer by adding an `events` array to the config. The array should contain event objects with `fn` and `type` properties. These objects can also be given a `single` property if the event should only be fired one time. An example:
 
     var NPMap = {
-      div: 'map',
+      ...
       overlays: [{
         events: [{
           fn: function() {
@@ -118,7 +122,9 @@ _Working Examples_:
 * [baseLayer Presets](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/baselayer-presets.html)
 * [Events](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/events.html)
 
-## L.npmap.layer.arcgisserver(config: object)
+**[[⬆]](#toc)**
+
+### <a name"arcgisserver">L.npmap.layer.arcgisserver(config: object)</a>
 
 Create a layer from an ArcGIS Server tiled or dynamic map service, including services hosted on ArcGIS Online, and add it to a map.
 
@@ -175,7 +181,9 @@ _Working Examples_:
 
 * [ArcGIS Server Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/arcgisserver-layer.html)
 
-## L.npmap.layer.bing(config: object)
+**[[⬆]](#toc)**
+
+### <a name="bing">L.npmap.layer.bing(config: object)</a>
 
 Create a layer from the [Bing Imagery API](http://msdn.microsoft.com/en-us/library/ff701721.aspx) and add it to a map.
 
@@ -217,7 +225,9 @@ _Working Examples_:
 
 * [Bing Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/bing-layer.html)
 
-## L.npmap.layer.cartodb(config: object)
+**[[⬆]](#toc)**
+
+### <a name="cartodb">L.npmap.layer.cartodb(config: object)</a>
 
 Create a [CartoDB](http://cartodb.com) layer and add it to a map.
 
@@ -264,6 +274,8 @@ _Example (API)_:
     }).addTo(map);
 
 _Working Examples_:
+
+**[[⬆]](#toc)**
 
 * [CartoDB Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/cartodb-layer.html)
 
@@ -325,6 +337,8 @@ _Working Examples_:
 * [CSV Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/csv-layer.html)
 * [CSV Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/csv-layer-clustered.html)
 
+**[[⬆]](#toc)**
+
 ## L.npmap.layer.geojson(config: object)
 
 Create a GeoJSON layer and add it to a map.
@@ -383,6 +397,8 @@ _Working Examples_:
 * [GeoJSON Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/geojson-layer.html)
 * [GeoJSON Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/geojson-layer-clustered.html)
 
+**[[⬆]](#toc)**
+
 ## L.npmap.layer.github(config: object)
 
 Create a GitHub layer and add it to a map.
@@ -438,6 +454,8 @@ _Example (API)_:
 _Working Examples_:
 
 * [GitHub Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/github-layer.html)
+
+**[[⬆]](#toc)**
 
 ## L.npmap.layer.kml(config: object)
 
@@ -497,6 +515,8 @@ _Working Examples_:
 * [KML Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/kml-layer.html)
 * [KML Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/kml-layer-clustered.html)
 
+**[[⬆]](#toc)**
+
 ## L.npmap.layer.mapbox(config: object)
 
 Create a Mapbox layer and add it to a map.
@@ -543,6 +563,8 @@ _Example (API)_:
 _Working Examples_:
 
 * [Mapbox Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/mapbox-layer.html)
+
+**[[⬆]](#toc)**
 
 ## L.npmap.layer.spot(config: object)
 
@@ -593,6 +615,8 @@ _Working Examples_:
 
 * [SPOT Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/spot-layer.html)
 
+**[[⬆]](#toc)**
+
 ## L.npmap.layer.tiled(config: object)
 
 Create a tiled layer and add it to a map.
@@ -636,6 +660,8 @@ _Example (API)_:
 _Working Examples_:
 
 * [Tiled Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/tiled-layer.html)
+
+**[[⬆]](#toc)**
 
 ## L.npmap.layer.wms(config: object)
 
@@ -684,6 +710,8 @@ _Working Examples_:
 
 * [WMS Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/wms-layer.html)
 
+**[[⬆]](#toc)**
+
 ## L.npmap.layer.zoomify(config: object)
 
 Create a Zoomify layer and add it to a map.
@@ -731,7 +759,13 @@ _Working Examples_:
 
 * [Zoomify Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/zoomify-layer.html)
 
+**[[⬆]](#toc)**
+
 <h1 id="controls">Controls</h1>
+
+Add functionality to your map using NPMap.js' controls.
+
+**[[⬆]](#toc)**
 
 ## L.npmap.editControl(config: object)
 
@@ -750,6 +784,8 @@ _Example_:
       editControl: true
     };
 
+**[[⬆]](#toc)**
+
 ## L.npmap.fullscreenControl()
 
 Create a fullscreen control that toggles the map in and out of fullscreen mode and add it to a map.
@@ -764,6 +800,8 @@ _Example_:
       div: 'map',
       fullscreenControl: true
     };
+
+**[[⬆]](#toc)**
 
 ## L.npmap.geocoderControl(config: object)
 
@@ -780,6 +818,8 @@ _Example_:
       geocoderControl: true
     };
 
+**[[⬆]](#toc)**
+
 ## L.npmap.hashControl()
 
 Create a control that updates the URL with current location and zoom information and add it to a map.
@@ -795,6 +835,8 @@ _Example_:
       hashControl: true
     };
 
+**[[⬆]](#toc)**
+
 ## L.npmap.homeControl(config: object)
 
 Create a control that zooms and/or pans the map back to its initial center and zoom and add it to a map. Is on, by default, for new maps.
@@ -809,6 +851,8 @@ _Example_:
       div: 'map',
       homeControl: true
     };
+
+**[[⬆]](#toc)**
 
 ## L.npmap.legendControl(config: object)
 
@@ -829,6 +873,8 @@ _Example_:
       html: '<ul><li>Overlay 1</li><li>Overlay 2</li></ul>'
     }
 
+**[[⬆]](#toc)**
+
 ## L.npmap.locateControl(config: object)
 
 Uses the web browser's geolocate functionality to display your current location.
@@ -843,6 +889,8 @@ _Example_:
       div: 'map',
       locateControl: true
     };
+
+**[[⬆]](#toc)**
 
 ## L.npmap.measureControl(config: object)
 
@@ -873,6 +921,8 @@ _Example_:
       }
     };
 
+**[[⬆]](#toc)**
+
 ## L.npmap.overviewControl(config: object)
 
 Create a map control that provides context for the currently-visible area of the map and it to a map. Adapted from the [Leaflet-MiniMap](https://github.com/Norkart/Leaflet-MiniMap) plugin.
@@ -900,9 +950,15 @@ _Example_:
       }
     };
 
+**[[⬆]](#toc)**
+
 ## L.npmap.printControl(config: object)
 
+**[[⬆]](#toc)**
+
 ## L.npmap.scaleControl(config: object)
+
+**[[⬆]](#toc)**
 
 ## L.npmap.smallzoomControl(config: object)
 
@@ -919,23 +975,40 @@ _Example_:
       smallzoomControl: true
     }
 
+**[[⬆]](#toc)**
+
 ## L.npmap.switcherControl(config: object)
 
 The switcher control is used and controlled internally by NPMap.js. It is created and added to your map when more than one layer config is present in the `baseLayers` config of your map configuration object. It should not be manually created.
 
+**[[⬆]](#toc)**
+
 ## L.npmap.zoomdisplayControl(config: object)
+
+**[[⬆]](#toc)**
 
 <h1 id="modules">Modules</h1>
 
 Docs for `L.npmap.module` coming soon.
 
+**[[⬆]](#toc)**
+
 <h1 id="icons">Icons</h1>
+
+**[[⬆]](#toc)**
 
 ## L.npmap.icon.maki(config: object)
 
+**[[⬆]](#toc)**
+
 ## L.npmap.icon.npmaki(config: object)
 
+**[[⬆]](#toc)**
+
 <h1 id="presets">Presets</h1>
+
+**[[⬆]](#toc)**
+
 <h2 id="baseLayer-presets">baseLayer</h2>
 
 NPMap.js includes support for adding baseLayers via string presets. This makes it easy to add one or more baseLayers to your map without knowing the technical details required to manually add a baseLayer. To use presets, simply add one or more preset strings (outlined below) to the `baseLayers` property:
@@ -994,11 +1067,19 @@ The following preset strings are supported:
 
 Take a look at the [baseLayer presets](https://github.com/nationalparkservice/npmap.js/blob/master/examples/baselayer-presets.html) example for more information.
 
+**[[⬆]](#toc)**
+
 # Utils
 
 Docs for `L.npmap.util` coming soon.
 
+**[[⬆]](#toc)**
+
 # Concepts
+
+Understanding a few fundamental concepts will help you get the most out of NPMap.js.
+
+**[[⬆]](#toc)**
 
 ## Using Popups
 
@@ -1105,6 +1186,8 @@ description: "I am {{#ifCond Name '===' 'A Rectangle'}}indeed{{else}}not{{/ifCon
 
 You can see examples of configuring popups for overlays in the [popups](https://github.com/nationalparkservice/npmap.js/blob/master/examples/popups.html) example map.
 
+**[[⬆]](#toc)**
+
 ## Using Tooltips
 
 Tooltips display when you hover over a feature in an overlay. Tooltips only work for layer handlers that support `mouseover` and `mouseout` operations (currently CartoDB, CSV, GeoJSON, GitHub, KML, Mapbox, and SPOT).
@@ -1120,6 +1203,8 @@ Tooltips should be short and succinct. Both HTML and Handlebars strings are supp
     };
 
 You can see examples of configuring tooltips for overlays in the [tooltips example](https://github.com/nationalparkservice/npmap.js/blob/master/examples/tooltips.html).
+
+**[[⬆]](#toc)**
 
 ## Styling Vectors
 
@@ -1155,6 +1240,8 @@ If you prefer not to use the simplestyle specification, you can utilize the out-
 
 Take a look at the [Styling Vectors example](https://github.com/nationalparkservice/npmap.js/blob/master/examples/styling-vectors.html) to see an example of using the different configuration options to style vector data.
 
+**[[⬆]](#toc)**
+
 # Notes
 
 <ul>
@@ -1171,3 +1258,5 @@ Take a look at the [Styling Vectors example](https://github.com/nationalparkserv
 }];
 </code></pre></li>
 </ul>
+
+**[[⬆]](#toc)**
