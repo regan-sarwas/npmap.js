@@ -917,7 +917,7 @@ _Example_:
 
 ## L.npmap.switcherControl(config: object)
 
-The switcher control is used and controlled internally by NPMap.js. It is created and added to your map when more than one layer config is present in the `baseLayers` config of your map configuration object.
+The switcher control is used and controlled internally by NPMap.js. It is created and added to your map when more than one layer config is present in the `baseLayers` config of your map configuration object. It should not be manually created.
 
 ## L.npmap.zoomdisplayControl(config: object)
 
@@ -925,71 +925,70 @@ The switcher control is used and controlled internally by NPMap.js. It is create
 
 Docs for `L.npmap.module` coming soon.
 
-# Icons
+<h1 id="icons">Icons</h1>
 
 ## L.npmap.icon.maki(config: object)
 
 ## L.npmap.icon.npmaki(config: object)
 
-# Presets
-
+<h1 id="presets">Presets</h1>
 <h2 id="baseLayer-presets">baseLayer</h2>
 
-## NPS
+NPMap.js includes support for adding baseLayers via string presets. This makes it easy to add one or more baseLayers to your map without knowing the technical details required to manually add a baseLayer. To use presets, simply add one or more preset strings (outlined below) to the `baseLayers` property:
 
-* `nps-darkStreets`
-* `nps-lightStreets`
-* `nps-neutralTerrain`
-* `nps-parkTiles`
-* `nps-parkTilesImagery`
-* `nps-satelliteNight`
+    var NPMap = {
+      ...
+      baseLayers: [
+        'nps-parkTilesImagery'
+      ]
+    };
 
-## Bing
+The following preset strings are supported:
 
-* `bing-aerial`
-* `bing-aerialLabels`
-* `bing-roads`
+* NPS
+   * `nps-darkStreets`
+   * `nps-lightStreets`
+   * `nps-neutralTerrain`
+   * `nps-parkTiles`
+   * `nps-parkTilesImagery`
+   * `nps-satelliteNight`
+* Bing
+   * `bing-aerial`
+   * `bing-aerialLabels`
+   * `bing-roads`
+* CartoDB
+   * `cartodb-darkMatter`
+   * `cartodb-darkMatterNoLabels`
+   * `cartodb-positron`
+   * `cartodb-positronNoLabels`
+* Esri
+   * `esri-gray`
+   * `esri-imagery`
+   * `esri-nationalGeographic`
+   * `esri-oceans`
+   * `esri-shadedRelief`
+   * `esri-streets`
+   * `esri-terrain`
+   * `esri-topographic`
+* Mapbox
+   * `mapbox-dark`
+   * `mapbox-emerald`
+   * `mapbox-highContrast`
+   * `mapbox-light`
+   * `mapbox-outdoors`
+   * `mapbox-pencil`
+   * `mapbox-satellite`
+   * `mapbox-satelliteLabels`
+   * `mapbox-streets`
+   * `mapbox-terrain`
+* OpenStreetMap
+   * `openstreetmap`
+* Stamen
+   * `stamen-terrain`
+   * `stamen-toner`
+   * `stamen-watercolor`
 
-## CartoDB
-
-* `cartodb-darkMatter`
-* `cartodb-darkMatterNoLabels`
-* `cartodb-positron`
-* `cartodb-positronNoLabels`
-
-## Esri
-
-* `esri-gray`
-* `esri-imagery`
-* `esri-nationalGeographic`
-* `esri-oceans`
-* `esri-shadedRelief`
-* `esri-streets`
-* `esri-terrain`
-* `esri-topographic`
-
-## Mapbox
-
-* `mapbox-dark`
-* `mapbox-emerald`
-* `mapbox-highContrast`
-* `mapbox-light`
-* `mapbox-outdoors`
-* `mapbox-pencil`
-* `mapbox-satellite`
-* `mapbox-satelliteLabels`
-* `mapbox-streets`
-* `mapbox-terrain`
-
-## OpenStreetMap
-
-* `openstreetmap`
-
-## Stamen
-
-* `stamen-terrain`
-* `stamen-toner`
-* `stamen-watercolor`
+Take a look at the [baseLayer presets](https://github.com/nationalparkservice/npmap.js/blob/master/examples/baselayer-presets.html) example for more information.
 
 # Utils
 
@@ -1002,14 +1001,14 @@ Docs for `L.npmap.util` coming soon.
 Popups display when you click on a feature in an overlay. Each popup is made up of three markup sections, with each having one or more nested subsection:
 
 1. Header
-   1. Title
+   - Title
 2. Content
-   1. Media
-   2. Description
+   - Media
+   - Description
 3. Footer
-   1. Actions
+   - Actions
 
-If you do not specify a `popup` property on your layer object, NPMap.js will use a set of sensible defaults to configure the popup. If, however, you specify a `popup` property on your layer object, NPMap.js will only implement what you have specified. For example, if your `popup` property looks like this:
+If you do not specify a `popup` property on your layer object, NPMap.js will use a set of sensible defaults to configure the popup. If, however, you specify a `popup` property on your layer object, NPMap.js will only implement what you have specified. For example, if your `popup` property looks like the following
 
     popup: {
       title: '{{Name}}'
@@ -1031,20 +1030,20 @@ The content for each of the sections of a popup should be specified individually
             handler: function() {
               window.alert('Clicked!');
             },
-            text: 'Click Me!' // No HTML, but Handlebars is supported
+            text: 'Click Me!' // No HTML allowed, but Handlebars is supported
           },{
             menu: [{
               handler: function() {
                 window.alert('You clicked Menu Item 1');
               },
-              text: 'Menu Item 1' // No HTML, but Handlebars is supported
+              text: 'Menu Item 1' // No HTML allowed, but Handlebars is supported
             },{
               handler: function() {
                 window.alert('You clicked Menu Item 2');
               },
-              text: 'Menu Item 2' // No HTML, but Handlebars is supported
+              text: 'Menu Item 2' // No HTML allowed, but Handlebars is supported
             }],
-            text: 'Menu' // No HTML, but Handlebars is supported
+            text: 'Menu' // No HTML allowed, but Handlebars is supported
           }],
           // {Object}, {String} or {Function}. If a {Function}, it must return an {Object} or {String}.
           description: '<p style="color:red;">{{description}}</p>',
@@ -1055,17 +1054,17 @@ The content for each of the sections of a popup should be specified individually
               'Name',
               'Description'
             ],
-            // {String} ('table' or 'list')
+            // {String} ('table' or 'list') (if null, defaults to 'table')
             format: 'table'
           },
           // {Array}, {String}, or {Function} (that returns an {Array} or {String})
           media: [{
             id: '',
-            type: 'focus'
+            type: 'focus' // Focus is currently the only supported system
           }],
-          // No HTML, but Handlebars is supported
+          // No HTML allowed, but Handlebars is supported
           more: '{{}}',
-          // {String} or {Function} (that returns a {String}) - supports Handlebars and HTML )
+          // {String} or {Function} (that returns a {String}) - supports both HTML and Handlebars)
           title: function(data) {
             if (data.level > 5) {
               return 'Greater than 5!';
@@ -1089,7 +1088,9 @@ If you are embedding media (images, audio, and/or video) in your popup, you shou
       }]
     };
 
-[HTML](http://en.wikipedia.org/wiki/HTML) and [Handlebars](http://handlebarsjs.com/) are supported for most popup elements. NPMap.js also adds a number of "helpers" to Handlebars. These helpers can be used to format popups:
+[HTML](http://en.wikipedia.org/wiki/HTML) and [Handlebars](http://handlebarsjs.com/) are supported for many popup elements (take a look at the comments in the code sample above to see which elements support HTML and/or Handlebars).
+
+NPMap.js also adds a number of "helpers" to Handlebars. These helpers can be used to format popups:
 
 <ul>
   <li>ifCond<pre><code>// Available operators include '!=', '!==', '==', '===', '&lt;', '&lt;=', '&gt;', '&gt;=', '&&', and '||'
@@ -1104,7 +1105,7 @@ You can see examples of configuring popups for overlays in the [popups](https://
 
 Tooltips display when you hover over a feature in an overlay. Tooltips only work for layer handlers that support `mouseover` and `mouseout` operations (currently CartoDB, CSV, GeoJSON, GitHub, KML, Mapbox, and SPOT).
 
-Tooltips should be short and succinct. Like popups, HTML and Handlebars strings are supported.
+Tooltips should be short and succinct. Both HTML and Handlebars strings are supported by tooltips.
 
     var NPMap = {
       ...
