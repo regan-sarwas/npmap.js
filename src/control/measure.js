@@ -354,17 +354,6 @@ var MeasureControl = L.Control.extend({
 
       tooltip.parentNode.innerHTML = this._buildTooltipArea(this._calculateArea(this._activeUnitArea, parseFloat(node.innerHTML), this._lastUnitArea));
     }
-
-    /*
-    if (this._activeTooltip) {
-      this._distance = parseFloat(this._activeTooltip._icon.childNodes[0].childNodes[0].childNodes[1].innerHTML);
-
-      // TODO: You should really just update this._tempTooltip with the new distance.
-      if (this._tempTooltip) {
-        this._removeTempTooltip();
-      }
-    }
-    */
   },
   _onSelectUnitDistance: function() {
     var tooltips = util.getElementsByClassName('leaflet-measure-tooltip-distance');
@@ -427,8 +416,6 @@ var MeasureControl = L.Control.extend({
       off = (type === 'area' ? this._mouseClickDistance : this._mouseClickArea),
       on = (type === 'area' ? this._mouseClickArea : this._mouseClickDistance);
 
-    //this._currentCircles = [];
-    //this._activeTooltip = null;
     L.DomEvent
       .off(map, 'click', off)
       .on(document, 'keydown', this._onKeyDown, this)
@@ -478,18 +465,6 @@ var MeasureControl = L.Control.extend({
     tooltip.setLatLng(latLng);
     tooltip._icon.innerHTML = html;
   }
-  /*
-  _updateTooltipArea: function(total) {
-    this._activeTooltip._icon.innerHTML = '' +
-      '<div class="leaflet-measure-tooltip-total">' +
-        this._calculateArea(total) +
-      '</div>' +
-    '';
-  },
-  _updateTooltipPosition: function(latLng) {
-    this._activeTooltip.setLatLng(latLng);
-  }
-  */
 });
 
 L.Map.mergeOptions({
