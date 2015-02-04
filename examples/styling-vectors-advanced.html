@@ -22,20 +22,18 @@
     <script>
       var NPMap = {
         center: {
-          lat: 44.474951,
-          lng: -110.68725585
+          lat: 44.51511,
+          lng: -110.46066
         },
         div: 'map',
         overlays: [{
           attribution: 'NPMap Team',
           events: [{
             fn: function() {
-              var me = this;
-
               L.npmap.layer.geojson({
                 color: '#cc6677',
                 dashArray: '3,7',
-                data: me.toGeoJSON(),
+                data: this.toGeoJSON(),
                 lineCap: 'round',
                 weight: 6
               }).addTo(NPMap.config.L);
