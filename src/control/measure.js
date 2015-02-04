@@ -525,12 +525,7 @@ var MeasureControl = L.Control.extend({
     var map = this._map;
 
     if (L.DomUtil.hasClass(this._button, 'pressed')) {
-      L.DomUtil.removeClass(this._button, 'pressed');
-      this._menu.style.display = 'none';
-      this._activeMode.handler.disable();
-      this._stopMeasuring(this._clicked);
-      this._featureGroup.clearLayers();
-      map._controllingInteractivity = true;
+      this.deactivate(map);
     } else {
       L.DomUtil.addClass(this._button, 'pressed');
       this._menu.style.display = 'block';
@@ -552,6 +547,14 @@ var MeasureControl = L.Control.extend({
     tooltip = tooltip || this._activeTooltip;
     tooltip.setLatLng(latLng);
     tooltip._icon.innerHTML = html;
+  },
+  deactivate: function(map){
+    L.DomUtil.removeClass(this._button, 'pressed');
+    this._menu.style.display = 'none';
+    this._activeMode.handler.disable();
+    this._stopMeasuring(this._clicked);
+    this._featureGroup.clearLayers();
+    map._controllingInteractivity = true;
   }
 });
 
