@@ -1,6 +1,6 @@
 # <a name="toc">NPMap.js API Docs</a>
 
-1. [L.npmap.map](#map)
+1. [Map](#map)
 1. [Layers](#layers)
    1. [arcgisserver](#arcgisserver)
    1. [bing](#bing)
