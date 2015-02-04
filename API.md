@@ -1,10 +1,46 @@
-# <a name="toc">Table of Contents</a>
+# <a name="toc">NPMap.js API Docs</a>
 
 1. [L.npmap.map](#map)
 1. [Layers](#layers)
    1. [arcgisserver](#arcgisserver)
    1. [bing](#bing)
    1. [cartodb](#cartodb)
+   1. [csv](#csv)
+   1. [geojson](#geojson)
+   1. [github](#github)
+   1. [kml](#kml)
+   1. [mapbox](#mapbox)
+   1. [spot](#spot)
+   1. [tiled](#tiled)
+   1. [wms](#wms)
+   1. [zoomify](#zoomify)
+1. [Controls](#controls)
+   1. [edit](#edit)
+   1. [fullscreen](#fullscreen)
+   1. [geocoder](#geocoder)
+   1. [hash](#hash)
+   1. [home](#home)
+   1. [legend](#legend)
+   1. [locate](#locate)
+   1. [measure](#measure)
+   1. [overview](#overview)
+   1. [print](#print)
+   1. [scale](#scale)
+   1. [smallzoom](#smallzoom)
+   1. [switcher](#switcher)
+   1. [zoomdisplay](#zoomdisplay)
+1. [Modules](#modules)
+1. [Icons](#icons)
+   1. [maki](#maki)
+   1. [npmaki](#npmaki)
+1. [Presets](#presets)
+   1. [baseLayer](#baselayer)
+1. [Utils](#utils)
+1. [Concepts](#concepts)
+   1. [Using Popups](#using-popups)
+   1. [Using Tooltips](#using-tooltips)
+   1. [Styling Vectors](#styling-vectors)
+1. [Notes](#notes)
 
 ## <a name="map">L.npmap.map(config: object)</a>
 
@@ -124,7 +160,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-### <a name"arcgisserver">L.npmap.layer.arcgisserver(config: object)</a>
+### <a name="arcgisserver">L.npmap.layer.arcgisserver(config: object)</a>
 
 Create a layer from an ArcGIS Server tiled or dynamic map service, including services hosted on ArcGIS Online, and add it to a map.
 
@@ -275,11 +311,11 @@ _Example (API)_:
 
 _Working Examples_:
 
-**[[⬆]](#toc)**
-
 * [CartoDB Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/cartodb-layer.html)
 
-## L.npmap.layer.csv(config: object)
+**[[⬆]](#toc)**
+
+### <a name="csv">L.npmap.layer.csv(config: object)</a>
 
 Create a CSV layer and add it to a map.
 
@@ -339,7 +375,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.layer.geojson(config: object)
+### <a name="geojson">L.npmap.layer.geojson(config: object)</a>
 
 Create a GeoJSON layer and add it to a map.
 
@@ -399,7 +435,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.layer.github(config: object)
+### <a name="github">L.npmap.layer.github(config: object)</a>
 
 Create a GitHub layer and add it to a map.
 
@@ -457,7 +493,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.layer.kml(config: object)
+### <a name="kml">L.npmap.layer.kml(config: object)</a>
 
 Create a KML layer and add it to a map.
 
@@ -517,7 +553,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.layer.mapbox(config: object)
+### <a name="mapbox">L.npmap.layer.mapbox(config: object)</a>
 
 Create a Mapbox layer and add it to a map.
 
@@ -566,7 +602,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.layer.spot(config: object)
+### <a name="spot">L.npmap.layer.spot(config: object)</a>
 
 Create a SPOT layer and add it to a map.
 
@@ -617,7 +653,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.layer.tiled(config: object)
+### <a name="tiled">L.npmap.layer.tiled(config: object)</a>
 
 Create a tiled layer and add it to a map.
 
@@ -663,7 +699,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.layer.wms(config: object)
+### <a name="wms">L.npmap.layer.wms(config: object)</a>
 
 Create a WMS layer and add it to a map.
 
@@ -712,7 +748,7 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.layer.zoomify(config: object)
+### <a name="zoomify">L.npmap.layer.zoomify(config: object)</a>
 
 Create a Zoomify layer and add it to a map.
 
@@ -761,13 +797,13 @@ _Working Examples_:
 
 **[[⬆]](#toc)**
 
-<h1 id="controls">Controls</h1>
+## <a name="controls">Controls</a>
 
 Add functionality to your map using NPMap.js' controls.
 
 **[[⬆]](#toc)**
 
-## L.npmap.editControl(config: object)
+### <a name="edit">L.npmap.editControl(config: object)</a>
 
 Create an edit control that supports adding markup shapes (points, lines, and polygons), and add it to a map.
 
@@ -786,7 +822,7 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.fullscreenControl()
+### <a name="fullscreen">L.npmap.fullscreenControl()</a>
 
 Create a fullscreen control that toggles the map in and out of fullscreen mode and add it to a map.
 
@@ -803,7 +839,7 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.geocoderControl(config: object)
+### <a name="geocoder">L.npmap.geocoderControl(config: object)</a>
 
 Create a geocoder control that searches through both an index of National Parks and a more detailed geocoding service and add it to a map
 
@@ -820,7 +856,7 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.hashControl()
+### <a name="hash">L.npmap.hashControl()</a>
 
 Create a control that updates the URL with current location and zoom information and add it to a map.
 
@@ -837,7 +873,7 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.homeControl(config: object)
+### <a name="home">L.npmap.homeControl(config: object)</a>
 
 Create a control that zooms and/or pans the map back to its initial center and zoom and add it to a map. Is on, by default, for new maps.
 
@@ -854,7 +890,7 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.legendControl(config: object)
+### <a name="legend">L.npmap.legendControl(config: object)</a>
 
 Create a control to display a legend on the map.
 
@@ -875,7 +911,7 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.locateControl(config: object)
+### <a name="locate">L.npmap.locateControl(config: object)</a>
 
 Uses the web browser's geolocate functionality to display your current location.
 
@@ -892,7 +928,7 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.measureControl(config: object)
+### <a name="measure">L.npmap.measureControl(config: object)</a>
 
 Create a control that supports drawing area and distance measurements on the map.
 
@@ -923,7 +959,7 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.overviewControl(config: object)
+### <a name="overview">L.npmap.overviewControl(config: object)</a>
 
 Create a map control that provides context for the currently-visible area of the map and it to a map. Adapted from the [Leaflet-MiniMap](https://github.com/Norkart/Leaflet-MiniMap) plugin.
 
@@ -952,15 +988,15 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.printControl(config: object)
+### <a name="print">L.npmap.printControl(config: object)</a>
 
 **[[⬆]](#toc)**
 
-## L.npmap.scaleControl(config: object)
+### <a name="scale">L.npmap.scaleControl(config: object)</a>
 
 **[[⬆]](#toc)**
 
-## L.npmap.smallzoomControl(config: object)
+### <a name="smallzoom">L.npmap.smallzoomControl(config: object)</a>
 
 Create a map control that contains zoom in/out buttons and add it to a map. Is on, by default, for new maps.
 
@@ -977,39 +1013,39 @@ _Example_:
 
 **[[⬆]](#toc)**
 
-## L.npmap.switcherControl(config: object)
+### <a name="switcher">L.npmap.switcherControl(config: object)</a>
 
 The switcher control is used and controlled internally by NPMap.js. It is created and added to your map when more than one layer config is present in the `baseLayers` config of your map configuration object. It should not be manually created.
 
 **[[⬆]](#toc)**
 
-## L.npmap.zoomdisplayControl(config: object)
+### <a name="zoomdisplay">L.npmap.zoomdisplayControl(config: object)</a>
 
 **[[⬆]](#toc)**
 
-<h1 id="modules">Modules</h1>
+## <a name="modules">Modules</a>
 
 Docs for `L.npmap.module` coming soon.
 
 **[[⬆]](#toc)**
 
-<h1 id="icons">Icons</h1>
+## <a name="icons">Icons</a>
 
 **[[⬆]](#toc)**
 
-## L.npmap.icon.maki(config: object)
+### <a name="maki">L.npmap.icon.maki(config: object)</a>
 
 **[[⬆]](#toc)**
 
-## L.npmap.icon.npmaki(config: object)
+### <a name="npmaki">L.npmap.icon.npmaki(config: object)</a>
 
 **[[⬆]](#toc)**
 
-<h1 id="presets">Presets</h1>
+## <a name="presets">Presets</a>
 
 **[[⬆]](#toc)**
 
-<h2 id="baseLayer-presets">baseLayer</h2>
+### <a name="baseLayer">baseLayer</a>
 
 NPMap.js includes support for adding baseLayers via string presets. This makes it easy to add one or more baseLayers to your map without knowing the technical details required to manually add a baseLayer. To use presets, simply add one or more preset strings (outlined below) to the `baseLayers` property:
 
@@ -1069,19 +1105,19 @@ Take a look at the [baseLayer presets](https://github.com/nationalparkservice/np
 
 **[[⬆]](#toc)**
 
-# Utils
+## <a name="utils">Utils</a>
 
-Docs for `L.npmap.util` coming soon.
+Docs coming soon.
 
 **[[⬆]](#toc)**
 
-# Concepts
+## <a name="concepts">Concepts</a>
 
 Understanding a few fundamental concepts will help you get the most out of NPMap.js.
 
 **[[⬆]](#toc)**
 
-## Using Popups
+### <a name="using-popups">Using Popups</a>
 
 Popups display when you click on a feature in an overlay. Each popup is made up of three markup sections, with each having one or more nested subsection:
 
@@ -1100,8 +1136,6 @@ If you do not specify a `popup` property on your layer object, NPMap.js will use
     }
 
 NPMap.js will only display the title in the popup and will not render any other popup elements.
-
-### Configuration
 
 The content for each of the sections of a popup should be specified individually via a `popup` configuration object:
 
@@ -1188,7 +1222,7 @@ You can see examples of configuring popups for overlays in the [popups](https://
 
 **[[⬆]](#toc)**
 
-## Using Tooltips
+### <a name="using-tooltips">Using Tooltips</a>
 
 Tooltips display when you hover over a feature in an overlay. Tooltips only work for layer handlers that support `mouseover` and `mouseout` operations (currently CartoDB, CSV, GeoJSON, GitHub, KML, Mapbox, and SPOT).
 
@@ -1206,7 +1240,7 @@ You can see examples of configuring tooltips for overlays in the [tooltips examp
 
 **[[⬆]](#toc)**
 
-## Styling Vectors
+### <a name="styling-vectors">Styling Vectors</a>
 
 NPMap.js uses the [simplestyle specification](https://github.com/mapbox/simplestyle-spec), which currently, at v1.1.0, includes the following properties:
 
@@ -1242,7 +1276,7 @@ Take a look at the [Styling Vectors example](https://github.com/nationalparkserv
 
 **[[⬆]](#toc)**
 
-# Notes
+## <a name="notes">Notes</a>
 
 <ul>
   <li>NPMap.js extends Leaflet's classes and only provides the interfaces outlined above. It acts as a complement to the larger <a href="http://leafletjs.com/reference.html">Leaflet</a> API.</li>
