@@ -1077,12 +1077,12 @@
 }
 .npmap-control-measure ul {
   display: none;
-  left: 24px;
+  height: 28px;
+  left: 26px;
   list-style: none;
   margin: 0;
   padding: 0;
   position: absolute;
-  top: 0;
   white-space: nowrap;
   z-index: -1;
 }
@@ -1092,19 +1092,28 @@
     .npmap-control-measure ul li:first-child a {
       border-left: none;
     }
+    .npmap-control-measure ul li:last-child {
+      vertical-align: middle;
+    }
+      .npmap-control-measure ul li select {
+        margin: 0 5px;
+      }
+      .npmap-control-measure ul li select:first-child {
+        display: none;
+      }
     .npmap-control-measure ul li button {
       background-color: #919187 !important;
       border: none !important;
       border-radius: 0 !important;
       color: #FFF !important;
       display: block !important;
-      font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
+      font-size: 11px !important;
+      height: 28px !important;
       line-height: 28px !important;
-      text-align: center !important;
-      text-decoration: none !important;
       padding-left: 10px !important;
       padding-right: 10px !important;
-      height: 28px !important;
+      text-align: center !important;
+      text-decoration: none !important;
       width: auto !important;
     }
       .npmap-control-measure ul li button:hover {
@@ -1117,22 +1126,41 @@
         border-bottom-right-radius: 4px !important;
         border-top-right-radius: 4px !important;
       }
+.leaflet-draw-tooltip {
+  visibility: hidden !important;
+}
+
+  .leaflet-draw-tooltip:before {
+    visibility: hidden !important;
+  }
+.leaflet-error-draw-tooltip {
+  background-color: #f2dede;
+  border: 1px solid #e6b6bd;
+  color: #b94a48;
+  font-size: 11px;
+  padding: 5px;
+  visibility: visible !important;
+}
 .npmap .leaflet-measure-tooltip {
+  background-color: #fff;
   background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 0 5px #bbb;
-  font: 11px/1.25 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 11px;
   height: auto !important;
   margin: 0;
   padding: 2px;
   white-space: nowrap;
   width: auto !important;
 }
-.npmap .leaflet-measure-tooltip-total {
-  font-weight: bold;
-}
-.npmap .leaflet-measure-tooltip-difference {
-  color: #777;
-}
+  .npmap .leaflet-measure-tooltip div.leaflet-measure-tooltip-distance span:last-child {
+    display: none;
+  }
+  .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-difference {
+    color: #777;
+  }
+  .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-total {
+    font-weight: bold;
+  }
 
 /* Overview Control */
 .npmap .leaflet-control-overview {
