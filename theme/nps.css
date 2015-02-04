@@ -1083,7 +1083,6 @@
   margin: 0;
   padding: 0;
   position: absolute;
-  top: -1px;
   white-space: nowrap;
   z-index: -1;
 }
@@ -1094,8 +1093,6 @@
       border-left: none;
     }
     .npmap-control-measure ul li:last-child {
-      height: 28px;
-      line-height: 28px;
       vertical-align: middle;
     }
       .npmap-control-measure ul li select {
