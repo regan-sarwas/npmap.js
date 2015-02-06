@@ -93,7 +93,6 @@ var MeasureControl = L.Control.extend({
       this._map = map;
       this._menu = L.DomUtil.create('ul', '', this._container);
       this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', this._container);
-      this._button.id = 'measure-control';
 
       if (this._activeUnitArea) {
         var liArea = L.DomUtil.create('li', '', this._menu);
