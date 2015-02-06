@@ -523,11 +523,14 @@ var MeasureControl = L.Control.extend({
       .off(map, 'mousemove', this._mouseMove, this);
   },
   _toggleMeasure: function() {
-    var map = this._map,
-    me = this;
+    var map = this._map;
 
     if (L.DomUtil.hasClass(this._button, 'pressed')) {
-      me.deactivate();
+      L.DomUtil.removeClass(this._button, 'pressed');
+      this._menu.style.display = 'none';
+      this._stopMeasuring(this._clicked);
+      this._featureGroup.clearLayers();
+      this._map._controllingInteractivity = true;
       this._activeMode.handler.disable();
     } else {
       L.DomUtil.addClass(this._button, 'pressed');
@@ -551,12 +554,15 @@ var MeasureControl = L.Control.extend({
     tooltip.setLatLng(latLng);
     tooltip._icon.innerHTML = html;
   },
-  deactivate: function(){
-    L.DomUtil.removeClass(this._button, 'pressed');
-    this._menu.style.display = 'none';
-    this._stopMeasuring(this._clicked);
-    this._featureGroup.clearLayers();
-    this._map._controllingInteractivity = true;
+  activate: function() {
+    if (!L.DomUtil.hasClass(this._button, 'pressed')) {
+      this._toggleMeasure();
+    }
+  },
+  deactivate: function() {
+    if (L.DomUtil.hasClass(this._button, 'pressed')) {
+      this._toggleMeasure();
+    }
   }
 });
 
