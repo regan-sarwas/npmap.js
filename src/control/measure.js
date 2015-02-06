@@ -561,6 +561,7 @@ var MeasureControl = L.Control.extend({
   deactivate: function() {
     if (L.DomUtil.hasClass(this._button, 'pressed')) {
       this._toggleMeasure();
+      this._stopMeasuring('area');
     }
   }
 });
