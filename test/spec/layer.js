@@ -12,7 +12,32 @@ describe('L.npmap.layer', function() {
     server = sinon.fakeServer.create();
   });
   describe('arcgisserver', function() {
+    it('creates a dynamic layer and adds it to the map', function() {
+      var map = L.npmap.map({
+        baseLayers: false,
+        div: element,
+        overlays: [{
+          tiled: false,
+          type: 'arcgisserver',
+          url: 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
+        }]
+      });
 
+      expect(map.options.overlays[0].L).to.be.ok();
+    });
+    it('creates a tiled layer and adds it to the map', function() {
+      var map = L.npmap.map({
+        baseLayers: false,
+        div: element,
+        overlays: [{
+          tiled: true,
+          type: 'arcgisserver',
+          url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+        }]
+      });
+
+      expect(map.options.overlays[0].L).to.be.ok();
+    });
   });
   describe('bing', function() {
 

@@ -1,8 +1,7 @@
 /* global afterEach, beforeEach, describe, expect, it, L, sinon */
 
 describe('L.npmap.control', function() {
-  var element,
-    server;
+  var element, server;
 
   afterEach(function() {
     element = null;
