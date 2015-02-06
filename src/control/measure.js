@@ -93,6 +93,7 @@ var MeasureControl = L.Control.extend({
       this._map = map;
       this._menu = L.DomUtil.create('ul', '', this._container);
       this._button = L.DomUtil.create('button', 'leaflet-bar-single measure-control', this._container);
+      this._button.id = 'measure-control';
 
       if (this._activeUnitArea) {
         var liArea = L.DomUtil.create('li', '', this._menu);
@@ -527,10 +528,10 @@ var MeasureControl = L.Control.extend({
     if (L.DomUtil.hasClass(this._button, 'pressed')) {
       L.DomUtil.removeClass(this._button, 'pressed');
       this._menu.style.display = 'none';
-      this._activeMode.handler.disable();
       this._stopMeasuring(this._clicked);
       this._featureGroup.clearLayers();
-      map._controllingInteractivity = true;
+      this._map._controllingInteractivity = true;
+      this._activeMode.handler.disable();
     } else {
       L.DomUtil.addClass(this._button, 'pressed');
       this._menu.style.display = 'block';
@@ -552,6 +553,16 @@ var MeasureControl = L.Control.extend({
     tooltip = tooltip || this._activeTooltip;
     tooltip.setLatLng(latLng);
     tooltip._icon.innerHTML = html;
+  },
+  activate: function() {
+    if (!L.DomUtil.hasClass(this._button, 'pressed')) {
+      this._toggleMeasure();
+    }
+  },
+  deactivate: function() {
+    if (L.DomUtil.hasClass(this._button, 'pressed')) {
+      this._toggleMeasure();
+    }
   }
 });
 
