@@ -156,5 +156,11 @@ var BingLayer = L.TileLayer.extend({
 });
 
 module.exports = function(options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'bing';
+  }
+
   return new BingLayer(options);
 };

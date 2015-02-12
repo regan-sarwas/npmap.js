@@ -222,5 +222,11 @@ var ArcGisServerDynamicLayer = L.Class.extend({
 });
 
 module.exports = function(options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'arcgisserver';
+  }
+
   return new ArcGisServerDynamicLayer(options);
 };

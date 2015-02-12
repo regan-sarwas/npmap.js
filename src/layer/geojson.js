@@ -46,6 +46,10 @@ var GeoJsonLayer = L.GeoJSON.extend({
 module.exports = function(options) {
   options = options || {};
 
+  if (!options.type) {
+    options.type = 'geojson';
+  }
+
   if (options.cluster) {
     return L.npmap.layer._cluster(options);
   } else {

@@ -106,5 +106,11 @@ var SpotLayer = L.GeoJSON.extend({
 });
 
 module.exports = function(options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'spot';
+  }
+
   return new SpotLayer(options);
 };

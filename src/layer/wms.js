@@ -16,5 +16,11 @@ var WmsLayer = L.TileLayer.WMS.extend({
 });
 
 module.exports = function(options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'wms';
+  }
+
   return new WmsLayer(options);
 };

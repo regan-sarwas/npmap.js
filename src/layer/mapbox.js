@@ -180,5 +180,11 @@ var MapBoxLayer = L.TileLayer.extend({
 });
 
 module.exports = function(options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'mapbox';
+  }
+
   return new MapBoxLayer(options);
 };

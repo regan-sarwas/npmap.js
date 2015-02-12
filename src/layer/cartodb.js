@@ -242,5 +242,11 @@ var CartoDbLayer = L.TileLayer.extend({
 });
 
 module.exports = function(options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'cartodb';
+  }
+
   return new CartoDbLayer(options);
 };
