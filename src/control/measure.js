@@ -322,7 +322,7 @@ var MeasureControl = L.Control.extend({
     }
 
     this._activeMode = this._modes[e.handler];
-    this.fire('enable');
+    this.fire('activated');
   },
   _handlerDeactivated: function() {
     this._activeMode = null;
@@ -334,7 +334,7 @@ var MeasureControl = L.Control.extend({
     this._distance = 0;
     this._layerGroupPath = null;
     this._tempTooltip = null;
-    this.fire('disable');
+    this.fire('deactivated');
   },
   _initializeMode: function(button, handler) {
     var type = handler.type;
@@ -471,6 +471,16 @@ var MeasureControl = L.Control.extend({
       }
     }
   },
+  _removeListeners: function() {
+    var map = this._map;
+
+    L.DomEvent
+      .off(document, 'keydown', this._onKeyDown)
+      .off(map, 'click', this._mouseClickArea)
+      .off(map, 'click', this._mouseClickDistance)
+      .off(map, 'dblclick', this._handlerDeactivated)
+      .off(map, 'mousemove', this._mouseMove);
+  },
   _removeTempTooltip: function() {
     this._featureGroup.removeLayer(this._tempTooltip);
     this._tempTooltip = null;
@@ -500,26 +510,22 @@ var MeasureControl = L.Control.extend({
     });
   },
   _startMeasuring: function(type) {
-    var map = this._map,
-      off = (type === 'area' ? this._mouseClickDistance : this._mouseClickArea),
-      on = (type === 'area' ? this._mouseClickArea : this._mouseClickDistance);
+    var map = this._map;
 
+    this._removeListeners();
     L.DomEvent
-      .off(map, 'click', off)
       .on(document, 'keydown', this._onKeyDown, this)
-      .on(map, 'click', on, this)
       .on(map, 'dblclick', this._handlerDeactivated, this)
       .on(map, 'mousemove', this._mouseMove, this);
-  },
-  _stopMeasuring: function(type) {
-    var map = this._map,
-      off = (type === 'area' ? this._mouseClickArea : this._mouseClickDistance);
 
-    L.DomEvent
-      .off(document, 'keydown', this._onKeyDown, this)
-      .off(map, 'click', off, this)
-      .off(map, 'dblclick', this._handlerDeactivated, this)
-      .off(map, 'mousemove', this._mouseMove, this);
+    if (type === 'area') {
+      L.DomEvent.on(map, 'click', this._mouseClickArea, this);
+    } else {
+      L.DomEvent.on(map, 'click', this._mouseClickDistance, this);
+    }
+  },
+  _stopMeasuring: function() {
+    this._removeListeners();
   },
   _toggleMeasure: function() {
     var map = this._map;

@@ -115,6 +115,7 @@ var EditControl = L.Control.extend({
         }
       }
     });
+    this._map = map;
     map.addLayer(this._featureGroup);
     map.on('click', function() {
       if (editShape) {
@@ -158,7 +159,8 @@ var EditControl = L.Control.extend({
       L.DomUtil.addClass(this._activeMode.button, 'pressed');
     }
 
-    this.fire('enable');
+    this._map._controllingInteractivity = false;
+    this.fire('activated');
   },
   _handlerDeactivated: function() {
     if (this._activeMode.button) {
@@ -166,7 +168,8 @@ var EditControl = L.Control.extend({
     }
 
     this._activeMode = null;
-    this.fire('disable');
+    this._map._controllingInteractivity = true;
+    this.fire('deactivated');
   },
   _initializeMode: function(container, handler, title) {
     var type = handler.type,
