@@ -119,7 +119,6 @@ var Map = L.Map.extend({
     mapWrapper.appendChild(map);
     options.div = map;
     options.zoomControl = false;
-    console.log(options);
     L.Map.prototype.initialize.call(me, options.div, options);
     me._addEvents(me, options);
     me._controllingCursor = 'map';
