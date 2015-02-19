@@ -245,14 +245,14 @@
       "type": "mapbox"
     },
     "parkTiles": {
-      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
       "icon": "nps",
       "id": "nps.2yxv8n84",
       "name": "Park Tiles",
       "type": "mapbox"
     },
     "parkTilesImagery": {
-      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
       "icon": "nps",
       "id": "nps.map-n9nxe12m,nps.gdipreks",
       //"maxNativeZoom": 19,
