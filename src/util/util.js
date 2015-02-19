@@ -2,10 +2,11 @@
 
 'use strict';
 
-var handlebars = require('handlebars'),
+var dateFormat = require('helper-dateformat'),
+  handlebars = require('handlebars'),
   reqwest = require('reqwest');
 
-// {{#ifCond Name '===' 'A Rectangle'}}true{{else}}false{{/ifCond}}
+handlebars.registerHelper('dateFormat', dateFormat);
 handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
   switch (operator) {
   case '!=':
@@ -32,11 +33,10 @@ handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
     return options.inverse(this);
   }
 });
-// {{toLowerCase 'Test'}}
+
 handlebars.registerHelper('toLowerCase', function(str) {
   return str.toLowerCase();
 });
-// {{toUpperCase 'Test'}}
 handlebars.registerHelper('toUpperCase', function(str) {
   return str.toUpperCase();
 });
