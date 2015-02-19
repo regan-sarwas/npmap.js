@@ -1,15 +1,6 @@
 /* global L */
 /* jshint camelcase: false */
 
-/**
-    Go ahead and add each line as a geometry to a FeatureGroup here. Set clickable to false, and transparency to 100%.
-    Add the "Leaflet.GeometryUtil" and "Leaflet.Snap" to NPMap.js, via the editControl module.
-    In NPMap.js, add a new config option, "guideLayers" {Array}.
-*/
-/**
-    Also add support for using simplestyle to configure polygons and polylines.
-*/
-
 'use strict';
 
 require('leaflet-draw');
@@ -20,28 +11,49 @@ var EditControl = L.Control.extend({
   includes: L.Mixin.Events,
   options: {
     circle: {
-      metric: false
+      shapeOptions: {
+        color: '#d46655',
+        fillOpacity: 0.4,
+        opacity: 1,
+        weight: 4
+      }
     },
     marker: {
       icon: {
-        'marker-library': 'maki'
+        'marker-color': '#d46655',
+        'marker-library': 'maki',
+        'marker-size': 'medium'
       }
     },
     polygon: {
       allowIntersection: false,
       drawError: {
-        color: 'orange',
-        timeout: 1000,
-        notify: 'bah'
+        color: '#f06eaa',
+        message: 'Polygons can\'t overlap',
+        timeout: 500
       },
-      metric: false
+      shapeOptions: {
+        color: '#d46655',
+        fillOpacity: 0.4,
+        opacity: 1,
+        weight: 4
+      }
     },
     polyline: {
-      metric: false
+      shapeOptions: {
+        color: '#d46655',
+        opacity: 1,
+        weight: 4
+      }
     },
     position: 'topleft',
     rectangle: {
-      metric: false
+      shapeOptions: {
+        color: '#d46655',
+        fillOpacity: 0.4,
+        opacity: 1,
+        weight: 4
+      }
     },
     toolbar: true
   },
@@ -50,37 +62,37 @@ var EditControl = L.Control.extend({
     this._activeMode = null;
     this._featureGroup = new L.FeatureGroup();
     this._modes = {};
-    
+
     return this;
   },
   onAdd: function(map) {
     var container = L.DomUtil.create('div', 'leaflet-control-edit leaflet-bar'),
-      editId,
-      editShape,
-      me = this;
+      me = this,
+      options = this.options,
+      editId, editShape;
 
-    if (this.options.marker) {
-      if (this.options.marker.icon && this.options.marker.icon['marker-library']) {
-        this.options.marker.icon = L.npmap.icon[this.options.marker.icon['marker-library']](this.options.marker.icon);
+    if (options.marker) {
+      if (options.marker.icon && options.marker.icon['marker-library']) {
+        options.marker.icon = L.npmap.icon[options.marker.icon['marker-library']](options.marker.icon);
       }
 
-      this._initializeMode(container, new L.Draw.Marker(map, this.options.marker), 'Draw a marker');
+      this._initializeMode(container, new L.Draw.Marker(map, options.marker), 'Draw a marker');
     }
 
-    if (this.options.polyline) {
-      this._initializeMode(container, new L.Draw.Polyline(map, this.options.polyline), 'Draw a line');
+    if (options.polyline) {
+      this._initializeMode(container, new L.Draw.Polyline(map, options.polyline), 'Draw a line');
     }
 
-    if (this.options.polygon) {
-      this._initializeMode(container, new L.Draw.Polygon(map, this.options.polygon), 'Draw a polygon');
+    if (options.polygon) {
+      this._initializeMode(container, new L.Draw.Polygon(map, options.polygon), 'Draw a polygon');
     }
 
-    if (this.options.rectangle) {
-      this._initializeMode(container, new L.Draw.Rectangle(map, this.options.rectangle), 'Draw a rectangle');
+    if (options.rectangle) {
+      this._initializeMode(container, new L.Draw.Rectangle(map, options.rectangle), 'Draw a rectangle');
     }
 
-    if (this.options.circle) {
-      this._initializeMode(container, new L.Draw.Circle(map, this.options.circle), 'Draw a circle');
+    if (options.circle) {
+      this._initializeMode(container, new L.Draw.Circle(map, options.circle), 'Draw a circle');
     }
 
     this._featureGroup.on('click', function(e) {
@@ -149,17 +161,23 @@ var EditControl = L.Control.extend({
     return container;
   },
   _handlerActivated: function(e) {
+    var map = this._map;
+
+    if (map._controllingInteractivity !== 'map') {
+      map[map._controllingInteractivity + 'Control'].deactivate();
+    }
+
     if (this._activeMode && this._activeMode.handler.enabled()) {
       this._activeMode.handler.disable();
     }
 
     this._activeMode = this._modes[e.handler];
-    
+
     if (this._activeMode.button) {
       L.DomUtil.addClass(this._activeMode.button, 'pressed');
     }
 
-    this._map._controllingInteractivity = false;
+    map._controllingInteractivity = 'edit';
     this.fire('activated');
   },
   _handlerDeactivated: function() {
@@ -168,13 +186,13 @@ var EditControl = L.Control.extend({
     }
 
     this._activeMode = null;
-    this._map._controllingInteractivity = true;
+    this._map._controllingInteractivity = 'map';
     this.fire('deactivated');
   },
   _initializeMode: function(container, handler, title) {
-    var type = handler.type,
+    var button = null,
       me = this,
-      button = null;
+      type = handler.type;
 
     this._modes[type] = {};
     this._modes[type].handler = handler;
@@ -182,14 +200,15 @@ var EditControl = L.Control.extend({
     if (this.options.toolbar) {
       button = L.DomUtil.create('button', type, container);
       button.setAttribute('alt', title);
-      L.DomEvent.disableClickPropagation(button);
-      L.DomEvent.on(button, 'click', function() {
-        if (me._activeMode && me._activeMode.handler.type === type) {
-          me._modes[type].handler.disable();
-        } else {
-          me._modes[type].handler.enable();
-        }
-      }, this._modes[type].handler);
+      L.DomEvent
+        .disableClickPropagation(button)
+        .on(button, 'click', function() {
+          if (me._activeMode && me._activeMode.handler.type === type) {
+            me._modes[type].handler.disable();
+          } else {
+            me._modes[type].handler.enable();
+          }
+        }, this._modes[type].handler);
     }
 
     this._modes[type].button = button;
@@ -202,6 +221,9 @@ var EditControl = L.Control.extend({
   },
   clearShapes: function() {
     this._featureGroup.clearLayers();
+  },
+  deactivate: function() {
+    this.deactivateMode(this._activeMode.handler.type);
   },
   deactivateMode: function(type) {
     this._modes[type].handler.disable();

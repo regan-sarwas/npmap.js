@@ -91,7 +91,10 @@ require('./popup.js');
 })();
 
 var Map = L.Map.extend({
-  initialize: function(config) {
+  options: {
+    worldCopyJump: true
+  },
+  initialize: function(options) {
     var baseLayerSet = false,
       container = L.DomUtil.create('div', 'npmap-container'),
       map = L.DomUtil.create('div', 'npmap-map'),
@@ -104,10 +107,9 @@ var Map = L.Map.extend({
       toolbarRight = L.DomUtil.create('ul', 'right'),
       zoomifyMode = false;
 
-    // For accessibility purposes.
-    map.tabIndex = 0;
-    config = me._toLeaflet(config);
-    config.div.insertBefore(npmap, config.div.hasChildNodes() ? config.div.childNodes[0] : null);
+    options = me._toLeaflet(options);
+    L.Util.setOptions(this, options);
+    options.div.insertBefore(npmap, options.div.hasChildNodes() ? options.div.childNodes[0] : null);
     npmap.appendChild(modules);
     npmap.appendChild(container);
     toolbar.appendChild(toolbarLeft);
@@ -115,12 +117,13 @@ var Map = L.Map.extend({
     container.appendChild(toolbar);
     container.appendChild(mapWrapper);
     mapWrapper.appendChild(map);
-    config.div = map;
-    config.zoomControl = false;
-    L.Map.prototype.initialize.call(me, config.div, config);
-    me._addEvents(me, config);
-    me._controllingCursor = true;
-    me._controllingInteractivity = true;
+    options.div = map;
+    options.zoomControl = false;
+    console.log(options);
+    L.Map.prototype.initialize.call(me, options.div, options);
+    me._addEvents(me, options);
+    me._controllingCursor = 'map';
+    me._controllingInteractivity = 'map';
     me._defaultCursor = me.getContainer().style.cursor;
 
     me.on('autopanstart', function() {
@@ -149,15 +152,15 @@ var Map = L.Map.extend({
     });
 
     if (!me._loaded) {
-      me.setView(config.center, config.zoom);
+      me.setView(options.center, options.zoom);
     }
 
-    if (config.baseLayers.length) {
+    if (options.baseLayers.length) {
       var zoomify = [],
         baseLayer, i;
 
-      for (i = 0; i < config.baseLayers.length; i++) {
-        baseLayer = config.baseLayers[i];
+      for (i = 0; i < options.baseLayers.length; i++) {
+        baseLayer = options.baseLayers[i];
 
         if (baseLayer.type === 'zoomify') {
           zoomify.push(baseLayer);
@@ -179,8 +182,8 @@ var Map = L.Map.extend({
           }
         }
       } else {
-        for (i = 0; i < config.baseLayers.length; i++) {
-          baseLayer = config.baseLayers[i];
+        for (i = 0; i < options.baseLayers.length; i++) {
+          baseLayer = options.baseLayers[i];
           baseLayer.zIndex = 0;
 
           if (!baseLayerSet && (baseLayer.visible || typeof baseLayer.visible === 'undefined')) {
@@ -202,11 +205,11 @@ var Map = L.Map.extend({
       }
     }
 
-    if (!zoomifyMode && config.overlays.length) {
+    if (!zoomifyMode && options.overlays.length) {
       var zIndex = 1;
 
-      for (var j = 0; j < config.overlays.length; j++) {
-        var overlay = config.overlays[j];
+      for (var j = 0; j < options.overlays.length; j++) {
+        var overlay = options.overlays[j];
 
         if (overlay.type === 'zoomify') {
           throw new Error('Zoomify layers can only be added in the "baseLayers" config property.');
@@ -466,7 +469,7 @@ var Map = L.Map.extend({
     me.on('click', function(e) {
       clicks = 0;
 
-      if (me._controllingInteractivity) {
+      if (me._controllingInteractivity === 'map') {
         setTimeout(function() {
           if (!clicks) {
             go(e);
@@ -483,7 +486,7 @@ var Map = L.Map.extend({
       });
 
     function handle() {
-      if (me._controllingCursor) {
+      if (me._controllingCursor === 'map') {
         updateCursor();
       }
 
@@ -604,7 +607,7 @@ var Map = L.Map.extend({
     me.on('mousemove', function(e) {
       me._cursorEvent = e;
 
-      if (me._controllingCursor) {
+      if (me._controllingCursor === 'map') {
         handle();
 
         for (var layerId in me._layers) {

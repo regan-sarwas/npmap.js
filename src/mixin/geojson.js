@@ -85,7 +85,7 @@ module.exports = {
           var target = e.target,
             map = target._map;
 
-          if (map._controllingInteractivity) {
+          if (map._controllingInteractivity === 'map') {
             clicks = 0;
 
             setTimeout(function() {

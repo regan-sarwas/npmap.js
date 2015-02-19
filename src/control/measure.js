@@ -14,20 +14,23 @@ var MeasureControl = L.Control.extend({
       allowIntersection: false,
       drawError: {
         color: '#f06eaa',
-        message: 'Invalid geometry',
-        timeout: 400
+        message: 'Polygons can\'t overlap',
+        timeout: 500
       },
       repeatMode: true,
       shapeOptions: {
-        color: 'rgb(255, 0, 0)',
-        weight: 2
+        color: '#882255',
+        fillOpacity: 0.4,
+        opacity: 1,
+        weight: 4
       }
     },
     polyline: {
       repeatMode: true,
       shapeOptions: {
-        color: 'rgb(255, 0, 0)',
-        weight: 2
+        color: '#882255',
+        opacity: 1,
+        weight: 4
       }
     },
     position: 'topleft',
@@ -512,6 +515,14 @@ var MeasureControl = L.Control.extend({
   _startMeasuring: function(type) {
     var map = this._map;
 
+    // Remove current tooltips if shape isn't finished.
+
+
+
+
+
+
+
     this._removeListeners();
     L.DomEvent
       .on(document, 'keydown', this._onKeyDown, this)
@@ -524,20 +535,21 @@ var MeasureControl = L.Control.extend({
       L.DomEvent.on(map, 'click', this._mouseClickDistance, this);
     }
   },
-  _stopMeasuring: function() {
-    this._removeListeners();
-  },
   _toggleMeasure: function() {
     var map = this._map;
 
     if (L.DomUtil.hasClass(this._button, 'pressed')) {
       L.DomUtil.removeClass(this._button, 'pressed');
       this._menu.style.display = 'none';
-      this._stopMeasuring(this._clicked);
+      this._removeListeners();
       this._featureGroup.clearLayers();
-      this._map._controllingInteractivity = true;
+      map._controllingInteractivity = 'map';
       this._activeMode.handler.disable();
     } else {
+      if (map._controllingInteractivity !== 'map') {
+        map[map._controllingInteractivity + 'Control'].deactivate();
+      }
+
       L.DomUtil.addClass(this._button, 'pressed');
       this._menu.style.display = 'block';
 
@@ -551,7 +563,7 @@ var MeasureControl = L.Control.extend({
         }, true);
       }
 
-      map._controllingInteractivity = false;
+      map._controllingInteractivity = 'measure';
     }
   },
   _updateTooltip: function(latLng, html, tooltip) {
