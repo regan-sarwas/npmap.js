@@ -7,6 +7,7 @@ require('leaflet.markercluster');
 
 var ClusterLayer = L.MarkerClusterGroup.extend({
   options: {
+    maxClusterRadius:20,
     showCoverageOnHover: false
   },
   initialize: function(options) {
