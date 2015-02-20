@@ -704,6 +704,37 @@ module.exports = {
           }
 
           return imgs;
+        },
+        url: function(urls) {
+          var imgs = [],
+              attrs, urlArray, i;
+
+          urlArray = urls.split(' ');
+
+          for (i = 0; i < urlArray.length; i++) {
+            attrs = {
+              src: urlArray[i],
+              href: urlArray[i]
+            };
+            imgs.push(attrs);
+          }
+
+          return imgs;
+        },
+        fmss: function(id) {
+          var imgs = [], attrs, i;
+          var names = photos[id];
+          var l = names ? names.length : 0;
+
+          for (i = 0; i < l; i++) {
+            attrs = {
+              src: "photos/thumb/" + names[i],
+              href: "photos/web/" + names[i]
+            };
+            imgs.push(attrs);
+          }
+
+          return imgs;
         }
       },
       ul = document.createElement('ul'),
