@@ -79,6 +79,9 @@ if (document.documentMode === 7) {
         } else {
           build(NPMap.config);
         }
+        if (typeof npmapReady === "function") {
+          npmapReady();
+        }
       });
     }
     function showLoader(div) {
