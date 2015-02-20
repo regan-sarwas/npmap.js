@@ -37,6 +37,13 @@
                 lineCap: 'round',
                 weight: 6
               }).addTo(NPMap.config.L);
+              L.npmap.layer.geojson({
+                color: '#ff191e',
+                dashArray: '6,9',
+                data: this.toGeoJSON(),
+                lineCap: 'round',
+                weight: 6
+              }).addTo(NPMap.config.L);
             },
             type: 'ready'
           }],
