@@ -90,38 +90,45 @@ module.exports = {
 
             setTimeout(function() {
               if (!clicks) {
-                var container = map.getContainer(),
-                  popup = L.npmap.popup({
-                    autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
-                    maxHeight: util._getAvailableVerticalSpace(map) - 84,
-                    maxWidth: util._getAvailableHorizontalSpace(map) - 77
-                  }),
-                  properties = feature.properties,
-                  html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
-
-                if (lastTarget) {
+                if (lastTarget && (lastTarget._leaflet_id === target._leaflet_id)) {
                   lastTarget
                     .closePopup()
                     .unbindPopup();
-                  lastTarget = target;
-                }
+                  lastTarget = null;
+                } else {
+                  var container = map.getContainer(),
+                    popup = L.npmap.popup({
+                      autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
+                      maxHeight: util._getAvailableVerticalSpace(map) - 84,
+                      maxWidth: util._getAvailableHorizontalSpace(map) - 77
+                    }),
+                    properties = feature.properties,
+                    html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
 
-                if (html) {
-                  if (typeof html === 'string') {
-                    html = util.unescapeHtml(html);
+                  if (lastTarget) {
+                    lastTarget
+                      .closePopup()
+                      .unbindPopup();
+                    lastTarget = target;
                   }
 
-                  if (feature.geometry.type === 'Point') {
-                    popup.setContent(html);
-                    target
-                      .bindPopup(popup)
-                      .openPopup();
-                    lastTarget = target;
-                  } else {
-                    popup
-                      .setContent(html)
-                      .setLatLng(e.latlng.wrap())
-                      .openOn(target._map);
+                  if (html) {
+                    if (typeof html === 'string') {
+                      html = util.unescapeHtml(html);
+                    }
+
+                    if (feature.geometry.type === 'Point') {
+                      popup.setContent(html);
+                      target
+                        .bindPopup(popup)
+                        .openPopup();
+                      lastTarget = target;
+                    } else {
+                      popup
+                        .setContent(html)
+                        .setLatLng(e.latlng.wrap())
+                        .openOn(target._map);
+                    }
                   }
                 }
               }
