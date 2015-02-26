@@ -60,28 +60,30 @@ var MeasureControl = L.Control.extend({
   },
   initialize: function(options) {
     L.Util.setOptions(this, options);
-    this._activeMode = null;
-    this._activePoint = null;
-    this._activePolygon = null;
-    this._activeTooltip = null;
     this._featureGroup = new L.FeatureGroup();
+    this._featureGroupTooltips = new L.FeatureGroup();
     this._modes = {};
+    this._resetVariables();
 
     if (this.options && this.options.units) {
       var unit;
 
       if (this.options.units.area && this.options.units.area.length) {
-        // TODO: Verify this is a supported unit.
         unit = this.options.units.area[0];
-        this._activeUnitArea = unit;
-        this._lastUnitArea = unit;
+
+        if (this.units.area[unit]) {
+          this._activeUnitArea = unit;
+          this._lastUnitArea = unit;
+        }
       }
 
       if (this.options.units.distance && this.options.units.distance.length) {
-        // TODO: Verify this is a supported unit.
         unit = this.options.units.distance[0];
-        this._activeUnitDistance = unit;
-        this._lastUnitDistance = unit;
+
+        if (this.units.distance[unit]) {
+          this._activeUnitDistance = unit;
+          this._lastUnitDistance = unit;
+        }
       }
     }
 
@@ -139,7 +141,9 @@ var MeasureControl = L.Control.extend({
       }
 
       this._menu.appendChild(liSelect);
-      map.addLayer(this._featureGroup);
+      map
+        .addLayer(this._featureGroup)
+        .addLayer(this._featureGroupTooltips);
       this._initializeMode(this._buttonArea, new L.Draw.Polygon(map, this.options.polygon));
       this._initializeMode(this._buttonDistance, new L.Draw.Polyline(map, this.options.polyline));
       this._setupListeners();
@@ -317,7 +321,7 @@ var MeasureControl = L.Control.extend({
           -5
         ]
       })
-    }).addTo(this._featureGroup);
+    }).addTo(this._featureGroupTooltips);
   },
   _handlerActivated: function(e) {
     if (this._activeMode && this._activeMode.handler.enabled()) {
@@ -328,15 +332,7 @@ var MeasureControl = L.Control.extend({
     this.fire('activated');
   },
   _handlerDeactivated: function() {
-    this._activeMode = null;
-    this._activePoint = null;
-    this._activePolygon = null;
-    this._activeTooltip = null;
-    this._area = 0;
-    this._currentCircles = [];
-    this._distance = 0;
-    this._layerGroupPath = null;
-    this._tempTooltip = null;
+    this._resetVariables();
     this.fire('deactivated');
   },
   _initializeMode: function(button, handler) {
@@ -362,7 +358,7 @@ var MeasureControl = L.Control.extend({
 
       if (latLngs.length > 2) {
         if (this._activeTooltip) {
-          this._featureGroup.removeLayer(this._activeTooltip);
+          this._featureGroupTooltips.removeLayer(this._activeTooltip);
         }
 
         this._area = this._calculateArea(this._activeUnitArea, L.GeometryUtil.geodesicArea(latLngs));
@@ -485,7 +481,18 @@ var MeasureControl = L.Control.extend({
       .off(map, 'mousemove', this._mouseMove);
   },
   _removeTempTooltip: function() {
-    this._featureGroup.removeLayer(this._tempTooltip);
+    this._featureGroupTooltips.removeLayer(this._tempTooltip);
+    this._tempTooltip = null;
+  },
+  _resetVariables: function() {
+    this._activeMode = null;
+    this._activePoint = null;
+    this._activePolygon = null;
+    this._activeTooltip = null;
+    this._area = 0;
+    this._currentCircles = [];
+    this._distance = 0;
+    this._layerGroupPath = null;
     this._tempTooltip = null;
   },
   _setupListeners: function() {
@@ -509,20 +516,32 @@ var MeasureControl = L.Control.extend({
     }
 
     this._map.on('draw:created', function(e) {
-      me._featureGroup.addLayer(e.layer);
+      if (L.DomUtil.hasClass(me._button, 'pressed')) {
+        var added = [],
+          layers = me._featureGroupTooltips.getLayers(),
+          i;
+
+        me._featureGroup.addLayer(e.layer);
+
+        for (i = 0; i < layers.length; i++) {
+          added.push(layers[i]);
+          me._featureGroup.addLayer(layers[i]);
+        }
+
+        for (i = 0; i < layers.length; i++) {
+          me._featureGroupTooltips.removeLayer(layers[i]);
+        }
+
+        for (i = 0; i < added.length; i++) {
+          added[i].addTo(me._map);
+        }
+      }
     });
   },
   _startMeasuring: function(type) {
     var map = this._map;
 
-    // Remove current tooltips if shape isn't finished.
-
-
-
-
-
-
-
+    this._featureGroupTooltips.clearLayers();
     this._removeListeners();
     L.DomEvent
       .on(document, 'keydown', this._onKeyDown, this)
@@ -543,6 +562,7 @@ var MeasureControl = L.Control.extend({
       this._menu.style.display = 'none';
       this._removeListeners();
       this._featureGroup.clearLayers();
+      this._featureGroupTooltips.clearLayers();
       map._controllingInteractivity = 'map';
       this._activeMode.handler.disable();
     } else {

@@ -26,12 +26,6 @@ var EditControl = L.Control.extend({
       }
     },
     polygon: {
-      allowIntersection: false,
-      drawError: {
-        color: '#f06eaa',
-        message: 'Polygons can\'t overlap',
-        timeout: 500
-      },
       shapeOptions: {
         color: '#d46655',
         fillOpacity: 0.4,
@@ -137,17 +131,19 @@ var EditControl = L.Control.extend({
       }
     });
     map.on('draw:created', function(e) {
-      me._featureGroup.addLayer(e.layer);
+      if (me._activeMode) {
+        me._featureGroup.addLayer(e.layer);
 
-      if (e.layerType === 'marker') {
-        e.layer.dragging.enable();
-        e.layer.on('dragstart', function() {
-          if (editShape) {
-            editShape.editing.disable();
-            editId = null;
-            editShape = null;
-          }
-        });
+        if (e.layerType === 'marker') {
+          e.layer.dragging.enable();
+          e.layer.on('dragstart', function() {
+            if (editShape) {
+              editShape.editing.disable();
+              editId = null;
+              editShape = null;
+            }
+          });
+        }
       }
     });
     map.on('draw:drawstart', function() {
