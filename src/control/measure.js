@@ -541,6 +541,7 @@ var MeasureControl = L.Control.extend({
   _startMeasuring: function(type) {
     var map = this._map;
 
+    map.closePopup();
     this._featureGroupTooltips.clearLayers();
     this._removeListeners();
     L.DomEvent

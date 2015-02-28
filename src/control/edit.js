@@ -175,6 +175,7 @@ var EditControl = L.Control.extend({
 
     map._controllingInteractivity = 'edit';
     this.fire('activated');
+    map.closePopup();
   },
   _handlerDeactivated: function() {
     if (this._activeMode.button) {
