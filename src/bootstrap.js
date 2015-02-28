@@ -62,12 +62,60 @@ if (document.documentMode === 7) {
         } else {
           destroyLoader();
         }
-      };
+      }
 
-      if (config.hooks && config.hooks.preinit) {
-        config.hooks.preinit(step);
+      if (NPMap.config.plugins) {
+        var plugins = NPMap.config.plugins,
+          count = plugins.length,
+          done = 0,
+          total = 0,
+          interval;
+
+        for (var i = 0; i < count; i++) {
+          var plugin = plugins[i];
+
+          if (plugin.css) {
+            total++;
+          }
+
+          if (plugin.js) {
+            total++;
+          }
+        }
+
+        for (var i = 0; i < count; i++) {
+          var plugin = plugins[i];
+
+          if (plugin.css) {
+            L.npmap.util._.appendCssFile(plugin.css, function() {
+              done++;
+            });
+          }
+
+          if (plugin.js) {
+            L.npmap.util._.appendJsFile(plugin.js, function() {
+              done++;
+            });
+          }
+        }
+
+        interval = setInterval(function() {
+          if (done === total) {
+            clearInterval(interval);
+
+            if (config.hooks && config.hooks.preinit) {
+              config.hooks.preinit(step);
+            } else {
+              step();
+            }
+          }
+        }, 100);
       } else {
-        step();
+        if (config.hooks && config.hooks.preinit) {
+          config.hooks.preinit(step);
+        } else {
+          step();
+        }
       }
     }
     function callback() {
