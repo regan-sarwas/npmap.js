@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div id="map" style="height:500px;width:500px;">
+    </div>
+    <script>
+      var NPMap = {
+        "div": "map",
+        "hashControl": true,
+        "overlays": [
+          {
+            "layers": "2",
+            "opacity": 1,
+            "tiled": false,
+            "type": "arcgisserver",
+            "url": "http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer",
+            "attribution": "Land Resources Division",
+            "name": "Boundaries"
+          }
+        ]
+      };
+
+      var s = document.createElement('script');
+      s.src = 'http://localhost:1984/dist/npmap-bootstrap.js';
+      document.body.appendChild(s);
+    </script>
+  </body>
+</html>
