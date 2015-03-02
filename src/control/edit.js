@@ -95,24 +95,26 @@ var EditControl = L.Control.extend({
         leafletId;
 
       if (editing) {
-        if (editing._poly) {
-          leafletId = editing._poly._leaflet_id;
-        } else {
-          leafletId = editing._shape._leaflet_id;
-        }
-
-        if (editId === leafletId) {
-          editing.disable();
-          editId = null;
-          editShape = null;
-        } else {
-          if (editShape) {
-            editShape.editing.disable();
+        if (!editing._marker) {
+          if (editing._poly) {
+            leafletId = editing._poly._leaflet_id;
+          } else {
+            leafletId = editing._shape._leaflet_id;
           }
 
-          editing.enable();
-          editId = leafletId;
-          editShape = e.layer;
+          if (editId === leafletId) {
+            editing.disable();
+            editId = null;
+            editShape = null;
+          } else {
+            if (editShape) {
+              editShape.editing.disable();
+            }
+
+            editing.enable();
+            editId = leafletId;
+            editShape = e.layer;
+          }
         }
       } else {
         if (editShape) {
