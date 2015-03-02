@@ -39,7 +39,9 @@
 * [Utils](#utils)
 * [Concepts](#concepts)
    * [Bootstrap vs. API](#bootstrap-vs-api)
+   * [Hooks](#hooks)
    * [Multiple Maps](#multiple-maps)
+   * [Plugins](#plugins)
    * [Using Popups](#using-popups)
    * [Using Tooltips](#using-tooltips)
    * [Styling Vectors](#styling-vectors)
@@ -1556,6 +1558,28 @@ You can also access the `baseLayers` and `overlays` objects initialized by NPMap
 
 **[[⬆]](#toc)**
 
+### <a name="hooks">Hooks</a>
+
+You can use the `preinit` and `init` hooks to add custom functionality to your map. Both hooks must accept a callback function and execute it to pass control back to NPMap.js.
+
+    var NPMap = {
+      div: 'map',
+      hooks: {
+        preinit: function(callback) {
+          // Add custom code here.
+          callback();
+        },
+        init: function(callback) {
+          // Add custom code here.
+          callback();
+        }
+      }
+    };
+
+The `preinit` hook is called after NPMap.js has loaded all of its dependencies and any plugins specified in the [`plugins`](#plugins) config. The `init` hook is called after NPMap.js creates the map and has created any layers specified in the `baseLayers` or `overlays` configs.
+
+**[[⬆]](#toc)**
+
 ### <a name="multiple-maps">Multiple Maps</a>
 
 Unlike previous versions of the NPMap library, the Bootstrap method supports adding multiple maps to the same web page. To add multiple maps, make the `NPMap` config object an array of map configuration objects:
@@ -1565,6 +1589,23 @@ Unlike previous versions of the NPMap library, the Bootstrap method supports add
     },{
       div: 'map-2'
     }];
+
+**[[⬆]](#toc)**
+
+### <a name="plugins">Plugins</a>
+
+If you need to add functionality that isn't supported by NPMap.js to a map, you can load a Leaflet plugin. The `plugins` configuration can be used to load plugins:
+
+    var NPMap = {
+      div: 'map',
+      plugins: [{
+        js: 'http://www.nps.gov/npmap/npmap.js/2.0.0/plugins/Leaflet.GeometryUtil/0.3.2/plugin.min.js'
+      },{
+        js: 'http://www.nps.gov/npmap/npmap.js/2.0.0/plugins/Leaflet.Snap/0.0.1/plugin.min.js'
+      }]
+    };
+
+NPMap.js will load any CSS files (specified in the `css` property) and JavaScript files (specified in the `js` property). These plugins will be available in either the `preinit` or `init` [hooks](#hooks).
 
 **[[⬆]](#toc)**
 
