@@ -31,18 +31,20 @@
           events: [{
             fn: function() {
               L.npmap.layer.geojson({
-                color: '#cc6677',
-                dashArray: '3,6',
+                color: '#9a4761',
+                dashArray: '4,5',
                 data: this.toGeoJSON(),
-                lineCap: 'round',
-                weight: 6
+                lineCap: 'square',
+                weight: 3,
+                opacity: 1
               }).addTo(NPMap.config.L);
               L.npmap.layer.geojson({
-                color: '#ff191e',
-                dashArray: '6,9',
+                color: '#9a4761',
+                //dashArray: '4,5',
                 data: this.toGeoJSON(),
-                lineCap: 'round',
-                weight: 6
+                lineCap: 'square',
+                weight: 3,
+                lineOpacity: 1
               }).addTo(NPMap.config.L);
             },
             type: 'ready'
@@ -51,7 +53,8 @@
           styles: {
             line: {
               'stroke': '#fff',
-              'stroke-width': 6
+              'stroke-width': 5,
+              'stroke-opacity': 1,
             }
           },
           type: 'geojson',
