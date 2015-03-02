@@ -39,7 +39,7 @@
     "reqwest": "1.1.0",
     "togeojson": "0.7.0"
   },
-  "description": "A JavaScript web mapping library, built as a Leaflet plugin, for the National Park Service.",
+  "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
   "devDependencies": {
     "brfs": "1.0.0",
     "browserify": "3.38.0",
