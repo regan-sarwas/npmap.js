@@ -20,7 +20,7 @@ var DownloadControl = L.Control.extend({
     toolbar.style.display = 'block';
     this._container = toolbar.parentNode.parentNode;
     this._map = map;
-    util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '26px';
+    util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '28px';
     return this;
   },
   download: function() {

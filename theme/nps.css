@@ -83,7 +83,7 @@
       }
     .npmap-modules .module .title {
       border-bottom: solid 1px #B5B39C;
-      padding: 9px 15px;
+      padding: 10px 15px;
       margin: 0;
     }
 .npmap-modules-buttons .npmap-modules-buttons-button {
@@ -158,7 +158,7 @@
           box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
   background-color: #908e7d;
   display: none;
-  height: 26px;
+  height: 28px;
   left: 0;
   position: absolute;
   top: 0;
@@ -166,27 +166,35 @@
   z-index: 2;
 }
   .npmap-toolbar ul.left, .npmap-toolbar ul.right {
-    line-height: 0.8;
+    line-height: 0.7;
     list-style-type: none;
     margin: 0;
     padding: 0;
   }
   .npmap-toolbar ul.left {
     float: left;
+    padding-left: 10px;
   }
     .npmap-toolbar ul.left li {
       border-left: none !important;
       border-right: solid 1px #adaca2 !important;
       float: left;
     }
+      .npmap-toolbar ul.left li:first-child {
+        border-left: solid 1px #adaca2 !important;
+      }
   .npmap-toolbar ul.right {
     float: right !important;
+    padding-right: 10px;
   }
     .npmap-toolbar ul.right li {
       border-left: solid 1px #adaca2 !important;
       border-right: none !important;
       float: left !important;
     }
+      .npmap-toolbar ul.right li:last-child {
+        border-right: solid 1px #adaca2 !important;
+      }
   .npmap-toolbar ul li {
     height: auto !important;
     list-style-type: none !important;
@@ -194,16 +202,16 @@
   }
   .npmap-toolbar button {
     background-color: #828171;
-    background-position: 6px;
+    background-position: 5px;
     background-repeat: no-repeat;
     background-size: 16px 16px;
     border: none;
     box-sizing: border-box;
-    height: 25px;
+    height: 28px;
     padding-bottom: 0;
     padding-top: 0;
     position: relative;
-    width: 29px;
+    width: 26px;
   }
     .npmap-toolbar button:focus {
       outline-offset: -3px;
