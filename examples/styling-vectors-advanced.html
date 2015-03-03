@@ -31,7 +31,7 @@
           events: [{
             fn: function() {
               L.npmap.layer.geojson({
-                color: '#9a4761',
+                color: '#7570b3',
                 dashArray: '4,5',
                 data: this.toGeoJSON(),
                 lineCap: 'square',
@@ -39,8 +39,8 @@
                 opacity: 1
               }).addTo(NPMap.config.L);
               L.npmap.layer.geojson({
-                color: '#9a4761',
-                //dashArray: '4,5',
+                color: '#7570b3',
+                dashArray: '4,5',
                 data: this.toGeoJSON(),
                 lineCap: 'square',
                 weight: 3,
@@ -52,7 +52,7 @@
           name: 'Roads',
           styles: {
             line: {
-              'stroke': '#fff',
+              'stroke': '#e4cd17',
               'stroke-width': 5,
               'stroke-opacity': 1,
             }
