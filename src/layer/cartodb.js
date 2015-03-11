@@ -55,6 +55,7 @@ var CartoDbLayer = L.TileLayer.extend({
         me.fire('error', error);
         me.errorFired = error;
       },
+      method: 'post',
       success: function(response) {
         var layer = {
           options: {},
@@ -112,6 +113,7 @@ var CartoDbLayer = L.TileLayer.extend({
             error.message = JSON.parse(error.response).error[0];
             me.fire('error', error);
           },
+          method: 'post',
           success: function(response) {
             if (response && response.success && response.data) {
               var root = window.location.protocol + '//' + '{s}.' + response.data.cdn_url[window.location.protocol.replace(':', '')] + '/' + me.options.user + '/api/v1/map/' + response.data.layergroupid,
@@ -148,6 +150,7 @@ var CartoDbLayer = L.TileLayer.extend({
     });
     reqwest({
       crossOrigin: supportsCors === 'yes' ? true : false,
+      method: 'post',
       success: function(response) {
         me._geometryTypes = [];
 
