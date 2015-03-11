@@ -148,6 +148,7 @@ var CartoDbLayer = L.TileLayer.extend({
     });
     reqwest({
       crossOrigin: supportsCors === 'yes' ? true : false,
+      method: 'post',
       success: function(response) {
         me._geometryTypes = [];
 
