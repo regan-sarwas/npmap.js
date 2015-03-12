@@ -17,11 +17,6 @@ var HashControl = L.Class.extend({
   initialize: function() {
     this._iframe = false;
     this._supported = true;
-    this._supportsHashChange = (function() {
-      var docMode = window.documentMode;
-
-      return ('onhashchange' in window) && (docMode === undefined || docMode > 7);
-    })();
     this._window = window;
 
     if ((window.self !== window.top) && document.referrer !== '') {
@@ -35,6 +30,21 @@ var HashControl = L.Class.extend({
       } else {
         this._supported = false;
       }
+    }
+
+    if (this._supported) {
+      this._supportsHashChange = (function() {
+        var docMode = window.documentMode;
+
+        return ('onhashchange' in window) && (docMode === undefined || docMode > 7);
+      })();
+      this._supportsHistory = (function() {
+        if (window.history && window.history.pushState) {
+          return true;
+        } else {
+          return false;
+        }
+      })();
     }
 
     return this;
@@ -99,11 +109,17 @@ var HashControl = L.Class.extend({
     hash = this._formatHash(this._map);
 
     if (this._lastHash !== hash) {
-      if (this._iframe) {
-        // TODO: This preserves browser history, and is only partially working.
-        this._window.location.hash = hash;
+      if (this._supportsHistory) {
+        var location = this._window.location;
+
+        this._window.history.replaceState({}, '', location.origin + location.pathname + hash);
       } else {
-        this._window.location.replace(hash);
+        if (this._iframe) {
+          // TODO: This preserves browser history, and is only partially working.
+          this._window.location.hash = hash;
+        } else {
+          this._window.location.replace(hash);
+        }
       }
 
       this._lastHash = hash;
