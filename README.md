@@ -32,9 +32,9 @@ NPMap.js is versioned using [semantic versioining](http://semver.org). This mean
 
 ## Hosted Version
 
-NPMap.js is hosted on the National Park Service's content delivery network. Feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/npmap/npmap.js/major.minor.patch/. You should replace "major.minor.patch" with the number of the version you want to access.
+NPMap.js is hosted on the National Park Service's content delivery network. Feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/npmap/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. 2.0.0).
 
-You can pull in a recent copy of the `master` branch from http://www.nps.gov/npmap/npmap.js/latest/. This should not, however, be used in production maps, as this branch is under active development and may be unstable at times.
+You can pull in a recent copy of the `master` branch from http://www.nps.gov/npmap/npmap.js/latest/npmap-bootstrap.min.js. This should not, however, be used in production maps, as this branch is under active development and may be unstable at times.
 
 ## Building
 
@@ -60,15 +60,19 @@ Internally, the Grunt task uses [browserify](https://github.com/substack/node-br
 
 ## Testing
 
-NPMap.js uses the [Mocha](http://mochajs.org) JavaScript test framework, with the [expect.js](https://github.com/Automattic/expect.js) assertion library, and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with the following command:
+NPMap.js uses the [Mocha](http://mochajs.org) JavaScript test framework, with the [expect.js](https://github.com/Automattic/expect.js) assertion library, and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with either of the following commands:
 
     grunt test
 
-We are working on expanding test coverage for the library.
+OR
+
+    npm test
+
+We are working to expand test coverage for the library.
 
 ## Documentation
 
-Take a look at [API.md](https://github.com/nationalparkservice/npmap.js/blob/master/API.md). Ignore the random notes at the bottom; they will be cleaned up and turned into complete thoughts soon.
+Take a look at [API.md](https://github.com/nationalparkservice/npmap.js/blob/master/API.md).
 
 ## Examples
 
