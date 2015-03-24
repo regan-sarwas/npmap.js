@@ -227,7 +227,14 @@
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "nps",
       "id": "nps.68926899",
-      "name": "NPS Slate",
+      "name": "Park Tiles Slate",
+      "type": "mapbox"
+    },
+    "parkTileSlate": {
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "id": "nps.68926899",
+      "name": "Park Tiles Slate",
       "type": "mapbox"
     },
     "lightStreets": {
