@@ -35,7 +35,7 @@
     "leaflet.markercluster": "https://github.com/nationalparkservice/Leaflet.MarkerCluster/archive/v0.4.0.tar.gz",
     "maki": "~0.4.0",
     "nanobar": "0.2.1",
-    "npmaki": "https://github.com/nationalparkservice/npmaki/archive/gh-pages.tar.gz",
+    "npmaki": "0.4.2",
     "reqwest": "1.1.0",
     "togeojson": "0.7.0"
   },
