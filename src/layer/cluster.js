@@ -48,6 +48,13 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
   onAdd: function(map) {
     this._map = map;
     this._addAttribution();
+
+    if (this.options.zoomToBounds) {
+      this.L.on('ready', function() {
+        map.fitBounds(this.getBounds());
+      })
+    };
+
     L.MarkerClusterGroup.prototype.onAdd.call(this, map);
   },
   onRemove: function(map) {

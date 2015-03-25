@@ -28,6 +28,13 @@ module.exports = {
   onAdd: function(map) {
     this._map = map;
     this._addAttribution();
+
+    if (this.options.zoomToBounds) {
+      this.on('ready', function() {
+        map.fitBounds(this.getBounds());
+      })
+    };
+    
     L.GeoJSON.prototype.onAdd.call(this, map);
   },
   onRemove: function(map) {
