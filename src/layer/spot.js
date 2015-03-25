@@ -93,14 +93,10 @@ var SpotLayer = L.GeoJSON.extend({
   },
   _create: function(options, data) {
     L.GeoJSON.prototype.initialize.call(this, data, options);
-
-    //if (options.zoomToBounds) {
-      //this._map.fitBounds(this.getBounds());
-    //};
-
     this.fire('ready');
     this.readyFired = true;
     this._loaded = true;
+    
     return this;
   }
 });
