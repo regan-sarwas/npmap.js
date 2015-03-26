@@ -12,7 +12,6 @@ describe('L.npmap.map', function() {
     element.id = 'map';
     server = sinon.fakeServer.create();
   });
-
   describe('constructor', function() {
     it('passes options to constructor when called without new', function() {
       var map = L.npmap.map({

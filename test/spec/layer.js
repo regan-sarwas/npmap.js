@@ -110,7 +110,38 @@ describe('L.npmap.layer', function() {
     */
   });
   describe('cartodb', function() {
+    it('creates a layer and adds it to the map', function() {
+      var map = L.npmap.map({
+        baseLayers: false,
+        div: element,
+        overlays: [{
+          table: 'parks',
+          type: 'cartodb',
+          user: 'nps'
+        }]
+      });
 
+      expect(map.options.overlays[0].L).to.be.ok();
+    });
+    /*
+    it('fires the \'ready\' event for a layer', function(done) {
+      L.npmap.map({
+        baseLayers: false,
+        div: element,
+        overlays: [{
+          events: [{
+            fn: function() {
+              done();
+            },
+            type: 'ready'
+          }],
+          table: 'parks',
+          type: 'cartodb',
+          user: 'nps'
+        }]
+      });
+    });
+    */
   });
   describe('csv', function() {
 
