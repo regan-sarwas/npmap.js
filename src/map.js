@@ -21,11 +21,13 @@ require('./popup.js');
     prefix: '<a href="http://www.nps.gov/npmap/disclaimer.html" target="_blank">Disclaimer</a>'
   });
   L.Map.addInitHook(function() {
-    var me = this;
+    var container = this.getContainer(),
+      elAttribution = util.getChildElementsByClassName(container, 'leaflet-control-attribution')[0],
+      elControl = util.getChildElementsByClassName(container, 'leaflet-control-container')[0],
+      me = this;
 
     function resize() {
-      var container = me.getContainer(),
-        left = util.getOuterDimensions(util.getChildElementsByClassName(container, 'leaflet-control-container')[0].childNodes[2]).width;
+      var left = util.getOuterDimensions(elControl.childNodes[2]).width;
 
       if (left) {
         left = left + 15;
@@ -33,7 +35,7 @@ require('./popup.js');
         left = 10;
       }
 
-      util.getChildElementsByClassName(container, 'leaflet-control-attribution')[0].style['max-width'] = (util.getOuterDimensions(container).width - left) + 'px';
+      elAttribution.style['max-width'] = (util.getOuterDimensions(container).width - left) + 'px';
     }
 
     if (this.options.attributionControl) {
