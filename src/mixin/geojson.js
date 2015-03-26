@@ -9,6 +9,7 @@ var topojson = require('../util/topojson'),
 module.exports = {
   _types: {
     'LineString': 'line',
+    'MultiLineString': 'line',
     'Point': 'point',
     'Polygon': 'polygon'
   },
@@ -78,6 +79,7 @@ module.exports = {
       var activeTip = null,
         lastTarget;
 
+      // TODO: If typeof config.onEachFeature === 'function', save it and call it.
       config.onEachFeature = function(feature, layer) {
         var clicks = 0;
 

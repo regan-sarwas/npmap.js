@@ -2,8 +2,7 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  util = require('../util/util');
+var util = require('../util/util');
 
 var GeoJsonLayer = L.GeoJSON.extend({
   includes: [
