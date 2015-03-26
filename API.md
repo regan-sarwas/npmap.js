@@ -357,6 +357,7 @@ _AND_
 * (Optional) `popup` (String, Object, or Function): Configures the contents of the overlay's [popups](#using-popups).
 * (Optional) `styles` (Object): Configures the overlay's [styles](#styling-vectors).
 * (Optional) `tooltip` (String, Object, or Function): Configures the contents of the overlay's [tooltips](#using-tooltips).
+* (Optional) `zoomToBounds` (Boolean): Should the map zoom to the bounds of this overlay when it is loaded?
 
 You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
 
@@ -421,6 +422,7 @@ _AND_
 * (Optional) `popup` (String, Object, or Function): Configures the contents of the overlay's [popups](#using-popups).
 * (Optional) `styles` (Object): Configures the overlay's [styles](#styling-vectors).
 * (Optional) `tooltip` (String, Object, or Function): Configures the contents of the overlay's [tooltips](#using-tooltips).
+* (Optional) `zoomToBounds` (Boolean): Should the map zoom to the bounds of this overlay when it is loaded?
 
 You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
 
@@ -482,6 +484,7 @@ The first, and only, argument is required. It must be a config object comprised 
 * (Optional) `popup` (String, Object, or Function): Configures the contents of the overlay's [popups](#using-popups).
 * (Optional) `styles` (Object): Configures the overlay's [styles](#styling-vectors).
 * (Optional) `tooltip` (String, Object, or Function): Configures the contents of the overlay's [tooltips](#using-tooltips).
+* (Optional) `zoomToBounds` (Boolean): Should the map zoom to the bounds of this overlay when it is loaded?
 
 You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
 
@@ -551,6 +554,7 @@ _AND_
 * (Optional) `popup` (String, Object, or Function): Configures the contents of the overlay's [popups](#using-popups).
 * (Optional) `styles` (Object): Configures the overlay's [styles](#styling-vectors).
 * (Optional) `tooltip` (String, Object, or Function): Configures the contents of the overlay's [tooltips](#using-tooltips).
+* (Optional) `zoomToBounds` (Boolean): Should the map zoom to the bounds of this overlay when it is loaded?
 
 You can also (optionally) provide any of the options supported by [`L.GeoJSON`](http://leafletjs.com/reference.html#geojson-options), minus these exceptions:
 

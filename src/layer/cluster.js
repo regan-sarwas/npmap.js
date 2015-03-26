@@ -52,8 +52,8 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
     if (this.options.zoomToBounds) {
       this.L.on('ready', function() {
         map.fitBounds(this.getBounds());
-      })
-    };
+      });
+    }
 
     L.MarkerClusterGroup.prototype.onAdd.call(this, map);
   },

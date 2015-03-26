@@ -33,9 +33,9 @@ module.exports = {
     if (this.options.zoomToBounds) {
       this.on('ready', function() {
         map.fitBounds(this.getBounds());
-      })
-    };
-    
+      });
+    }
+
     L.GeoJSON.prototype.onAdd.call(this, map);
   },
   onRemove: function(map) {
