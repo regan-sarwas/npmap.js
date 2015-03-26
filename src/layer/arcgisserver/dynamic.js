@@ -145,11 +145,7 @@ var ArcGisServerDynamicLayer = L.Class.extend({
   _update: function() {
     var bounds, image, zoom;
 
-    if (this._animatingZoom) {
-      return;
-    }
-
-    if (this._map._panTransition && this._map._panTransition._inProgress) {
+    if (this._animatingZoom || (this._map._panTransition && this._map._panTransition._inProgress)) {
       return;
     }
 
@@ -187,7 +183,6 @@ var ArcGisServerDynamicLayer = L.Class.extend({
         this._map.removeLayer(newImage);
       }
     }, this);
-
     this.fire('loading', {
       bounds: bounds
     });
