@@ -86,7 +86,8 @@ var SpotLayer = L.GeoJSON.extend({
         }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: '//npmap-proxy.herokuapp.com/?type=json&url=' + encodeURIComponent('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + '/message?dir=DESC&sort=timeInMili') + (supportsCors === 'yes' ? '' : '&callback=?')
+      url: 'https://npmap-proxy.herokuapp.com/?type=json&url=' + encodeURIComponent('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + '/message?dir=DESC&sort=timeInMili') + (supportsCors === 'yes' ? '' : '&callback=?')
+      //url: '//npmap-proxy.herokuapp.com/?type=json&url=' + encodeURIComponent('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + '/message?dir=DESC&sort=timeInMili') + (supportsCors === 'yes' ? '' : '&callback=?')
     });
 
     return this;

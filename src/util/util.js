@@ -717,7 +717,8 @@ module.exports = {
           }
         },
         type: 'json' + (supportsCors ? '' : 'p'),
-        url: '//npmap-proxy.herokuapp.com/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+        url: 'https://npmap-proxy.herokuapp.com/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+        //url: '//npmap-proxy.herokuapp.com/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
       });
     }
   },
