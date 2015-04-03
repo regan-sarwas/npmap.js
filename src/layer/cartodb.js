@@ -143,7 +143,8 @@ var CartoDbLayer = L.TileLayer.extend({
         });
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
+      url: 'https://npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
+      // url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
         q: 'select * from ' + this.options.table + ' limit 0;'
       }))) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
@@ -165,7 +166,8 @@ var CartoDbLayer = L.TileLayer.extend({
         }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
+      url: 'https://npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
+      // url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
         q: 'select ST_GeometryType(the_geom) from ' + this.options.table + ' where the_geom IS NOT NULL limit 1;'
       }))) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
