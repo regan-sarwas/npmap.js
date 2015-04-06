@@ -112,7 +112,7 @@ var HashControl = L.Class.extend({
       if (this._supportsHistory) {
         var location = this._window.location;
 
-        this._window.history.replaceState({}, '', location.origin + location.pathname + hash);
+        this._window.history.replaceState({}, '', location.origin + location.pathname + location.search + hash);
       } else {
         if (this._iframe) {
           // TODO: This preserves browser history, and is only partially working.
