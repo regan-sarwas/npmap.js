@@ -143,7 +143,7 @@ var CartoDbLayer = L.TileLayer.extend({
         });
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
+      url: 'https://npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
         q: 'select * from ' + this.options.table + ' limit 0;'
       }))) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
