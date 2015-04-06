@@ -8,13 +8,13 @@ if (typeof NPMap !== 'object') {
   throw new Error('The NPMap variable cannot be a ' + typeof NPMap + '.');
 }
 
-if (document.documentMode === 7) {
+if (typeof document.addEventListener !== 'function') {
   function showError(div) {
     if (typeof div === 'string') {
       div = document.getElementById(div);
     }
 
-    div.innerHTML = '<p>The map cannot be displayed because you are using a misconfigured or outdated browser.</p><p>If you are using Internet Explorer, make sure compability view is <a href="http://www.howtogeek.com/128289/how-to-disable-compatibility-mode-in-internet-explorer/" target="_blank">turned off</a>. You may also want to upgrade to a <a href="http://outdatedbrowser.com/" target="_blank">modern browser</a>.</p>';
+    div.innerHTML = '<p>National Park Service maps do not support Internet Explorer versions 7 or 8. We recommend upgrading to a <a href="http://outdatedbrowser.com/" target="_blank">modern browser</a>, like the latest version of Internet Explorer, Google Chrome, or Mozilla Firefox.</p><p>If you are using Internet Explorer 9 or later, make sure "Compatibility View" is <a href="https://support.google.com/mail/answer/181472?hl=en" target="_blank">turned off</a>.</p>';
   }
 
   if (NPMap.constructor === Array) {

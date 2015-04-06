@@ -56,118 +56,113 @@ var CartoDbLayer = L.TileLayer.extend({
         me.errorFired = error;
       },
       success: function(response) {
-        var layer = {
-          options: {},
-          type: 'cartodb'
-        };
+        if (response) {
+          var layer = {
+            options: {},
+            type: 'cartodb'
+          };
 
-        response = response.data;
-
-        if (me.options.cartocss) {
-          me._cartocss = me.options.cartocss;
-        } else if (me.options.styles) {
-          me._cartocss = me._stylesToCartoCss(me.options.styles);
-        }
-
-        me._hasInteractivity = false;
-        me._interactivity = null;
-
-        if (me.options.interactivity) {
-          me._interactivity = me.options.interactivity.split(',');
-        } else if (me.options.clickable !== false && response.fields) {
-          me._interactivity = [];
-
-          for (var field in response.fields) {
-            if (response.fields[field].type !== 'geometry') {
-              me._interactivity.push(field);
-            }
+          if (me.options.cartocss) {
+            me._cartocss = me.options.cartocss;
+          } else if (me.options.styles) {
+            me._cartocss = me._stylesToCartoCss(me.options.styles);
           }
-        }
 
-        if (L.Util.isArray(me._interactivity) && me._interactivity.length) {
-          me._hasInteractivity = true;
-        }
+          me._hasInteractivity = false;
+          me._interactivity = null;
 
-        layer.options.sql = me._sql = (me.options.sql || ('SELECT * FROM ' + me.options.table + ';'));
+          if (me.options.interactivity) {
+            me._interactivity = me.options.interactivity.split(',');
+          } else if (me.options.clickable !== false && response.fields) {
+            me._interactivity = [];
 
-        if (me._cartocss) {
-          layer.options.cartocss = me._cartocss;
-          layer.options.cartocss_version = '2.1.1';
-        }
-
-        if (me._interactivity) {
-          layer.options.interactivity = me._interactivity;
-
-          /*
-          layer.options.attributes = {
-            columns: me._interactivity,
-            id: 'cartodb_id'
-          }
-          */
-        }
-
-        reqwest({
-          crossOrigin: supportsCors === 'yes' ? true : false,
-          error: function(error) {
-            error.message = JSON.parse(error.response).error[0];
-            me.fire('error', error);
-          },
-          success: function(response) {
-            if (response && response.success && response.data) {
-              var root = window.location.protocol + '//' + '{s}.' + response.data.cdn_url[window.location.protocol.replace(':', '')] + '/' + me.options.user + '/api/v1/map/' + response.data.layergroupid,
-                template = '{z}/{x}/{y}';
-
-              if (me._hasInteractivity && me._interactivity.length) {
-                me._urlGrid = root + '/0/' + template + '.grid.json';
+            for (var field in response.fields) {
+              if (response.fields[field].type !== 'geometry') {
+                me._interactivity.push(field);
               }
-
-              me._urlTile = root + '/' + template + '.png';
-              me.setUrl(me._urlTile);
-              me.redraw();
-              me.fire('ready');
-              me.readyFired = true;
-
-              return me;
             }
-          },
-          type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-          url: 'https://npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
-          //url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
-            config: JSON.stringify({
-              layers: [
-                layer
-              ],
-              version: '1.0.1'
-            })
-          }))) + (supportsCors === 'yes' ? '' : '&callback=?')
-        });
+          }
+
+          if (L.Util.isArray(me._interactivity) && me._interactivity.length) {
+            me._hasInteractivity = true;
+          }
+
+          layer.options.sql = me._sql = (me.options.sql || ('SELECT * FROM ' + me.options.table + ';'));
+
+          if (me._cartocss) {
+            layer.options.cartocss = me._cartocss;
+            layer.options.cartocss_version = '2.1.1';
+          }
+
+          if (me._interactivity) {
+            layer.options.interactivity = me._interactivity;
+
+            /*
+            layer.options.attributes = {
+              columns: me._interactivity,
+              id: 'cartodb_id'
+            }
+            */
+          }
+
+          reqwest({
+            crossOrigin: supportsCors === 'yes' ? true : false,
+            error: function(error) {
+              error.message = JSON.parse(error.response).error[0];
+              me.fire('error', error);
+            },
+            success: function(response) {
+              if (response) {
+                var root = window.location.protocol + '//' + '{s}.' + response.cdn_url[window.location.protocol.replace(':', '')] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid,
+                  template = '{z}/{x}/{y}';
+
+                if (me._hasInteractivity && me._interactivity.length) {
+                  me._urlGrid = root + '/0/' + template + '.grid.json';
+                }
+
+                me._urlTile = root + '/' + template + '.png';
+                me.setUrl(me._urlTile);
+                me.redraw();
+                me.fire('ready');
+                me.readyFired = true;
+
+                return me;
+              }
+            },
+            type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
+            url: util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
+              config: JSON.stringify({
+                layers: [
+                  layer
+                ],
+                version: '1.0.1'
+              })
+            }) + (supportsCors === 'yes' ? '' : '&callback=?')
+          });
+        }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: 'https://npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
+      url: util.buildUrl(this._urlApi, {
         q: 'select * from ' + this.options.table + ' limit 0;'
-      }))) + (supportsCors === 'yes' ? '' : '&callback=?')
+      }) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
     reqwest({
       crossOrigin: supportsCors === 'yes' ? true : false,
       success: function(response) {
         me._geometryTypes = [];
 
-        if (response && response.success && response.data) {
-          response = response.data;
+        if (response && response.rows && response.rows.length) {
+          var geometryType = response.rows[0].st_geometrytype;
 
-          if (response && response.rows && response.rows.length) {
-            var geometryType = response.rows[0].st_geometrytype;
-
-            if (geometryType) {
-              me._geometryTypes.push(CartoDbLayer.GEOMETRY_TYPES[geometryType.toLowerCase()]);
-            }
+          if (geometryType) {
+            me._geometryTypes.push(CartoDbLayer.GEOMETRY_TYPES[geometryType.toLowerCase()]);
           }
         }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
+      url: util.buildUrl(this._urlApi, {
         q: 'select ST_GeometryType(the_geom) from ' + this.options.table + ' where the_geom IS NOT NULL limit 1;'
-      }))) + (supportsCors === 'yes' ? '' : '&callback=?')
+      }) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
   },
   _getGridData: function(latLng, callback) {
