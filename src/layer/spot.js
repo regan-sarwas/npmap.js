@@ -11,7 +11,12 @@ var SpotLayer = L.GeoJSON.extend({
   ],
   initialize: function(options) {
     var me = this,
-      supportsCors = util.supportsCors();
+      supportsCors = util.supportsCors(),
+      startDate;
+
+    if (options.minutesAgo) {
+      startDate = new Date(new Date() - options.minutesAgo * 60000).toISOString().slice(0, -5) + '-0000';
+    }
 
     util.strict(options.id, 'string');
     L.Util.setOptions(this, this._toLeaflet(options));
@@ -86,7 +91,7 @@ var SpotLayer = L.GeoJSON.extend({
         }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: 'https://npmap-proxy.herokuapp.com/?type=json&url=' + encodeURIComponent('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + '/message?dir=DESC&sort=timeInMili') + (supportsCors === 'yes' ? '' : '&callback=?')
+      url: 'https://npmap-proxy.herokuapp.com/?type=json&url=' + encodeURIComponent('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + (options.latest ? '/latest' : '/message') + '?dir=DESC&sort=timeInMili' + (options.password ? '&feedPassword=' + options.password : '') + (startDate ? '&startDate=' + startDate : '')) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
 
     return this;
