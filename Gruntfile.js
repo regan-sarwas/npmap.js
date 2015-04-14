@@ -45,7 +45,23 @@ module.exports = function(grunt) {
   grunt.util.linefeed = '\n';
   grunt.initConfig({
     akamai_rest_purge: {
-      all: {
+      lib: {
+        objects: [
+          'npmap-bootstrap.js',
+          'npmap-bootstrap.min.js',
+          'npmap.css',
+          'npmap.min.css',
+          'npmap.js',
+          'npmap.min.js',
+          'npmap-standalone.css',
+          'npmap-standalone.min.css',
+          'npmap-standalone.js',
+          'npmap-standalone.min.js'
+        ].map(function(fileName) {
+          return 'http://www.nps.gov/lib/npmap.js/<%= pkg.version %>/' + fileName;
+        })
+      },
+      npmap: {
         objects: [
           'npmap-bootstrap.js',
           'npmap-bootstrap.min.js',
@@ -87,7 +103,15 @@ module.exports = function(grunt) {
           'dist/**/*'
         ]
       },
-      nps: {
+      lib: {
+        options: {
+          force: true
+        },
+        src: [
+          '/Volumes/lib/npmap.js/<%= pkg.version %>'
+        ]
+      },
+      npmap: {
         options: {
           force: true
         },
@@ -134,6 +158,14 @@ module.exports = function(grunt) {
         dest: 'dist/npmap-bootstrap.js',
         src: 'src/bootstrap.js'
       },
+      lib: {
+        cwd: 'dist/',
+        dest: '/Volumes/lib/npmap.js/<%= pkg.version %>/',
+        expand: true,
+        src: [
+          '**/*'
+        ]
+      },
       npmaki: {
         cwd: 'node_modules/npmaki/renders/',
         dest: 'dist/images/icon/npmaki',
@@ -142,7 +174,7 @@ module.exports = function(grunt) {
           '**/*'
         ]
       },
-      nps: {
+      npmap: {
         cwd: 'dist/',
         dest: '/Volumes/npmap/npmap.js/<%= pkg.version %>/',
         expand: true,
@@ -174,19 +206,34 @@ module.exports = function(grunt) {
     },
     // TODO: Find a better way to hit the Akamai ECCU API. Required because the CCU API doesn't support wildcards.
     http: {
-      examples: {
+      lib_examples: {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Flib%2Fnpmap.js%2F<%= pkg.version %>%2Fexamples%2F*&Submit%3DSubmit'
+        }
+      },
+      lib_images: {
+        options: {
+          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Flib%2Fnpmap.js%2F<%= pkg.version %>%2Fimages%2F*&Submit%3DSubmit'
+        }
+      },
+      npmap_examples: {
         options: {
           url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fexamples%2F*&Submit%3DSubmit'
         }
       },
-      images: {
+      npmap_images: {
         options: {
           url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fimages%2F*&Submit%3DSubmit'
         }
       }
     },
     mkdir: {
-      nps: {
+      lib: {
+        create: [
+          '/Volumes/lib/npmap.js/<%= pkg.version %>/'
+        ]
+      },
+      npmap: {
         create: [
           '/Volumes/npmap/npmap.js/<%= pkg.version %>/'
         ]
@@ -225,7 +272,8 @@ module.exports = function(grunt) {
 
   loadNpmTasks();
   grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'copy:plugins', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
-  grunt.registerTask('deploy', ['clean:nps', 'mkdir:nps', 'copy:nps', 'akamai_rest_purge', 'http']);
+  grunt.registerTask('deploy-lib', ['clean:lib', 'mkdir:lib', 'copy:lib', 'akamai_rest_purge:lib', 'http:lib_examples', 'http:lib_images']);
+  grunt.registerTask('deploy-npmap', ['clean:npmap', 'mkdir:npmap', 'copy:npmap', 'akamai_rest_purge:npmap', 'http:npmap_examples', 'http:npmap_images']);
   grunt.registerTask('lint', ['csslint']); //TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
