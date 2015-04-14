@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   'use strict';
 
   var cssNpmaki = '',
-    npmaki = require('./node_modules/npmaki/_includes/maki.json'),
+    npmaki = require('./node_modules/npmaki/www/npmaki.json'),
     npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js',
     pkg = require('./package.json'),
     sizes = {
