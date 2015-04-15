@@ -660,8 +660,8 @@ The first, and only, argument is required. It must be a config object comprised 
 * (Optional) `clickable` (Boolean): Should interactivity (hover and click) operations be enabled for this layer? Defaults to `true`.
 * (Optional) `cluster` (Boolean): Should the layer's markers be clustered?
 * (Optional) `description` (String): A description for the layer. Used by some [controls](#controls) and [modules](#modules).
-* (Optional) `latest` (Boolean): Only show the latest SPOT message (per device). Mutually exclusive with `minutesAgo`.
-* (Optional) `minutesAgo` (Number): Show SPOT messages from this number of mintues ago. Maximum is 10080 (7 days). Mutually exclusive with `latest`.
+* (Optional) `latest` (Boolean): Only show the latest SPOT message (per device). If `latest` and `minutesAgo` are both specified, `latest` takes precedence.
+* (Optional) `minutesAgo` (Number): Show SPOT messages from this number of minutes ago. Maximum is 10080 (7 days). If `latest` and `minutesAgo` are both specified, `latest` takes precedence.
 * (Optional) `name` (String): A name for the layer. Used by some [controls](#controls) and [modules](#modules).
 * (Optional) `password` (String): SPOT feed password.
 * (Optional) `popup` (String, Object, or Function): Configures the contents of the overlay's [popups](#using-popups).
