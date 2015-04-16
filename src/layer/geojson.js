@@ -37,7 +37,7 @@ var GeoJsonLayer = L.GeoJSON.extend({
     L.GeoJSON.prototype.initialize.call(this, data, options);
     this.fire('ready');
     this.readyFired = true;
-    this._loaded  = true;
+    this._loaded = true;
     return this;
   }
 });

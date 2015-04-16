@@ -96,7 +96,6 @@ var SpotLayer = L.GeoJSON.extend({
     this.fire('ready');
     this.readyFired = true;
     this._loaded = true;
-
     return this;
   }
 });
