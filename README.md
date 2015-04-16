@@ -32,7 +32,7 @@ NPMap.js is versioned using [semantic versioining](http://semver.org). This mean
 
 ## Hosted Version
 
-NPMap.js is hosted on the National Park Service's content delivery network. Feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/npmap/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. 2.0.0).
+NPMap.js is hosted on the National Park Service's content delivery network. Feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/lib/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. 2.0.0).
 
 You can pull in a recent copy of the `master` branch from http://www.nps.gov/npmap/npmap.js/latest/npmap-bootstrap.min.js. This should not, however, be used in production maps, as this branch is under active development and may be unstable at times.
 
