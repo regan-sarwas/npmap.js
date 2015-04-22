@@ -8,6 +8,7 @@ L.npmap = module.exports = {
   VERSION: version,
   // Preserve order of controls because it affects the display hierarchy.
   control: {
+    geocoder: require('./src/control/geocoder'),
     download: require('./src/control/download'),
     home: require('./src/control/home'),
     smallzoom: require('./src/control/smallzoom'),
@@ -15,7 +16,6 @@ L.npmap = module.exports = {
     measure: require('./src/control/measure'),
     edit: require('./src/control/edit'),
     fullscreen: require('./src/control/fullscreen'),
-    geocoder: require('./src/control/geocoder'),
     hash: require('./src/control/hash'),
     legend: require('./src/control/legend'),
     overview: require('./src/control/overview'),
