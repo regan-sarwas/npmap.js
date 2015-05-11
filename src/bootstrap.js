@@ -1,4 +1,4 @@
-/* global L */
+/* global L, NPMap */
 
 if (!NPMap) {
   throw new Error('The NPMap object is required.');
