@@ -24,8 +24,6 @@ TiledLayer = L.TileLayer.extend({
       options.url = options.url.replace('{{protocol}}', 'http://');
     }
 
-    console.log(options.url);
-
     L.Util.setOptions(this, options);
     L.TileLayer.prototype.initialize.call(this, options.url, options);
     this.fire('ready');
