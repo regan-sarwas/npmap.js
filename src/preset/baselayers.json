@@ -30,29 +30,37 @@
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
       "icon": "street",
       "name": "CartoDB Dark Matter",
+      "retinaId": "@2x",
+      "supportsSsl": true,
       "type": "tiled",
-      "url": "http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
+      "url": "{{protocol}}{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{{retina}}.png"
     },
     "darkMatterNoLabels": {
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
       "icon": "street",
       "name": "CartoDB Dark Matter (No Labels)",
+      "retinaId": "@2x",
+      "supportsSsl": true,
       "type": "tiled",
-      "url": "http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"
+      "url": "{{protocol}}{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{{retina}}.png"
     },
     "positron": {
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
       "icon": "street",
       "name": "CartoDB Positron",
+      "retinaId": "@2x",
+      "supportsSsl": true,
       "type": "tiled",
-      "url": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
+      "url": "{{protocol}}{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{{retina}}.png"
     },
     "positronNoLabels": {
       "attribution": "&copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
       "icon": "street",
       "name": "CartoDB Positron (No Labels)",
+      "retinaId": "@2x",
+      "supportsSsl": true,
       "type": "tiled",
-      "url": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
+      "url": "{{protocol}}{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{{retina}}.png"
     }
   },
   "esri": {

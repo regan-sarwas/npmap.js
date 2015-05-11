@@ -2,14 +2,30 @@
 
 'use strict';
 
-var util = require('../util/util');
+var util = require('../util/util'),
+  TiledLayer;
 
-var TiledLayer = L.TileLayer.extend({
+TiledLayer = L.TileLayer.extend({
   options: {
     errorTileUrl: L.Util.emptyImageUrl
   },
   initialize: function(options) {
     util.strict(options.url, 'string');
+
+    if (L.Browser.retina && options.retinaId) {
+      options.url = options.url.replace('{{retina}}', options.retinaId);
+    } else {
+      options.url = options.url.replace('{{retina}}', '');
+    }
+
+    if (options.supportsSsl && window.location.protocol.indexOf('https:') > -1) {
+      options.url = options.url.replace('{{protocol}}', 'https://');
+    } else {
+      options.url = options.url.replace('{{protocol}}', 'http://');
+    }
+
+    console.log(options.url);
+
     L.Util.setOptions(this, options);
     L.TileLayer.prototype.initialize.call(this, options.url, options);
     this.fire('ready');
