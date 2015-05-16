@@ -171,6 +171,13 @@
       "name": "Mapbox High Contrast",
       "type": "mapbox"
     },
+    "landsatLive": {
+      "attribution": "Imagery courtesy <a href='http://landsat.usgs.gov/' target='_blank'>USGS</a>",
+      "icon": "aerial",
+      "id": "mapbox.landsat-live-32",
+      "name": "Mapbox Landsat Live",
+      "type": "mapbox"
+    },
     "light": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "street",
