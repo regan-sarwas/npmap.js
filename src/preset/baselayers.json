@@ -175,6 +175,8 @@
       "attribution": "Imagery courtesy <a href='http://landsat.usgs.gov/' target='_blank'>USGS</a>",
       "icon": "aerial",
       "id": "mapbox.landsat-live-32",
+      "maxZoom": 12,
+      "minZoom": 7,
       "name": "Mapbox Landsat Live",
       "type": "mapbox"
     },
