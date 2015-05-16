@@ -7,6 +7,7 @@ var reqwest = require('reqwest'),
   util = require('../util/util');
 
 var MapBoxLayer = L.TileLayer.extend({
+  _formatPattern: /\.((?:png|jpg)\d*)(?=$|\?)/,
   includes: [
     require('../mixin/grid')
   ],
@@ -23,6 +24,7 @@ var MapBoxLayer = L.TileLayer.extend({
   },
   statics: {
     FORMATS: [
+      'jpg',
       'jpg70',
       'jpg80',
       'jpg90',
@@ -57,7 +59,7 @@ var MapBoxLayer = L.TileLayer.extend({
     if (!templated) {
       return templated;
     } else {
-      return templated.replace('.png', (this._autoScale() ? '@2x' : '') + '.' + this.options.format);
+      return templated.replace(this._formatPattern, (L.Browser.retina ? '@2x' : '') + '.' + this.options.format);
     }
   },
   onAdd: function onAdd(map) {
@@ -67,9 +69,6 @@ var MapBoxLayer = L.TileLayer.extend({
   onRemove: function onRemove() {
     L.TileLayer.prototype.onRemove.call(this, this._map);
     delete this._map;
-  },
-  _autoScale: function() {
-    return L.Browser.retina && this.options.autoscale;
   },
   _getGridData: function(latLng, callback) {
     var me = this;
@@ -137,7 +136,6 @@ var MapBoxLayer = L.TileLayer.extend({
           return null;
         }
       })(),
-      autoscale: json.autoscale || false,
       bounds: json.bounds ? this._toLeafletBounds(json.bounds) : null,
       grids: json.grids ? json.grids : null,
       maxZoom: json.maxzoom,
@@ -162,6 +160,7 @@ var MapBoxLayer = L.TileLayer.extend({
       extend.minZoom = json.minzoom;
     }
 
+    this.options.format = this.options.format || json.tiles[0].match(this._formatPattern)[1];
     L.extend(this.options, extend);
     this.tileJson = json;
     this.redraw();
