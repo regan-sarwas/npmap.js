@@ -640,6 +640,58 @@ module.exports = {
   isNumeric: function(val) {
     return !isNaN(parseFloat(val)) && isFinite(val);
   },
+
+
+  // TODO: Need to support https for test/inside endpoint
+  checkNpsNetwork: function(callback) {
+    var me = this;
+
+    if (me.supportsCors()) {
+      me.reqwest({
+        crossOrigin: true,
+        error: function() {
+          callback(false);
+        },
+        success: function(response) {
+          if (response && response.success) {
+            callback(true);
+          }
+        },
+        type: 'json',
+        url: 'http://insidemaps.nps.gov/test/inside'
+      });
+    } else {
+      var done = false,
+        inside = false,
+        time = 0,
+        interval;
+
+      interval = setInterval(function() {
+        if (done === true) {
+          clearInterval(interval);
+          callback(inside);
+        } else {
+          time++;
+
+          // Time out at 1.5 seconds.
+          if (time >= 15) {
+            done = true;
+          }
+        }
+      }, 100);
+      me.reqwest({
+        success: function(response) {
+          if (response && response.success) {
+            inside = true;
+          }
+
+          done = true;
+        },
+        type: 'jsonp',
+        url: 'http://insidemaps.nps.gov/test/inside?callback=?'
+      });
+    }
+  },
   linkify: function(text, shorten, target) {
     var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])',
       regexLink = new RegExp(regexRoot, 'gi'),

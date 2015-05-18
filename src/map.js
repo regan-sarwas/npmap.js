@@ -235,6 +235,13 @@ var Map = L.Map.extend({
       }
     }
 
+    util.checkNpsNetwork(function(on) {
+      me._onNpsNetwork = on;
+
+      if (typeof me._updateImproveLinks === 'function') {
+        me._updateImproveLinks();
+      }
+    });
     me._initializeModules();
     me._setupPopup();
     me._setupTooltip();
@@ -755,13 +762,13 @@ var Map = L.Map.extend({
       var els = util.getChildElementsByClassName(this.attributionControl._container, 'improve-park-tiles');
 
       if (els && els.length) {
-        var center = this.getCenter();
+        var center = this.getCenter(),
+          el = els[0],
+          lat = center.lat.toFixed(5),
+          lng = center.lng.toFixed(5),
+          zoom = this.getZoom();
 
-        for (var i = 0; i < els.length; i++) {
-          var el = els[0];
-
-          el.href = el.href.split('#')[0] + '#' + this.getZoom() + '/' + center.lat.toFixed(5) + '/' + center.lng.toFixed(5);
-        }
+        el.href = (this._onNpsNetwork ? ('http://insidemaps.nps.gov/places/edit/#background=mapbox-satellite#map=' + zoom + '/' + lng + '/' + lat) : ('http://www.nps.gov/npmap/park-tiles/improve/#' + zoom + '/' + lat + '/' + lng));
       }
     }
   },
