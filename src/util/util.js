@@ -783,7 +783,7 @@ module.exports = {
           for (var i = 0; i < guidArray.length; i++) {
             imgs.push({
               href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i],
-              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/medium'
+              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/xlarge'
             });
           }
 
