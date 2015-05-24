@@ -153,21 +153,21 @@
     "dark": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "street",
-      "id": "nps.kp1dmflo",
+      "id": "mapbox.dark",
       "name": "Mapbox Dark",
       "type": "mapbox"
     },
     "emerald": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "street",
-      "id": "nps.kp1ekci6",
+      "id": "mapbox.emerald",
       "name": "Mapbox Emerald",
       "type": "mapbox"
     },
     "highContrast": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "street",
-      "id": "nps.kp1e5gmg",
+      "id": "mapbox.high-contrast",
       "name": "Mapbox High Contrast",
       "type": "mapbox"
     },
@@ -183,35 +183,35 @@
     "light": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "street",
-      "id": "nps.map-sligp1fr",
+      "id": "mapbox.light",
       "name": "Mapbox Light",
       "type": "mapbox"
     },
     "outdoors": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "topo",
-      "id": "nps.i49i583a",
+      "id": "mapbox.outdoors",
       "name": "Mapbox Outdoors",
       "type": "mapbox"
     },
     "pencil": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "street",
-      "id": "nps.kp1cjdgg",
+      "id": "mapbox.pencil",
       "name": "Mapbox Pencil",
       "type": "mapbox"
     },
     "runBikeAndHike": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "topo",
-      "id": "nps.kp9mndj7",
+      "id": "mapbox.run-bike-hike",
       "name": "Mapbox Run, Bike, and Hike",
       "type": "mapbox"
     },
     "satellite": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a>",
       "icon": "aerial",
-      "id": "nps.map-n9nxe12m",
+      "id": "mapbox.satellite",
       "maxNativeZoom": 18,
       "name": "Mapbox Satellite",
       "type": "mapbox"
@@ -219,7 +219,7 @@
     "satelliteLabels": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "aerial",
-      "id": "nps.map-r3ilza09",
+      "id": "mapbox.streets-satellite",
       "maxNativeZoom": 18,
       "name": "Mapbox Hybrid",
       "type": "mapbox"
@@ -227,7 +227,7 @@
     "streets": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "street",
-      "id": "nps.map-06dnxzq5",
+      "id": "mapbox.streets",
       "name": "Mapbox Streets",
       "type": "mapbox"
     },
