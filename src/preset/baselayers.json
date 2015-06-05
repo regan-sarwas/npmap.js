@@ -271,7 +271,7 @@
     "parkTilesImagery": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
       "icon": "nps",
-      "id": "nps.map-n9nxe12m,nps.gdipreks",
+      "id": "mapbox.satellite,nps.gdipreks",
       //"maxNativeZoom": 19,
       "name": "Park Tiles Imagery",
       "type": "mapbox"
