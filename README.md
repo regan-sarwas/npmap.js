@@ -6,11 +6,11 @@
 
 Extends [Leaflet](http://leafletjs.com) to include functionality and a look-and-feel built specifically for the National Park Service.
 
-This library is under _very_ active development, so please help test and [report issues](https://github.com/nationalparkservice/npmap.js/issues).
+This library is under active development, so please help test and [report issues](https://github.com/nationalparkservice/npmap.js/issues).
 
 ## Builder
 
-You may also want to take a look at the [NPMap Builder](https://github.com/nationalparkservice/npmap-builder). It is a graphical interface that walks through building a map with NPMap.js.
+You may also want to take a look at [NPMap Builder](https://github.com/nationalparkservice/npmap-builder). It is a graphical interface that walks through the process of building a map with NPMap.js, step-by-step.
 
 ## Thanks
 
@@ -33,8 +33,6 @@ NPMap.js is versioned using [semantic versioining](http://semver.org). This mean
 ## Hosted Version
 
 NPMap.js is hosted on the National Park Service's content delivery network. Feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/lib/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. 2.0.0).
-
-You can pull in a recent copy of the `master` branch from http://www.nps.gov/npmap/npmap.js/latest/npmap-bootstrap.min.js. This should not, however, be used in production maps, as this branch is under active development and may be unstable at times.
 
 ## Building
 
