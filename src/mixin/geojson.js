@@ -84,17 +84,36 @@ module.exports = {
 
     if (typeof config.clickable === 'undefined' || config.clickable === true) {
       var activeTip = null,
-        lastTarget;
+        lastTarget = null,
+        map = null;
 
       // TODO: If typeof config.onEachFeature === 'function', save it and call it.
       config.onEachFeature = function(feature, layer) {
         var clicks = 0;
 
         layer.on('click', function(e) {
-          var target = e.target,
+          var target = e.target;
+
+          if (!map) {
             map = target._map;
+            map.on('click', function() {
+              if (lastTarget) {
+                lastTarget
+                  .closePopup()
+                  .unbindPopup();
+                lastTarget = null;
+              }
+            });
+          }
 
           if (map._controllingInteractivity === 'map') {
+            /*
+            // Maybe do this?
+            if (feature.geometry.type.toLowerCase() === 'point') {
+              // Do not worry about dblclick events.
+            }
+            */
+
             clicks = 0;
 
             setTimeout(function() {
@@ -118,7 +137,7 @@ module.exports = {
                     lastTarget
                       .closePopup()
                       .unbindPopup();
-                    lastTarget = target;
+                    lastTarget = null;
                   }
 
                   if (html) {

@@ -94,6 +94,7 @@ require('./popup.js');
 
 var Map = L.Map.extend({
   options: {
+    bounceAtZoomLimits: false,
     worldCopyJump: true
   },
   initialize: function(options) {
