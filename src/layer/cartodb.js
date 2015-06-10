@@ -113,7 +113,10 @@ var CartoDbLayer = L.TileLayer.extend({
             },
             success: function(response) {
               if (response) {
-                var root = window.location.protocol + '//' + '{s}.' + response.cdn_url[window.location.protocol.replace(':', '')] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid,
+                // This is the only layer handler that we don't default everything to https for.
+                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for https.
+                // If the web page is using https, however, we do want to default to it - even if it means taking a performance hit.
+                var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid,
                   template = '{z}/{x}/{y}';
 
                 if (me._hasInteractivity && me._interactivity.length) {

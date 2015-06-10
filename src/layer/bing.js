@@ -14,7 +14,9 @@ var BingLayer = L.TileLayer.extend({
       s = this.options.subdomains[Math.abs((p.x + p.y) % subdomains.length)],
       z = this._getZoomForUrl();
 
-    return this._url.replace('{subdomain}', s)
+    return this._url
+      .replace('http:', 'https:')
+      .replace('{subdomain}', s)
       .replace('{quadkey}', this.tile2quad(p.x, p.y, z))
       .replace('http:', document.location.protocol)
       .replace('{culture}', this.options.culture);
@@ -99,7 +101,7 @@ var BingLayer = L.TileLayer.extend({
     };
 
     script = document.createElement('script');
-    script.src = document.location.protocol + '//dev.virtualearth.net/REST/v1/Imagery/Metadata/' + this.options.layer + '?include=ImageryProviders&jsonp=' + cbid + '&key=' + this._key;
+    script.src = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' + this.options.layer + '?include=ImageryProviders&jsonp=' + cbid + '&key=' + this._key;
     script.id = cbid;
     document.getElementsByTagName('head')[0].appendChild(script);
   },

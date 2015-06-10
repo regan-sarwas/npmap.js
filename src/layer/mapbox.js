@@ -114,7 +114,7 @@ var MapBoxLayer = L.TileLayer.extend({
           me._setTileJson(response);
         },
         type: 'json',
-        url: '//a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + (window.location.protocol === 'https:' ? '&secure=1' : '')
+        url: 'https://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + '&secure=1'
       });
     } else if (typeof from === 'object') {
       this._setTileJson(from);
