@@ -18,7 +18,7 @@ TiledLayer = L.TileLayer.extend({
       options.url = options.url.replace('{{retina}}', '');
     }
 
-    if (options.supportsSsl && window.location.protocol.indexOf('https:') > -1) {
+    if (options.supportsSsl) {
       options.url = options.url.replace('{{protocol}}', 'https://');
     } else {
       options.url = options.url.replace('{{protocol}}', 'http://');
