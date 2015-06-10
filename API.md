@@ -20,6 +20,7 @@
    * [geocoder](#geocoder)
    * [hash](#hash)
    * [home](#home)
+   * [infobox](#infobox)
    * [legend](#legend)
    * [locate](#locate)
    * [measure](#measure)
@@ -66,6 +67,7 @@ The first, and only, argument is required. It must be a config object comprised 
 * (Optional) `hashControl` (Boolean): Defaults to `undefined`.
 * (Optional) `homeControl` (Boolean or Object): Defaults to `true`.
 * (Optional) `hooks` (Object): Add `init` and/or `preinit` hooks to the map. These must be functions that accept a `callback` parameter, and execute the `callback` function. Defaults to `undefined`.
+* (Optional) `infoBox` (Boolean): Defaults to `undefined`.
 * (Optional) `legendControl` (Boolean or Object): Defaults to `undefined`.
 * (Optional) `locateControl` (Boolean or Object): Defaults to `undefined`.
 * (Optional) `measureControl` (Boolean or Object): Defaults to `undefined`.
@@ -1027,6 +1029,35 @@ _Example (API)_:
     var map = L.npmap.map({
       div: 'map'
     });
+
+**[[⬆]](#toc)**
+
+### <a name="infobox">infobox(config: object)</a>
+
+Create a control that displays tooltip information.
+
+_Extends_: [`L.Control`](http://leafletjs.com/reference.html#control)
+
+_Arguments_:
+
+You can (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
+
+_Returns_: a control object
+
+_Example (Bootstrap)_:
+
+    var NPMap = {
+      div: 'map',
+      infoBox: true
+    };
+
+_Example (API)_:
+
+    var map = L.npmap.map({
+      div: 'map'
+    });
+
+    L.npmap.control.infobox().addTo(map);
 
 **[[⬆]](#toc)**
 
