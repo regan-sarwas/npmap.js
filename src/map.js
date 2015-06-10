@@ -489,9 +489,7 @@ var Map = L.Map.extend({
   _setupTooltip: function() {
     var me = this,
       overData = [],
-      tooltip = L.npmap.tooltip({
-        map: me
-      });
+      tooltip = (me.infoboxControl ? me.infoboxControl : L.npmap.tooltip({map: me}));
 
     function handle() {
       if (me._controllingCursor === 'map') {
