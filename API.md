@@ -1034,7 +1034,7 @@ _Example (API)_:
 
 ### <a name="infobox">infobox(config: object)</a>
 
-Create a control that displays tooltip information.
+Create a control that displays "pinned" tooltip information.
 
 _Extends_: [`L.Control`](http://leafletjs.com/reference.html#control)
 
