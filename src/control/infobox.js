@@ -61,15 +61,15 @@ var InfoboxControl = L.Control.extend({
 });
 
 L.Map.mergeOptions({
-  infoBox: false
+  infoboxControl: false
 });
 
 L.Map.addInitHook(function() {
-  if (this.options.infoBox) {
+  if (this.options.infoboxControl) {
     var options = {};
 
-    if (typeof this.options.infoBox === 'object') {
-      options = this.options.infoBox;
+    if (typeof this.options.infoboxControl === 'object') {
+      options = this.options.infoboxControl;
     }
 
     this.infoboxControl = L.npmap.control.infobox(options).addTo(this);
