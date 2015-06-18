@@ -67,7 +67,7 @@ The first, and only, argument is required. It must be a config object comprised 
 * (Optional) `hashControl` (Boolean): Defaults to `undefined`.
 * (Optional) `homeControl` (Boolean or Object): Defaults to `true`.
 * (Optional) `hooks` (Object): Add `init` and/or `preinit` hooks to the map. These must be functions that accept a `callback` parameter, and execute the `callback` function. Defaults to `undefined`.
-* (Optional) `infoBox` (Boolean): Defaults to `undefined`.
+* (Optional) `infoboxControl` (Boolean): Defaults to `undefined`.
 * (Optional) `legendControl` (Boolean or Object): Defaults to `undefined`.
 * (Optional) `locateControl` (Boolean or Object): Defaults to `undefined`.
 * (Optional) `measureControl` (Boolean or Object): Defaults to `undefined`.
@@ -1048,7 +1048,7 @@ _Example (Bootstrap)_:
 
     var NPMap = {
       div: 'map',
-      infoBox: true
+      infoboxControl: true
     };
 
 _Example (API)_:
