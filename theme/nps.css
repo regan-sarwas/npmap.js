@@ -1022,6 +1022,14 @@
   background-image: url('images/font-awesome/home@2x.png');
 }
 
+/* Info Control */
+.npmap .leaflet-control-info {
+  background-color: #fff;
+  display: none;
+  padding: 3px 5px;
+  transition: all .2s;
+}
+
 /* Legend Control */
 .npmap .leaflet-control-legend {
   background-color: #fff;
