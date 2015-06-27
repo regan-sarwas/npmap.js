@@ -109,6 +109,12 @@ var SwitcherControl = L.Control.extend({
             baseLayer.L = L.npmap.layer[baseLayer.type](baseLayer);
           }
 
+          if (this._map.getZoom() < baseLayer.minZoom) {
+            this._map.setView(this._map.getCenter(), baseLayer.minZoom);
+          } else if (this._map.getZoom() > baseLayer.maxZoom) {
+            this._map.setView(this._map.getCenter(), baseLayer.maxZoom);
+          }
+
           this._map.addLayer(baseLayer.L, true);
           L.DomUtil.addClass(target, 'selected');
           this._setActive(baseLayer);
