@@ -769,7 +769,7 @@ module.exports = {
           }
         },
         type: 'json' + (supportsCors ? '' : 'p'),
-        url: 'https://npmap-proxy.herokuapp.com/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+        url: 'https://server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
       });
     }
   },

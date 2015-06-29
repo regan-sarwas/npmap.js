@@ -406,7 +406,7 @@ var DirectionsModule = L.Class.extend({
           html = '<div class="maneuver-header"><h2>Driving Directions to ' + me._markers[me._markers.length - 1]._name + '</h2><span class="info">ROUTE: ' + Math.round(first.distance / 1609.344) + ' MI, ' + Math.round(first.duration / 60) + ' MIN </span><h3 class="location"><span class="identifier">A</span><span class="name">' + me._markers[0]._name + '</span></h3></div><ol class="maneuvers">',
           i;
 
-        console.log(route);
+        //console.log(route);
 
         for (i = 0; i < me._styles.length; i++) {
           var line = new L.GeoJSON({
