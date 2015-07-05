@@ -29,16 +29,62 @@
       "url": "http://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer"
     }
   },
-  "places": {
-    "pois": {
-      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
-      "detectRetina": true,
-      "id": "nps.jhd2e8lb",
-      "name": "Points of Interest",
-      "popup": {
-        "title": "{{#if name}}{{name}}{{else}}{{FCategory}}{{/if}}"
+  "nps": {
+    "parkTiles": {
+      "pointsOfInterest": {
+        "attribution": "<a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+        "id": "nps.jhd2e8lb",
+        "name": "Points of Interest",
+        "type": "mapbox"
+      }
+    },
+    "parkTilesImagery": {
+      "pointsOfInterest": {
+        "attribution": "<a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+        "id": "nps.08c8af87",
+        "name": "Points of Interest",
+        "type": "mapbox"
+      }
+    },
+    "parkTilesSlate": {
+      "pointsOfInterest": {
+        "attribution": "<a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+        "id": "nps.502a840b",
+        "name": "Points of Interest",
+        "type": "mapbox"
+      }
+    },
+    "places": {
+      "buildings": {
+        "name": "Buildings",
+        "table": "buildings",
+        "type": "cartodb",
+        "user": "nps"
       },
-      "type": "mapbox"
+      "parkingLots": {
+        "name": "Parking Lots",
+        "table": "parking_lots",
+        "type": "cartodb",
+        "user": "nps"
+      },
+      "pointsOfInterest": {
+        "name": "Points of Interest",
+        "table": "points_of_interest",
+        "type": "cartodb",
+        "user": "nps"
+      },
+      "roads": {
+        "name": "Roads",
+        "table": "roads",
+        "type": "cartodb",
+        "user": "nps"
+      },
+      "trails": {
+        "name": "Trails",
+        "table": "trails",
+        "type": "cartodb",
+        "user": "nps"
+      }
     }
   }
 }
