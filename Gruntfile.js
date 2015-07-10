@@ -167,7 +167,7 @@ module.exports = function(grunt) {
         ]
       },
       npmaki: {
-        cwd: 'node_modules/npmaki/renders/',
+        cwd: 'node_modules/npmap-symbol-library/renders/',
         dest: 'dist/images/icon/npmaki',
         expand: true,
         src: [
