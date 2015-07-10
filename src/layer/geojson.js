@@ -34,11 +34,23 @@ var GeoJsonLayer = L.GeoJSON.extend({
     }
   },
   _create: function(options, data) {
-    L.GeoJSON.prototype.initialize.call(this, data, options);
-    this.fire('ready');
-    this.readyFired = true;
-    this._loaded = true;
-    return this;
+    var me = this;
+
+    try {
+      L.GeoJSON.prototype.initialize.call(me, data, options);
+      me.fire('ready');
+      me.readyFired = true;
+      me._loaded = true;
+    } catch(e) {
+      var obj = {
+        message: 'The response was not a valid GeoJSON object.'
+      };
+
+      me.fire('error', obj);
+      me.errorFired = obj;
+    }
+    
+    return me;
   }
 });
 
