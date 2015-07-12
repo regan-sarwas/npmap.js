@@ -40,7 +40,7 @@ var OverviewControl = L.Control.extend({
     }
   },
   onAdd: function(map) {
-    this._container = L.DomUtil.create('div', 'leaflet-control-overview');
+    this._container = L.DomUtil.create('div', 'npmap-hidden-xs leaflet-control-overview');
     this._container.style.width = this.options.width + 'px';
     this._container.style.height = this.options.height + 'px';
     L.DomEvent.disableClickPropagation(this._container);

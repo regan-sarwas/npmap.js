@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   'use strict';
 
   var cssNpmaki = '',
-    npmaki = require('./node_modules/npmaki/www/npmaki.json'),
+    npmaki = require('./node_modules/npmap-symbol-library/www/npmaki.json'),
     npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js',
     pkg = require('./package.json'),
     sizes = {
@@ -167,7 +167,7 @@ module.exports = function(grunt) {
         ]
       },
       npmaki: {
-        cwd: 'node_modules/npmaki/renders/',
+        cwd: 'node_modules/npmap-symbol-library/renders/',
         dest: 'dist/images/icon/npmaki',
         expand: true,
         src: [

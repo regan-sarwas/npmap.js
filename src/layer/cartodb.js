@@ -107,9 +107,22 @@ var CartoDbLayer = L.TileLayer.extend({
 
           reqwest({
             crossOrigin: supportsCors === 'yes' ? true : false,
-            error: function(error) {
-              error.message = JSON.parse(error.response).error[0];
-              me.fire('error', error);
+            error: function(response) {
+              var obj = {};
+
+              if (response && response.responseText) {
+                response = JSON.parse(response.responseText);
+
+                if (response.errors && response.errors.length) {
+                  obj.message = response.errors[0];
+                } else {
+                  obj.message = 'An unspecified error occured.';
+                }
+              } else {
+                obj.message = 'An unspecified error occured.';
+              }
+
+              me.fire('error', obj);
             },
             success: function(response) {
               if (response) {
@@ -130,6 +143,10 @@ var CartoDbLayer = L.TileLayer.extend({
                 me.readyFired = true;
 
                 return me;
+              } else {
+                me.fire('error', {
+                  msg: 'No response was received.'
+                });
               }
             },
             type: 'json' + (supportsCors === 'yes' ? '' : 'p'),

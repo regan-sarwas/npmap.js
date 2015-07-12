@@ -30,22 +30,10 @@
           url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
         }],
         overlays: [{
-          attribution: 'Wildland Fire',
-          name: 'Fire Points',
-          styles: {
-            point: {
-              'marker-color': '#ff0000',
-              'marker-symbol': 'fire-station'
-            }
-          },
-          type: 'geojson',
-          // ArcGIS Server does not yet support GeoJSON, so pass through proxy.
-          url: 'https://npmap-arcgis-proxy.herokuapp.com/layer2geojson?url=http://mobilegis.nps.gov/arcgis/rest/services/IncidentDataCollection_3/FeatureServer/1'
-        },{
           attribution: 'Land Resources Division',
           name: 'National Parks',
           type: 'geojson',
-          url: 'https://npmap-arcgis-proxy.herokuapp.com/layer2geojson?url=http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/3'
+          url: 'https://server-utils.herokuapp.com/arcgis2geojson/?url=http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/1'
         },{
           attribution: 'Great Smoky Mountains National Park',
           name: 'Restrooms',
@@ -59,7 +47,6 @@
             }
           },
           type: 'geojson',
-          // ArcGIS Online now supports GeoJSON, so hit the service directly.
           url: 'http://services1.arcgis.com/fBc8EJBxQRMcHlei/ArcGIS/rest/services/GRSM_RESTROOMS/FeatureServer/0/query?f=geojson&outSR=4326&where=OBJECTID+IS+NOT+NULL'
         },{
           attribution: 'Esri',
