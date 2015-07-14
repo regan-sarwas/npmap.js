@@ -114,7 +114,8 @@ var MapBoxLayer = L.TileLayer.extend({
           me._setTileJson(response);
         },
         type: 'json',
-        url: 'https://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + '&secure=1'
+        // To make CORS work in IE9.
+        url: (window.location.protocol === 'https:' ? 'https://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + '&secure=1' : 'http://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken)
       });
     } else if (typeof from === 'object') {
       this._setTileJson(from);
