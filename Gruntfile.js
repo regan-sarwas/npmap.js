@@ -138,13 +138,17 @@ module.exports = function(grunt) {
         src: 'theme/nps.css'
       },
       examples: {
-        dest: 'dist/',
+        cwd: 'examples/',
+        dest: 'dist/examples',
+        expand: true,
         options: {
           process: function(content) {
             return content.replace(/..\/dist\//g, '../');
           }
         },
-        src: 'examples/**/*'
+        src: [
+          '**'
+        ]
       },
       images: {
         cwd: 'theme/images/',
@@ -183,8 +187,12 @@ module.exports = function(grunt) {
         ]
       },
       plugins: {
-        dest: 'dist/',
-        src: 'plugins/**/*'
+        cwd: 'plugins/',
+        dest: 'dist/plugins/',
+        expand: true,
+        src: [
+          '**/*'
+        ]
       }
     },
     csslint: {
