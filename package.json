@@ -4,7 +4,6 @@
     "name": "Nate Irwin",
     "url": "http://www.nps.gov/npmap/team/nate-irwin.html"
   },
-  "license": "CC0",
   "bugs": {
     "email": "npmap@nps.gov",
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
@@ -37,7 +36,7 @@
     "maki": "~0.4.5",
     "nanobar": "0.2.1",
     "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/gh-pages.tar.gz",
-    "reqwest": "1.1.0",
+    "reqwest": "2.0.0",
     "togeojson": "0.12.1"
   },
   "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
@@ -65,7 +64,8 @@
     "mocha-phantomjs": "^3.6.0",
     "phantomjs": "^1.9.17",
     "sinon": "1.15.4",
-    "uglify-js": "2.4.23"
+    "uglify-js": "2.4.23",
+    "xhr2": "^0.1.2"
   },
   "scripts": {
     "test": "grunt test"
