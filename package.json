@@ -4,6 +4,7 @@
     "name": "Nate Irwin",
     "url": "http://www.nps.gov/npmap/team/nate-irwin.html"
   },
+  "license": "CC0",
   "bugs": {
     "email": "npmap@nps.gov",
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
@@ -26,18 +27,18 @@
     }
   ],
   "dependencies": {
-    "csv2geojson": "3.7.0",
-    "handlebars": "1.3.0",
+    "csv2geojson": "4.0.0",
+    "handlebars": "3.0.3",
     "helper-dateformat": "git+https://github.com/nationalparkservice/helper-dateformat.git#02d70292d366f2a67cbdf52bf809825cc462b991",
     "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
     "leaflet": "0.7.3",
     "leaflet-draw": "git+https://github.com/nationalparkservice/Leaflet.Draw.git#23287efc2dc02fcf7de3b4737a76d16f06e7557c",
     "leaflet.markercluster": "https://github.com/nationalparkservice/Leaflet.MarkerCluster/archive/v0.4.0.tar.gz",
-    "maki": "~0.4.0",
+    "maki": "~0.4.5",
     "nanobar": "0.2.1",
     "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/gh-pages.tar.gz",
     "reqwest": "1.1.0",
-    "togeojson": "0.7.0"
+    "togeojson": "0.12.1"
   },
   "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
   "devDependencies": {
@@ -46,25 +47,25 @@
     "expect.js": "^0.3.1",
     "grunt": "^0.4.5",
     "grunt-akamai-rest-purge": "^0.1.1",
-    "grunt-banner": "0.2.2",
+    "grunt-banner": "0.4.0",
     "grunt-browserify": "3.8.0",
-    "grunt-contrib-clean": "0.5.0",
-    "grunt-contrib-compress": "0.7.0",
-    "grunt-contrib-concat": "0.4.0",
-    "grunt-contrib-copy": "0.5.0",
-    "grunt-contrib-csslint": "0.2.0",
-    "grunt-contrib-cssmin": "0.9.0",
-    "grunt-contrib-uglify": "0.4.0",
-    "grunt-curl": "1.4.0",
-    "grunt-http": "1.1.0",
-    "grunt-mkdir": "0.1.1",
-    "grunt-mocha-phantomjs": "0.4.3",
+    "grunt-contrib-clean": "0.6.0",
+    "grunt-contrib-compress": "0.13.0",
+    "grunt-contrib-concat": "0.5.1",
+    "grunt-contrib-copy": "0.8.0",
+    "grunt-contrib-csslint": "0.4.0",
+    "grunt-contrib-cssmin": "0.12.3",
+    "grunt-contrib-uglify": "0.9.1",
+    "grunt-curl": "2.2.0",
+    "grunt-http": "1.6.0",
+    "grunt-mkdir": "0.1.2",
+    "grunt-mocha-phantomjs": "^0.7.0",
     "happen": "0.1.3",
-    "mocha": "^2.0.1",
+    "mocha": "^2.2.5",
     "mocha-phantomjs": "^3.6.0",
-    "phantomjs": "^1.9.7-15",
-    "sinon": "1.12.2",
-    "uglify-js": "2.4.13"
+    "phantomjs": "^1.9.17",
+    "sinon": "1.15.4",
+    "uglify-js": "2.4.23"
   },
   "scripts": {
     "test": "grunt test"
