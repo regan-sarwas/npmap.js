@@ -109,6 +109,22 @@ var SwitcherControl = L.Control.extend({
             baseLayer.L = L.npmap.layer[baseLayer.type](baseLayer);
           }
 
+          if (this._map.getZoom() < baseLayer.minZoom) {
+            setTimeout(function(map, baselayer) {
+              map.setView(map.getCenter(), baselayer.minZoom);
+            }, 200, this._map, baseLayer);
+          } else if (this._map.getZoom() > baseLayer.maxZoom) {
+            setTimeout(function(map, baselayer) {
+              map.setView(map.getCenter(), baselayer.maxZoom);
+            }, 200, this._map, baseLayer);
+          }
+
+          if(baseLayer.maxZoom) {
+            this._map.options.maxZoom = baseLayer.maxZoom;
+          } else {
+            this._map.options.maxZoom = 19;
+          }
+
           this._map.addLayer(baseLayer.L, true);
           L.DomUtil.addClass(target, 'selected');
           this._setActive(baseLayer);

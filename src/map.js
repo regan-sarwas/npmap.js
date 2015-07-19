@@ -759,8 +759,21 @@ var Map = L.Map.extend({
       config.maxZoom = 19;
     }
 
+    if (config.baseLayers.length !== 0 && config.maxZoom > config.baseLayers[0].maxZoom) {
+      config.maxZoom = config.baseLayers[0].maxZoom;
+    }
+
     delete config.layers;
     config.zoom = typeof config.zoom === 'number' ? config.zoom : 4;
+
+    if (config.baseLayers.length !== 0) {
+      if (config.baseLayers[0].minZoom > config.zoom) {
+        config.zoom = config.baseLayers[0].minZoom;
+      } else if (config.baseLayers[0].maxZoom < config.zoom) {
+        config.zoom = config.baseLayers[0].maxZoom;
+      }
+    }
+
     return config;
   },
   _updateImproveLinks: function() {
