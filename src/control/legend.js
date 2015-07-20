@@ -1,61 +1,62 @@
 /* globals L */
 
+'use strict'
+
 var LegendControl = L.Control.extend({
   options: {
     position: 'topright'
   },
   _html: null,
-  initialize: function(options) {
-    L.Util.setOptions(this, options);
-    this._container = L.DomUtil.create('div', 'leaflet-control-legend');
-    L.DomEvent.disableClickPropagation(this._container);
+  initialize: function (options) {
+    L.Util.setOptions(this, options)
+    this._container = L.DomUtil.create('div', 'leaflet-control-legend')
+    L.DomEvent.disableClickPropagation(this._container)
 
     if (options.html) {
       if (typeof options.html === 'string') {
-        this._html = options.html;
-        this._container.innerHTML = this._html;
+        this._html = options.html
+        this._container.innerHTML = this._html
       } else if (typeof options.html === 'function') {
-        this._html = options.html();
-        this._container.innerHTML = this._html;
+        this._html = options.html()
+        this._container.innerHTML = this._html
       } else {
-        // A DOM object.
-        this._html = options.html;
-        this._container.appendChild(this._html);
+        this._html = options.html
+        this._container.appendChild(this._html)
       }
     } else if (options.overlays) {
-      this._html = this._createLegend(options.overlays);
-      this._container.innerHTML = this._html;
+      this._html = this._createLegend(options.overlays)
+      this._container.innerHTML = this._html
     }
   },
-  onAdd: function(map) {
-    this._map = map;
+  onAdd: function (map) {
+    this._map = map
 
     if (!this._html) {
       // TODO: Add 'ready' event to map, then iterate through all baselayers and shapes, per individual overlay, on the map, dynamically building a legend.
     }
 
-    return this._container;
+    return this._container
   },
-  _createLegend: function(overlays) {
-    var html = '',
-      options = this.options;
+  _createLegend: function (overlays) {
+    var html = ''
+    var options = this.options
 
     if (options.title) {
-      html += '<h3>' + options.title  + '</h3>';
+      html += '<h3>' + options.title + '</h3>'
     }
 
     for (var i = 0; i < overlays.length; i++) {
-      var overlay = overlays[i];
+      var overlay = overlays[i]
 
       if (overlay.name) {
-        html += '<h4>' + overlay.name + '</h4>';
+        html += '<h4>' + overlay.name + '</h4>'
       }
 
       if (overlay.icons) {
-        html += '<ul>';
+        html += '<ul>'
 
         for (var icon in overlay.icons) {
-          html += '<li><span style="background-color:' + overlay.icons[icon]  + ';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ' + icon + '</li>';
+          html += '<li><span style="background-color:' + overlay.icons[icon] + ';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ' + icon + '</li>'
         }
       }
 
@@ -91,7 +92,7 @@ var LegendControl = L.Control.extend({
       */
     }
 
-    return html;
+    return html
   }
   /*
   _update: function() {
@@ -126,23 +127,23 @@ var LegendControl = L.Control.extend({
     return this._update();
   },
   */
-});
+})
 
 L.Map.mergeOptions({
   legendControl: false
-});
-L.Map.addInitHook(function() {
+})
+L.Map.addInitHook(function () {
   if (this.options.legendControl) {
-    var options = {};
+    var options = {}
 
     if (typeof this.options.legendControl === 'object') {
-      options = this.options.legendControl;
+      options = this.options.legendControl
     }
 
-    this.legendControl = L.npmap.control.legend(options).addTo(this);
+    this.legendControl = L.npmap.control.legend(options).addTo(this)
   }
-});
+})
 
-module.exports = function(options) {
-  return new LegendControl(options);
-};
+module.exports = function (options) {
+  return new LegendControl(options)
+}

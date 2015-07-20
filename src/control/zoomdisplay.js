@@ -1,47 +1,47 @@
 /* global L */
 
-'use strict';
+'use strict'
 
 var ZoomDisplayControl = L.Control.extend({
   options: {
     position: 'topleft'
   },
-  onAdd: function(map) {
-    this._map = map;
-    this._container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-zoomdisplay');
-    this._control = L.DomUtil.create('div', 'leaflet-bar-single', this._container);
-    this._control.setAttribute('alt', 'Current zoom level');
-    this.updateZoom(map.getZoom());
-    map.on('zoomend', this.onMapZoomEnd, this);
-    return this._container;
+  onAdd: function (map) {
+    this._map = map
+    this._container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-zoomdisplay')
+    this._control = L.DomUtil.create('div', 'leaflet-bar-single', this._container)
+    this._control.setAttribute('alt', 'Current zoom level')
+    this.updateZoom(map.getZoom())
+    map.on('zoomend', this.onMapZoomEnd, this)
+    return this._container
   },
-  onRemove: function(map) {
-    map.off('zoomend', this.onMapZoomEnd, this);
+  onRemove: function (map) {
+    map.off('zoomend', this.onMapZoomEnd, this)
   },
-  onMapZoomEnd: function() {
-    this.updateZoom(this._map.getZoom());
+  onMapZoomEnd: function () {
+    this.updateZoom(this._map.getZoom())
   },
-  updateZoom: function(zoom) {
-    if (typeof(zoom) === 'undefined'){
-      zoom = '';
+  updateZoom: function (zoom) {
+    if (typeof zoom === 'undefined') {
+      zoom = ''
     }
 
-    this._control.innerHTML = zoom;
+    this._control.innerHTML = zoom
   }
-});
+})
 
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.zoomdisplayControl) {
-    var options = {};
+    var options = {}
 
     if (typeof this.options.zoomdisplayControl === 'object') {
-      options = this.options.zoomdisplayControl;
+      options = this.options.zoomdisplayControl
     }
 
-    this.zoomdisplayControl = L.npmap.control.zoomdisplay(options).addTo(this);
+    this.zoomdisplayControl = L.npmap.control.zoomdisplay(options).addTo(this)
   }
-});
+})
 
-module.exports = function(options) {
-  return new ZoomDisplayControl(options);
-};
+module.exports = function (options) {
+  return new ZoomDisplayControl(options)
+}

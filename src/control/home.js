@@ -1,51 +1,51 @@
 /* global L */
 
-'use strict';
+'use strict'
 
 var HomeControl = L.Control.extend({
   options: {
     position: 'topleft'
   },
-  initialize: function(options) {
-    L.Util.extend(this.options, options);
-    return this;
+  initialize: function (options) {
+    L.Util.extend(this.options, options)
+    return this
   },
-  onAdd: function() {
-    var container = L.DomUtil.create('div', 'leaflet-control-home leaflet-bar leaflet-control'),
-      button = L.DomUtil.create('button', 'leaflet-bar-single', container);
+  onAdd: function () {
+    var container = L.DomUtil.create('div', 'leaflet-control-home leaflet-bar leaflet-control')
+    var button = L.DomUtil.create('button', 'leaflet-bar-single', container)
 
-    button.setAttribute('alt', 'Pan/zoom to initial extent');
+    button.setAttribute('alt', 'Pan/zoom to initial extent')
     L.DomEvent
       .disableClickPropagation(button)
       .on(button, 'click', L.DomEvent.preventDefault)
-      .on(button, 'click', this.toHome, this);
+      .on(button, 'click', this.toHome, this)
 
-    return container;
+    return container
   },
-  toHome: function() {
-    var map = this._map,
-      options = map.options;
+  toHome: function () {
+    var map = this._map
+    var options = map.options
 
-    map.setView(options.center, options.zoom);
-    map.closePopup();
+    map.setView(options.center, options.zoom)
+    map.closePopup()
   }
-});
+})
 
 L.Map.mergeOptions({
   homeControl: true
-});
-L.Map.addInitHook(function() {
+})
+L.Map.addInitHook(function () {
   if (this.options.homeControl) {
-    var options = {};
+    var options = {}
 
     if (typeof this.options.homeControl === 'object') {
-      options = this.options.homeControl;
+      options = this.options.homeControl
     }
 
-    this.homeControl = L.npmap.control.home(options).addTo(this);
+    this.homeControl = L.npmap.control.home(options).addTo(this)
   }
-});
+})
 
-module.exports = function(options) {
-  return new HomeControl(options);
-};
+module.exports = function (options) {
+  return new HomeControl(options)
+}
