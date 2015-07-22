@@ -728,8 +728,8 @@ module.exports = {
 
           for (i = 0; i < l; i++) {
             attrs = {
-              src: "photos/thumb/" + names[i],
-              href: "photos/web/" + names[i]
+              src: "/fmss/photos/thumb/" + names[i],
+              href: "/fmss/photos/web/" + names[i]
             };
             imgs.push(attrs);
           }
