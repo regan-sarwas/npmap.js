@@ -1,34 +1,35 @@
-/* global L, NPMap */
+/* global L */
 /* jshint camelcase: false */
 
 'use strict';
 
-var baselayerPresets = require('./preset/baselayers.json'),
-  colorPresets = require('./preset/colors.json'),
-  humane = require('humane-js'),
-  nanobar = require('nanobar'),
-  overlayPresets = require('./preset/overlays.json'),
-  util = require('./util/util');
+var baselayerPresets = require('./preset/baselayers.json');
+var colorPresets = require('./preset/colors.json');
+var humane = require('humane-js');
+var nanobar = require('nanobar');
+var overlayPresets = require('./preset/overlays.json');
+var util = require('./util/util');
+var MapExt;
 
 require('./popup.js');
 
-(function() {
+(function () {
   var style = colorPresets.gold;
 
   L.Circle.mergeOptions(style);
   L.CircleMarker.mergeOptions(style);
   L.Control.Attribution.mergeOptions({
-    prefix: '<a href="http://www.nps.gov/npmap/disclaimer.html" target="_blank">Disclaimer</a>'
+    prefix: '<a href="http://www.nps.gov/npmap/disclaimer/" target="_blank">Disclaimer</a>'
   });
-  L.Map.addInitHook(function() {
-    var container = this.getContainer(),
-      elAttribution = util.getChildElementsByClassName(container, 'leaflet-control-attribution')[0],
-      elControl = util.getChildElementsByClassName(container, 'leaflet-control-container')[0],
-      me = this;
+  L.Map.addInitHook(function () {
+    var container = this.getContainer();
+    var elAttribution = util.getChildElementsByClassName(container, 'leaflet-control-attribution')[0];
+    var elControl = util.getChildElementsByClassName(container, 'leaflet-control-container')[0];
+    var me = this;
 
-    function resize() {
-      var left = util.getOuterDimensions(elControl.childNodes[2]).width,
-        overviewControl = util.getChildElementsByClassName(container, 'leaflet-control-overview')[0];
+    function resize () {
+      var left = util.getOuterDimensions(elControl.childNodes[2]).width;
+      var overviewControl = util.getChildElementsByClassName(container, 'leaflet-control-overview')[0];
 
       if (left) {
         left = left + 15;
@@ -46,9 +47,9 @@ require('./popup.js');
     }
 
     if (this.options.attributionControl) {
-      this.attributionControl._update = function() {
-        var attribs = [],
-          prefixAndAttribs = [];
+      this.attributionControl._update = function () {
+        var attribs = [];
+        var prefixAndAttribs = [];
 
         for (var attribution in this._attributions) {
           if (this._attributions[attribution] > 0) {
@@ -98,24 +99,23 @@ require('./popup.js');
     weight: style.weight
   });
 })();
-
-var Map = L.Map.extend({
+MapExt = L.Map.extend({
   options: {
     bounceAtZoomLimits: false,
     worldCopyJump: true
   },
-  initialize: function(options) {
-    var baseLayerSet = false,
-      container = L.DomUtil.create('div', 'npmap-container'),
-      map = L.DomUtil.create('div', 'npmap-map'),
-      mapWrapper = L.DomUtil.create('div', 'npmap-map-wrapper'),
-      me = this,
-      modules = L.DomUtil.create('div', 'npmap-modules'),
-      npmap = L.DomUtil.create('div', 'npmap' + ((L.Browser.ie6 || L.Browser.ie7) ? ' npmap-oldie' : '') + (L.Browser.retina ? ' npmap-retina' : '')),
-      toolbar = L.DomUtil.create('div', 'npmap-toolbar'),
-      toolbarLeft = L.DomUtil.create('ul', 'left'),
-      toolbarRight = L.DomUtil.create('ul', 'right'),
-      zoomifyMode = false;
+  initialize: function (options) {
+    var baseLayerSet = false;
+    var container = L.DomUtil.create('div', 'npmap-container');
+    var map = L.DomUtil.create('div', 'npmap-map');
+    var mapWrapper = L.DomUtil.create('div', 'npmap-map-wrapper');
+    var me = this;
+    var modules = L.DomUtil.create('div', 'npmap-modules');
+    var npmap = L.DomUtil.create('div', 'npmap' + ((L.Browser.ie6 || L.Browser.ie7) ? ' npmap-oldie' : '') + (L.Browser.retina ? ' npmap-retina' : ''));
+    var toolbar = L.DomUtil.create('div', 'npmap-toolbar');
+    var toolbarLeft = L.DomUtil.create('ul', 'left');
+    var toolbarRight = L.DomUtil.create('ul', 'right');
+    var zoomifyMode = false;
 
     options = me._toLeaflet(options);
     L.Util.setOptions(this, options);
@@ -135,12 +135,12 @@ var Map = L.Map.extend({
     me._controllingInteractivity = 'map';
     me._defaultCursor = me.getContainer().style.cursor;
 
-    me.on('autopanstart', function() {
+    me.on('autopanstart', function () {
       me._setCursor('');
     });
     me.notify = humane.create({
       baseCls: 'humane-bootstrap',
-      container: map,
+      container: map
     });
     me.notify.danger = me.notify.spawn({
       addnCls: 'humane-bootstrap-danger'
@@ -165,8 +165,9 @@ var Map = L.Map.extend({
     }
 
     if (options.baseLayers.length) {
-      var zoomify = [],
-        baseLayer, i;
+      var zoomify = [];
+      var baseLayer;
+      var i;
 
       for (i = 0; i < options.baseLayers.length; i++) {
         baseLayer = options.baseLayers[i];
@@ -243,7 +244,7 @@ var Map = L.Map.extend({
       }
     }
 
-    util.checkNpsNetwork(function(on) {
+    util.checkNpsNetwork(function (on) {
       me._onNpsNetwork = on;
 
       if (typeof me._updateImproveLinks === 'function') {
@@ -256,11 +257,11 @@ var Map = L.Map.extend({
 
     return this;
   },
-  _addEvents: function(obj, config) {
+  _addEvents: function (obj, config) {
     if (config.events && config.events.length) {
       for (var i = 0; i < config.events.length; i++) {
-        var e = config.events[i],
-          context = e.context || null;
+        var e = config.events[i];
+        var context = e.context || null;
 
         if (e.single === true) {
           obj.once(e.type, e.fn, context);
@@ -278,16 +279,17 @@ var Map = L.Map.extend({
       }
     }
   },
-  _createArcGisServerLayer: function(config) {
+  _createArcGisServerLayer: function (config) {
     return L.npmap.layer[config.type][config.tiled === true ? 'tiled' : 'dynamic'](config);
   },
-  _initializeModules: function() {
+  _initializeModules: function () {
     if (this.options && this.options.modules && L.Util.isArray(this.options.modules) && this.options.modules.length) {
-      var initialize = null,
-        me = this,
-        modules = this.options.modules,
-        width = 0,
-        button, i;
+      var initialize = null;
+      var me = this;
+      var modules = this.options.modules;
+      var width = 0;
+      var button;
+      var i;
 
       this._divWrapper = this._container.parentNode.parentNode;
       this._divModules = util.getChildElementsByClassName(this._divWrapper.parentNode.parentNode, 'npmap-modules')[0];
@@ -298,11 +300,13 @@ var Map = L.Map.extend({
       L.DomEvent.addListener(this._buttonCloseModules, 'click', me.closeModules, this);
 
       for (i = 0; i < modules.length; i++) {
-        var div = L.DomUtil.create('div', 'module', this._divModules),
-          divTitle = L.DomUtil.create('h2', 'title', div),
-          divContent = L.DomUtil.create('div', 'content', div),
-          module = modules[i],
-          content, icon, title;
+        var div = L.DomUtil.create('div', 'module', this._divModules);
+        var divTitle = L.DomUtil.create('h2', 'title', div);
+        var divContent = L.DomUtil.create('div', 'content', div);
+        var module = modules[i];
+        var content;
+        var icon;
+        var title;
 
         if (module.type !== 'custom') {
           this.options.modules[i] = module = L.npmap.module[module.type](module).addTo(this);
@@ -330,7 +334,7 @@ var Map = L.Map.extend({
           }
         }
 
-        L.DomEvent.addListener(button, 'click', function() {
+        L.DomEvent.addListener(button, 'click', function () {
           me.showModule(this.id.replace('npmap-modules-buttons_', ''));
         });
 
@@ -353,15 +357,17 @@ var Map = L.Map.extend({
       }
     }
   },
-  _setCursor: function(type) {
+  _setCursor: function (type) {
     this._container.style.cursor = type;
   },
-  _setupPopup: function() {
-    var clicks = 0,
-      me = this,
-      canceled, changed, hasArcGisServer;
+  _setupPopup: function () {
+    var clicks = 0;
+    var me = this;
+    var canceled;
+    var changed;
+    var hasArcGisServer;
 
-    function done() {
+    function done () {
       me
         .off('click', setCanceled)
         .off('dragstart', setChanged)
@@ -373,9 +379,9 @@ var Map = L.Map.extend({
         me._setCursor('');
       }
     }
-    function go(e) {
-      var queryable = [],
-        layer;
+    function go (e) {
+      var queryable = [];
+      var layer;
 
       canceled = false;
       changed = false;
@@ -394,11 +400,12 @@ var Map = L.Map.extend({
       }
 
       if (queryable.length) {
-        var completed = 0,
-          intervals = 0,
-          latLng = e.latlng.wrap(),
-          results = [],
-          i, interval;
+        var completed = 0;
+        var intervals = 0;
+        var latLng = e.latlng.wrap();
+        var results = [];
+        var i;
+        var interval;
 
         hasArcGisServer = false;
 
@@ -409,7 +416,7 @@ var Map = L.Map.extend({
             hasArcGisServer = true;
           }
 
-          layer._handleClick(latLng, function(result) {
+          layer._handleClick(latLng, function (result) {
             if (result) {
               results.push(result);
             }
@@ -423,7 +430,7 @@ var Map = L.Map.extend({
           me._setCursor('wait');
         }
 
-        interval = setInterval(function() {
+        interval = setInterval(function () {
           intervals++;
 
           if (hasArcGisServer) {
@@ -472,21 +479,21 @@ var Map = L.Map.extend({
         }, 100);
       }
     }
-    function setCanceled() {
+    function setCanceled () {
       canceled = true;
     }
-    function setChanged() {
+    function setChanged () {
       changed = true;
     }
 
-    me.on('dblclick', function() {
+    me.on('dblclick', function () {
       clicks++;
     });
-    me.on('click', function(e) {
+    me.on('click', function (e) {
       clicks = 0;
 
       if (me._controllingInteractivity === 'map') {
-        setTimeout(function() {
+        setTimeout(function () {
           if (!clicks) {
             go(e);
           }
@@ -494,28 +501,29 @@ var Map = L.Map.extend({
       }
     });
   },
-  _setupTooltip: function() {
-    var me = this,
-      overData = [],
-      tooltip = (me.infoboxControl ? me.infoboxControl : L.npmap.tooltip({map: me}));
+  _setupTooltip: function () {
+    var me = this;
+    var overData = [];
+    var tooltip = (me.infoboxControl ? me.infoboxControl : L.npmap.tooltip({map: me}));
 
-    function handle() {
+    function handle () {
       if (me._controllingCursor === 'map') {
         updateCursor();
       }
 
       if (me._tooltips.length) {
-        var changed = false,
-          childNodes = tooltip._container.childNodes,
-          html = '',
-          i, obj;
+        var changed = false;
+        var childNodes = tooltip._container.childNodes;
+        var html = '';
+        var i;
+        var obj;
 
         if (childNodes.length) {
           var remove = [];
 
           for (i = 0; i < childNodes.length; i++) {
-            var childNode = childNodes[i],
-              removeNode = true;
+            var childNode = childNodes[i];
+            var removeNode = true;
 
             for (var j = 0; j < me._tooltips.length; j++) {
               obj = me._tooltips[j];
@@ -569,9 +577,9 @@ var Map = L.Map.extend({
         tooltip.setHtml('');
       }
     }
-    function removeOverData(layerId) {
-      var remove = [],
-        i;
+    function removeOverData (layerId) {
+      var remove = [];
+      var i;
 
       for (i = 0; i < overData.length; i++) {
         if (overData[i] === layerId) {
@@ -585,9 +593,9 @@ var Map = L.Map.extend({
         }
       }
     }
-    function removeTooltip(layerId) {
-      var remove = [],
-        i;
+    function removeTooltip (layerId) {
+      var remove = [];
+      var i;
 
       for (i = 0; i < me._tooltips.length; i++) {
         var obj = me._tooltips[i];
@@ -603,7 +611,7 @@ var Map = L.Map.extend({
         }
       }
     }
-    function updateCursor() {
+    function updateCursor () {
       if (overData.length) {
         me._setCursor('pointer');
       } else {
@@ -614,11 +622,11 @@ var Map = L.Map.extend({
     }
 
     me._tooltips = [];
-    L.DomEvent.on(util.getChildElementsByClassName(me.getContainer(), 'leaflet-popup-pane')[0], 'mousemove', function(e) {
+    L.DomEvent.on(util.getChildElementsByClassName(me.getContainer(), 'leaflet-popup-pane')[0], 'mousemove', function (e) {
       L.DomEvent.stopPropagation(e);
       tooltip.hide();
     });
-    me.on('mousemove', function(e) {
+    me.on('mousemove', function (e) {
       me._cursorEvent = e;
 
       if (me._controllingCursor === 'map') {
@@ -628,10 +636,10 @@ var Map = L.Map.extend({
           var layer = me._layers[layerId];
 
           if (typeof layer._handleMousemove === 'function' && layer._hasInteractivity !== false) {
-            layer._handleMousemove(me._cursorEvent.latlng.wrap(), function(result) {
+            layer._handleMousemove(me._cursorEvent.latlng.wrap(), function (result) {
               if (result.results !== 'loading') {
-                var l = result.layer,
-                  leafletId = l._leaflet_id;
+                var l = result.layer;
+                var leafletId = l._leaflet_id;
 
                 removeOverData(leafletId);
                 removeTooltip(leafletId);
@@ -641,8 +649,8 @@ var Map = L.Map.extend({
 
                   if (l.options && l.options.tooltip) {
                     for (var i = 0; i < result.results.length; i++) {
-                      var data = result.results[i],
-                        tip;
+                      var data = result.results[i];
+                      var tip;
 
                       if (typeof l.options.tooltip === 'function') {
                         tip = util.handlebars(l.options.tooltip(data));
@@ -667,11 +675,11 @@ var Map = L.Map.extend({
         }
       }
     });
-    me.on('mouseout', function() {
+    me.on('mouseout', function () {
       tooltip.hide();
     });
   },
-  _toLeaflet: function(config) {
+  _toLeaflet: function (config) {
     if (!config.div) {
       throw new Error('The map config object must have a div property');
     } else if (typeof config.div !== 'string' && typeof config.div !== 'object') {
@@ -681,7 +689,7 @@ var Map = L.Map.extend({
     if (config.baseLayers === false || (L.Util.isArray(config.baseLayers) && !config.baseLayers.length)) {
       config.baseLayers = [];
     } else {
-      config.baseLayers = (function() {
+      config.baseLayers = (function () {
         var visible = false;
 
         if (config.baseLayers && L.Util.isArray(config.baseLayers) && config.baseLayers.length) {
@@ -727,7 +735,7 @@ var Map = L.Map.extend({
       })();
     }
 
-    config.center = (function() {
+    config.center = (function () {
       var c = config.center;
 
       if (c) {
@@ -776,22 +784,22 @@ var Map = L.Map.extend({
 
     return config;
   },
-  _updateImproveLinks: function() {
+  _updateImproveLinks: function () {
     if (this.attributionControl) {
       var els = util.getChildElementsByClassName(this.attributionControl._container, 'improve-park-tiles');
 
       if (els && els.length) {
-        var center = this.getCenter(),
-          el = els[0],
-          lat = center.lat.toFixed(5),
-          lng = center.lng.toFixed(5),
-          zoom = this.getZoom();
+        var center = this.getCenter();
+        var el = els[0];
+        var lat = center.lat.toFixed(5);
+        var lng = center.lng.toFixed(5);
+        var zoom = this.getZoom();
 
         el.href = (this._onNpsNetwork ? ('http://insidemaps.nps.gov/places/edit/#background=mapbox-satellite&map=' + zoom + '/' + lng + '/' + lat) : ('http://www.nps.gov/npmap/park-tiles/improve/#' + zoom + '/' + lat + '/' + lng)) + '&overlays=park-tiles-overlay';
       }
     }
   },
-  closeModules: function() {
+  closeModules: function () {
     var buttons = this._divModuleButtons.childNodes;
 
     this._buttonCloseModules.style.display = 'none';
@@ -807,23 +815,23 @@ var Map = L.Map.extend({
 
     this.invalidateSize();
   },
-  showModule: function(title) {
-    var divModules = this._divModules,
-      childNodes = divModules.childNodes,
-      modules = this.options.modules,
-      i;
+  showModule: function (title) {
+    var divModules = this._divModules;
+    var childNodes = divModules.childNodes;
+    var modules = this.options.modules;
+    var i;
 
     title = title.replace(/_/g, ' ');
 
     for (i = 0; i < modules.length; i++) {
-      var module = modules[i],
-        visibility = 'none';
+      var m = modules[i];
+      var visibility = 'none';
 
-      if (module.title === title) {
+      if (m.title === title) {
         visibility = 'block';
       }
 
-      module.visible = (visibility === 'block');
+      m.visible = (visibility === 'block');
       childNodes[i].style.display = visibility;
     }
 
@@ -853,7 +861,7 @@ var Map = L.Map.extend({
 
     // TODO: Fire module 'show' event.
   },
-  showModules: function() {
+  showModules: function () {
     var buttons = this._divModuleButtons.childNodes;
 
     this._buttonCloseModules.style.display = 'inline-block';
@@ -868,6 +876,6 @@ var Map = L.Map.extend({
   }
 });
 
-module.exports = function(config) {
-  return new Map(config);
+module.exports = function (config) {
+  return new MapExt(config);
 };
