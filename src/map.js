@@ -6,7 +6,7 @@
 var baselayerPresets = require('./preset/baselayers.json');
 var colorPresets = require('./preset/colors.json');
 var humane = require('humane-js');
-var nanobar = require('nanobar');
+var Nanobar = require('nanobar');
 var overlayPresets = require('./preset/overlays.json');
 var util = require('./util/util');
 var MapExt;
@@ -154,7 +154,7 @@ MapExt = L.Map.extend({
     me.notify.warning = me.notify.spawn({
       addnCls: 'humane-bootstrap-warning'
     });
-    me._progress = new nanobar({
+    me._progress = new Nanobar({
       bg: '#d29700',
       id: 'npmap-progress',
       target: map
@@ -504,7 +504,9 @@ MapExt = L.Map.extend({
   _setupTooltip: function () {
     var me = this;
     var overData = [];
-    var tooltip = (me.infoboxControl ? me.infoboxControl : L.npmap.tooltip({map: me}));
+    var tooltip = (me.infoboxControl ? me.infoboxControl : L.npmap.tooltip({
+      map: me
+    }));
 
     function handle () {
       if (me._controllingCursor === 'map') {

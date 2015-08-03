@@ -3,8 +3,8 @@
 
 'use strict';
 
-var topojson = require('../util/topojson'),
-  util = require('../util/util');
+var topojson = require('../util/topojson');
+var util = require('../util/util');
 
 module.exports = {
   _types: {
@@ -13,7 +13,7 @@ module.exports = {
     'Point': 'point',
     'Polygon': 'polygon'
   },
-  addData: function(feature) {
+  addData: function (feature) {
     if (/\btopology\b/i.test(feature.type)) {
       for (var prop in feature.objects) {
         var geojson = topojson.feature(feature, feature.objects[prop]);
@@ -26,31 +26,31 @@ module.exports = {
       L.GeoJSON.prototype.addData.call(this, feature);
     }
   },
-  onAdd: function(map) {
+  onAdd: function (map) {
     this._map = map;
     this._addAttribution();
 
     if (this.options.zoomToBounds) {
-      this.on('ready', function() {
+      this.on('ready', function () {
         map.fitBounds(this.getBounds());
       });
     }
 
     L.GeoJSON.prototype.onAdd.call(this, map);
   },
-  onRemove: function(map) {
+  onRemove: function (map) {
     delete this._map;
     this._removeAttribution();
     L.GeoJSON.prototype.onRemove.call(this, map);
   },
-  _addAttribution: function() {
+  _addAttribution: function () {
     var attribution = this.options.attribution;
 
     if (attribution && this._map.attributionControl) {
       this._map.attributionControl.addAttribution(attribution);
     }
   },
-  _checkGeometryType: function(feature) {
+  _checkGeometryType: function (feature) {
     if (!this._geometryTypes) {
       this._geometryTypes = [];
     }
@@ -63,40 +63,40 @@ module.exports = {
       }
     }
   },
-  _removeAttribution: function() {
+  _removeAttribution: function () {
     var attribution = this.options.attribution;
 
     if (attribution && this._map.attributionControl) {
       this._map.attributionControl.removeAttribution(attribution);
     }
   },
-  _toLeaflet: function(config) {
+  _toLeaflet: function (config) {
     // TODO: Support preset colors. Setup a "colorProperties" array that contains the name of the properties that can contain colors, then use those to pull in presets.
     // TODO: Support handlebars templates.
-    var configStyles,
-      matchSimpleStyles = {
-        'fill': 'fillColor',
-        'fill-opacity': 'fillOpacity',
-        'stroke': 'color',
-        'stroke-opacity': 'opacity',
-        'stroke-width': 'weight'
-      };
+    var configStyles;
+    var matchSimpleStyles = {
+      'fill': 'fillColor',
+      'fill-opacity': 'fillOpacity',
+      'stroke': 'color',
+      'stroke-opacity': 'opacity',
+      'stroke-width': 'weight'
+    };
 
     if (typeof config.clickable === 'undefined' || config.clickable === true) {
-      var activeTip = null,
-        lastTarget = null,
-        map = null;
+      var activeTip = null;
+      var lastTarget = null;
+      var map = null;
 
       // TODO: If typeof config.onEachFeature === 'function', save it and call it.
-      config.onEachFeature = function(feature, layer) {
+      config.onEachFeature = function (feature, layer) {
         var clicks = 0;
 
-        layer.on('click', function(e) {
+        layer.on('click', function (e) {
           var target = e.target;
 
           if (!map) {
             map = target._map;
-            map.on('click', function() {
+            map.on('click', function () {
               if (lastTarget) {
                 lastTarget
                   .closePopup()
@@ -107,16 +107,9 @@ module.exports = {
           }
 
           if (map._controllingInteractivity === 'map') {
-            /*
-            // Maybe do this?
-            if (feature.geometry.type.toLowerCase() === 'point') {
-              // Do not worry about dblclick events.
-            }
-            */
-
             clicks = 0;
 
-            setTimeout(function() {
+            setTimeout(function () {
               if (!clicks) {
                 if (lastTarget && (lastTarget._leaflet_id === target._leaflet_id)) {
                   lastTarget
@@ -124,14 +117,14 @@ module.exports = {
                     .unbindPopup();
                   lastTarget = null;
                 } else {
-                  var container = map.getContainer(),
-                    popup = L.npmap.popup({
-                      autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
-                      maxHeight: util._getAvailableVerticalSpace(map) - 84,
-                      maxWidth: util._getAvailableHorizontalSpace(map) - 77
-                    }),
-                    properties = feature.properties,
-                    html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
+                  var container = map.getContainer();
+                  var popup = L.npmap.popup({
+                    autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
+                    maxHeight: util._getAvailableVerticalSpace(map) - 84,
+                    maxWidth: util._getAvailableHorizontalSpace(map) - 77
+                  });
+                  var properties = feature.properties;
+                  var html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
 
                   if (lastTarget) {
                     lastTarget
@@ -165,15 +158,15 @@ module.exports = {
             map.fireEvent('click', e);
           }
         });
-        layer.on('dblclick', function(e) {
+        layer.on('dblclick', function (e) {
           clicks++;
           e.containerPoint = e.target._map.latLngToContainerPoint(e.latlng);
           e.target._map.fireEvent('dblclick', e);
         });
-        layer.on('mouseout', function(e) {
+        layer.on('mouseout', function (e) {
           if (activeTip) {
-            var tooltips = e.target._map._tooltips,
-              removeIndex = null;
+            var removeIndex = null;
+            var tooltips = e.target._map._tooltips;
 
             for (var i = 0; i < tooltips.length; i++) {
               var obj = tooltips[i];
@@ -191,12 +184,12 @@ module.exports = {
             activeTip = null;
           }
         });
-        layer.on('mouseover', function(e) {
+        layer.on('mouseover', function (e) {
           var tooltipConfig = config.tooltip;
 
           if (tooltipConfig) {
-            var properties = feature.properties,
-              tip;
+            var properties = feature.properties;
+            var tip;
 
             if (typeof tooltipConfig === 'function') {
               tip = tooltipConfig(properties);
@@ -205,11 +198,11 @@ module.exports = {
             }
 
             if (tip) {
-              var target = e.target,
-                obj = {
-                  html: tip,
-                  layerId: target._leaflet_id
-                };
+              var target = e.target;
+              var obj = {
+                html: tip,
+                layerId: target._leaflet_id
+              };
 
               target._map._tooltips.push(obj);
               activeTip = obj;
@@ -219,17 +212,18 @@ module.exports = {
       };
     }
 
-    config.pointToLayer = function(feature, latLng) {
+    config.pointToLayer = function (feature, latLng) {
       // TODO: Support L.CircleMarker and L.Icon
-      var configStyles,
-        icon = {
-          'marker-color': '#000000',
-          'marker-size': 'medium',
-          'marker-library': 'maki',
-          'marker-symbol': null
-        },
-        properties = feature.properties,
-        property, value;
+      var configStyles;
+      var icon = {
+        'marker-color': '#000000',
+        'marker-size': 'medium',
+        'marker-library': 'maki',
+        'marker-symbol': null
+      };
+      var properties = feature.properties;
+      var property;
+      var value;
 
       configStyles = typeof config.styles === 'function' ? config.styles(properties) : config.styles;
 
@@ -290,8 +284,8 @@ module.exports = {
         keyboard: false
       }));
     };
-    config.style = function(feature) {
-      var type = (function() {
+    config.style = function (feature) {
+      var type = (function () {
         var t = feature.geometry.type.toLowerCase();
 
         if (t.indexOf('line') !== -1) {
@@ -305,9 +299,10 @@ module.exports = {
 
       if (type !== 'point') {
         // TODO: Add support for passing Leaflet styles in.
-        var count = 0,
-          style = {},
-          properties, property;
+        var count = 0;
+        var style = {};
+        var properties;
+        var property;
 
         if (typeof feature.properties === 'object') {
           properties = feature.properties;
