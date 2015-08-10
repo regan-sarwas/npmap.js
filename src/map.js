@@ -362,10 +362,15 @@ MapExt = L.Map.extend({
   },
   _setupPopup: function () {
     var clicks = 0;
+    var detectAvailablePopupSpace = true;
     var me = this;
     var canceled;
     var changed;
     var hasArcGisServer;
+
+    if (typeof me.options.detectAvailablePopupSpace !== 'undefined' && me.options.detectAvailablePopupSpace === false) {
+      detectAvailablePopupSpace = false;
+    }
 
     function done () {
       me
@@ -466,8 +471,8 @@ MapExt = L.Map.extend({
               if (actual.length) {
                 var popup = L.npmap.popup({
                   autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(me.getContainer()),
-                  maxHeight: util._getAvailableVerticalSpace(me) - 84,
-                  maxWidth: util._getAvailableHorizontalSpace(me) - 77
+                  maxHeight: (detectAvailablePopupSpace ? util._getAvailableVerticalSpace(me) - 84 : null),
+                  maxWidth: (detectAvailablePopupSpace ? util._getAvailableHorizontalSpace(me) - 77 : null)
                 });
 
                 popup

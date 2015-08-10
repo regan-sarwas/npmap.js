@@ -84,6 +84,7 @@ module.exports = {
 
     if (typeof config.clickable === 'undefined' || config.clickable === true) {
       var activeTip = null;
+      var detectAvailablePopupSpace = true;
       var lastTarget = null;
       var map = null;
 
@@ -104,6 +105,10 @@ module.exports = {
                 lastTarget = null;
               }
             });
+
+            if (typeof map.options.detectAvailablePopupSpace !== 'undefined' && map.options.detectAvailablePopupSpace === false) {
+              detectAvailablePopupSpace = false;
+            }
           }
 
           if (map._controllingInteractivity === 'map') {
@@ -120,8 +125,8 @@ module.exports = {
                   var container = map.getContainer();
                   var popup = L.npmap.popup({
                     autoPanPaddingTopLeft: util._getAutoPanPaddingTopLeft(container),
-                    maxHeight: util._getAvailableVerticalSpace(map) - 84,
-                    maxWidth: util._getAvailableHorizontalSpace(map) - 77
+                    maxHeight: (detectAvailablePopupSpace ? util._getAvailableVerticalSpace(map) - 84 : null),
+                    maxWidth: (detectAvailablePopupSpace ? util._getAvailableHorizontalSpace(map) - 77 : null)
                   });
                   var properties = feature.properties;
                   var html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
