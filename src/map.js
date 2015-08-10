@@ -797,7 +797,7 @@ MapExt = L.Map.extend({
         var lng = center.lng.toFixed(5);
         var zoom = this.getZoom();
 
-        el.href = (this._onNpsNetwork ? ('http://insidemaps.nps.gov/places/edit/#background=mapbox-satellite&map=' + zoom + '/' + lng + '/' + lat + '&overlays=park-tiles-overlay') : ('http://www.nps.gov/npmap/tools/park-tiles/improve/#' + zoom + '/' + lat + '/' + lng));
+        el.href = (this._onNpsNetwork ? ('http://insidemaps.nps.gov/places/editor/#background=mapbox-satellite&map=' + zoom + '/' + lng + '/' + lat + '&overlays=park-tiles-overlay') : ('http://www.nps.gov/npmap/tools/park-tiles/improve/#' + zoom + '/' + lat + '/' + lng));
       }
     }
   },
