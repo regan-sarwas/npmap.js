@@ -36,7 +36,7 @@
     "maki": "~0.4.5",
     "nanobar": "0.2.1",
     "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/gh-pages.tar.gz",
-    "reqwest": "2.0.0",
+    "reqwest": "1.1.6",
     "togeojson": "0.12.1"
   },
   "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
@@ -100,5 +100,5 @@
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
   },
-  "version": "2.0.0"
+  "version": "latest"
 }

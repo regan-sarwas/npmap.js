@@ -1,49 +1,48 @@
-/* global L */
+/* global L, XMLHttpRequest */
 
 'use strict';
 
-var dateFormat = require('helper-dateformat'),
-  handlebars = require('handlebars'),
-  reqwest = require('reqwest');
+var dateFormat = require('helper-dateformat');
+var handlebars = require('handlebars');
+var reqwest = require('reqwest');
 
 handlebars.registerHelper('dateFormat', dateFormat);
-handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
+handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
   switch (operator) {
-  case '!=':
-    return (v1 != v2) ? options.fn(this) : options.inverse(this);
-  case '!==':
-    return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-  case '==':
-    return (v1 == v2) ? options.fn(this) : options.inverse(this);
-  case '===':
-    return (v1 === v2) ? options.fn(this) : options.inverse(this);
-  case '<':
-    return (v1 < v2) ? options.fn(this) : options.inverse(this);
-  case '<=':
-    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-  case '>':
-    return (v1 > v2) ? options.fn(this) : options.inverse(this);
-  case '>=':
-    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-  case '&&':
-    return (v1 && v2) ? options.fn(this) : options.inverse(this);
-  case '||':
-    return (v1 || v2) ? options.fn(this) : options.inverse(this);
-  default:
-    return options.inverse(this);
+    case '!=':
+      return (v1 != v2) ? options.fn(this) : options.inverse(this);
+    case '!==':
+      return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+    case '==':
+      return (v1 == v2) ? options.fn(this) : options.inverse(this);
+    case '===':
+      return (v1 === v2) ? options.fn(this) : options.inverse(this);
+    case '<':
+      return (v1 < v2) ? options.fn(this) : options.inverse(this);
+    case '<=':
+      return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+    case '>':
+      return (v1 > v2) ? options.fn(this) : options.inverse(this);
+    case '>=':
+      return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+    case '&&':
+      return (v1 && v2) ? options.fn(this) : options.inverse(this);
+    case '||':
+      return (v1 || v2) ? options.fn(this) : options.inverse(this);
+    default:
+      return options.inverse(this);
   }
 });
-
-handlebars.registerHelper('toLowerCase', function(str) {
+handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
-handlebars.registerHelper('toUpperCase', function(str) {
+handlebars.registerHelper('toUpperCase', function (str) {
   return str.toUpperCase();
 });
 
 // Shim for Array.indexOf
 if (!Array.prototype.indexOf) {
-  Array.prototype.indexOf = function(searchElement, fromIndex) {
+  Array.prototype.indexOf = function (searchElement, fromIndex) {
     if (this === undefined || this === null) {
       throw new TypeError('"this" is null or not defined');
     }
@@ -113,11 +112,11 @@ if (!Array.prototype.map) {
 }
 
 // Shim for window.atob/window.btoa.
-(function() {
-  var decodeChars = new Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1),
-    encodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+(function () {
+  var decodeChars = new Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1);
+  var encodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-  function base64decode(str) {
+  function base64decode (str) {
     var c1, c2, c3, c4, i, len, out;
 
     len = str.length;
@@ -128,7 +127,7 @@ if (!Array.prototype.map) {
       do {
         c1 = decodeChars[str.charCodeAt(i++) & 0xff];
       } while(i < len && c1 === -1);
-      
+
       if (c1 === -1) {
         break;
       }
@@ -179,7 +178,7 @@ if (!Array.prototype.map) {
 
     return out;
   }
-  function base64encode(str) {
+  function base64encode (str) {
     var c1, c2, c3, i, len, out;
 
     len = str.length;
@@ -226,23 +225,23 @@ if (!Array.prototype.map) {
 })();
 
 module.exports = {
-  _checkDisplay: function(node, changed) {
+  _checkDisplay: function (node, changed) {
     if (node.style && node.style.display === 'none') {
       changed.push(node);
       node.style.display = 'block';
     }
   },
   // TODO: Need to support https for test/inside endpoint
-  checkNpsNetwork: function(callback) {
+  checkNpsNetwork: function (callback) {
     var me = this;
 
     if (me.supportsCors()) {
       me.reqwest({
         crossOrigin: true,
-        error: function() {
+        error: function () {
           callback(false);
         },
-        success: function(response) {
+        success: function (response) {
           if (response && response.success) {
             callback(true);
           }
@@ -251,12 +250,12 @@ module.exports = {
         url: 'http://insidemaps.nps.gov/test/inside'
       });
     } else {
-      var done = false,
-        inside = false,
-        time = 0,
-        interval;
+      var done = false;
+      var inside = false;
+      var time = 0;
+      var interval;
 
-      interval = setInterval(function() {
+      interval = setInterval(function () {
         if (done === true) {
           clearInterval(interval);
           callback(inside);
@@ -270,7 +269,7 @@ module.exports = {
         }
       }, 100);
       me.reqwest({
-        success: function(response) {
+        success: function (response) {
           if (response && response.success) {
             inside = true;
           }
@@ -282,17 +281,17 @@ module.exports = {
       });
     }
   },
-  _getAutoPanPaddingTopLeft: function(el) {
+  _getAutoPanPaddingTopLeft: function (el) {
     var containers = this.getChildElementsByClassName(el, 'leaflet-top');
 
     return [this.getOuterDimensions(containers[0]).width + 20, this.getOuterDimensions(containers[1]).height + 20];
   },
-  _getAvailableHorizontalSpace: function(map) {
-    var container = map.getContainer(),
-      leftBottom = this.getChildElementsByClassName(container, 'leaflet-bottom')[0],
-      leftTop = this.getChildElementsByClassName(container, 'leaflet-top')[0],
-      leftWidth = this.getOuterDimensions(leftBottom).width,
-      available;
+  _getAvailableHorizontalSpace: function (map) {
+    var container = map.getContainer();
+    var leftBottom = this.getChildElementsByClassName(container, 'leaflet-bottom')[0];
+    var leftTop = this.getChildElementsByClassName(container, 'leaflet-top')[0];
+    var leftWidth = this.getOuterDimensions(leftBottom).width;
+    var available;
 
     if (this.getOuterDimensions(leftTop).width > leftWidth) {
       leftWidth = this.getOuterDimensions(leftTop).width;
@@ -307,12 +306,12 @@ module.exports = {
       return 250;
     }
   },
-  _getAvailableVerticalSpace: function(map) {
-    var container = map.getContainer(),
-      bottomLeft = this.getChildElementsByClassName(container, 'leaflet-bottom')[0],
-      bottomRight = this.getChildElementsByClassName(container, 'leaflet-bottom')[1],
-      bottomHeight = this.getOuterDimensions(bottomLeft).height,
-      available;
+  _getAvailableVerticalSpace: function (map) {
+    var container = map.getContainer();
+    var bottomLeft = this.getChildElementsByClassName(container, 'leaflet-bottom')[0];
+    var bottomRight = this.getChildElementsByClassName(container, 'leaflet-bottom')[1];
+    var bottomHeight = this.getOuterDimensions(bottomLeft).height;
+    var available;
 
     if (this.getOuterDimensions(bottomRight).height > bottomHeight) {
       bottomHeight = this.getOuterDimensions(bottomRight).height;
@@ -718,12 +717,12 @@ module.exports = {
 
     return textLinked;
   },
-  loadFile: function(url, type, callback) {
+  loadFile: function (url, type, callback) {
     if (this.isLocalUrl(url)) {
       if (type === 'xml') {
         var request = new XMLHttpRequest();
 
-        request.onload = function() {
+        request.onload = function () {
           var text = this.responseText;
 
           if (text) {
@@ -736,10 +735,10 @@ module.exports = {
         request.send();
       } else {
         reqwest({
-          error: function() {
+          error: function () {
             callback(false);
           },
-          success: function(response) {
+          success: function (response) {
             if (response) {
               if (type === 'text') {
                 callback(response.responseText);
@@ -759,10 +758,10 @@ module.exports = {
 
       reqwest({
         crossOrigin: supportsCors,
-        error: function() {
+        error: function () {
           callback(false);
         },
-        success: function(response) {
+        success: function (response) {
           if (response && response.success) {
             callback(response.data);
           } else {
@@ -770,31 +769,33 @@ module.exports = {
           }
         },
         type: 'json' + (supportsCors ? '' : 'p'),
-        url: 'https://server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+        url: window.location.protocol + '//server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
       });
     }
   },
-  mediaToList: function(data, media) {
-    var div = document.createElement('div'),
-      types = {
-        focus: function(guids) {
-          var guidArray = guids.match(new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g')),
-            imgs = [];
+  mediaToList: function (data, media) {
+    var div = document.createElement('div');
+    var types = {
+      focus: function (guids) {
+        var guidArray = guids.match(new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'));
+        var imgs = [];
 
-          for (var i = 0; i < guidArray.length; i++) {
-            imgs.push({
-              href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i],
-              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/xlarge'
-            });
-          }
-
-          return imgs;
+        for (var i = 0; i < guidArray.length; i++) {
+          imgs.push({
+            href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i],
+            src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/xlarge'
+          });
         }
-      },
-      ul = document.createElement('ul'),
-      images, next, previous;
 
-    function changeImage(direction) {
+        return imgs;
+      }
+    };
+    var ul = document.createElement('ul');
+    var images;
+    var next;
+    var previous;
+
+    function changeImage (direction) {
       var lis = ul.childNodes,
         maxImg = lis.length,
         curImg, j, li;
