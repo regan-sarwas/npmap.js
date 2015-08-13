@@ -32,7 +32,13 @@ var OverviewControl = L.Control.extend({
       }
 
       L.Util.setOptions(this, options);
-      this._layer = options.layer.L = L.npmap.layer[options.layer.type](options.layer);
+
+      if (options.layer.type === 'arcgisserver') {
+        this._layer = options.layer.L = L.npmap.layer[options.layer.type][options.layer.tiled === true ? 'tiled' : 'dynamic'](options.layer);
+      } else {
+        this._layer = options.layer.L = L.npmap.layer[options.layer.type](options.layer);
+      }
+
       return this;
     } else {
       throw new Error('The overview control must have a layer specified.');
