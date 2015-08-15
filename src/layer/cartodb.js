@@ -60,7 +60,7 @@ var CartoDbLayer = L.TileLayer.extend({
           var layer = {
             options: {},
             type: 'cartodb'
-          };
+          }, queryFields = [];
 
           if (me.options.cartocss) {
             me._cartocss = me.options.cartocss;
@@ -73,12 +73,12 @@ var CartoDbLayer = L.TileLayer.extend({
 
           if (me.options.interactivity) {
             me._interactivity = me.options.interactivity.split(',');
-          } else if (me.options.clickable !== false && response.fields) {
+          } else if (me.options.clickable !== false && response.rows) {
             me._interactivity = [];
 
-            for (var field in response.fields) {
-              if (response.fields[field].type !== 'geometry') {
-                me._interactivity.push(field);
+            for (var i = 0; i < response.rows.length; i++) {
+              if (response.rows[i].cdb_columnnames !== 'the_geom' || response.rows[i].cdb_columnnames !== 'the_geom_webmercator') {
+                me._interactivity.push(response.rows[i].cdb_columnnames)
               }
             }
           }
@@ -87,112 +87,93 @@ var CartoDbLayer = L.TileLayer.extend({
             me._hasInteractivity = true;
           }
 
+          for (var i = 0; i < response.rows.length; i++) {
+            if (response.rows[i].cdb_columntype === 'timestamp without time zone') {
+              queryFields.push("to_char(" + response.rows[i].cdb_columnnames + ", 'YYYY-MM-DD-THH24:MI:SS') AS " + response.rows[i].cdb_columnnames);
+            } else if (response.rows[i].cdb_columntype === 'timestamp with time zone') {
+              queryFields.push("to_char(" + response.rows[i].cdb_columnnames + ", 'YYYY-MM-DD-THH24:MI:SS TZ') AS " + response.rows[i].cdb_columnnames);
+            } else {
+              queryFields.push(response.rows[i].cdb_columnnames);
+            }
+          }
+
+          layer.options.sql = me._sql = (me.options.sql || ('SELECT ' + queryFields.toString() + ' FROM ' + me.options.table + ';'));
+
+          if (me._cartocss) {
+            layer.options.cartocss = me._cartocss;
+            layer.options.cartocss_version = '2.1.1';
+          }
+
+          if (me._interactivity) {
+            layer.options.interactivity = me._interactivity;
+
+            /*
+            layer.options.attributes = {
+              columns: me._interactivity,
+              id: 'cartodb_id'
+            }
+            */
+          }
+
           reqwest({
             crossOrigin: supportsCors === 'yes' ? true : false,
-            error: function(error) {
-              error.message = JSON.parse(error.response).error[0];
-              me.fire('error', error);
-              me.errorFired = error;
+            error: function(response) {
+              var obj = {};
+
+              if (response && response.responseText) {
+                response = JSON.parse(response.responseText);
+
+                if (response.errors && response.errors.length) {
+                  obj.message = response.errors[0];
+                } else {
+                  obj.message = 'An unspecified error occured.';
+                }
+              } else {
+                obj.message = 'An unspecified error occured.';
+              }
+
+              me.fire('error', obj);
             },
             success: function(response) {
-              var columns,
-                queryFields = [];
+              if (response) {
+                // This is the only layer handler that we don't default everything to https for.
+                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for https.
+                // If the web page is using https, however, we do want to default to it - even if it means taking a performance hit.
+                var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid,
+                  template = '{z}/{x}/{y}';
 
-              columns = response.rows;
-
-              for (var i = 0; i < columns.length; i++) {
-                if (columns[i].cdb_columntype === 'timestamp without time zone') {
-                  queryFields.push("to_char(" + columns[i].cdb_columnnames + ", 'YYYY-MM-DD-THH24:MI:SS') AS " + columns[i].cdb_columnnames);
-                } else if (columns[i].cdb_columntype === 'timestamp with time zone') {
-                  queryFields.push("to_char(" + columns[i].cdb_columnnames + ", 'YYYY-MM-DD-THH24:MI:SS TZ') AS " + columns[i].cdb_columnnames);
-                } else {
-                  queryFields.push(columns[i].cdb_columnnames);
+                if (me._hasInteractivity && me._interactivity.length) {
+                  me._urlGrid = root + '/0/' + template + '.grid.json';
                 }
+
+                me._urlTile = root + '/' + template + '.png';
+                me.setUrl(me._urlTile);
+                me.redraw();
+                me.fire('ready');
+                me.readyFired = true;
+
+                return me;
+              } else {
+                me.fire('error', {
+                  msg: 'No response was received.'
+                });
               }
-
-              layer.options.sql = me._sql = (me.options.sql || ('SELECT ' + queryFields.toString() + ' FROM ' + me.options.table + ';'));
-
-              if (me._cartocss) {
-                layer.options.cartocss = me._cartocss;
-                layer.options.cartocss_version = '2.1.1';
-              }
-
-              if (me._interactivity) {
-                layer.options.interactivity = me._interactivity;
-
-                /*
-                layer.options.attributes = {
-                  columns: me._interactivity,
-                  id: 'cartodb_id'
-                }
-                */
-              }
-
-              reqwest({
-                crossOrigin: supportsCors === 'yes' ? true : false,
-                error: function(response) {
-                  var obj = {};
-
-                  if (response && response.responseText) {
-                    response = JSON.parse(response.responseText);
-
-                    if (response.errors && response.errors.length) {
-                      obj.message = response.errors[0];
-                    } else {
-                      obj.message = 'An unspecified error occured.';
-                    }
-                  } else {
-                    obj.message = 'An unspecified error occured.';
-                  }
-
-                  me.fire('error', obj);
-                },
-                success: function(response) {
-                  if (response) {
-                    // This is the only layer handler that we don't default everything to https for.
-                    // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for https.
-                    // If the web page is using https, however, we do want to default to it - even if it means taking a performance hit.
-                    var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid,
-                      template = '{z}/{x}/{y}';
-
-                    if (me._hasInteractivity && me._interactivity.length) {
-                      me._urlGrid = root + '/0/' + template + '.grid.json';
-                    }
-
-                    me._urlTile = root + '/' + template + '.png';
-                    me.setUrl(me._urlTile);
-                    me.redraw();
-                    me.fire('ready');
-                    me.readyFired = true;
-
-                    return me;
-                  } else {
-                    me.fire('error', {
-                      msg: 'No response was received.'
-                    });
-                  }
-                },
-                type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-                url: util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
-                  config: JSON.stringify({
-                    layers: [
-                      layer
-                    ],
-                    version: '1.0.1'
-                  })
-                }) + (supportsCors === 'yes' ? '' : '&callback=?')
-              });
             },
             type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-            url: util.buildUrl(me._urlApi, {
-              q: "SELECT cdb_columnnames, CDB_ColumnType('" + me.options.table + "', cdb_columnnames) FROM CDB_ColumnNames('" + me.options.table + "')"
+            url: util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
+              config: JSON.stringify({
+                layers: [
+                  layer
+                ],
+                version: '1.0.1'
+              })
             }) + (supportsCors === 'yes' ? '' : '&callback=?')
           });
         }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
       url: util.buildUrl(this._urlApi, {
-        q: 'select * from ' + this.options.table + ' limit 0;'
+        q: "SELECT CDB_ColumnNames,CDB_ColumnType('" + this.options.table + "',cdb_columnnames) FROM CDB_ColumnNames('" + this.options.table + "')"
       }) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
     reqwest({
