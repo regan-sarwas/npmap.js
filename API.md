@@ -1,4 +1,4 @@
-# <a name="toc">NPMap.js API Docs</a>
+# <a name="toc" style="display:none;">NPMap.js API Docs</a>
 
 * [Map](#map)
 * [Layers](#layers)
