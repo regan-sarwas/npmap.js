@@ -77,7 +77,7 @@ var CartoDbLayer = L.TileLayer.extend({
             me._interactivity = [];
 
             for (var i = 0; i < response.rows.length; i++) {
-              if (response.rows[i].cdb_columnnames !== 'the_geom' || response.rows[i].cdb_columnnames !== 'the_geom_webmercator') {
+              if (response.rows[i].cdb_columnnames !== 'the_geom' && response.rows[i].cdb_columnnames !== 'the_geom_webmercator') {
                 me._interactivity.push(response.rows[i].cdb_columnnames)
               }
             }
