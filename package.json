@@ -2,7 +2,7 @@
   "author": {
     "email": "nate_irwin@nps.gov",
     "name": "Nate Irwin",
-    "url": "http://www.nps.gov/npmap/team/nate-irwin.html"
+    "url": "http://www.nps.gov/npmap/team/nate-irwin/"
   },
   "bugs": {
     "email": "npmap@nps.gov",
@@ -12,17 +12,17 @@
     {
       "email": "james_mcandrew@partner.nps.gov",
       "name": "Jim McAndrew",
-      "url": "http://www.nps.gov/npmap/team/jim-mcandrew.html"
+      "url": "http://www.nps.gov/npmap/team/jim-mcandrew/"
     },
     {
       "email": "katrina_engelsted@partner.nps.gov",
       "name": "Katrina Engelsted",
-      "url": "http://www.nps.gov/npmap/team/katrina-engelsted.html"
+      "url": "http://www.nps.gov/npmap/team/katrina-engelsted/"
     },
     {
       "email": "mamata_akella@partner.nps.gov",
       "name": "Mamata Akella",
-      "url": "http://www.nps.gov/npmap/team/mamata-akella.html"
+      "url": "http://www.nps.gov/npmap/team/mamata-akella/"
     }
   ],
   "dependencies": {
