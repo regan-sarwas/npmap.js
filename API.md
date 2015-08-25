@@ -96,11 +96,11 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Getting Started](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/basic.html)
-* [Events](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/events.html)
-* [Hooks](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/hooks.html)
-* [Multiple Maps on One Page](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/multiple-maps.html)
-* [Using Notifications](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/notifications.html)
+* [Getting Started](http://www.nps.gov/lib/npmap.js/2.0.0/examples/basic.html)
+* [Events](http://www.nps.gov/lib/npmap.js/2.0.0/examples/events.html)
+* [Hooks](http://www.nps.gov/lib/npmap.js/2.0.0/examples/hooks.html)
+* [Multiple Maps on One Page](http://www.nps.gov/lib/npmap.js/2.0.0/examples/multiple-maps.html)
+* [Using Notifications](http://www.nps.gov/lib/npmap.js/2.0.0/examples/notifications.html)
 
 **[[⬆]](#)**
 
@@ -164,7 +164,7 @@ Supported event "types" include all of the Leaflet layer events for a given laye
 
 _Working Examples_:
 
-* [Events](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/events.html)
+* [Events](http://www.nps.gov/lib/npmap.js/2.0.0/examples/events.html)
 
 **[[⬆]](#)**
 
@@ -227,7 +227,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [ArcGIS Server Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/arcgisserver-layer.html)
+* [ArcGIS Server Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/arcgisserver-layer.html)
 
 **[[⬆]](#)**
 
@@ -272,7 +272,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Bing Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/bing-layer.html)
+* [Bing Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/bing-layer.html)
 
 **[[⬆]](#)**
 
@@ -328,7 +328,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [CartoDB Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/cartodb-layer.html)
+* [CartoDB Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/cartodb-layer.html)
 
 **[[⬆]](#)**
 
@@ -392,8 +392,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [CSV Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/csv-layer.html)
-* [CSV Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/csv-layer-clustered.html)
+* [CSV Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/csv-layer.html)
+* [CSV Layer (Clustered)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/csv-layer-clustered.html)
 
 **[[⬆]](#)**
 
@@ -457,8 +457,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [GeoJSON Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/geojson-layer.html)
-* [GeoJSON Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/geojson-layer-clustered.html)
+* [GeoJSON Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/geojson-layer.html)
+* [GeoJSON Layer (Clustered)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/geojson-layer-clustered.html)
 
 **[[⬆]](#)**
 
@@ -525,7 +525,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [GitHub Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/github-layer.html)
+* [GitHub Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/github-layer.html)
 
 **[[⬆]](#)**
 
@@ -589,8 +589,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [KML Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/kml-layer.html)
-* [KML Layer (Clustered)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/kml-layer-clustered.html)
+* [KML Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/kml-layer.html)
+* [KML Layer (Clustered)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/kml-layer-clustered.html)
 
 **[[⬆]](#)**
 
@@ -644,7 +644,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Mapbox Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/mapbox-layer.html)
+* [Mapbox Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/mapbox-layer.html)
 
 **[[⬆]](#)**
 
@@ -702,7 +702,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [SPOT Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/spot-layer.html)
+* [SPOT Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/spot-layer.html)
 
 **[[⬆]](#)**
 
@@ -751,7 +751,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Tiled Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/tiled-layer.html)
+* [Tiled Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/tiled-layer.html)
 
 **[[⬆]](#)**
 
@@ -803,7 +803,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [WMS Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/wms-layer.html)
+* [WMS Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/wms-layer.html)
 
 **[[⬆]](#)**
 
@@ -855,7 +855,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Zoomify Layer](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/zoomify-layer.html)
+* [Zoomify Layer](http://www.nps.gov/lib/npmap.js/2.0.0/examples/zoomify-layer.html)
 
 **[[⬆]](#)**
 
@@ -894,7 +894,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Edit Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/edit-control.html)
+* [Edit Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/edit-control.html)
 
 **[[⬆]](#)**
 
@@ -927,9 +927,9 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Fullscreen Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/fullscreen-control.html)
-* [Fullscreen Control (API)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/fullscreen-control-api.html)
-* [Fullscreen Control (iframe)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/fullscreen-control-iframe.html)
+* [Fullscreen Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/fullscreen-control.html)
+* [Fullscreen Control (API)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/fullscreen-control-api.html)
+* [Fullscreen Control (iframe)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/fullscreen-control-iframe.html)
 
 **[[⬆]](#)**
 
@@ -966,7 +966,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Geocoder Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/geocoder-control.html)
+* [Geocoder Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/geocoder-control.html)
 
 **[[⬆]](#)**
 
@@ -999,9 +999,9 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Hash Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/hash-control.html)
-* [Hash Control (iframe)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/hash-control-iframe.html)
-* [Hash Control (Track History)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/hash-control-track-history.html)
+* [Hash Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/hash-control.html)
+* [Hash Control (iframe)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/hash-control-iframe.html)
+* [Hash Control (Track History)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/hash-control-track-history.html)
 
 **[[⬆]](#)**
 
@@ -1109,8 +1109,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Legend Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/legend-control.html)
-* [Legend Control (ArcGIS Server)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/legend-control-arcgisserver.html)
+* [Legend Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/legend-control.html)
+* [Legend Control (ArcGIS Server)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/legend-control-arcgisserver.html)
 
 **[[⬆]](#)**
 
@@ -1143,7 +1143,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Locate Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/locate-control.html)
+* [Locate Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/locate-control.html)
 
 **[[⬆]](#)**
 
@@ -1180,7 +1180,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Measure Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/measure-control.html)
+* [Measure Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/measure-control.html)
 
 **[[⬆]](#)**
 
@@ -1223,8 +1223,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Overview Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/edit-control.html)
-* [Overview Control (API)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/edit-control-api.html)
+* [Overview Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/edit-control.html)
+* [Overview Control (API)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/edit-control-api.html)
 
 **[[⬆]](#)**
 
@@ -1260,7 +1260,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Print Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/print-control.html)
+* [Print Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/print-control.html)
 
 **[[⬆]](#)**
 
@@ -1293,8 +1293,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Scale Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/scale-control.html)
-* [Scale Control (API)](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/scale-control-api.html)
+* [Scale Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/scale-control.html)
+* [Scale Control (API)](http://www.nps.gov/lib/npmap.js/2.0.0/examples/scale-control-api.html)
 
 **[[⬆]](#)**
 
@@ -1359,7 +1359,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Zoom Display Control](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/zoomdisplay-control.html)
+* [Zoom Display Control](http://www.nps.gov/lib/npmap.js/2.0.0/examples/zoomdisplay-control.html)
 
 **[[⬆]](#)**
 
@@ -1426,7 +1426,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Styling Vectors](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/styling-vectors.html)
+* [Styling Vectors](http://www.nps.gov/lib/npmap.js/2.0.0/examples/styling-vectors.html)
 
 **[[⬆]](#)**
 
@@ -1482,7 +1482,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Styling Vectors](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/styling-vectors.html)
+* [Styling Vectors](http://www.nps.gov/lib/npmap.js/2.0.0/examples/styling-vectors.html)
 
 **[[⬆]](#)**
 
@@ -1549,7 +1549,7 @@ The following baseLayer preset strings are supported:
    * `stamen-toner`
    * `stamen-watercolor`
 
-Take a look at the [baseLayer presets](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/baselayer-presets.html) example for more information.
+Take a look at the [baseLayer presets](http://www.nps.gov/lib/npmap.js/2.0.0/examples/baselayer-presets.html) example for more information.
 
 **[[⬆]](#)**
 
@@ -1581,7 +1581,7 @@ It is also possible to create maps by interacting directly with the NPMap.js API
 
 #### Hybrid
 
-The NPMap team builds many of its maps using a hybrid approach that uses `npmap-bootstrap.js` to do the initial configuration and load of a map and then takes advantage of NPMap.js' [hooks](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/hooks.html) and API to add custom functionality.
+The NPMap team builds many of its maps using a hybrid approach that uses `npmap-bootstrap.js` to do the initial configuration and load of a map and then takes advantage of NPMap.js' [hooks](http://www.nps.gov/lib/npmap.js/2.0.0/examples/hooks.html) and API to add custom functionality.
 
 This approach gets the best of both the Bootstrap and API methods: Easy initial configuration with advanced programmatic access for complete control. This approach also has an added benefit of consistency. Every map built using this hybrid approach is laid out (or "scaffolded") in a consistent way.
 
@@ -1746,7 +1746,7 @@ NPMap.js also adds a number of "helpers" to Handlebars. These helpers can be use
   <li><code>toUpperCase</code><pre><code>title: '{{toUpperCase Name}}'</code></pre></li>
 </ul>
 
-You can see examples of configuring popups for overlays in the [popups](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/popups.html) example.
+You can see examples of configuring popups for overlays in the [popups](http://www.nps.gov/lib/npmap.js/2.0.0/examples/popups.html) example.
 
 **[[⬆]](#)**
 
@@ -1764,7 +1764,7 @@ Tooltips should be short and succinct. Both HTML and Handlebars strings are supp
       }]
     };
 
-You can see examples of configuring tooltips for overlays in the [tooltips example](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/tooltips.html).
+You can see examples of configuring tooltips for overlays in the [tooltips example](http://www.nps.gov/lib/npmap.js/2.0.0/examples/tooltips.html).
 
 **[[⬆]](#)**
 
@@ -1800,6 +1800,6 @@ If you prefer not to use the simplestyle specification, you can utilize the out-
 
 **Note**: Style properties cascade. This means that if a `marker-symbol` property is passed in via the data source (e.g. a GeoJSON feature's properties) and a `marker-color` property is passed in via the overlay config object, the geometry will be styled with both the `marker-symbol` **and** `marker-color` properties unless the `ignoreFeatureStyles` property is present.
 
-Take a look at the [Styling Vectors example](http://www.nps.gov/npmap/npmap.js/2.0.0/examples/styling-vectors.html) to see an example of using the different configuration options to style overlay's.
+Take a look at the [Styling Vectors example](http://www.nps.gov/lib/npmap.js/2.0.0/examples/styling-vectors.html) to see an example of using the different configuration options to style overlay's.
 
 **[[⬆]](#)**
