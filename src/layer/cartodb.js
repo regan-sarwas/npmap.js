@@ -3,8 +3,8 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  util = require('../util/util');
+var reqwest = require('reqwest');
+var util = require('../util/util');
 
 var CartoDbLayer = L.TileLayer.extend({
   includes: [
@@ -30,14 +30,14 @@ var CartoDbLayer = L.TileLayer.extend({
       'st_polygon': 'polygon'
     }
   },
-  _update: function() {
+  _update: function () {
     if (this._urlTile) {
       L.TileLayer.prototype._update.call(this);
     }
   },
-  initialize: function(options) {
-    var me = this,
-      supportsCors = util.supportsCors();
+  initialize: function (options) {
+    var me = this;
+    var supportsCors = util.supportsCors();
 
     if (!L.Browser.retina || !options.detectRetina) {
       options.detectRetina = false;
@@ -48,19 +48,25 @@ var CartoDbLayer = L.TileLayer.extend({
     util.strict(this.options.user, 'string');
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
     this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
+    console.log(this._urlApi);
     reqwest({
-      crossOrigin: supportsCors === 'yes' ? true : false,
-      error: function(error) {
+      crossOrigin: supportsCors === 'yes',
+      error: function (error) {
         error.message = JSON.parse(error.response).error[0];
         me.fire('error', error);
         me.errorFired = error;
       },
-      success: function(response) {
+      // Next, do select top 0 and then compare responses.
+      success: function (response) {
         if (response) {
           var layer = {
             options: {},
             type: 'cartodb'
-          }, queryFields = [];
+          };
+          var queryFields = [];
+          var i;
+
+          console.log(response);
 
           if (me.options.cartocss) {
             me._cartocss = me.options.cartocss;
@@ -76,9 +82,9 @@ var CartoDbLayer = L.TileLayer.extend({
           } else if (me.options.clickable !== false && response.rows) {
             me._interactivity = [];
 
-            for (var i = 0; i < response.rows.length; i++) {
+            for (i = 0; i < response.rows.length; i++) {
               if (response.rows[i].cdb_columnnames !== 'the_geom' && response.rows[i].cdb_columnnames !== 'the_geom_webmercator') {
-                me._interactivity.push(response.rows[i].cdb_columnnames)
+                me._interactivity.push(response.rows[i].cdb_columnnames);
               }
             }
           }
@@ -87,15 +93,21 @@ var CartoDbLayer = L.TileLayer.extend({
             me._hasInteractivity = true;
           }
 
-          for (var i = 0; i < response.rows.length; i++) {
+          for (i = 0; i < response.rows.length; i++) {
+            var columnNames = response.rows[i].cdb_columnnames;
+
+            // This is returning some fields (description) that don't exist in the table.
+
             if (response.rows[i].cdb_columntype === 'timestamp without time zone') {
-              queryFields.push("to_char(" + response.rows[i].cdb_columnnames + ", 'YYYY-MM-DD-THH24:MI:SS') AS " + response.rows[i].cdb_columnnames);
+              queryFields.push('to_char(' + columnNames + ', \'YYYY-MM-DD-THH24:MI:SS\') AS ' + columnNames);
             } else if (response.rows[i].cdb_columntype === 'timestamp with time zone') {
-              queryFields.push("to_char(" + response.rows[i].cdb_columnnames + ", 'YYYY-MM-DD-THH24:MI:SS TZ') AS " + response.rows[i].cdb_columnnames);
+              queryFields.push('to_char(' + columnNames + ', \'YYYY-MM-DD-THH24:MI:SS TZ\') AS ' + columnNames);
             } else {
-              queryFields.push(response.rows[i].cdb_columnnames);
+              queryFields.push(columnNames);
             }
           }
+
+          // console.log(queryFields);
 
           layer.options.sql = me._sql = (me.options.sql || ('SELECT ' + queryFields.toString() + ' FROM ' + me.options.table + ';'));
 
@@ -106,19 +118,16 @@ var CartoDbLayer = L.TileLayer.extend({
 
           if (me._interactivity) {
             layer.options.interactivity = me._interactivity;
-
-            /*
-            layer.options.attributes = {
-              columns: me._interactivity,
-              id: 'cartodb_id'
-            }
-            */
           }
 
+          // console.log(layer);
+
           reqwest({
-            crossOrigin: supportsCors === 'yes' ? true : false,
-            error: function(response) {
+            crossOrigin: supportsCors === 'yes',
+            error: function (response) {
               var obj = {};
+
+              // console.log(response);
 
               if (response && response.responseText) {
                 response = JSON.parse(response.responseText);
@@ -134,13 +143,15 @@ var CartoDbLayer = L.TileLayer.extend({
 
               me.fire('error', obj);
             },
-            success: function(response) {
+            success: function (response) {
+              // console.log(response);
+
               if (response) {
                 // This is the only layer handler that we don't default everything to https for.
                 // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for https.
                 // If the web page is using https, however, we do want to default to it - even if it means taking a performance hit.
-                var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid,
-                  template = '{z}/{x}/{y}';
+                var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid;
+                var template = '{z}/{x}/{y}';
 
                 if (me._hasInteractivity && me._interactivity.length) {
                   me._urlGrid = root + '/0/' + template + '.grid.json';
@@ -173,12 +184,12 @@ var CartoDbLayer = L.TileLayer.extend({
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
       url: util.buildUrl(this._urlApi, {
-        q: "SELECT CDB_ColumnNames,CDB_ColumnType('" + this.options.table + "',cdb_columnnames) FROM CDB_ColumnNames('" + this.options.table + "')"
+        q: 'SELECT DISTINCT CDB_ColumnNames,CDB_ColumnType(\'' + this.options.table + '\',cdb_columnnames) FROM CDB_ColumnNames(\'' + this.options.table + '\')'
       }) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
     reqwest({
-      crossOrigin: supportsCors === 'yes' ? true : false,
-      success: function(response) {
+      crossOrigin: supportsCors === 'yes',
+      success: function (response) {
         me._geometryTypes = [];
 
         if (response && response.rows && response.rows.length) {
@@ -195,13 +206,13 @@ var CartoDbLayer = L.TileLayer.extend({
       }) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
   },
-  _getGridData: function(latLng, callback) {
+  _getGridData: function (latLng, callback) {
     var me = this;
 
     if (this._urlGrid) {
       this._getTileGrid(L.Util.template(this._urlGrid, L.Util.extend({
         s: this.options.subdomains[Math.floor(Math.random() * this.options.subdomains.length)]
-      }, this._getTileCoords(latLng))), latLng, function(resultData, gridData) {
+      }, this._getTileCoords(latLng))), latLng, function (resultData, gridData) {
         if (resultData === 'loading') {
           callback({
             layer: me,
@@ -230,28 +241,28 @@ var CartoDbLayer = L.TileLayer.extend({
       });
     }
   },
-  _stylesToCartoCss: function(styles) {
-    var cartoCss = {},
-      match = {
-        'fill': 'polygon-fill',
-        'fill-opacity': 'polygon-opacity',
-        'marker-color': 'marker-fill',
-        'marker-size': function(value) {
-          var size = 8;
+  _stylesToCartoCss: function (styles) {
+    var cartoCss = {};
+    var match = {
+      'fill': 'polygon-fill',
+      'fill-opacity': 'polygon-opacity',
+      'marker-color': 'marker-fill',
+      'marker-size': function (value) {
+        var size = 8;
 
-          if (value === 'large') {
-            size = 16;
-          } else if (value === 'medium') {
-            size = 12;
-          }
+        if (value === 'large') {
+          size = 16;
+        } else if (value === 'medium') {
+          size = 12;
+        }
 
-          cartoCss['marker-height'] = size;
-          cartoCss['marker-width'] = size;
-        },
-        'stroke': 'line-color',
-        'stroke-opacity': 'line-opacity',
-        'stroke-width': 'line-width'
-      };
+        cartoCss['marker-height'] = size;
+        cartoCss['marker-width'] = size;
+      },
+      'stroke': 'line-color',
+      'stroke-opacity': 'line-opacity',
+      'stroke-width': 'line-width'
+    };
 
     for (var property in styles) {
       var value = styles[property];
@@ -267,7 +278,7 @@ var CartoDbLayer = L.TileLayer.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   options = options || {};
 
   if (!options.type) {
