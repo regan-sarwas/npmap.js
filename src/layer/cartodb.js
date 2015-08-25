@@ -60,7 +60,7 @@ var CartoDbLayer = L.TileLayer.extend({
           var layer = {
             options: {},
             type: 'cartodb'
-          }, queryFields = [];
+          };
 
           if (me.options.cartocss) {
             me._cartocss = me.options.cartocss;
@@ -73,12 +73,12 @@ var CartoDbLayer = L.TileLayer.extend({
 
           if (me.options.interactivity) {
             me._interactivity = me.options.interactivity.split(',');
-          } else if (me.options.clickable !== false && response.rows) {
+          } else if (me.options.clickable !== false && response.fields) {
             me._interactivity = [];
 
-            for (var i = 0; i < response.rows.length; i++) {
-              if (response.rows[i].cdb_columnnames !== 'the_geom' && response.rows[i].cdb_columnnames !== 'the_geom_webmercator') {
-                me._interactivity.push(response.rows[i].cdb_columnnames)
+            for (var field in response.fields) {
+              if (response.fields[field].type !== 'geometry') {
+                me._interactivity.push(field);
               }
             }
           }
@@ -87,17 +87,7 @@ var CartoDbLayer = L.TileLayer.extend({
             me._hasInteractivity = true;
           }
 
-          for (var i = 0; i < response.rows.length; i++) {
-            if (response.rows[i].cdb_columntype === 'timestamp without time zone') {
-              queryFields.push("to_char(" + response.rows[i].cdb_columnnames + ", 'YYYY-MM-DD-THH24:MI:SS') AS " + response.rows[i].cdb_columnnames);
-            } else if (response.rows[i].cdb_columntype === 'timestamp with time zone') {
-              queryFields.push("to_char(" + response.rows[i].cdb_columnnames + ", 'YYYY-MM-DD-THH24:MI:SS TZ') AS " + response.rows[i].cdb_columnnames);
-            } else {
-              queryFields.push(response.rows[i].cdb_columnnames);
-            }
-          }
-
-          layer.options.sql = me._sql = (me.options.sql || ('SELECT ' + queryFields.toString() + ' FROM ' + me.options.table + ';'));
+          layer.options.sql = me._sql = (me.options.sql || ('SELECT * FROM ' + me.options.table + ';'));
 
           if (me._cartocss) {
             layer.options.cartocss = me._cartocss;
@@ -173,7 +163,7 @@ var CartoDbLayer = L.TileLayer.extend({
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
       url: util.buildUrl(this._urlApi, {
-        q: "SELECT CDB_ColumnNames,CDB_ColumnType('" + this.options.table + "',cdb_columnnames) FROM CDB_ColumnNames('" + this.options.table + "')"
+        q: 'select * from ' + this.options.table + ' limit 0;'
       }) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
     reqwest({
