@@ -97,7 +97,7 @@
         "class": 4,
         "description": "This marker is styled with a marker-size and marker-symbol.",
         "marker-size": "large",
-        "marker-symbol": "4",
+        "marker-symbol": 4,
         "name": "A Marker"
       },
       "geometry": {
