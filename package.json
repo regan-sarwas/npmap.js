@@ -1,30 +1,8 @@
 {
-  "author": {
-    "email": "nate_irwin@nps.gov",
-    "name": "Nate Irwin",
-    "url": "http://www.nps.gov/npmap/team/nate-irwin/"
-  },
   "bugs": {
     "email": "npmap@nps.gov",
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
   },
-  "contributors": [
-    {
-      "email": "james_mcandrew@partner.nps.gov",
-      "name": "Jim McAndrew",
-      "url": "http://www.nps.gov/npmap/team/jim-mcandrew/"
-    },
-    {
-      "email": "katrina_engelsted@partner.nps.gov",
-      "name": "Katrina Engelsted",
-      "url": "http://www.nps.gov/npmap/team/katrina-engelsted/"
-    },
-    {
-      "email": "mamata_akella@partner.nps.gov",
-      "name": "Mamata Akella",
-      "url": "http://www.nps.gov/npmap/team/mamata-akella/"
-    }
-  ],
   "dependencies": {
     "csv2geojson": "4.0.0",
     "handlebars": "3.0.3",
@@ -100,5 +78,5 @@
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
   },
-  "version": "2.0.0"
+  "version": "2.0.1"
 }
