@@ -30,7 +30,7 @@
     "handlebars": "3.0.3",
     "helper-dateformat": "git+https://github.com/nationalparkservice/helper-dateformat.git#02d70292d366f2a67cbdf52bf809825cc462b991",
     "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
-    "leaflet": "0.7.3",
+    "leaflet": "0.7.5",
     "leaflet-draw": "git+https://github.com/nationalparkservice/Leaflet.Draw.git#23287efc2dc02fcf7de3b4737a76d16f06e7557c",
     "leaflet.markercluster": "https://github.com/nationalparkservice/Leaflet.MarkerCluster/archive/v0.4.0.tar.gz",
     "maki": "~0.4.5",
