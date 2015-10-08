@@ -13,7 +13,7 @@
     "leaflet.markercluster": "https://github.com/nationalparkservice/Leaflet.MarkerCluster/archive/v0.4.0.tar.gz",
     "maki": "~0.4.5",
     "nanobar": "0.2.1",
-    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/gh-pages.tar.gz",
+    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.0.0.tar.gz",
     "reqwest": "1.1.6",
     "togeojson": "0.12.1"
   },
@@ -55,14 +55,16 @@
   "keywords": [
     "Cartography",
     "Department of Interior",
+    "Digital",
     "JavaScript",
     "Leaflet",
     "Map",
     "National Park Service",
-    "NPMaki",
     "NPMap",
+    "NPMap.js",
+    "NPMap Symbol Library",
+    "NPS Places",
     "Park Tiles",
-    "Places",
     "US Government",
     "Web Map"
   ],
@@ -78,5 +80,5 @@
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
   },
-  "version": "2.0.1"
+  "version": "2.1.0"
 }

@@ -32,7 +32,7 @@
    * [directions](#directions)
 * [Icons](#icons)
    * [maki](#maki)
-   * [npmaki](#npmaki)
+   * [npmap](#npmap)
 * [Presets](#presets)
    * [baseLayer](#baselayer)
 * [Utils](#utils)
@@ -1430,9 +1430,9 @@ _Working Examples_:
 
 **[[⬆]](#)**
 
-### <a name="npmaki">npmaki(config: object)</a>
+### <a name="npmap">npmap(config: object)</a>
 
-Create an icon using the [NPMaki](https://github.com/nationalparkservice/npmaki) icon set.
+Create an icon using the [NPMap Symbol Library](https://github.com/nationalparkservice/npmap-symbol-library) icon set.
 
 _Extends_: [`L.Icon`](http://leafletjs.com/reference.html#icon)
 
@@ -1451,7 +1451,7 @@ _Example (Bootstrap)_:
         styles: {
           point: {
             'marker-color': '#5e9fd5',
-            'marker-library': 'npmaki',
+            'marker-library': 'npmap',
             'marker-size': 'small',
             'marker-symbol': 'camping-white'
           }
@@ -1472,6 +1472,7 @@ _Example (API)_:
       styles: {
         point: {
           'marker-color': '#5e9fd5',
+          'marker-library': 'npmap',
           'marker-size': 'small',
           'marker-symbol': 'camping-white'
         }
@@ -1785,7 +1786,7 @@ In addition, NPMap.js supports the following property that is not supported by t
 
     marker-library
 
-This property is optional. It defaults to `maki`, and can also be `npmaki`.
+This property is optional. It defaults to `maki`, and can also be `npmap`.
 
 Styles for vector shapes can be set in multiple ways. NPMap.js looks in the following order for styles:
 

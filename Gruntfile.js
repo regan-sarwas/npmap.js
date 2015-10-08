@@ -1,12 +1,9 @@
-/* globals grunt */
-/* jshint camelcase: false */
-
-module.exports = function () {
+module.exports = function (grunt) {
   'use strict';
 
-  var cssNpmaki = '';
-  var npmaki = require('./node_modules/npmap-symbol-library/www/npmaki.json');
+  var cssNpmapSymbolLibrary = '';
   var npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js';
+  var npmapSymbolLibrary = require('./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json');
   var pkg = require('./package.json');
   var sizes = {
     large: 24,
@@ -25,12 +22,12 @@ module.exports = function () {
     });
   }
 
-  for (var i = 0; i < npmaki.length; i++) {
-    var icon = npmaki[i];
+  for (var i = 0; i < npmapSymbolLibrary.length; i++) {
+    var icon = npmapSymbolLibrary[i];
 
     for (var prop in sizes) {
-      cssNpmaki += '.' + icon.icon + '-' + prop + ' {background-image: url(images/icon/npmaki/' + icon.icon + '-' + sizes[prop] + '.png);}\n';
-      cssNpmaki += '.' + icon.icon + '-' + prop + '-2x {background-image: url(images/icon/npmaki/' + icon.icon + '-' + sizes[prop] + '@2x.png);}\n';
+      cssNpmapSymbolLibrary += '.' + icon.icon + '-' + prop + ' {background-image: url(images/icon/npmap-symbol-library/' + icon.icon + '-' + sizes[prop] + '.png);}\n';
+      cssNpmapSymbolLibrary += '.' + icon.icon + '-' + prop + '-2x {background-image: url(images/icon/npmap-symbol-library/' + icon.icon + '-' + sizes[prop] + '@2x.png);}\n';
     }
   }
 
@@ -122,7 +119,7 @@ module.exports = function () {
       css: {
         dest: 'dist/npmap.css',
         options: {
-          banner: cssNpmaki
+          banner: cssNpmapSymbolLibrary
         },
         src: [
           'node_modules/leaflet/dist/leaflet.css',
@@ -168,17 +165,17 @@ module.exports = function () {
           '**/*'
         ]
       },
-      npmaki: {
-        cwd: 'node_modules/npmap-symbol-library/renders/',
-        dest: 'dist/images/icon/npmaki',
+      npmap: {
+        cwd: 'dist/',
+        dest: '/Volumes/npmap/npmap.js/<%= pkg.version %>/',
         expand: true,
         src: [
           '**/*'
         ]
       },
-      npmap: {
-        cwd: 'dist/',
-        dest: '/Volumes/npmap/npmap.js/<%= pkg.version %>/',
+      npmapSymbolLibrary: {
+        cwd: 'node_modules/npmap-symbol-library/renders/npmap-builder/',
+        dest: 'dist/images/icon/npmap-symbol-library',
         expand: true,
         src: [
           '**/*'
@@ -277,7 +274,7 @@ module.exports = function () {
   });
 
   loadNpmTasks();
-  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'copy:plugins', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); // TODO: csscomb, validation
+  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmapSymbolLibrary', 'copy:plugins', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); // TODO: csscomb, validation
   grunt.registerTask('deploy-lib', ['clean:lib', 'mkdir:lib', 'copy:lib', 'akamai_rest_purge:lib', 'http:lib_examples', 'http:lib_images']);
   grunt.registerTask('deploy-npmap', ['clean:npmap', 'mkdir:npmap', 'copy:npmap', 'akamai_rest_purge:npmap', 'http:npmap_examples', 'http:npmap_images']);
   grunt.registerTask('lint', ['csslint']); // TODO: jshint

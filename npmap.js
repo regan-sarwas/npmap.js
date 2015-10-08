@@ -29,7 +29,7 @@ L.npmap = module.exports = {
   },
   icon: {
     maki: require('./src/icon/maki'),
-    npmaki: require('./src/icon/npmaki')
+    npmap: require('./src/icon/npmap')
   },
   layer: {
     _cluster: require('./src/layer/cluster'),
@@ -58,7 +58,7 @@ L.npmap = module.exports = {
     baselayers: require('./src/preset/baselayers.json'),
     colors: require('./src/preset/colors.json'),
     maki: require('./node_modules/maki/_includes/maki.json'),
-    npmaki: require('./node_modules/npmap-symbol-library/www/npmaki.json'),
+    npmap: require('./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json'),
     overlays: require('./src/preset/overlays.json')
   },
   tooltip: require('./src/tooltip'),

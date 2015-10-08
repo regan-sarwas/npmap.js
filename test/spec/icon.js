@@ -1,20 +1,20 @@
 /* global afterEach, beforeEach, describe, expect, it, L, sinon */
 
-describe('L.npmap.icon', function() {
+describe('L.npmap.icon', function () {
   var element, server;
 
-  afterEach(function() {
+  afterEach(function () {
     element = null;
     server.restore();
   });
-  beforeEach(function() {
+  beforeEach(function () {
     element = document.createElement('div');
     server = sinon.fakeServer.create();
   });
-  describe('maki', function() {
+  describe('maki', function () {
 
   });
-  describe('npmaki', function() {
+  describe('npmap', function () {
 
   });
 });
