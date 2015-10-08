@@ -1,26 +1,26 @@
 /* globals grunt */
 /* jshint camelcase: false */
 
-module.exports = function(grunt) {
+module.exports = function () {
   'use strict';
 
-  var cssNpmaki = '',
-    npmaki = require('./node_modules/npmap-symbol-library/www/npmaki.json'),
-    npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js',
-    pkg = require('./package.json'),
-    sizes = {
-      large: 24,
-      medium: 18,
-      small: 12
-    },
-    secrets;
+  var cssNpmaki = '';
+  var npmaki = require('./node_modules/npmap-symbol-library/www/npmaki.json');
+  var npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js';
+  var pkg = require('./package.json');
+  var sizes = {
+    large: 24,
+    medium: 18,
+    small: 12
+  };
+  var secrets;
 
-  function loadNpmTasks() {
-    var gruntTasks = Object.keys(pkg.devDependencies).filter(function(moduleName) {
+  function loadNpmTasks () {
+    var gruntTasks = Object.keys(pkg.devDependencies).filter(function (moduleName) {
       return /(^grunt-)/.test(moduleName);
     });
 
-    gruntTasks.forEach(function(task) {
+    gruntTasks.forEach(function (task) {
       grunt.loadNpmTasks(task);
     });
   }
@@ -34,13 +34,11 @@ module.exports = function(grunt) {
     }
   }
 
-  (function() {
-    try {
-      secrets = require('./secrets.json');
-    } catch (e) {
-      secrets = require('./secrets.sample.json');
-    }
-  })();
+  try {
+    secrets = require('./secrets.json');
+  } catch (e) {
+    secrets = require('./secrets.sample.json');
+  }
 
   grunt.util.linefeed = '\n';
   grunt.initConfig({
@@ -57,7 +55,7 @@ module.exports = function(grunt) {
           'npmap-standalone.min.css',
           'npmap-standalone.js',
           'npmap-standalone.min.js'
-        ].map(function(fileName) {
+        ].map(function (fileName) {
           return 'http://www.nps.gov/lib/npmap.js/<%= pkg.version %>/' + fileName;
         })
       },
@@ -73,7 +71,7 @@ module.exports = function(grunt) {
           'npmap-standalone.min.css',
           'npmap-standalone.js',
           'npmap-standalone.min.js'
-        ].map(function(fileName) {
+        ].map(function (fileName) {
           return npmapBaseUrl + '/<%= pkg.version %>/' + fileName;
         })
       },
@@ -142,7 +140,7 @@ module.exports = function(grunt) {
         dest: 'dist/examples',
         expand: true,
         options: {
-          process: function(content) {
+          process: function (content) {
             return content.replace(/..\/dist\//g, '../');
           }
         },
@@ -279,9 +277,9 @@ module.exports = function(grunt) {
   });
 
   loadNpmTasks();
-  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'copy:plugins', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); //TODO: csscomb, validation
+  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmaki', 'copy:plugins', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); // TODO: csscomb, validation
   grunt.registerTask('deploy-lib', ['clean:lib', 'mkdir:lib', 'copy:lib', 'akamai_rest_purge:lib', 'http:lib_examples', 'http:lib_images']);
   grunt.registerTask('deploy-npmap', ['clean:npmap', 'mkdir:npmap', 'copy:npmap', 'akamai_rest_purge:npmap', 'http:npmap_examples', 'http:npmap_images']);
-  grunt.registerTask('lint', ['csslint']); //TODO: jshint
+  grunt.registerTask('lint', ['csslint']); // TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
 };
