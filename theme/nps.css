@@ -24,6 +24,12 @@
     text-indent: -999em;
   }
 
+@media (max-width: 767px) {
+  .npmap-hidden-xs {
+    display: none!important;
+  }
+}
+
   /* TODO: Come up with a color that fits into the NPS graphic identity */
 
   /*
@@ -406,6 +412,7 @@
   font-family: inherit;
   font-size: inherit;
   overflow: hidden;
+  touch-action: none;
 }
   .npmap .leaflet-container a {
     color: #b28000;

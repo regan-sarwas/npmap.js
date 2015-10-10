@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   'use strict';
 
   var cssNpmaki = '',
-    npmaki = require('./node_modules/npmaki/www/npmaki.json'),
+    npmaki = require('./node_modules/npmap-symbol-library/www/standalone/npmap-symbol-library.json'),
     npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js',
     pkg = require('./package.json'),
     sizes = {
@@ -138,13 +138,17 @@ module.exports = function(grunt) {
         src: 'theme/nps.css'
       },
       examples: {
-        dest: 'dist/',
+        cwd: 'examples/',
+        dest: 'dist/examples',
+        expand: true,
         options: {
           process: function(content) {
             return content.replace(/..\/dist\//g, '../');
           }
         },
-        src: 'examples/**/*'
+        src: [
+          '**'
+        ]
       },
       images: {
         cwd: 'theme/images/',
@@ -167,7 +171,7 @@ module.exports = function(grunt) {
         ]
       },
       npmaki: {
-        cwd: 'node_modules/npmaki/renders/',
+        cwd: 'node_modules/npmap-symbol-library/renders/',
         dest: 'dist/images/icon/npmaki',
         expand: true,
         src: [
@@ -183,8 +187,12 @@ module.exports = function(grunt) {
         ]
       },
       plugins: {
-        dest: 'dist/',
-        src: 'plugins/**/*'
+        cwd: 'plugins/',
+        dest: 'dist/plugins/',
+        expand: true,
+        src: [
+          '**/*'
+        ]
       }
     },
     csslint: {

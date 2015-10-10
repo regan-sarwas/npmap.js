@@ -1,123 +1,51 @@
-/* global L */
+/* global L, XMLHttpRequest */
 
 'use strict';
 
-var dateFormat = require('helper-dateformat'),
-  handlebars = require('handlebars'),
-  reqwest = require('reqwest');
+var dateFormat = require('helper-dateformat');
+var handlebars = require('handlebars');
+var reqwest = require('reqwest');
 
 handlebars.registerHelper('dateFormat', dateFormat);
-handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
+handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
   switch (operator) {
-  case '!=':
-    return (v1 != v2) ? options.fn(this) : options.inverse(this);
-  case '!==':
-    return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-  case '==':
-    return (v1 == v2) ? options.fn(this) : options.inverse(this);
-  case '===':
-    return (v1 === v2) ? options.fn(this) : options.inverse(this);
-  case '<':
-    return (v1 < v2) ? options.fn(this) : options.inverse(this);
-  case '<=':
-    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-  case '>':
-    return (v1 > v2) ? options.fn(this) : options.inverse(this);
-  case '>=':
-    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-  case '&&':
-    return (v1 && v2) ? options.fn(this) : options.inverse(this);
-  case '||':
-    return (v1 || v2) ? options.fn(this) : options.inverse(this);
-  default:
-    return options.inverse(this);
+    case '!=':
+      return (v1 != v2) ? options.fn(this) : options.inverse(this);
+    case '!==':
+      return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+    case '==':
+      return (v1 == v2) ? options.fn(this) : options.inverse(this);
+    case '===':
+      return (v1 === v2) ? options.fn(this) : options.inverse(this);
+    case '<':
+      return (v1 < v2) ? options.fn(this) : options.inverse(this);
+    case '<=':
+      return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+    case '>':
+      return (v1 > v2) ? options.fn(this) : options.inverse(this);
+    case '>=':
+      return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+    case '&&':
+      return (v1 && v2) ? options.fn(this) : options.inverse(this);
+    case '||':
+      return (v1 || v2) ? options.fn(this) : options.inverse(this);
+    default:
+      return options.inverse(this);
   }
 });
-
-handlebars.registerHelper('toLowerCase', function(str) {
+handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
-handlebars.registerHelper('toUpperCase', function(str) {
+handlebars.registerHelper('toUpperCase', function (str) {
   return str.toUpperCase();
 });
 
-// Shim for Array.indexOf
-if (!Array.prototype.indexOf) {
-  Array.prototype.indexOf = function(searchElement, fromIndex) {
-    if (this === undefined || this === null) {
-      throw new TypeError('"this" is null or not defined');
-    }
+// Shim for window.atob/window.btoa. Needed for IE9 support.
+(function () {
+  var decodeChars = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1];
+  var encodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-    var length = this.length >>> 0;
-
-    fromIndex = +fromIndex || 0;
-
-    if (Math.abs(fromIndex) === Infinity) {
-      fromIndex = 0;
-    }
-
-    if (fromIndex < 0) {
-      fromIndex += length;
-      if (fromIndex < 0) {
-        fromIndex = 0;
-      }
-    }
-
-    for (; fromIndex < length; fromIndex++) {
-      if (this[fromIndex] === searchElement) {
-        return fromIndex;
-      }
-    }
-
-    return -1;
-  };
-}
-
-// Shim for Array.map because Internet Explorer 8 doesn't support it.
-if (!Array.prototype.map) {
-  Array.prototype.map = function (callback, thisArg) {
-    var T, A, k;
-
-    if (this == null) {
-      throw new TypeError(' this is null or not defined');
-    }
-
-    var O = Object(this);
-    var len = O.length >>> 0;
-
-    if (typeof callback !== 'function') {
-      throw new TypeError(callback + ' is not a function');
-    }
-
-    if (arguments.length > 1) {
-      T = thisArg;
-    }
-
-    A = new Array(len);
-    k = 0;
-
-    while (k < len) {
-      var kValue, mappedValue;
-
-      if (k in O) {
-        kValue = O[k];
-        mappedValue = callback.call(T, kValue, k, O);
-        A[k] = mappedValue;
-      }
-
-      k++;
-    }
-
-    return A;
-  };
-}
-
-// Shim for window.atob/window.btoa.
-(function() {
-  var decodeChars = new Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1),
-    encodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-  function base64decode(str) {
+  function base64decode (str) {
     var c1, c2, c3, c4, i, len, out;
 
     len = str.length;
@@ -127,15 +55,15 @@ if (!Array.prototype.map) {
     while (i < len) {
       do {
         c1 = decodeChars[str.charCodeAt(i++) & 0xff];
-      } while(i < len && c1 === -1);
-      
+      } while (i < len && c1 === -1);
+
       if (c1 === -1) {
         break;
       }
 
       do {
         c2 = decodeChars[str.charCodeAt(i++) & 0xff];
-      } while(i < len && c2 === -1);
+      } while (i < len && c2 === -1);
 
       if (c2 === -1) {
         break;
@@ -179,7 +107,7 @@ if (!Array.prototype.map) {
 
     return out;
   }
-  function base64encode(str) {
+  function base64encode (str) {
     var c1, c2, c3, i, len, out;
 
     len = str.length;
@@ -200,7 +128,7 @@ if (!Array.prototype.map) {
 
       if (i === len) {
         out += encodeChars.charAt(c1 >> 2);
-        out += encodeChars.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
+        out += encodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
         out += encodeChars.charAt((c2 & 0xF) << 2);
         out += '=';
         break;
@@ -208,8 +136,8 @@ if (!Array.prototype.map) {
 
       c3 = str.charCodeAt(i++);
       out += encodeChars.charAt(c1 >> 2);
-      out += encodeChars.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
-      out += encodeChars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >>6));
+      out += encodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+      out += encodeChars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
       out += encodeChars.charAt(c3 & 0x3F);
     }
 
@@ -226,23 +154,74 @@ if (!Array.prototype.map) {
 })();
 
 module.exports = {
-  _checkDisplay: function(node, changed) {
+  _checkDisplay: function (node, changed) {
     if (node.style && node.style.display === 'none') {
       changed.push(node);
       node.style.display = 'block';
     }
   },
-  _getAutoPanPaddingTopLeft: function(el) {
+  // TODO: Need to support https for test/inside endpoint
+  checkNpsNetwork: function (callback) {
+    var me = this;
+
+    if (me.supportsCors()) {
+      me.reqwest({
+        crossOrigin: true,
+        error: function () {
+          callback(false);
+        },
+        success: function (response) {
+          if (response && response.success) {
+            callback(true);
+          } else {
+            callback(false);
+          }
+        },
+        type: 'json',
+        url: 'http://insidemaps.nps.gov/test/inside'
+      });
+    } else {
+      var done = false;
+      var inside = false;
+      var time = 0;
+      var interval;
+
+      interval = setInterval(function () {
+        if (done === true) {
+          clearInterval(interval);
+          callback(inside);
+        } else {
+          time++;
+
+          if (time >= 1500) {
+            done = true;
+          }
+        }
+      }, 100);
+      me.reqwest({
+        success: function (response) {
+          if (response && response.success) {
+            inside = true;
+          }
+
+          done = true;
+        },
+        type: 'jsonp',
+        url: 'http://insidemaps.nps.gov/test/inside?callback=?'
+      });
+    }
+  },
+  _getAutoPanPaddingTopLeft: function (el) {
     var containers = this.getChildElementsByClassName(el, 'leaflet-top');
 
     return [this.getOuterDimensions(containers[0]).width + 20, this.getOuterDimensions(containers[1]).height + 20];
   },
-  _getAvailableHorizontalSpace: function(map) {
-    var container = map.getContainer(),
-      leftBottom = this.getChildElementsByClassName(container, 'leaflet-bottom')[0],
-      leftTop = this.getChildElementsByClassName(container, 'leaflet-top')[0],
-      leftWidth = this.getOuterDimensions(leftBottom).width,
-      available;
+  _getAvailableHorizontalSpace: function (map) {
+    var container = map.getContainer();
+    var leftBottom = this.getChildElementsByClassName(container, 'leaflet-bottom')[0];
+    var leftTop = this.getChildElementsByClassName(container, 'leaflet-top')[0];
+    var leftWidth = this.getOuterDimensions(leftBottom).width;
+    var available;
 
     if (this.getOuterDimensions(leftTop).width > leftWidth) {
       leftWidth = this.getOuterDimensions(leftTop).width;
@@ -257,12 +236,12 @@ module.exports = {
       return 250;
     }
   },
-  _getAvailableVerticalSpace: function(map) {
-    var container = map.getContainer(),
-      bottomLeft = this.getChildElementsByClassName(container, 'leaflet-bottom')[0],
-      bottomRight = this.getChildElementsByClassName(container, 'leaflet-bottom')[1],
-      bottomHeight = this.getOuterDimensions(bottomLeft).height,
-      available;
+  _getAvailableVerticalSpace: function (map) {
+    var container = map.getContainer();
+    var bottomLeft = this.getChildElementsByClassName(container, 'leaflet-bottom')[0];
+    var bottomRight = this.getChildElementsByClassName(container, 'leaflet-bottom')[1];
+    var bottomHeight = this.getOuterDimensions(bottomLeft).height;
+    var available;
 
     if (this.getOuterDimensions(bottomRight).height > bottomHeight) {
       bottomHeight = this.getOuterDimensions(bottomRight).height;
@@ -277,10 +256,10 @@ module.exports = {
     }
   },
   _lazyLoader: require('./lazyloader.js'),
-  _parseLocalUrl: function(url) {
-    return url.replace(location.origin, '');
+  _parseLocalUrl: function (url) {
+    return url.replace(window.location.origin, '');
   },
-  appendCssFile: function(urls, callback) {
+  appendCssFile: function (urls, callback) {
     if (typeof urls === 'string') {
       urls = [
         urls
@@ -289,7 +268,7 @@ module.exports = {
 
     this._lazyLoader(urls, callback);
   },
-  appendJsFile: function(urls, callback) {
+  appendJsFile: function (urls, callback) {
     if (typeof urls === 'string') {
       urls = [
         urls
@@ -298,7 +277,7 @@ module.exports = {
 
     this._lazyLoader(urls, callback);
   },
-  buildUrl: function(base, params) {
+  buildUrl: function (base, params) {
     var returnArray = [];
 
     if (params) {
@@ -317,7 +296,7 @@ module.exports = {
     returnArray.pop();
     return returnArray.join('');
   },
-  cancelEvent: function(e) {
+  cancelEvent: function (e) {
     e = e || window.event;
 
     if (e.preventDefault) {
@@ -326,11 +305,11 @@ module.exports = {
 
     e.returnValue = false;
   },
-  clone: function(obj) {
+  clone: function (obj) {
     // One problem with this: http://stackoverflow.com/questions/11491938/issues-with-date-when-using-json-stringify-and-json-parse/11491993#11491993.
     return JSON.parse(JSON.stringify(obj));
   },
-  dataToList: function(data, fields) {
+  dataToList: function (data, fields) {
     var dl = document.createElement('dl');
 
     for (var prop in data) {
@@ -343,8 +322,8 @@ module.exports = {
       }
 
       if (add) {
-        var dd = document.createElement('dd'),
-          dt = document.createElement('dt');
+        var dd = document.createElement('dd');
+        var dt = document.createElement('dt');
 
         dt.innerHTML = prop;
         dd.innerHTML = data[prop];
@@ -356,10 +335,11 @@ module.exports = {
     return dl;
   },
   // TODO: Needs a lot of cleanup, and also need to document fields option.
-  dataToTable: function(data, fields) {
-    var table = document.createElement('table'),
-      tableBody = document.createElement('tbody'),
-      field, fieldTitles;
+  dataToTable: function (data, fields) {
+    var table = document.createElement('table');
+    var tableBody = document.createElement('tbody');
+    var field;
+    var fieldTitles;
 
     table.appendChild(tableBody);
 
@@ -369,7 +349,7 @@ module.exports = {
       for (var i = 0; i < fields.length; i++) {
         field = fields[i];
 
-        if (typeof(field) === 'string') {
+        if (typeof field === 'string') {
           fieldTitles[field] = {
             'title': field
           };
@@ -394,9 +374,9 @@ module.exports = {
       }
 
       if (add) {
-        var tdProperty = document.createElement('td'),
-          tdValue = document.createElement('td'),
-          tr = document.createElement('tr');
+        var tdProperty = document.createElement('td');
+        var tdValue = document.createElement('td');
+        var tr = document.createElement('tr');
 
         if (fieldTitles) {
           tdProperty.innerHTML = fieldTitles[prop].title;
@@ -422,7 +402,7 @@ module.exports = {
 
     return table;
   },
-  escapeHtml: function(unsafe) {
+  escapeHtml: function (unsafe) {
     return unsafe
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -430,11 +410,11 @@ module.exports = {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
   },
-  getChildElementsByClassName: function(parentNode, className) {
-    var children = parentNode.childNodes,
-      matches = [];
+  getChildElementsByClassName: function (parentNode, className) {
+    var children = parentNode.childNodes;
+    var matches = [];
 
-    function recurse(el) {
+    function recurse (el) {
       var grandChildren = el.children;
 
       if (typeof el.className === 'string' && el.className.indexOf(className) !== -1) {
@@ -461,13 +441,13 @@ module.exports = {
 
     return matches;
   },
-  getChildElementsByNodeName: function(parentNode, nodeName) {
-    var children = parentNode.childNodes,
-      matches = [];
+  getChildElementsByNodeName: function (parentNode, nodeName) {
+    var children = parentNode.childNodes;
+    var matches = [];
 
     nodeName = nodeName.toLowerCase();
 
-    function recurse(el) {
+    function recurse (el) {
       var grandChildren = el.children;
 
       if (typeof el.nodeName === 'string' && el.nodeName.toLowerCase() === nodeName) {
@@ -487,10 +467,10 @@ module.exports = {
 
     return matches;
   },
-  getElementsByClassName: function(className) {
-    var matches = [],
-      regex = new RegExp('(^|\\s)' + className + '(\\s|$)'),
-      tmp = document.getElementsByTagName('*');
+  getElementsByClassName: function (className) {
+    var matches = [];
+    var regex = new RegExp('(^|\\s)' + className + '(\\s|$)');
+    var tmp = document.getElementsByTagName('*');
 
     for (var i = 0; i < tmp.length; i++) {
       if (regex.test(tmp[i].className)) {
@@ -500,14 +480,14 @@ module.exports = {
 
     return matches;
   },
-  getEventObject: function(e) {
+  getEventObject: function (e) {
     if (!e) {
       e = window.event;
     }
 
     return e;
   },
-  getEventObjectTarget: function(e) {
+  getEventObjectTarget: function (e) {
     var target;
 
     if (e.target) {
@@ -522,14 +502,14 @@ module.exports = {
 
     return target;
   },
-  getNextSibling: function(el) {
+  getNextSibling: function (el) {
     do {
       el = el.nextSibling;
     } while (el && el.nodeType !== 1);
 
     return el;
   },
-  getOffset: function(el) {
+  getOffset: function (el) {
     for (var lx = 0, ly = 0; el !== null; lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
 
     return {
@@ -537,13 +517,13 @@ module.exports = {
       top: ly
     };
   },
-  getOuterDimensions: function(el) {
-    var height = 0,
-      width = 0;
+  getOuterDimensions: function (el) {
+    var height = 0;
+    var width = 0;
 
     if (el) {
-      var changed = [],
-        parentNode = el.parentNode;
+      var changed = [];
+      var parentNode = el.parentNode;
 
       this._checkDisplay(el, changed);
 
@@ -574,13 +554,14 @@ module.exports = {
       width: width
     };
   },
-  getOuterHtml: function(el) {
+  getOuterHtml: function (el) {
     if (!el || !el.tagName) {
       return '';
     }
 
-    var div = document.createElement('div'),
-      ax, txt;
+    var div = document.createElement('div');
+    var ax;
+    var txt;
 
     div.appendChild(el.cloneNode(false));
     txt = div.innerHTML;
@@ -589,30 +570,30 @@ module.exports = {
     div = null;
     return txt;
   },
-  getPosition: function(el) {
+  getPosition: function (el) {
     var obj = {
       left: 0,
       top: 0
-    },
-      offset = this.getOffset(el),
-      offsetParent = this.getOffset(el.parentNode);
+    };
+    var offset = this.getOffset(el);
+    var offsetParent = this.getOffset(el.parentNode);
 
     obj.left = offset.left - offsetParent.left;
     obj.top = offset.top - offsetParent.top;
 
     return obj;
   },
-  getPreviousSibling: function(el) {
+  getPreviousSibling: function (el) {
     do {
       el = el.previousSibling;
     } while (el && el.nodeType !== 1);
 
     return el;
   },
-  getPropertyCount: function(obj) {
+  getPropertyCount: function (obj) {
     if (!Object.keys) {
-      var keys = [],
-        k;
+      var keys = [];
+      var k;
 
       for (k in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, k)) {
@@ -625,86 +606,37 @@ module.exports = {
       return Object.keys(obj).length;
     }
   },
-  handlebars: function(template, data) {
+  handlebars: function (template, data) {
     template = handlebars.compile(template);
 
     return template(data);
   },
-  isLocalUrl: function(url) {
-    if (url.indexOf(location.origin) === 0) {
+  isHidden: function (el) {
+    return (el.offsetParent === null);
+  },
+  isLocalUrl: function (url) {
+    if (url.indexOf(window.location.origin) === 0) {
       return true;
     } else {
       return !(/^(?:[a-z]+:)?\/\//i.test(url));
     }
   },
-  isNumeric: function(val) {
+  isNumeric: function (val) {
     return !isNaN(parseFloat(val)) && isFinite(val);
   },
-
-
-  // TODO: Need to support https for test/inside endpoint
-  checkNpsNetwork: function(callback) {
-    var me = this;
-
-    if (me.supportsCors()) {
-      me.reqwest({
-        crossOrigin: true,
-        error: function() {
-          callback(false);
-        },
-        success: function(response) {
-          if (response && response.success) {
-            callback(true);
-          }
-        },
-        type: 'json',
-        url: 'http://insidemaps.nps.gov/test/inside'
-      });
-    } else {
-      var done = false,
-        inside = false,
-        time = 0,
-        interval;
-
-      interval = setInterval(function() {
-        if (done === true) {
-          clearInterval(interval);
-          callback(inside);
-        } else {
-          time++;
-
-          // Time out at 1.5 seconds.
-          if (time >= 15) {
-            done = true;
-          }
-        }
-      }, 100);
-      me.reqwest({
-        success: function(response) {
-          if (response && response.success) {
-            inside = true;
-          }
-
-          done = true;
-        },
-        type: 'jsonp',
-        url: 'http://insidemaps.nps.gov/test/inside?callback=?'
-      });
-    }
-  },
-  linkify: function(text, shorten, target) {
-    var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])',
-      regexLink = new RegExp(regexRoot, 'gi'),
-      regexShorten = new RegExp('>' + regexRoot +'</a>', 'gi'),
-      textLinked = text.replace(regexLink, '<a href="$1"' + (target ? ' target="' + target + '"' : '') + '>$1</a>');
+  linkify: function (text, shorten, target) {
+    var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])';
+    var regexLink = new RegExp(regexRoot, 'gi');
+    var regexShorten = new RegExp('>' + regexRoot + '</a>', 'gi');
+    var textLinked = text.replace(regexLink, '<a href="$1"' + (target ? ' target="' + target + '"' : '') + '>$1</a>');
 
     if (shorten) {
       var matchArray = textLinked.match(regexShorten);
 
       if (matchArray) {
         for (var i = 0; i < matchArray.length; i++) {
-          var newBase = matchArray[i].substr(1, matchArray[i].length - 5).replace(/https?:\/\//gi, ''),
-            newName = newBase.substr(0, shorten) + (newBase.length > shorten ? '&hellip;' : '');
+          var newBase = matchArray[i].substr(1, matchArray[i].length - 5).replace(/https?:\/\//gi, '');
+          var newName = newBase.substr(0, shorten) + (newBase.length > shorten ? '&hellip;' : '');
 
           if (newBase.length - 1 === shorten) {
             newName = newName.substr(0, shorten) + newBase.substr(shorten, 1);
@@ -717,12 +649,12 @@ module.exports = {
 
     return textLinked;
   },
-  loadFile: function(url, type, callback) {
+  loadFile: function (url, type, callback) {
     if (this.isLocalUrl(url)) {
       if (type === 'xml') {
         var request = new XMLHttpRequest();
 
-        request.onload = function() {
+        request.onload = function () {
           var text = this.responseText;
 
           if (text) {
@@ -735,10 +667,10 @@ module.exports = {
         request.send();
       } else {
         reqwest({
-          error: function() {
+          error: function () {
             callback(false);
           },
-          success: function(response) {
+          success: function (response) {
             if (response) {
               if (type === 'text') {
                 callback(response.responseText);
@@ -758,10 +690,10 @@ module.exports = {
 
       reqwest({
         crossOrigin: supportsCors,
-        error: function() {
+        error: function () {
           callback(false);
         },
-        success: function(response) {
+        success: function (response) {
           if (response && response.success) {
             callback(response.data);
           } else {
@@ -769,34 +701,38 @@ module.exports = {
           }
         },
         type: 'json' + (supportsCors ? '' : 'p'),
-        url: 'https://server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+        url: window.location.protocol + '//server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
       });
     }
   },
-  mediaToList: function(data, media) {
-    var div = document.createElement('div'),
-      types = {
-        focus: function(guids) {
-          var guidArray = guids.match(new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g')),
-            imgs = [];
+  mediaToList: function (data, media) {
+    var div = document.createElement('div');
+    var types = {
+      focus: function (guids) {
+        var guidArray = guids.match(new RegExp('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(}){0,1}', 'g'));
+        var imgs = [];
 
-          for (var i = 0; i < guidArray.length; i++) {
-            imgs.push({
-              href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i],
-              src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/xlarge'
-            });
-          }
-
-          return imgs;
+        for (var i = 0; i < guidArray.length; i++) {
+          imgs.push({
+            href: 'http://focus.nps.gov/AssetDetail?assetID=' + guidArray[i],
+            src: 'http://focus.nps.gov/GetAsset/' + guidArray[i] + '/thumb/xlarge'
+          });
         }
-      },
-      ul = document.createElement('ul'),
-      images, next, previous;
 
-    function changeImage(direction) {
-      var lis = ul.childNodes,
-        maxImg = lis.length,
-        curImg, j, li;
+        return imgs;
+      }
+    };
+    var ul = document.createElement('ul');
+    var images;
+    var next;
+    var previous;
+
+    function changeImage (direction) {
+      var lis = ul.childNodes;
+      var maxImg = lis.length;
+      var curImg;
+      var j;
+      var li;
 
       for (j = 0; j < lis.length; j++) {
         li = lis[j];
@@ -833,18 +769,18 @@ module.exports = {
     }
 
     for (var i = 0; i < media.length; i++) {
-      var config = media[i],
-        type = types[config.type];
+      var config = media[i];
+      var type = types[config.type];
 
       if (type) {
         images = type(data[config.id.replace('{{', '').replace('}}', '')]);
 
         for (var k = 0; k < images.length; k++) {
-          var a = document.createElement('a'),
-            image = images[k],
-            img = document.createElement('img'),
-            imgStyles = [],
-            li = document.createElement('li');
+          var a = document.createElement('a');
+          var image = images[k];
+          var img = document.createElement('img');
+          var imgStyles = [];
+          var li = document.createElement('li');
 
           if (typeof config.height === 'number') {
             imgStyles += 'height:' + config.height + 'px;';
@@ -884,10 +820,10 @@ module.exports = {
       next = document.createElement('button');
       next.setAttribute('class', 'btn btn-circle next');
       next.innerHTML = '&gt;';
-      L.DomEvent.addListener(previous, 'click', function() {
+      L.DomEvent.addListener(previous, 'click', function () {
         changeImage(-1);
       });
-      L.DomEvent.addListener(next, 'click', function() {
+      L.DomEvent.addListener(next, 'click', function () {
         changeImage(1);
       });
       buttons.appendChild(previous);
@@ -897,12 +833,12 @@ module.exports = {
 
     return div;
   },
-  parseDomainFromUrl: function(url) {
+  parseDomainFromUrl: function (url) {
     var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
 
     return matches && matches[1];
   },
-  putCursorAtEndOfInput: function(input) {
+  putCursorAtEndOfInput: function (input) {
     if (input.setSelectionRange) {
       var length = input.value.length * 2;
       input.setSelectionRange(length, length);
@@ -911,28 +847,28 @@ module.exports = {
     }
   },
   reqwest: reqwest,
-  strict: function(_, type) {
+  strict: function (_, type) {
     if (typeof _ !== type) {
       throw new Error('Invalid argument: ' + type + ' expected');
     }
   },
-  strictInstance: function(_, klass, name) {
+  strictInstance: function (_, klass, name) {
     if (!(_ instanceof klass)) {
       throw new Error('Invalid argument: ' + name + ' expected');
     }
   },
-  strictOneOf: function(_, values) {
+  strictOneOf: function (_, values) {
     if (values.indexOf(_) === -1) {
       throw new Error('Invalid argument: ' + _ + ' given, valid values are ' + values.join(', '));
     }
   },
-  stripHtml: function(html) {
+  stripHtml: function (html) {
     var tmp = document.createElement('div');
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || '';
   },
   // http://stackoverflow.com/a/7616755/27540
-  supportsCors: function() {
+  supportsCors: function () {
     if ('withCredentials' in new XMLHttpRequest()) {
       return 'yes';
     } else if (typeof XDomainRequest !== 'undefined') {
@@ -941,7 +877,7 @@ module.exports = {
       return 'no';
     }
   },
-  unescapeHtml: function(unsafe) {
+  unescapeHtml: function (unsafe) {
     return unsafe
       .replace(/&amp;/g, '&')
       .replace(/&lt;/g, '<')
