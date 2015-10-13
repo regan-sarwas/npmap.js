@@ -32,7 +32,7 @@
    * [directions](#directions)
 * [Icons](#icons)
    * [maki](#maki)
-   * [npmap](#npmap)
+   * [npmapsymbollibrary](#npmapsymbollibrary)
 * [Presets](#presets)
    * [baseLayer](#baselayer)
 * [Utils](#utils)
@@ -1430,7 +1430,7 @@ _Working Examples_:
 
 **[[⬆]](#)**
 
-### <a name="npmap">npmap(config: object)</a>
+### <a name="npmapsymbollibrary">npmapsymbollibrary(config: object)</a>
 
 Create an icon using the [NPMap Symbol Library](https://github.com/nationalparkservice/npmap-symbol-library) icon set.
 
@@ -1451,7 +1451,7 @@ _Example (Bootstrap)_:
         styles: {
           point: {
             'marker-color': '#5e9fd5',
-            'marker-library': 'npmap',
+            'marker-library': 'npmapsymbollibrary',
             'marker-size': 'small',
             'marker-symbol': 'camping-white'
           }
@@ -1472,7 +1472,7 @@ _Example (API)_:
       styles: {
         point: {
           'marker-color': '#5e9fd5',
-          'marker-library': 'npmap',
+          'marker-library': 'npmapsymbollibrary',
           'marker-size': 'small',
           'marker-symbol': 'camping-white'
         }

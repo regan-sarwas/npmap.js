@@ -1,4 +1,4 @@
-/* global afterEach, beforeEach, describe, expect, it, L, sinon */
+/* global afterEach, beforeEach, describe, sinon */
 
 describe('L.npmap.icon', function () {
   var element, server;
