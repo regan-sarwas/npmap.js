@@ -184,7 +184,7 @@ var CartoDbLayer = L.TileLayer.extend({
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
       url: util.buildUrl(this._urlApi, {
-        q: 'SELECT DISTINCT CDB_ColumnNames,CDB_ColumnType(\'' + this.options.table + '\',cdb_columnnames) FROM CDB_ColumnNames(\'' + this.options.table + '\')'
+        q: 'SELECT DISTINCT CDB_ColumnNames,CDB_ColumnType(\'' + this.options.table + '\',cdb_columnnames) FROM CDB_ColumnNames(\'' + this.options.table + '\');'
       }) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
     reqwest({
