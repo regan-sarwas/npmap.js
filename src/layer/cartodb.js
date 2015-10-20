@@ -48,6 +48,7 @@ var CartoDbLayer = L.TileLayer.extend({
     util.strict(this.options.user, 'string');
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
     this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
+    console.log(this._urlApi);
     reqwest({
       crossOrigin: supportsCors === 'yes',
       error: function (error) {
@@ -62,6 +63,10 @@ var CartoDbLayer = L.TileLayer.extend({
             options: {},
             type: 'cartodb'
           };
+          var queryFields = [];
+          var i;
+
+          console.log(response);
 
           if (me.options.cartocss) {
             me._cartocss = me.options.cartocss;
@@ -74,12 +79,12 @@ var CartoDbLayer = L.TileLayer.extend({
 
           if (me.options.interactivity) {
             me._interactivity = me.options.interactivity.split(',');
-          } else if (me.options.clickable !== false && response.fields) {
+          } else if (me.options.clickable !== false && response.rows) {
             me._interactivity = [];
 
-            for (var field in response.fields) {
-              if (response.fields[field].type !== 'geometry') {
-                me._interactivity.push(field);
+            for (i = 0; i < response.rows.length; i++) {
+              if (response.rows[i].cdb_columnnames !== 'the_geom' && response.rows[i].cdb_columnnames !== 'the_geom_webmercator') {
+                me._interactivity.push(response.rows[i].cdb_columnnames);
               }
             }
           }
@@ -88,7 +93,23 @@ var CartoDbLayer = L.TileLayer.extend({
             me._hasInteractivity = true;
           }
 
-          layer.options.sql = me._sql = (me.options.sql || ('SELECT * FROM ' + me.options.table + ';'));
+          for (i = 0; i < response.rows.length; i++) {
+            var columnNames = response.rows[i].cdb_columnnames;
+
+            // This is returning some fields (description) that don't exist in the table.
+
+            if (response.rows[i].cdb_columntype === 'timestamp without time zone') {
+              queryFields.push('to_char(' + columnNames + ', \'YYYY-MM-DD-THH24:MI:SS\') AS ' + columnNames);
+            } else if (response.rows[i].cdb_columntype === 'timestamp with time zone') {
+              queryFields.push('to_char(' + columnNames + ', \'YYYY-MM-DD-THH24:MI:SS TZ\') AS ' + columnNames);
+            } else {
+              queryFields.push(columnNames);
+            }
+          }
+
+          // console.log(queryFields);
+
+          layer.options.sql = me._sql = (me.options.sql || ('SELECT ' + queryFields.toString() + ' FROM ' + me.options.table + ';'));
 
           if (me._cartocss) {
             layer.options.cartocss = me._cartocss;
@@ -99,10 +120,14 @@ var CartoDbLayer = L.TileLayer.extend({
             layer.options.interactivity = me._interactivity;
           }
 
+          // console.log(layer);
+
           reqwest({
             crossOrigin: supportsCors === 'yes',
             error: function (response) {
               var obj = {};
+
+              // console.log(response);
 
               if (response && response.responseText) {
                 response = JSON.parse(response.responseText);
@@ -119,6 +144,8 @@ var CartoDbLayer = L.TileLayer.extend({
               me.fire('error', obj);
             },
             success: function (response) {
+              // console.log(response);
+
               if (response) {
                 // This is the only layer handler that we don't default everything to https for.
                 // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for https.
@@ -157,7 +184,7 @@ var CartoDbLayer = L.TileLayer.extend({
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
       url: util.buildUrl(this._urlApi, {
-        q: 'select * from ' + this.options.table + ' limit 0;'
+        q: 'SELECT DISTINCT CDB_ColumnNames,CDB_ColumnType(\'' + this.options.table + '\',cdb_columnnames) FROM CDB_ColumnNames(\'' + this.options.table + '\');'
       }) + (supportsCors === 'yes' ? '' : '&callback=?')
     });
     reqwest({
