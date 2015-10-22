@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="http://www.nps.gov/npmap/img/nps-arrowhead-medium.png" alt="NPS Arrowhead">
-</p>
-
 # NPMap.js
 
 [![Circle CI](https://circleci.com/gh/nationalparkservice/npmap.js.svg?style=svg)](https://circleci.com/gh/nationalparkservice/npmap.js)

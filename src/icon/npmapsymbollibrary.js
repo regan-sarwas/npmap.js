@@ -1,9 +1,9 @@
 /* global L */
 
-'use strict'
+'use strict';
 
-var util = require('../util/util')
-var NpmakiIcon = L.Icon.extend({
+var util = require('../util/util');
+var NpmapIcon = L.Icon.extend({
   options: {
     'marker-color': '#000000',
     'marker-size': 'medium'
@@ -12,9 +12,9 @@ var NpmakiIcon = L.Icon.extend({
     MAKI_TEMPLATE: 'url(https://a.tiles.mapbox.com/v3/marker/pin-{{size}}+{{color}}{{retina}}.png?access_token=pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q)'
   },
   initialize: function (options) {
-    options = options || {}
+    options = options || {};
 
-    var size = options['marker-size'] || 'medium'
+    var size = options['marker-size'] || 'medium';
     var sizes = {
       large: {
         iconAnchor: [17.5, 49],
@@ -31,30 +31,30 @@ var NpmakiIcon = L.Icon.extend({
         iconSize: [20, 30],
         popupAnchor: [2, -24]
       }
-    }
+    };
 
-    L.Util.extend(options, sizes[size])
-    L.Util.setOptions(this, options)
+    L.Util.extend(options, sizes[size]);
+    L.Util.setOptions(this, options);
   },
   createIcon: function (oldIcon) {
-    var options = this.options
-    var divIcon = L.DomUtil.create('div', 'npmaki-icon ' + options['marker-size'] + ' ' + options['marker-symbol'] + '-' + options['marker-size'] + (L.Browser.retina ? '-2x' : ''))
-    var divMarker = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div')
+    var options = this.options;
+    var divIcon = L.DomUtil.create('div', 'npmapsymbollibrary-icon ' + options['marker-size'] + ' ' + options['marker-symbol'] + '-' + options['marker-size'] + (L.Browser.retina ? '-2x' : ''));
+    var divMarker = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div');
 
-    this._setIconStyles(divMarker, 'icon')
-    divMarker.style.backgroundImage = util.handlebars(NpmakiIcon.MAKI_TEMPLATE, {
+    this._setIconStyles(divMarker, 'icon');
+    divMarker.style.backgroundImage = util.handlebars(NpmapIcon.MAKI_TEMPLATE, {
       color: options['marker-color'].replace('#', ''),
       retina: L.Browser.retina ? '@2x' : '',
       size: options['marker-size'].slice(0, 1)
-    })
-    divMarker.appendChild(divIcon)
-    return divMarker
+    });
+    divMarker.appendChild(divIcon);
+    return divMarker;
   },
   createShadow: function () {
-    return null
+    return null;
   }
-})
+});
 
 module.exports = function (options) {
-  return new NpmakiIcon(options)
-}
+  return new NpmapIcon(options);
+};

@@ -1,41 +1,19 @@
 {
-  "author": {
-    "email": "nate_irwin@nps.gov",
-    "name": "Nate Irwin",
-    "url": "http://www.nps.gov/npmap/team/nate-irwin/"
-  },
   "bugs": {
     "email": "npmap@nps.gov",
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
   },
-  "contributors": [
-    {
-      "email": "james_mcandrew@partner.nps.gov",
-      "name": "Jim McAndrew",
-      "url": "http://www.nps.gov/npmap/team/jim-mcandrew/"
-    },
-    {
-      "email": "katrina_engelsted@partner.nps.gov",
-      "name": "Katrina Engelsted",
-      "url": "http://www.nps.gov/npmap/team/katrina-engelsted/"
-    },
-    {
-      "email": "mamata_akella@partner.nps.gov",
-      "name": "Mamata Akella",
-      "url": "http://www.nps.gov/npmap/team/mamata-akella/"
-    }
-  ],
   "dependencies": {
     "csv2geojson": "4.0.0",
     "handlebars": "3.0.3",
     "helper-dateformat": "git+https://github.com/nationalparkservice/helper-dateformat.git#02d70292d366f2a67cbdf52bf809825cc462b991",
     "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
-    "leaflet": "0.7.3",
+    "leaflet": "0.7.5",
     "leaflet-draw": "git+https://github.com/nationalparkservice/Leaflet.Draw.git#23287efc2dc02fcf7de3b4737a76d16f06e7557c",
     "leaflet.markercluster": "https://github.com/nationalparkservice/Leaflet.MarkerCluster/archive/v0.4.0.tar.gz",
     "maki": "~0.4.5",
     "nanobar": "0.2.1",
-    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/gh-pages.tar.gz",
+    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.0.1.tar.gz",
     "reqwest": "1.1.6",
     "togeojson": "0.12.1"
   },
@@ -73,18 +51,20 @@
   "engines": {
     "node": "*"
   },
-  "homepage": "http://www.nps.gov/npmap",
+  "homepage": "http://www.nps.gov/npmap/tools/npmap.js/",
   "keywords": [
     "Cartography",
     "Department of Interior",
+    "Digital",
     "JavaScript",
     "Leaflet",
     "Map",
     "National Park Service",
-    "NPMaki",
     "NPMap",
+    "NPMap.js",
+    "NPMap Symbol Library",
+    "NPS Places",
     "Park Tiles",
-    "Places",
     "US Government",
     "Web Map"
   ],
@@ -100,5 +80,5 @@
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
   },
-  "version": "2.0.0"
+  "version": "3.0.0"
 }
