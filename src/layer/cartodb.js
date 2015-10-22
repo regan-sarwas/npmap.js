@@ -55,7 +55,6 @@ var CartoDbLayer = L.TileLayer.extend({
         me.fire('error', error);
         me.errorFired = error;
       },
-      // Next, do select top 0 and then compare responses.
       success: function (response) {
         if (response) {
           var layer = {
@@ -135,7 +134,7 @@ var CartoDbLayer = L.TileLayer.extend({
             success: function (response) {
               if (response) {
                 // This is the only layer handler that we don't default everything to https for.
-                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for https.
+                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for when using https.
                 // If the web page is using https, however, we do want to default to it - even if it means taking a performance hit.
                 var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid;
                 var template = '{z}/{x}/{y}';
