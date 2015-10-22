@@ -102,7 +102,6 @@ handlebars.registerHelper('toUpperCase', function (str) {
       }
 
       out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
-
     }
 
     return out;
@@ -615,7 +614,7 @@ module.exports = {
     return (el.offsetParent === null);
   },
   isLocalUrl: function (url) {
-    if (url.indexOf(window.location.origin) === 0) {
+    if (url.indexOf(window.location.hostname) >= 0) {
       return true;
     } else {
       return !(/^(?:[a-z]+:)?\/\//i.test(url));

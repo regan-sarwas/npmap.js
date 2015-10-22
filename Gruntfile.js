@@ -275,7 +275,7 @@ module.exports = function (grunt) {
 
   loadNpmTasks();
   grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmapSymbolLibrary', 'copy:plugins', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); // TODO: csscomb, validation
-  grunt.registerTask('deploy-lib', ['clean:lib', 'mkdir:lib', 'copy:lib', 'akamai_rest_purge:lib', 'http:lib_examples', 'http:lib_images']);
+  grunt.registerTask('deploy', ['clean:lib', 'mkdir:lib', 'copy:lib', 'akamai_rest_purge:lib', 'http:lib_examples', 'http:lib_images']);
   grunt.registerTask('deploy-npmap', ['clean:npmap', 'mkdir:npmap', 'copy:npmap', 'akamai_rest_purge:npmap', 'http:npmap_examples', 'http:npmap_images']);
   grunt.registerTask('lint', ['csslint']); // TODO: jshint
   grunt.registerTask('test', ['mocha_phantomjs']);
