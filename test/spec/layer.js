@@ -1,18 +1,18 @@
 /* global afterEach, beforeEach, describe, expect, it, L, sinon */
 
-describe('L.npmap.layer', function() {
+describe('L.npmap.layer', function () {
   var element, server;
 
-  afterEach(function() {
+  afterEach(function () {
     element = null;
     server.restore();
   });
-  beforeEach(function() {
+  beforeEach(function () {
     element = document.createElement('div');
     server = sinon.fakeServer.create();
   });
-  describe('arcgisserver', function() {
-    it('creates a dynamic layer and adds it to the map', function() {
+  describe('arcgisserver', function () {
+    it('creates a dynamic layer and adds it to the map', function () {
       var map = L.npmap.map({
         baseLayers: false,
         div: element,
@@ -25,13 +25,13 @@ describe('L.npmap.layer', function() {
 
       expect(map.options.overlays[0].L).to.be.ok();
     });
-    it('fires the \'ready\' event for a dynamic layer', function(done) {
+    it('fires the \'ready\' event for a dynamic layer', function (done) {
       L.npmap.map({
         baseLayers: false,
         div: element,
         overlays: [{
           events: [{
-            fn: function() {
+            fn: function () {
               done();
             },
             type: 'ready'
@@ -42,7 +42,7 @@ describe('L.npmap.layer', function() {
         }]
       });
     });
-    it('creates a tiled layer and adds it to the map', function() {
+    it('creates a tiled layer and adds it to the map', function () {
       var map = L.npmap.map({
         baseLayers: false,
         div: element,
@@ -55,13 +55,13 @@ describe('L.npmap.layer', function() {
 
       expect(map.options.overlays[0].L).to.be.ok();
     });
-    it('fires the \'ready\' event for a tiled layer', function(done) {
+    it('fires the \'ready\' event for a tiled layer', function (done) {
       L.npmap.map({
         baseLayers: false,
         div: element,
         overlays: [{
           events: [{
-            fn: function() {
+            fn: function () {
               done();
             },
             type: 'ready'
@@ -73,8 +73,8 @@ describe('L.npmap.layer', function() {
       });
     });
   });
-  describe('bing', function() {
-    it('creates a layer and adds it to the map', function() {
+  describe('bing', function () {
+    it('creates a layer and adds it to the map', function () {
       var map = L.npmap.map({
         baseLayers: false,
         div: element,
@@ -89,13 +89,13 @@ describe('L.npmap.layer', function() {
       expect(map.options.overlays[0].L).to.be.ok();
     });
     /*
-    it('fires the \'ready\' event', function(done) {
+    it('fires the \'ready\' event', function (done) {
       L.npmap.map({
         baseLayers: false,
         div: element,
         overlays: [{
           events: [{
-            fn: function() {
+            fn: function () {
               done();
             },
             type: 'ready'
@@ -109,8 +109,8 @@ describe('L.npmap.layer', function() {
     });
     */
   });
-  describe('cartodb', function() {
-    it('creates a layer and adds it to the map', function() {
+  describe('cartodb', function () {
+    it('creates a layer and adds it to the map', function () {
       var map = L.npmap.map({
         baseLayers: false,
         div: element,
@@ -124,13 +124,13 @@ describe('L.npmap.layer', function() {
       expect(map.options.overlays[0].L).to.be.ok();
     });
     /*
-    it('fires the \'ready\' event for a layer', function(done) {
+    it('fires the \'ready\' event for a layer', function (done) {
       L.npmap.map({
         baseLayers: false,
         div: element,
         overlays: [{
           events: [{
-            fn: function() {
+            fn: function () {
               done();
             },
             type: 'ready'
@@ -143,31 +143,31 @@ describe('L.npmap.layer', function() {
     });
     */
   });
-  describe('csv', function() {
+  describe('csv', function () {
 
   });
-  describe('geojson', function() {
+  describe('geojson', function () {
 
   });
-  describe('github', function() {
+  describe('github', function () {
 
   });
-  describe('kml', function() {
+  describe('kml', function () {
 
   });
-  describe('mapbox', function() {
+  describe('mapbox', function () {
 
   });
-  describe('spot', function() {
+  describe('spot', function () {
 
   });
-  describe('tiled', function() {
+  describe('tiled', function () {
 
   });
-  describe('wms', function() {
+  describe('wms', function () {
 
   });
-  describe('zoomify', function() {
+  describe('zoomify', function () {
 
   });
 });

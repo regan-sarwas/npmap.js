@@ -48,7 +48,6 @@ var CartoDbLayer = L.TileLayer.extend({
     util.strict(this.options.user, 'string');
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
     this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
-    console.log(this._urlApi);
     reqwest({
       crossOrigin: supportsCors === 'yes',
       error: function (error) {
@@ -56,7 +55,6 @@ var CartoDbLayer = L.TileLayer.extend({
         me.fire('error', error);
         me.errorFired = error;
       },
-      // Next, do select top 0 and then compare responses.
       success: function (response) {
         if (response) {
           var layer = {
@@ -65,8 +63,6 @@ var CartoDbLayer = L.TileLayer.extend({
           };
           var queryFields = [];
           var i;
-
-          console.log(response);
 
           if (me.options.cartocss) {
             me._cartocss = me.options.cartocss;
@@ -96,8 +92,6 @@ var CartoDbLayer = L.TileLayer.extend({
           for (i = 0; i < response.rows.length; i++) {
             var columnNames = response.rows[i].cdb_columnnames;
 
-            // This is returning some fields (description) that don't exist in the table.
-
             if (response.rows[i].cdb_columntype === 'timestamp without time zone') {
               queryFields.push('to_char(' + columnNames + ', \'YYYY-MM-DD-THH24:MI:SS\') AS ' + columnNames);
             } else if (response.rows[i].cdb_columntype === 'timestamp with time zone') {
@@ -106,8 +100,6 @@ var CartoDbLayer = L.TileLayer.extend({
               queryFields.push(columnNames);
             }
           }
-
-          // console.log(queryFields);
 
           layer.options.sql = me._sql = (me.options.sql || ('SELECT ' + queryFields.toString() + ' FROM ' + me.options.table + ';'));
 
@@ -120,14 +112,10 @@ var CartoDbLayer = L.TileLayer.extend({
             layer.options.interactivity = me._interactivity;
           }
 
-          // console.log(layer);
-
           reqwest({
             crossOrigin: supportsCors === 'yes',
             error: function (response) {
               var obj = {};
-
-              // console.log(response);
 
               if (response && response.responseText) {
                 response = JSON.parse(response.responseText);
@@ -144,11 +132,9 @@ var CartoDbLayer = L.TileLayer.extend({
               me.fire('error', obj);
             },
             success: function (response) {
-              // console.log(response);
-
               if (response) {
                 // This is the only layer handler that we don't default everything to https for.
-                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for https.
+                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for when using https.
                 // If the web page is using https, however, we do want to default to it - even if it means taking a performance hit.
                 var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid;
                 var template = '{z}/{x}/{y}';

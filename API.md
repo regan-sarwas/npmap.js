@@ -1638,9 +1638,9 @@ If you need to add functionality that isn't supported by NPMap.js to a map, you 
     var NPMap = {
       div: 'map',
       plugins: [{
-        js: 'http://www.nps.gov/npmap/npmap.js/2.0.0/plugins/Leaflet.GeometryUtil/0.3.2/plugin.min.js'
+        js: 'http://www.nps.gov/lib/npmap.js/3.0.2/plugins/Leaflet.GeometryUtil/0.3.2/plugin.min.js'
       },{
-        js: 'http://www.nps.gov/npmap/npmap.js/2.0.0/plugins/Leaflet.Snap/0.0.1/plugin.min.js'
+        js: 'http://www.nps.gov/lib/npmap.js/3.0.2/plugins/Leaflet.Snap/0.0.1/plugin.min.js'
       }]
     };
 
