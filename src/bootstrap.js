@@ -49,6 +49,9 @@ if (typeof document.addEventListener !== 'function') {
           divLoading.parentNode.removeChild(divLoading);
           config.spinner.stop();
           delete config.spinner;
+          setTimeout(function() {
+            config.L.invalidateSize();
+          }, 10);
         }
 
         if (typeof config.div === 'string') {
