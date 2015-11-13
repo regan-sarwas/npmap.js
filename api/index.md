@@ -96,11 +96,11 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Getting Started](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/basic.html)
-* [Events](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/events.html)
-* [Hooks](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/hooks.html)
-* [Multiple Maps on One Page](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/multiple-maps.html)
-* [Using Notifications](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/notifications.html)
+* [Getting Started](../examples/basic.html)
+* [Events](../examples/events.html)
+* [Hooks](../examples/hooks.html)
+* [Multiple Maps on One Page](../examples/multiple-maps.html)
+* [Using Notifications](../examples/notifications.html)
 
 **[[⬆]](#)**
 
@@ -164,7 +164,7 @@ Supported event "types" include all of the Leaflet layer events for a given laye
 
 _Working Examples_:
 
-* [Events](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/events.html)
+* [Events](../examples/events.html)
 
 **[[⬆]](#)**
 
@@ -227,7 +227,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [ArcGIS Server Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/arcgisserver-layer.html)
+* [ArcGIS Server Layer](../examples/arcgisserver-layer.html)
 
 **[[⬆]](#)**
 
@@ -272,7 +272,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Bing Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/bing-layer.html)
+* [Bing Layer](../examples/bing-layer.html)
 
 **[[⬆]](#)**
 
@@ -328,7 +328,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [CartoDB Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/cartodb-layer.html)
+* [CartoDB Layer](../examples/cartodb-layer.html)
 
 **[[⬆]](#)**
 
@@ -392,8 +392,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [CSV Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/csv-layer.html)
-* [CSV Layer (Clustered)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/csv-layer-clustered.html)
+* [CSV Layer](../examples/csv-layer.html)
+* [CSV Layer (Clustered)](../examples/csv-layer-clustered.html)
 
 **[[⬆]](#)**
 
@@ -457,8 +457,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [GeoJSON Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/geojson-layer.html)
-* [GeoJSON Layer (Clustered)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/geojson-layer-clustered.html)
+* [GeoJSON Layer](../examples/geojson-layer.html)
+* [GeoJSON Layer (Clustered)](../examples/geojson-layer-clustered.html)
 
 **[[⬆]](#)**
 
@@ -525,7 +525,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [GitHub Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/github-layer.html)
+* [GitHub Layer](../examples/github-layer.html)
 
 **[[⬆]](#)**
 
@@ -589,8 +589,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [KML Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/kml-layer.html)
-* [KML Layer (Clustered)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/kml-layer-clustered.html)
+* [KML Layer](../examples/kml-layer.html)
+* [KML Layer (Clustered)](../examples/kml-layer-clustered.html)
 
 **[[⬆]](#)**
 
@@ -644,7 +644,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Mapbox Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/mapbox-layer.html)
+* [Mapbox Layer](../examples/mapbox-layer.html)
 
 **[[⬆]](#)**
 
@@ -702,7 +702,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [SPOT Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/spot-layer.html)
+* [SPOT Layer](../examples/spot-layer.html)
 
 **[[⬆]](#)**
 
@@ -751,7 +751,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Tiled Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/tiled-layer.html)
+* [Tiled Layer](../examples/tiled-layer.html)
 
 **[[⬆]](#)**
 
@@ -803,7 +803,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [WMS Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/wms-layer.html)
+* [WMS Layer](../examples/wms-layer.html)
 
 **[[⬆]](#)**
 
@@ -855,7 +855,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Zoomify Layer](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/zoomify-layer.html)
+* [Zoomify Layer](../examples/zoomify-layer.html)
 
 **[[⬆]](#)**
 
@@ -894,7 +894,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Edit Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/edit-control.html)
+* [Edit Control](../examples/edit-control.html)
 
 **[[⬆]](#)**
 
@@ -927,9 +927,9 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Fullscreen Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/fullscreen-control.html)
-* [Fullscreen Control (API)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/fullscreen-control-api.html)
-* [Fullscreen Control (iframe)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/fullscreen-control-iframe.html)
+* [Fullscreen Control](../examples/fullscreen-control.html)
+* [Fullscreen Control (API)](../examples/fullscreen-control-api.html)
+* [Fullscreen Control (iframe)](../examples/fullscreen-control-iframe.html)
 
 **[[⬆]](#)**
 
@@ -966,7 +966,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Geocoder Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/geocoder-control.html)
+* [Geocoder Control](../examples/geocoder-control.html)
 
 **[[⬆]](#)**
 
@@ -999,9 +999,9 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Hash Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/hash-control.html)
-* [Hash Control (iframe)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/hash-control-iframe.html)
-* [Hash Control (Track History)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/hash-control-track-history.html)
+* [Hash Control](../examples/hash-control.html)
+* [Hash Control (iframe)](../examples/hash-control-iframe.html)
+* [Hash Control (Track History)](../examples/hash-control-track-history.html)
 
 **[[⬆]](#)**
 
@@ -1109,8 +1109,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Legend Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/legend-control.html)
-* [Legend Control (ArcGIS Server)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/legend-control-arcgisserver.html)
+* [Legend Control](../examples/legend-control.html)
+* [Legend Control (ArcGIS Server)](../examples/legend-control-arcgisserver.html)
 
 **[[⬆]](#)**
 
@@ -1143,7 +1143,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Locate Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/locate-control.html)
+* [Locate Control](../examples/locate-control.html)
 
 **[[⬆]](#)**
 
@@ -1180,7 +1180,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Measure Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/measure-control.html)
+* [Measure Control](../examples/measure-control.html)
 
 **[[⬆]](#)**
 
@@ -1227,8 +1227,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Overview Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/edit-control.html)
-* [Overview Control (API)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/edit-control-api.html)
+* [Overview Control](../examples/edit-control.html)
+* [Overview Control (API)](../examples/edit-control-api.html)
 
 **[[⬆]](#)**
 
@@ -1264,7 +1264,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Print Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/print-control.html)
+* [Print Control](../examples/print-control.html)
 
 **[[⬆]](#)**
 
@@ -1297,8 +1297,8 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Scale Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/scale-control.html)
-* [Scale Control (API)](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/scale-control-api.html)
+* [Scale Control](../examples/scale-control.html)
+* [Scale Control (API)](../examples/scale-control-api.html)
 
 **[[⬆]](#)**
 
@@ -1363,7 +1363,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Zoom Display Control](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/zoomdisplay-control.html)
+* [Zoom Display Control](../examples/zoomdisplay-control.html)
 
 **[[⬆]](#)**
 
@@ -1430,7 +1430,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Styling Vectors](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/styling-vectors.html)
+* [Styling Vectors](../examples/styling-vectors.html)
 
 **[[⬆]](#)**
 
@@ -1487,7 +1487,7 @@ _Example (API)_:
 
 _Working Examples_:
 
-* [Styling Vectors](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/styling-vectors.html)
+* [Styling Vectors](../examples/styling-vectors.html)
 
 **[[⬆]](#)**
 
@@ -1554,7 +1554,7 @@ The following baseLayer preset strings are supported:
    * `stamen-toner`
    * `stamen-watercolor`
 
-Take a look at the [baseLayer presets](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/baselayer-presets.html) example for more information.
+Take a look at the [baseLayer presets](../examples/baselayer-presets.html) example for more information.
 
 **[[⬆]](#)**
 
@@ -1586,7 +1586,7 @@ It is also possible to create maps by interacting directly with the NPMap.js API
 
 #### Hybrid
 
-The NPMap team builds many of its maps using a hybrid approach that uses `npmap-bootstrap.js` to do the initial configuration and load of a map and then takes advantage of NPMap.js' [hooks](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/hooks.html) and API to add custom functionality.
+The NPMap team builds many of its maps using a hybrid approach that uses `npmap-bootstrap.js` to do the initial configuration and load of a map and then takes advantage of NPMap.js' [hooks](../examples/hooks.html) and API to add custom functionality.
 
 This approach gets the best of both the Bootstrap and API methods: Easy initial configuration with advanced programmatic access for complete control. This approach also has an added benefit of consistency. Every map built using this hybrid approach is laid out (or "scaffolded") in a consistent way.
 
@@ -1642,24 +1642,17 @@ If you need to add functionality that isn't supported by NPMap.js to a map, you 
     var NPMap = {
       div: 'map',
       plugins: [{
-        js: 'http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/plugins/Leaflet.GeometryUtil/0.3.2/plugin.min.js'
+        js: 'plugins/Leaflet.GeometryUtil/0.3.2/plugin.min.js'
       },{
-        js: 'http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/plugins/Leaflet.Snap/0.0.1/plugin.min.js'
+        js: 'plugins/Leaflet.Snap/0.0.1/plugin.min.js'
       }]
     };
 
 NPMap.js will load any CSS files (specified in the `css` property) and JavaScript files (specified in the `js` property). These plugins will be available in both the `preinit` and `init` [hooks](#hooks).
 
-Here's a list of the plugins that are currently available on the NPS.gov content delivery network:
-
-- [Leaflet.GeometryUtil](https://github.com/makinacorpus/Leaflet.GeometryUtil): http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/plugins/Leaflet.GeometryUtil/0.3.2/plugin.min.js
-- [Leaflet.Snap](https://github.com/makinacorpus/Leaflet.Snap): http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/plugins/Leaflet.Snap/0.0.1/plugin.min.js
-
-Remember, however, that you can always load plugins from your own server, as well.
-
 _Working Examples_:
 
-* [Plugins](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/plugins.html)
+* [Plugins](../examples/plugins.html)
 
 **[[⬆]](#)**
 
@@ -1762,7 +1755,7 @@ NPMap.js also adds a number of "helpers" to Handlebars. These helpers can be use
   <li><code>toUpperCase</code><pre><code>title: '{{toUpperCase Name}}'</code></pre></li>
 </ul>
 
-You can see examples of configuring popups for overlays in the [popups](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/popups.html) example.
+You can see examples of configuring popups for overlays in the [popups](../examples/popups.html) example.
 
 **[[⬆]](#)**
 
@@ -1780,7 +1773,7 @@ Tooltips should be short and succinct. Both HTML and Handlebars strings are supp
       }]
     };
 
-You can see examples of configuring tooltips for overlays in the [tooltips example](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/tooltips.html).
+You can see examples of configuring tooltips for overlays in the [tooltips example](../examples/tooltips.html).
 
 **[[⬆]](#)**
 
@@ -1816,6 +1809,6 @@ If you prefer not to use the simplestyle specification, you can utilize the out-
 
 **Note**: Style properties cascade. This means that if a `marker-symbol` property is passed in via the data source (e.g. a GeoJSON feature's properties) and a `marker-color` property is passed in via the overlay config object, the geometry will be styled with both the `marker-symbol` **and** `marker-color` properties unless the `ignoreFeatureStyles` property is present.
 
-Take a look at the [Styling Vectors example](http://www.nps.gov/lib/npmap.js/{{ NPMAP-DOT-JS-VERSION_NUMBER }}/examples/styling-vectors.html) to see an example of using the different configuration options to style overlay's.
+Take a look at the [Styling Vectors example](../examples/styling-vectors.html) to see an example of using the different configuration options to style overlay's.
 
 **[[⬆]](#)**

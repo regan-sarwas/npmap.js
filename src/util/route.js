@@ -1,14 +1,11 @@
-/* globals L */
-/* jshint camelcase: false */
-
 'use strict';
 
 var reqwest = require('reqwest');
 
 module.exports = ({
-  mapbox: (function() {
+  mapbox: (function () {
     return {
-      route: function(latLngs, callback, mode) {
+      route: function (latLngs, callback, mode) {
         var locations = '';
 
         mode = mode || 'driving';
@@ -25,13 +22,13 @@ module.exports = ({
 
         reqwest({
           crossOrigin: true,
-          error: function() {
+          error: function () {
             callback({
               message: 'The route failed. Please check your network connection.',
               success: false
             });
           },
-          success: function(response) {
+          success: function (response) {
             callback(response);
           },
           type: 'json',
