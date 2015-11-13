@@ -26,13 +26,13 @@ NPMap.js is versioned using [semantic versioning](http://semver.org). This means
 
 ## Changelog
 
-- [v2.0.0](https://github.com/nationalparkservice/npmap.js/issues?milestone=1&page=1&state=closed)
-- [v2.0.1](https://github.com/nationalparkservice/npmap.js/issues?milestone=2&page=1&state=closed)
-- [v3.0.0](https://github.com/nationalparkservice/npmap.js/issues?milestone=3&page=1&state=closed)
-- v3.0.1
-- [v3.0.2](https://github.com/nationalparkservice/npmap.js/issues?milestone=4&page=1&state=closed)
-- [v3.0.3](https://github.com/nationalparkservice/npmap.js/issues?milestone=5&page=1&state=closed)
-- [v3.0.4](https://github.com/nationalparkservice/npmap.js/issues?milestone=6&page=1&state=closed)
+- [v2.0.0](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A2.0.0+is%3Aclosed)
+- [v2.0.1](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A2.0.1+is%3Aclosed)
+- [v3.0.0](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.0+is%3Aclosed)
+- [v3.0.1](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.1+is%3Aclosed)
+- [v3.0.2](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.2+is%3Aclosed)
+- [v3.0.3](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.3+is%3Aclosed)
+- [v3.0.4](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.4+is%3Aclosed)
 
 ## Hosted version
 
