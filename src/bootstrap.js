@@ -179,7 +179,7 @@ if (typeof document.addEventListener !== 'function') {
       NPMap.config.spinner = showLoader(NPMap.config.div);
     }
 
-    for (var j = 0; j < scripts.length; i++) {
+    for (var j = 0; j < scripts.length; j++) {
       var src = scripts[j].src;
 
       if (typeof src === 'string') {
