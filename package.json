@@ -36,6 +36,7 @@
     "grunt-contrib-uglify": "0.9.1",
     "grunt-curl": "2.2.0",
     "grunt-http": "1.6.0",
+    "grunt-md2html": "^0.3.0",
     "grunt-mkdir": "0.1.2",
     "grunt-mocha-phantomjs": "^0.7.0",
     "grunt-semistandard": "^1.0.4",

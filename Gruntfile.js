@@ -108,6 +108,14 @@ module.exports = function (grunt) {
       }
     },
     copy: {
+      api: {
+        cwd: 'api/',
+        dest: 'dist/api',
+        expand: true,
+        src: [
+          '**/*'
+        ]
+      },
       css: {
         dest: 'dist/npmap-standalone.css',
         src: 'theme/nps.css'
@@ -179,6 +187,16 @@ module.exports = function (grunt) {
         ]
       }
     },
+    md2html: {
+      api: {
+        files: [{
+          dest: 'dist/api/index.html',
+          src: [
+            'dist/api/index.md'
+          ]
+        }]
+      }
+    },
     mkdir: {
       lib: {
         create: [
@@ -225,6 +243,8 @@ module.exports = function (grunt) {
   // TODO: csscomb, validation
   grunt.registerTask('build', [
     'clean:dist',
+    'copy:api',
+    'md2html:api',
     'copy:css',
     'copy:examples',
     'copy:images',
