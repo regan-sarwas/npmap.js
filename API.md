@@ -943,7 +943,7 @@ _Arguments_:
 
 The first, and only, argument is optional, and may be a control config object with the following properties:
 
-* (Optional) `provider` (String): Which supported provider should be used? Defaults to `esri`. Valid options are `bing`, `esri`, `mapquest`, and `nominatim`.
+* (Optional) `provider` (String): Which supported provider should be used? Defaults to `esri`. Valid options are `bing`, `esri`, `mapquest`, and `nominatim`. **Note** that the `mapquest` and `nominatim` providers are limited to 15,000 transactions per month, so they are not recommended for production usage.
 
 You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
 
