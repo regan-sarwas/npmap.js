@@ -33,6 +33,22 @@ module.exports = ({
       name: result.name
     };
   },
+  _formatMapboxResult: function (result) {
+    var bbox = result.bbox;
+    var center = result.center;
+
+    return {
+      bounds: [
+        [bbox[1], bbox[0]],
+        [bbox[3], bbox[2]]
+      ],
+      latLng: [
+        center[1],
+        center[0]
+      ],
+      name: result.place_name
+    };
+  },
   _formatMapquestResult: function (result) {
     var city = result.adminArea5 || null;
     var county = result.adminArea4 || null;
@@ -144,6 +160,48 @@ module.exports = ({
       },
       type: 'jsonp',
       url: util.buildUrl('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/find', options)
+    });
+  },
+  mapbox: function (value, callback) {
+    var me = this;
+
+    reqwest({
+      error: function () {
+        callback({
+          message: 'The location search failed. Please check your network connection.',
+          success: false
+        });
+      },
+      success: function (response) {
+        if (response) {
+          if (response.features && response.features.length) {
+            var results = [];
+
+            for (var i = 0; i < response.features.length; i++) {
+              results.push(me._formatMapboxResult(response.features[i]));
+            }
+
+            callback({
+              results: results,
+              success: true
+            });
+          } else {
+            callback({
+              message: 'No locations found.',
+              success: true
+            });
+          }
+        } else {
+          callback({
+            message: 'The geocode failed. Please try again.',
+            success: false
+          });
+        }
+      },
+      type: 'json',
+      url: util.buildUrl('https://api.mapbox.com/geocoding/v5/mapbox.places/' + value.replace(/ /g, '+').replace(/,/g, '+') + '.json', {
+        access_token: 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q'
+      })
     });
   },
   mapquest: function (value, callback) {

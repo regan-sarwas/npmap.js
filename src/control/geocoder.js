@@ -15,6 +15,7 @@ var GeocoderControl = L.Control.extend({
     ATTRIBUTIONS: {
       BING: 'Geocoding by Microsoft',
       ESRI: 'Geocoding by Esri',
+      MAPBOX: 'Geocoding by Mapbox',
       MAPQUEST: 'Geocoding by MapQuest',
       NOMINATIM: [
         'Geocoding by Nominatim',
@@ -145,7 +146,7 @@ var GeocoderControl = L.Control.extend({
             }
           }
         } else {
-
+          me._map.notify.danger('There was an error finding that location. Please try again.');
         }
       });
     }
