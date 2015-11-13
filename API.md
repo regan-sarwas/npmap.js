@@ -1192,11 +1192,11 @@ _Extends_: [`L.Control`](http://leafletjs.com/reference.html#control)
 
 _Arguments_:
 
-The first, and only, argument is optional, and may be a config object with the following properties:
+The first, and only, argument is required. It must be a config object comprised of the following required and optional properties:
 
+* (Required) `layer` (String|Object): A config object that you would like to add to the map. Can either be a layer preset string or a config object.
 * (Optional) `autoToggleDisplay` (Boolean): Should the overview hide automatically if the parent map bounds does not fit within the bounds of the overview map? Defaults to `false`.
 * (Optional) `height` (Number): The height of the overview map. Defaults to 150 pixels.
-* (Optional) `layer` (String|Object): A config object that you would like to add to the map. Can either be a layer preset string or a config object. If this is `undefined`, NPMap.js uses the baseLayer that is currently visible on the parent map.
 * (Optional) `toggleDisplay` (Boolean): Should the overview map be togglable? Defaults to `true`.
 * (Optional) `width` (Number): The width of the overview map. Defaults to 150 pixels.
 * (Optional) `zoomLevelFixed` (Number): Overrides `zoomLevelOffset`, sets the map to a fixed zoom level.
@@ -1210,7 +1210,9 @@ _Example (Bootstrap)_:
 
     var NPMap = {
       div: 'map',
-      overviewControl: true
+      overviewControl: {
+        layer: 'mapbox-light'
+      }
     };
 
 _Example (API)_:
@@ -1219,7 +1221,9 @@ _Example (API)_:
       div: 'map'
     });
 
-    L.npmap.control.overview().addTo(map);
+    L.npmap.control.overview({
+      layer: 'mapbox-light'
+    }).addTo(map);
 
 _Working Examples_:
 
