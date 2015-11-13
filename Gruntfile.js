@@ -260,12 +260,14 @@ module.exports = function (grunt) {
   grunt.registerTask('deploy', [
     'clean:lib',
     'mkdir:lib',
-    'copy:lib',
-    'akamai_rest_purge:lib'
+    'copy:lib'
   ]);
   grunt.registerTask('lint', [
     'csslint',
     'semistandard'
+  ]);
+  grunt.registerTask('purge', [
+    'akamai_rest_purge:lib'
   ]);
   grunt.registerTask('test', [
     'mocha_phantomjs'
