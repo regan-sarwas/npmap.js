@@ -54,8 +54,8 @@ if (typeof document.addEventListener !== 'function') {
           config.spinner.stop();
           delete config.spinner;
           setTimeout(function() {
-+           config.L.invalidateSize();
-+         }, 50);
+            config.L.invalidateSize();
+          }, 50);
         }
 
         if (typeof config.div === 'string') {
