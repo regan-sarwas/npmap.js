@@ -66,6 +66,19 @@ module.exports = ({
       name: name
     };
   },
+  _formatMapzenResult: function (result) {
+    var coordinates = result.geometry.coordinates;
+    var properties = result.properties;
+
+    return {
+      bounds: null,
+      latLng: [
+        coordinates[1],
+        coordinates[0]
+      ],
+      name: properties.label || properties.name
+    };
+  },
   _formatNominatimResult: function (result) {
     var bbox = result.boundingbox;
 
@@ -246,6 +259,49 @@ module.exports = ({
         key: 'Fmjtd|luu829urn5,a2=o5-9w1gh4',
         location: value,
         thumbMaps: false
+      })
+    });
+  },
+  mapzen: function (value, callback) {
+    var me = this;
+
+    reqwest({
+      error: function () {
+        callback({
+          message: 'The location search failed. Please check your network connection.',
+          success: false
+        });
+      },
+      success: function (response) {
+        if (response) {
+          if (response.features && response.features.length) {
+            var results = [];
+
+            for (var i = 0; i < response.features.length; i++) {
+              results.push(me._formatMapzenResult(response.features[i]));
+            }
+
+            callback({
+              results: results,
+              success: true
+            });
+          } else {
+            callback({
+              message: 'No locations found.',
+              success: true
+            });
+          }
+        } else {
+          callback({
+            message: 'The geocode failed. Please try again.',
+            success: false
+          });
+        }
+      },
+      type: 'json',
+      url: util.buildUrl('https://search.mapzen.com/v1/search', {
+        api_key: 'search-RZUX8gc',
+        text: value
       })
     });
   },

@@ -17,6 +17,7 @@ var GeocoderControl = L.Control.extend({
       ESRI: 'Geocoding by Esri',
       MAPBOX: 'Geocoding by Mapbox',
       MAPQUEST: 'Geocoding by MapQuest',
+      MAPZEN: 'Geocoding by Mapzen',
       NOMINATIM: [
         'Geocoding by Nominatim',
         '&copy; <a href=\'http://openstreetmap.org/copyright\'>OpenStreetMap</a> contributors'
