@@ -3,8 +3,8 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  util = require('../util/util');
+var reqwest = require('reqwest');
+var util = require('../util/util');
 
 var MapBoxLayer = L.TileLayer.extend({
   _formatPattern: /\.((?:png|jpg)\d*)(?=$|\?)/,
@@ -35,7 +35,7 @@ var MapBoxLayer = L.TileLayer.extend({
       'png256'
     ]
   },
-  initialize: function(options) {
+  initialize: function (options) {
     var load;
 
     if (!options.id && !options.tileJson) {
@@ -52,9 +52,9 @@ var MapBoxLayer = L.TileLayer.extend({
     this._hasInteractivity = false;
     this._loadTileJson(load);
   },
-  getTileUrl: function(tilePoint) {
-    var tiles = this.options.tiles,
-      templated = L.Util.template(tiles[Math.floor(Math.abs(tilePoint.x + tilePoint.y) % tiles.length)], tilePoint);
+  getTileUrl: function (tilePoint) {
+    var tiles = this.options.tiles;
+    var templated = L.Util.template(tiles[Math.floor(Math.abs(tilePoint.x + tilePoint.y) % tiles.length)], tilePoint);
 
     if (!templated) {
       return templated;
@@ -62,18 +62,18 @@ var MapBoxLayer = L.TileLayer.extend({
       return templated.replace(this._formatPattern, (L.Browser.retina ? '@2x' : '') + '.' + this.options.format);
     }
   },
-  onAdd: function onAdd(map) {
+  onAdd: function onAdd (map) {
     this._map = map;
     L.TileLayer.prototype.onAdd.call(this, this._map);
   },
-  onRemove: function onRemove() {
+  onRemove: function onRemove () {
     L.TileLayer.prototype.onRemove.call(this, this._map);
     delete this._map;
   },
-  _getGridData: function(latLng, callback) {
+  _getGridData: function (latLng, callback) {
     var me = this;
 
-    me._getTileGrid(me._getTileGridUrl(latLng), latLng, function(resultData, gridData) {
+    me._getTileGrid(me._getTileGridUrl(latLng), latLng, function (resultData, gridData) {
       if (resultData === 'loading') {
         callback({
           layer: me,
@@ -96,13 +96,13 @@ var MapBoxLayer = L.TileLayer.extend({
       }
     });
   },
-  _loadTileJson: function(from) {
+  _loadTileJson: function (from) {
     if (typeof from === 'string') {
       var me = this;
 
       reqwest({
         crossOrigin: true,
-        error: function(error) {
+        error: function (error) {
           var obj = L.extend(error, {
             message: 'There was an error loading the data from Mapbox.'
           });
@@ -110,25 +110,25 @@ var MapBoxLayer = L.TileLayer.extend({
           me.fire('error', obj);
           me.errorFired = obj;
         },
-        success: function(response) {
+        success: function (response) {
           me._setTileJson(response);
         },
         type: 'json',
         // To make CORS work in IE9.
-        url: (window.location.protocol === 'https:' ? 'https://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + '&secure=1' : 'http://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken)
+        url: (window.location.protocol === 'https:' ? 'https://api.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken + '&secure=1' : 'http://a.tiles.mapbox.com/v4/' + from + '.json?access_token=' + me.options.accessToken)
       });
     } else if (typeof from === 'object') {
       this._setTileJson(from);
     }
   },
-  _setTileJson: function(json) {
-    var me = this,
-      extend;
+  _setTileJson: function (json) {
+    var me = this;
+    var extend;
 
     util.strict(json, 'object');
 
     extend = {
-      attribution: (function() {
+      attribution: (function () {
         if (me.options.attribution) {
           return me.options.attribution;
         } else if (json.attribution) {
@@ -169,17 +169,17 @@ var MapBoxLayer = L.TileLayer.extend({
     me.readyFired = true;
     return this;
   },
-  _toLeafletBounds: function(_) {
+  _toLeafletBounds: function (_) {
     return new L.LatLngBounds([[_[1], _[0]], [_[3], _[2]]]);
   },
-  _update: function() {
+  _update: function () {
     if (this.options.tiles) {
       L.TileLayer.prototype._update.call(this);
     }
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   options = options || {};
 
   if (!options.type) {

@@ -15,7 +15,9 @@ var GeocoderControl = L.Control.extend({
     ATTRIBUTIONS: {
       BING: 'Geocoding by Microsoft',
       ESRI: 'Geocoding by Esri',
+      MAPBOX: 'Geocoding by Mapbox',
       MAPQUEST: 'Geocoding by MapQuest',
+      MAPZEN: 'Geocoding by Mapzen',
       NOMINATIM: [
         'Geocoding by Nominatim',
         '&copy; <a href=\'http://openstreetmap.org/copyright\'>OpenStreetMap</a> contributors'
@@ -128,16 +130,24 @@ var GeocoderControl = L.Control.extend({
 
         if (result && result.success) {
           if (result.results && result.results.length) {
-            me._map.fitBounds(result.results[0].bounds);
+            var first = result.results[0];
+
+            if (first.bounds) {
+              me._map.fitBounds(first.bounds);
+            } else if (first.latLng) {
+              me._map.setView(first.latLng, 17);
+            } else {
+              me._map.notify.danger('There was an error finding that location. Please try again.');
+            }
           } else {
             if (result.message) {
-
+              me._map.notify.danger(result.message);
             } else {
-
+              me._map.notify.danger('There was an error finding that location. Please try again.');
             }
           }
         } else {
-
+          me._map.notify.danger('There was an error finding that location. Please try again.');
         }
       });
     }

@@ -3,13 +3,13 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  util = require('../util/util');
+var reqwest = require('reqwest');
+var util = require('../util/util');
 
 module.exports = ({
-  _formatBingResult: function(result) {
-    var bbox = result.bbox,
-      coordinates = result.geocodePoints[0].coordinates;
+  _formatBingResult: function (result) {
+    var bbox = result.bbox;
+    var coordinates = result.geocodePoints[0].coordinates;
 
     return {
       bounds: [
@@ -20,9 +20,9 @@ module.exports = ({
       name: result.name
     };
   },
-  _formatEsriResult: function(result) {
-    var extent = result.extent,
-      geometry = result.feature.geometry;
+  _formatEsriResult: function (result) {
+    var extent = result.extent;
+    var geometry = result.feature.geometry;
 
     return {
       bounds: [
@@ -33,22 +33,53 @@ module.exports = ({
       name: result.name
     };
   },
-  _formatMapquestResult: function(result) {
-    var city = result.adminArea5 || null,
-      county = result.adminArea4 || null,
-      country = result.adminArea1 || null,
-      postal = result.postalCode || null,
-      street = result.street || null,
-      state = result.adminArea3 || null,
-      name = (street ? street + ', ' : '') + (city ? city : county) + ', ' + state + ' ' + country;
+  _formatMapboxResult: function (result) {
+    var bbox = result.bbox;
+    var center = result.center;
+
+    return {
+      bounds: [
+        [bbox[1], bbox[0]],
+        [bbox[3], bbox[2]]
+      ],
+      latLng: [
+        center[1],
+        center[0]
+      ],
+      name: result.place_name
+    };
+  },
+  _formatMapquestResult: function (result) {
+    var city = result.adminArea5 || null;
+    var county = result.adminArea4 || null;
+    var country = result.adminArea1 || null;
+    var street = result.street || null;
+    var state = result.adminArea3 || null;
+    var name = (street ? street + ', ' : '') + (city || county) + ', ' + state + ' ' + country;
 
     return {
       bounds: null,
-      latLng: [result.latLng.lat, result.latLng.lng],
+      latLng: [
+        result.latLng.lat,
+        result.latLng.lng
+      ],
       name: name
     };
   },
-  _formatNominatimResult: function(result) {
+  _formatMapzenResult: function (result) {
+    var coordinates = result.geometry.coordinates;
+    var properties = result.properties;
+
+    return {
+      bounds: null,
+      latLng: [
+        coordinates[1],
+        coordinates[0]
+      ],
+      name: properties.label || properties.name
+    };
+  },
+  _formatNominatimResult: function (result) {
     var bbox = result.boundingbox;
 
     return {
@@ -60,24 +91,18 @@ module.exports = ({
       name: result.display_name
     };
   },
-  bing: function(value, callback) {
-    var me = this,
-      options = {
-        include: 'queryParse',
-        includeNeighborhood: 1,
-        key: 'Ag4-2f0g7bcmcVgKeNYvH_byJpiPQSx4F9l0aQaz9pDYMORbeBFZ0N3C3A5LSf65',
-        query: value
-      };
+  bing: function (value, callback) {
+    var me = this;
 
     reqwest({
-      error: function() {
+      error: function () {
         callback({
           message: 'The location search failed. Please check your network connection.',
           success: false
         });
       },
       jsonpCallback: 'jsonp',
-      success: function(response) {
+      success: function (response) {
         var obj = {};
 
         if (response) {
@@ -97,32 +122,37 @@ module.exports = ({
         callback(obj);
       },
       type: 'jsonp',
-      url: util.buildUrl('https://dev.virtualearth.net/REST/v1/Locations', options)
+      url: util.buildUrl('https://dev.virtualearth.net/REST/v1/Locations', {
+        include: 'queryParse',
+        includeNeighborhood: 1,
+        key: 'Ag4-2f0g7bcmcVgKeNYvH_byJpiPQSx4F9l0aQaz9pDYMORbeBFZ0N3C3A5LSf65',
+        query: value
+      })
     });
   },
-  esri: function(value, callback, options) {
-    var me = this,
-      defaults = {
-        //bbox: options && options.bbox ? options.bbox : null,
-        //center: me._map.getCenter(),
-        //distance: Math.min(Math.max(center.distanceTo(ne), 2000), 50000),
-        f: 'json',
-        //location: options && options.center ? options.center.lat + ',' + options.center.lng : null,
-        //maxLocations: 5,
-        //outFields: 'Subregion, Region, PlaceName, Match_addr, Country, Addr_type, City',
-        text: value
-      };
+  esri: function (value, callback, options) {
+    var me = this;
+    var defaults = {
+      // bbox: options && options.bbox ? options.bbox : null,
+      // center: me._map.getCenter(),
+      // distance: Math.min(Math.max(center.distanceTo(ne), 2000), 50000),
+      f: 'json',
+      // location: options && options.center ? options.center.lat + ',' + options.center.lng : null,
+      // maxLocations: 5,
+      // outFields: 'Subregion, Region, PlaceName, Match_addr, Country, Addr_type, City',
+      text: value
+    };
 
     options = options ? L.extend(defaults, options) : defaults;
 
     reqwest({
-      error: function() {
+      error: function () {
         callback({
           message: 'The location search failed. Please check your network connection.',
           success: false
         });
       },
-      success: function(response) {
+      success: function (response) {
         var obj = {};
 
         if (response) {
@@ -145,17 +175,60 @@ module.exports = ({
       url: util.buildUrl('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/find', options)
     });
   },
-  mapquest: function(value, callback) {
+  mapbox: function (value, callback) {
     var me = this;
 
     reqwest({
-      error: function() {
+      error: function () {
         callback({
           message: 'The location search failed. Please check your network connection.',
           success: false
         });
       },
-      success: function(response) {
+      success: function (response) {
+        if (response) {
+          if (response.features && response.features.length) {
+            var results = [];
+
+            for (var i = 0; i < response.features.length; i++) {
+              results.push(me._formatMapboxResult(response.features[i]));
+            }
+
+            callback({
+              results: results,
+              success: true
+            });
+          } else {
+            callback({
+              message: 'No locations found.',
+              success: true
+            });
+          }
+        } else {
+          callback({
+            message: 'The geocode failed. Please try again.',
+            success: false
+          });
+        }
+      },
+      type: 'json',
+      url: util.buildUrl('https://api.mapbox.com/geocoding/v5/mapbox.places/' + value.replace(/ /g, '+').replace(/,/g, '+') + '.json', {
+        access_token: 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q'
+      })
+    });
+  },
+  mapquest: function (value, callback) {
+    var me = this;
+
+    console.info('The MapQuest Geocoding API is limited to 15,000 transactions a month. We recommend using the `esri` provider, as it supports much higher limits for NPS maps.');
+    reqwest({
+      error: function () {
+        callback({
+          message: 'The location search failed. Please check your network connection.',
+          success: false
+        });
+      },
+      success: function (response) {
         if (response) {
           if (response.results && response.results[0] && response.results[0].locations && response.results[0].locations.length) {
             var results = [];
@@ -182,21 +255,69 @@ module.exports = ({
         }
       },
       type: 'jsonp',
-      url: 'https://www.mapquestapi.com/geocoding/v1/address?location=' + value + '&key=Gmjtd%7Cluubn1u1nq%2C85%3Do5-lr7x9&thumbMaps=false'
+      url: util.buildUrl('https://www.mapquestapi.com/geocoding/v1/address', {
+        key: 'Fmjtd|luu829urn5,a2=o5-9w1gh4',
+        location: value,
+        thumbMaps: false
+      })
     });
   },
-  nominatim: function(value, callback) {
+  mapzen: function (value, callback) {
     var me = this;
 
     reqwest({
-      error: function() {
+      error: function () {
+        callback({
+          message: 'The location search failed. Please check your network connection.',
+          success: false
+        });
+      },
+      success: function (response) {
+        if (response) {
+          if (response.features && response.features.length) {
+            var results = [];
+
+            for (var i = 0; i < response.features.length; i++) {
+              results.push(me._formatMapzenResult(response.features[i]));
+            }
+
+            callback({
+              results: results,
+              success: true
+            });
+          } else {
+            callback({
+              message: 'No locations found.',
+              success: true
+            });
+          }
+        } else {
+          callback({
+            message: 'The geocode failed. Please try again.',
+            success: false
+          });
+        }
+      },
+      type: 'json',
+      url: util.buildUrl('https://search.mapzen.com/v1/search', {
+        api_key: 'search-RZUX8gc',
+        text: value
+      })
+    });
+  },
+  nominatim: function (value, callback) {
+    var me = this;
+
+    console.info('The MapQuest Nominatim API is limited to 15,000 transactions a month. We recommend using the `esri` provider, as it supports much higher limits for NPS maps.');
+    reqwest({
+      error: function () {
         callback({
           message: 'The location search failed. Please check your network connection.',
           success: false
         });
       },
       jsonpCallback: 'json_callback',
-      success: function(response) {
+      success: function (response) {
         var obj = {};
 
         if (response) {
@@ -216,7 +337,13 @@ module.exports = ({
         callback(obj);
       },
       type: 'jsonp',
-      url: 'https://open.mapquestapi.com/nominatim/v1/search.php?format=json&addressdetails=1&dedupe=1&q=' + value + '&key=Gmjtd%7Cluubn1u1nq%2C85%3Do5-lr7x9'
+      url: util.buildUrl('https://open.mapquestapi.com/nominatim/v1/search.php', {
+        addressdetails: 1,
+        dedupe: 1,
+        format: 'json',
+        key: 'Fmjtd|luu829urn5,a2=o5-9w1gh4',
+        q: value
+      })
     });
   }
 });
