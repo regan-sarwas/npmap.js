@@ -45,6 +45,82 @@ describe('L.npmap.control', function () {
       expect(map.geocoderControl).to.be(undefined);
     });
   });
+  describe('hashControl', function () {
+    it('creates a hashControl when option "hashControl: true"', function () {
+      var map = L.npmap.map({
+        div: element,
+        hashControl: true
+      });
+
+      expect(map.hashControl).to.be.ok();
+    });
+    it('does not create a hashControl when option "hashControl: false" or "hashControl: undefined"', function () {
+      var map = L.npmap.map({
+        div: element
+      });
+
+      expect(map.hashControl).to.be(undefined);
+    });
+    it('sets a hash when the map is moved', function (done) {
+      var map = L.npmap.map({
+        div: document.createElement('div')
+      });
+
+      L.npmap.control.hash().addTo(map);
+      window.setTimeout(function () {
+        map.setView([
+          51.505,
+          -0.09
+        ], 13);
+        expect(window.location.hash).to.be('#13/51.5050/-0.0900');
+        done();
+      }, 300);
+    });
+    it('uses a hash set initially on the page', function (done) {
+      var map = L.npmap.map({
+        div: document.createElement('div')
+      });
+
+      window.location.hash = '#13/10/40';
+      L.npmap.control.hash().addTo(map);
+      window.setTimeout(function () {
+        expect(Math.round(map.getCenter().lat)).to.be(10);
+        expect(Math.round(map.getCenter().lng)).to.be(40);
+        done();
+      }, 300);
+    });
+    it('responds to a hash change after an initial hash is set', function (done) {
+      var map = L.npmap.map({
+        div: document.createElement('div')
+      });
+
+      map.setView([
+        51.505,
+        -0.09
+      ], 13);
+      window.location.hash = '#13/20/40';
+      L.npmap.control.hash().addTo(map);
+      window.setTimeout(function () {
+        expect(Math.round(map.getCenter().lat)).to.be(20);
+        expect(Math.round(map.getCenter().lng)).to.be(40);
+        done();
+      }, 300);
+    });
+    /*
+    it('unbinds events when removed', function () {
+      var map = L.npmap.map({
+        div: document.createElement('div')
+      });
+      var hash;
+
+      window.location.hash = '';
+      hash = L.npmap.control.hash().addTo(map);
+      map.removeControl(hash);
+      map.setView([51.505, -0.09], 13);
+      expect(window.location.hash).to.be('');
+    });
+    */
+  });
   describe('homeControl', function () {
     it('creates a homeControl by default', function () {
       var map = L.npmap.map({
