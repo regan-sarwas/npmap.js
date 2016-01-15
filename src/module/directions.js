@@ -1,11 +1,10 @@
-/* globals L, NPMap */
-/* jshint quotmark: false */
+/* globals L */
 
 'use strict';
 
-var geocode = require('../util/geocode'),
-  route = require('../util/route'),
-  util = require('../util/util');
+var geocode = require('../util/geocode');
+var route = require('../util/route');
+var util = require('../util/util');
 
 require('../icon/maki');
 
@@ -16,13 +15,13 @@ var DirectionsModule = L.Class.extend({
   includes: [
     require('../mixin/module')
   ],
-  initialize: function(options) {
-    var buttonAddStop = document.createElement('button'),
-      buttonClear = document.createElement('button'),
-      buttonOptions = document.createElement('button'),
-      div = document.createElement('div'),
-      me = this,
-      p = document.createElement('p');
+  initialize: function (options) {
+    var buttonAddStop = document.createElement('button');
+    var buttonClear = document.createElement('button');
+    var buttonOptions = document.createElement('button');
+    var div = document.createElement('div');
+    var me = this;
+    var p = document.createElement('p');
 
     L.Util.setOptions(this, options);
     p.innerHTML = 'Search for a location by address or name. Drag stops to reorder.';
@@ -35,7 +34,7 @@ var DirectionsModule = L.Class.extend({
     this._options.className = 'clearfix';
     buttonAddStop.className = buttonOptions.className = 'btn btn-link';
     buttonOptions.innerHTML = 'Options';
-    L.DomEvent.addListener(buttonAddStop, 'click', function() {
+    L.DomEvent.addListener(buttonAddStop, 'click', function () {
       this._addLi();
     }, this);
     this._options.appendChild(buttonAddStop);
@@ -44,7 +43,7 @@ var DirectionsModule = L.Class.extend({
     this._buttonPrimary = document.createElement('button');
     this._buttonPrimary.className = 'btn btn-primary';
     this._buttonPrimary.innerHTML = buttonAddStop.innerHTML = 'Add Stop';
-    L.DomEvent.addListener(this._buttonPrimary, 'click', function() {
+    L.DomEvent.addListener(this._buttonPrimary, 'click', function () {
       if (me._buttonPrimary.innerHTML === 'Add Stop') {
         var value = me._getFirstValue();
 
@@ -81,9 +80,9 @@ var DirectionsModule = L.Class.extend({
   _dragSource: null,
   _icon: {
     iconAnchor: [13.5, 37],
-    iconRetinaUrl: window.L.Icon.Default.imagePath  + '/module/directions/stop-{{letter}}@2x.png',
+    iconRetinaUrl: window.L.Icon.Default.imagePath + '/module/directions/stop-{{letter}}@2x.png',
     iconSize: [27, 37],
-    iconUrl: window.L.Icon.Default.imagePath  + '/module/directions/stop-{{letter}}.png',
+    iconUrl: window.L.Icon.Default.imagePath + '/module/directions/stop-{{letter}}.png',
     popupAnchor: [0, -40]
   },
   _letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
@@ -93,12 +92,12 @@ var DirectionsModule = L.Class.extend({
     color: '#818171',
     opacity: 1,
     weight: 6
-  },{
+  }, {
     color: '#c16b2b',
     opacity: 1,
     weight: 4
   }],
-  _addDraggableListeners: function() {
+  _addDraggableListeners: function () {
     for (var i = 0; i < this._ul.childNodes.length; i++) {
       var li = this._ul.childNodes[i];
 
@@ -110,15 +109,15 @@ var DirectionsModule = L.Class.extend({
         .addListener(li, 'dragstart', this._handleDragStart, this);
     }
   },
-  _addLi: function(value, focus) {
-    var backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/module/directions/times' + (L.Browser.retina ? '@2x' : '') + '.png)',
-      button = document.createElement('button'),
-      div = document.createElement('div'),
-      input = document.createElement('input'),
-      label = document.createElement('label'),
-      letter = this._letters[this._ul.childNodes.length],
-      li = document.createElement('li'),
-      me = this;
+  _addLi: function (value, focus) {
+    var backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/module/directions/times' + (L.Browser.retina ? '@2x' : '') + '.png)';
+    var button = document.createElement('button');
+    var div = document.createElement('div');
+    var input = document.createElement('input');
+    var label = document.createElement('label');
+    var letter = this._letters[this._ul.childNodes.length];
+    var li = document.createElement('li');
+    var me = this;
 
     div.className = 'remove';
     label.htmlFor = 'stop-' + letter;
@@ -126,9 +125,9 @@ var DirectionsModule = L.Class.extend({
     li.appendChild(label);
     li.draggable = true;
     input.id = 'stop-' + letter;
-    input.onkeypress = function(e) {
+    input.onkeypress = function (e) {
       if (e.keyCode === 13 && input.value && input.value.length > 0) {
-        geocode.esri(input.value, function(response) {
+        geocode.esri(input.value, function (response) {
           if (response && response.results) {
             var result = response.results[0];
 
@@ -155,11 +154,11 @@ var DirectionsModule = L.Class.extend({
     button.className = 'ir remove';
     button.innerHTML = 'Remove stop';
     L.DomEvent
-      .addListener(button, 'click', function() {
-        var li = this.parentNode,
-          letter = li.childNodes[0].innerHTML,
-          refresh = false,
-          ul = li.parentNode;
+      .addListener(button, 'click', function () {
+        var li = this.parentNode;
+        var letter = li.childNodes[0].innerHTML;
+        var refresh = false;
+        var ul = li.parentNode;
 
         ul.removeChild(li);
 
@@ -195,10 +194,10 @@ var DirectionsModule = L.Class.extend({
           me._refreshLetters();
         }
       })
-      .addListener(button, 'onmouseout', function() {
+      .addListener(button, 'onmouseout', function () {
         this.style.backgroundImage = backgroundImage;
       })
-      .addListener(button, 'onmouseover', function() {
+      .addListener(button, 'onmouseover', function () {
         this.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/module/directions/times-over' + (L.Browser.retina ? '@2x' : '') + '.png)';
       });
     button.style.backgroundImage = backgroundImage;
@@ -212,13 +211,13 @@ var DirectionsModule = L.Class.extend({
       input.focus();
     }
   },
-  _addLiFirst: function(value) {
-    var button = document.createElement('button'),
-      divLi = document.createElement('div'),
-      input = document.createElement('input'),
-      label = document.createElement('label'),
-      li = document.createElement('li'),
-      me = this;
+  _addLiFirst: function (value) {
+    var button = document.createElement('button');
+    var divLi = document.createElement('div');
+    var input = document.createElement('input');
+    var label = document.createElement('label');
+    var li = document.createElement('li');
+    var me = this;
 
     label.htmlFor = 'stop-A';
     label.innerHTML = 'A';
@@ -226,9 +225,9 @@ var DirectionsModule = L.Class.extend({
     input.className = 'search';
     input.id = 'stop-A';
     input.type = 'text';
-    input.onkeypress = function(e) {
+    input.onkeypress = function (e) {
       if (e.keyCode === 13 && input.value && input.value.length > 0) {
-        geocode.esri(input.value, function(response) {
+        geocode.esri(input.value, function (response) {
           if (response && response.results) {
             var result = response.results[0];
 
@@ -247,7 +246,7 @@ var DirectionsModule = L.Class.extend({
     button.className = 'search ir';
     button.innerHTML = 'Search for a location';
     button.style.backgroundImage = 'url(' + window.L.Icon.Default.imagePath + '/font-awesome/search' + (L.Browser.retina ? '@2x' : '') + '.png)';
-    L.DomEvent.addListener(button, 'click', function() {
+    L.DomEvent.addListener(button, 'click', function () {
       if (input.value && input.value.length > 0) {
         me._geocode(input);
       }
@@ -263,11 +262,11 @@ var DirectionsModule = L.Class.extend({
       input.value = value;
     }
   },
-  _addMarker: function(result) {
-    var icon = L.extend({}, this._icon),
-      latLng = result.latLng,
-      letter = result.letter,
-      marker;
+  _addMarker: function (result) {
+    var icon = L.extend({}, this._icon);
+    var latLng = result.latLng;
+    var letter = result.letter;
+    var marker;
 
     L.extend(icon, {
       iconRetinaUrl: util.handlebars(icon.iconRetinaUrl, {
@@ -287,7 +286,7 @@ var DirectionsModule = L.Class.extend({
     marker._name = result.name;
     this._markers.push(marker.bindPopup('<div class="title">' + result.name + '</div>').addTo(this._map));
   },
-  _clear: function() {
+  _clear: function () {
     this._directions.innerHTML = '';
     this._directions.style.display = 'none';
     this._ul.innerHTML = '';
@@ -299,7 +298,7 @@ var DirectionsModule = L.Class.extend({
 
     this._clearRoute();
   },
-  _clearRoute: function() {
+  _clearRoute: function () {
     if (this._route.length) {
       for (var i = 0; i < this._route.length; i++) {
         this._map.removeLayer(this._route[i]);
@@ -310,7 +309,7 @@ var DirectionsModule = L.Class.extend({
       this._route = [];
     }
   },
-  _formatDistance: function(meters) {
+  _formatDistance: function (meters) {
     var distance = Math.round(meters / 1609.344) / 10;
 
     if (distance === 0) {
@@ -319,26 +318,24 @@ var DirectionsModule = L.Class.extend({
       return distance + ' mi';
     }
   },
-  _getFirstValue: function() {
+  _getFirstValue: function () {
     return this._ul.childNodes[0].childNodes[1].childNodes[0].value || null;
   },
-  _handleDragEnd: function(e) {
+  _handleDragEnd: function (e) {
     e.target.style.opacity = '1';
   },
-  _handleDragEnter: function(e) {
+  _handleDragEnter: function (e) {
     e.target.classList.add('over');
   },
-  _handleDragLeave: function(e) {
+  _handleDragLeave: function (e) {
     e.target.classList.remove('over');
   },
-  _handleDrop: function(e) {
+  _handleDrop: function (e) {
     var target = e.target;
 
     if (e.stopPropagation) {
       e.stopPropagation();
     }
-
-    //console.log(target);
 
     if (target._dragSource != target) {
       target._dragSource.innerHTML = target.innerHTML;
@@ -347,7 +344,7 @@ var DirectionsModule = L.Class.extend({
 
     return false;
   },
-  _handleDragOver: function(e) {
+  _handleDragOver: function (e) {
     if (e.preventDefault) {
       e.preventDefault();
     }
@@ -356,7 +353,7 @@ var DirectionsModule = L.Class.extend({
 
     return false;
   },
-  _handleDragStart: function(e) {
+  _handleDragStart: function (e) {
     var target = e.target;
 
     target.style.opacity = '0.4';
@@ -364,14 +361,14 @@ var DirectionsModule = L.Class.extend({
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', target.innerHTML);
   },
-  _refreshLetters: function() {
+  _refreshLetters: function () {
     for (var i = 0; i < this._ul.childNodes.length; i++) {
-      var childNodes = this._ul.childNodes[i].childNodes,
-        icon = L.extend({}, this._icon),
-        label = childNodes[0],
-        letter = this._letters[i],
-        marker = this._markers[i],
-        id = 'stop-' + letter;
+      var childNodes = this._ul.childNodes[i].childNodes;
+      var icon = L.extend({}, this._icon);
+      var label = childNodes[0];
+      var letter = this._letters[i];
+      var marker = this._markers[i];
+      var id = 'stop-' + letter;
 
       label.htmlFor = id;
       label.innerHTML = letter;
@@ -391,22 +388,20 @@ var DirectionsModule = L.Class.extend({
       }
     }
   },
-  route: function() {
-    var latLngs = [],
-      me = this;
+  route: function () {
+    var latLngs = [];
+    var me = this;
 
     for (var i = 0; i < me._markers.length; i++) {
       latLngs.push(me._markers[i].getLatLng());
     }
 
-    route.mapbox.route(latLngs, function(route) {
+    route.mapbox.route(latLngs, function (route) {
       if (route && route.routes && route.routes.length) {
-        var first = route.routes[0],
-          steps = first.steps,
-          html = '<div class="maneuver-header"><h2>Driving Directions to ' + me._markers[me._markers.length - 1]._name + '</h2><span class="info">ROUTE: ' + Math.round(first.distance / 1609.344) + ' MI, ' + Math.round(first.duration / 60) + ' MIN </span><h3 class="location"><span class="identifier">A</span><span class="name">' + me._markers[0]._name + '</span></h3></div><ol class="maneuvers">',
-          i;
-
-        //console.log(route);
+        var first = route.routes[0];
+        var steps = first.steps;
+        var html = '<div class="maneuver-header"><h2>Driving Directions to ' + me._markers[me._markers.length - 1]._name + '</h2><span class="info">ROUTE: ' + Math.round(first.distance / 1609.344) + ' MI, ' + Math.round(first.duration / 60) + ' MIN </span><h3 class="location"><span class="identifier">A</span><span class="name">' + me._markers[0]._name + '</span></h3></div><ol class="maneuvers">';
+        var i;
 
         for (i = 0; i < me._styles.length; i++) {
           var line = new L.GeoJSON({
@@ -439,6 +434,6 @@ var DirectionsModule = L.Class.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new DirectionsModule(options);
 };

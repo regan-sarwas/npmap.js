@@ -17,11 +17,11 @@ var Popup = L.Popup.extend({
   _data: [],
   _html: null,
   _results: [],
-  initialize: function(options) {
+  initialize: function (options) {
     L.Util.setOptions(this, options);
     L.Popup.prototype.initialize.call(this, this.options);
   },
-  onAdd: function(map) {
+  onAdd: function (map) {
     if (window.addEventListener) {
       this._content.addEventListener('DOMMouseScroll', this._handleMouseWheel, false);
     }
@@ -31,7 +31,7 @@ var Popup = L.Popup.extend({
       map
     ]);
   },
-  setContent: function(content) {
+  setContent: function (content) {
     if (typeof content === 'string') {
       var node = document.createElement('div');
       node.innerHTML = content;
@@ -49,13 +49,13 @@ var Popup = L.Popup.extend({
     L.Popup.prototype.setContent.call(this, content);
     return this;
   },
-  _back: function() {
+  _back: function () {
     this.setContent(this._html).update();
     this._html = null;
   },
-  _createAction: function(config, data, div) {
-    var a = document.createElement('a'),
-      li = document.createElement('li');
+  _createAction: function (config, data, div) {
+    var a = document.createElement('a');
+    var li = document.createElement('li');
 
     li.appendChild(a);
     a.innerHTML = util.handlebars(config.text, data);
@@ -64,13 +64,13 @@ var Popup = L.Popup.extend({
       var menu = L.DomUtil.create('ul', 'menu', div);
 
       for (var i = 0; i < config.menu.length; i++) {
-        (function() {
-          var item = config.menu[i],
-            itemA = document.createElement('a'),
-            itemLi = document.createElement('li');
+        (function () {
+          var item = config.menu[i];
+          var itemA = document.createElement('a');
+          var itemLi = document.createElement('li');
 
           itemA.innerHTML = util.handlebars(item.text, data);
-          L.DomEvent.addListener(itemA, 'click', function() {
+          L.DomEvent.addListener(itemA, 'click', function () {
             var data = null;
 
             try {
@@ -85,11 +85,11 @@ var Popup = L.Popup.extend({
         })();
       }
 
-      L.DomEvent.addListener(a, 'click', function(e) {
+      L.DomEvent.addListener(a, 'click', function (e) {
         this._toggleMenu(menu, e);
       }, this);
     } else if (config.handler) {
-      L.DomEvent.addListener(a, 'click', function() {
+      L.DomEvent.addListener(a, 'click', function () {
         var data = null;
 
         try {
@@ -102,10 +102,10 @@ var Popup = L.Popup.extend({
 
     return li;
   },
-  _handleMouseWheel: function(e) {
+  _handleMouseWheel: function (e) {
     if (e) {
-      var delta = e.wheelDelta,
-        parentNode = this.parentNode;
+      var delta = e.wheelDelta;
+      var parentNode = this.parentNode;
 
       if (L.DomUtil.hasClass(parentNode, 'leaflet-popup-scrolled')) {
         if (parentNode.scrollTop === 0 && delta > 0) {
@@ -116,10 +116,10 @@ var Popup = L.Popup.extend({
       }
     }
   },
-  _handleResults: function(results, mapPopupConfig) {
+  _handleResults: function (results, mapPopupConfig) {
     var div;
 
-    function getLayerConfig(layer) {
+    function getLayerConfig (layer) {
       if (layer.options && layer.options.popup) {
         return layer.options.popup;
       } else {
@@ -141,10 +141,10 @@ var Popup = L.Popup.extend({
       if (results.length > 1) {
         div = this._resultsToHtml(results);
       } else {
-        var all = [],
-          result = results[0],
-          theseResults = result.results,
-          i;
+        var all = [];
+        var result = results[0];
+        var theseResults = result.results;
+        var i;
 
         if (theseResults && theseResults.length) {
           for (i = 0; i < theseResults.length; i++) {
@@ -182,11 +182,11 @@ var Popup = L.Popup.extend({
 
     return div;
   },
-  _more: function(index) {
+  _more: function (index) {
     this._html = this.getContent();
     this.setContent(this._results[index]).update();
   },
-  _resultToHtml: function(result, layerConfig, resultConfig, addBack, mapConfig) {
+  _resultToHtml: function (result, layerConfig, resultConfig, addBack, mapConfig) {
     var div;
 
     if (mapConfig && typeof mapConfig === 'function') {
@@ -207,8 +207,14 @@ var Popup = L.Popup.extend({
       div.npmap_data = result;
       return div;
     } else {
-      var config = layerConfig,
-        actions, description, divContent, media, obj, title, ul;
+      var config = layerConfig;
+      var actions;
+      var description;
+      var divContent;
+      var media;
+      var obj;
+      var title;
+      var ul;
 
       div = L.DomUtil.create('div', 'layer');
       div.npmap_data = result;
@@ -226,12 +232,6 @@ var Popup = L.Popup.extend({
       }
 
       // TODO: Wrap title in an h3 (I believe?) with a zIndex of -1 and give it focus when popup is shown.
-
-
-
-
-
-
 
       if (config.title) {
         obj = null;
@@ -326,8 +326,8 @@ var Popup = L.Popup.extend({
       }
 
       if (addBack) {
-        var a = document.createElement('a'),
-          li = document.createElement('li');
+        var a = document.createElement('a');
+        var li = document.createElement('li');
 
         L.DomEvent.addListener(a, 'click', this._back, this);
         a.innerHTML = '&#171; Back';
@@ -345,20 +345,30 @@ var Popup = L.Popup.extend({
       return div;
     }
   },
-  _resultsToHtml: function(results) {
-    var div = document.createElement('div'),
-      index = 0,
-      me = this;
+  _resultsToHtml: function (results) {
+    var div = document.createElement('div');
+    var index = 0;
+    var me = this;
 
-    function listener() {
+    function listener () {
       me._more(this.id);
     }
 
     for (var i = 0; i < results.length; i++) {
-      var divLayer = L.DomUtil.create('div', 'layer', div),
-        divLayerTitle = L.DomUtil.create('div', 'title', divLayer),
-        resultLayer = results[i],
-        a, childNode, divLayerContent, j, k, layerConfig, li, more, resultConfig, single, ul;
+      var divLayer = L.DomUtil.create('div', 'layer', div);
+      var divLayerTitle = L.DomUtil.create('div', 'title', divLayer);
+      var resultLayer = results[i];
+      var a;
+      var childNode;
+      var divLayerContent;
+      var j;
+      var k;
+      var layerConfig;
+      var li;
+      var more;
+      var resultConfig;
+      var single;
+      var ul;
 
       if (resultLayer.layer.options) {
         if (resultLayer.layer.options.popup) {
@@ -396,7 +406,7 @@ var Popup = L.Popup.extend({
             more = 'Untitled';
           }
 
-          L.DomEvent.addListener(a, 'click', function() {
+          L.DomEvent.addListener(a, 'click', function () {
             me._more(this.id);
           });
           this._results[index] = single;
@@ -411,10 +421,10 @@ var Popup = L.Popup.extend({
         divLayerContent = L.DomUtil.create('div', 'content', divLayer);
 
         for (j = 0; j < resultLayer.subLayers.length; j++) {
-          var divSubLayer = L.DomUtil.create('div', 'sublayer', divLayerContent),
-            divSubLayerTitle = L.DomUtil.create('div', 'title', divSubLayer),
-            divSubLayerContent = L.DomUtil.create('div', 'content', divSubLayer),
-            resultSubLayer = resultLayer.subLayers[j];
+          var divSubLayer = L.DomUtil.create('div', 'sublayer', divLayerContent);
+          var divSubLayerTitle = L.DomUtil.create('div', 'title', divSubLayer);
+          var divSubLayerContent = L.DomUtil.create('div', 'content', divSubLayer);
+          var resultSubLayer = resultLayer.subLayers[j];
 
           divSubLayerTitle.innerHTML = resultSubLayer.name;
           ul = document.createElement('ul');
@@ -458,7 +468,7 @@ var Popup = L.Popup.extend({
 
     return div;
   },
-  _toggleMenu: function(menu, e) {
+  _toggleMenu: function (menu, e) {
     if (!menu.style.display || menu.style.display === 'none') {
       var to = e.toElement;
 
@@ -471,6 +481,6 @@ var Popup = L.Popup.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new Popup(options);
 };
