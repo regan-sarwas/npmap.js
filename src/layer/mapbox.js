@@ -3,6 +3,7 @@
 
 'use strict';
 
+var keys = require('../../keys.json');
 var reqwest = require('reqwest');
 var util = require('../util/util');
 
@@ -12,7 +13,13 @@ var MapBoxLayer = L.TileLayer.extend({
     require('../mixin/grid')
   ],
   options: {
-    accessToken: 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+    accessToken: (function () {
+      if (keys && keys.mapbox && keys.mapbox.access_token) {
+        return keys.mapbox.access_token;
+      } else {
+        return null;
+      }
+    })(),
     errorTileUrl: L.Util.emptyImageUrl,
     format: 'png',
     subdomains: [

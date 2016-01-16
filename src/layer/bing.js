@@ -2,12 +2,18 @@
 
 'use strict';
 
+var keys = require('../../keys.json');
 var BingLayer = L.TileLayer.extend({
   options: {
     attribution: 'Bing',
     culture: 'en-US',
     layer: 'aerial',
-    subdomains: [0, 1, 2, 3]
+    subdomains: [
+      0,
+      1,
+      2,
+      3
+    ]
   },
   getTileUrl: function (p) {
     var subdomains = this.options.subdomains;
@@ -24,7 +30,7 @@ var BingLayer = L.TileLayer.extend({
   initialize: function (options) {
     L.Util.setOptions(this, options);
 
-    this._key = 'Ag4-2f0g7bcmcVgKeNYvH_byJpiPQSx4F9l0aQaz9pDYMORbeBFZ0N3C3A5LSf65';
+    this._key = keys.bing.key;
     this._url = null;
     this.meta = {};
     this._loadMetadata();
