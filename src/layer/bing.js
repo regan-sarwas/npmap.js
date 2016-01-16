@@ -2,14 +2,7 @@
 
 'use strict';
 
-var keys;
-
-try {
-  keys = require('../../keys.json');
-} catch (e) {
-  keys = require('../../keys.sample.json');
-}
-
+var keys = require('../../keys.json');
 var BingLayer = L.TileLayer.extend({
   options: {
     attribution: 'Bing',

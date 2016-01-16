@@ -3,15 +3,9 @@
 
 'use strict';
 
+var keys = require('../../keys.json');
 var reqwest = require('reqwest');
 var util = require('../util/util');
-var keys;
-
-try {
-  keys = require('../../keys.json');
-} catch (e) {
-  keys = require('../../keys.sample.json');
-}
 
 var MapBoxLayer = L.TileLayer.extend({
   _formatPattern: /\.((?:png|jpg)\d*)(?=$|\?)/,

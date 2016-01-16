@@ -1,13 +1,7 @@
 'use strict';
 
+var keys = require('../../keys.json');
 var reqwest = require('reqwest');
-var keys;
-
-try {
-  keys = require('../../keys.json');
-} catch (e) {
-  keys = require('../../keys.sample.json');
-}
 
 module.exports = ({
   mapbox: (function () {
