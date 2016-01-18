@@ -6,7 +6,7 @@
   "dependencies": {
     "csv2geojson": "4.0.0",
     "handlebars": "4.0.3",
-    "helper-dateformat": "git+https://github.com/nationalparkservice/helper-dateformat.git#02d70292d366f2a67cbdf52bf809825cc462b991",
+    "helper-dateformat": "https://github.com/nationalparkservice/helper-dateformat/archive/v0.2.1.tar.gz",
     "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
     "leaflet": "0.7.7",
     "leaflet-draw": "git+https://github.com/nationalparkservice/Leaflet.Draw.git#23287efc2dc02fcf7de3b4737a76d16f06e7557c",
