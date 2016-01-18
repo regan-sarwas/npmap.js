@@ -1754,6 +1754,7 @@ NPMap.js also adds a number of "helpers" to Handlebars. These helpers can be use
   <li><code>ifCond (available operators include '!=', '!==', '==', '===', '&lt;', '&lt;=', '&gt;', '&gt;=', '&&', and '||')</code><pre><code>description: "I am {{#ifCond Name '===' 'A Rectangle'}}indeed{{else}}not{{/ifCond}} a rectangle! (Verified by a custom Handlebars helper.)"</code></pre></li>
   <li><code>toLowerCase</code><pre><code>title: '{{toUpperCase Name}}'</code></pre></li>
   <li><code>toUpperCase</code><pre><code>title: '{{toUpperCase Name}}'</code></pre></li>
+  <li><code>toInt</code><pre><code>description: '{{toInt StrInt}}'</code></pre></li>
 </ul>
 
 You can see examples of configuring popups for overlays in the [popups](../examples/popups.html) example.
