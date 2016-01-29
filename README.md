@@ -36,6 +36,7 @@ NPMap.js is versioned using [semantic versioning](http://semver.org). This means
 - [v3.0.7](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.7+is%3Aclosed)
 - [v3.0.8](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.8+is%3Aclosed)
 - [v3.0.9](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.9+is%3Aclosed)
+- [v3.0.10](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.10+is%3Aclosed)
 
 ## Hosted version
 
