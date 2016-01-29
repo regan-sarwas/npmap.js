@@ -13,7 +13,7 @@
     "leaflet.markercluster": "https://github.com/nationalparkservice/Leaflet.MarkerCluster/archive/v0.4.0.tar.gz",
     "maki": "~0.4.5",
     "nanobar": "0.2.1",
-    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.2.0.tar.gz",
+    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.2.2.tar.gz",
     "reqwest": "1.1.6",
     "togeojson": "0.13.0"
   },
@@ -83,5 +83,5 @@
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
   },
-  "version": "3.0.9"
+  "version": "3.0.10"
 }
