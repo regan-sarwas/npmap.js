@@ -2,8 +2,8 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  util = require('../util/util');
+var reqwest = require('reqwest');
+var util = require('../util/util');
 
 var GitHubLayer = L.GeoJSON.extend({
   includes: [
@@ -12,9 +12,9 @@ var GitHubLayer = L.GeoJSON.extend({
   options: {
     branch: 'master'
   },
-  initialize: function(options) {
-    var me = this,
-      supportsCors = util.supportsCors();
+  initialize: function (options) {
+    var me = this;
+    var supportsCors = util.supportsCors();
 
     L.Util.setOptions(this, this._toLeaflet(options));
 
@@ -34,8 +34,8 @@ var GitHubLayer = L.GeoJSON.extend({
         util.strict(options.repo, 'string');
         util.strict(options.user, 'string');
         reqwest({
-          crossOrigin: supportsCors === 'yes' ? true : false,
-          error: function(error) {
+          crossOrigin: supportsCors === 'yes',
+          error: function (error) {
             var obj = L.extend(error, {
               message: 'There was an error loading the data from GitHub.'
             });
@@ -43,7 +43,7 @@ var GitHubLayer = L.GeoJSON.extend({
             me.fire('error', obj);
             me.errorFired = obj;
           },
-          success: function(response) {
+          success: function (response) {
             var data = response.content || response.data.content;
 
             me._create(options, JSON.parse(window.atob(data.replace(/\s/g, ''))));
@@ -54,7 +54,7 @@ var GitHubLayer = L.GeoJSON.extend({
       }
     }
   },
-  _create: function(options, data) {
+  _create: function (options, data) {
     L.GeoJSON.prototype.initialize.call(this, data, options);
     this.fire('ready');
     this.readyFired = true;
@@ -63,7 +63,7 @@ var GitHubLayer = L.GeoJSON.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   options = options || {};
 
   if (!options.type) {

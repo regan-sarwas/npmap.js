@@ -3,6 +3,7 @@
 
 'use strict';
 
+var keys = require('../../keys.json');
 var reqwest = require('reqwest');
 var util = require('../util/util');
 
@@ -13,10 +14,19 @@ module.exports = ({
 
     return {
       bounds: [
-        [bbox[0], bbox[1]],
-        [bbox[2], bbox[3]]
+        [
+          bbox[0],
+          bbox[1]
+        ],
+        [
+          bbox[2],
+          bbox[3]
+        ]
       ],
-      latLng: [coordinates[0], coordinates[1]],
+      latLng: [
+        coordinates[0],
+        coordinates[1]
+      ],
       name: result.name
     };
   },
@@ -26,10 +36,19 @@ module.exports = ({
 
     return {
       bounds: [
-        [extent.ymin, extent.xmin],
-        [extent.ymax, extent.xmax]
+        [
+          extent.ymin,
+          extent.xmin
+        ],
+        [
+          extent.ymax,
+          extent.xmax
+        ]
       ],
-      latLng: [geometry.y, geometry.x],
+      latLng: [
+        geometry.y,
+        geometry.x
+      ],
       name: result.name
     };
   },
@@ -39,8 +58,14 @@ module.exports = ({
 
     return {
       bounds: [
-        [bbox[1], bbox[0]],
-        [bbox[3], bbox[2]]
+        [
+          bbox[1],
+          bbox[0]
+        ],
+        [
+          bbox[3],
+          bbox[2]
+        ]
       ],
       latLng: [
         center[1],
@@ -84,10 +109,19 @@ module.exports = ({
 
     return {
       bounds: [
-        [bbox[0], bbox[3]],
-        [bbox[1], bbox[2]]
+        [
+          bbox[0],
+          bbox[3]
+        ],
+        [
+          bbox[1],
+          bbox[2]
+        ]
       ],
-      latLng: [result.lat, result.lon],
+      latLng: [
+        result.lat,
+        result.lon
+      ],
       name: result.display_name
     };
   },
@@ -125,7 +159,7 @@ module.exports = ({
       url: util.buildUrl('https://dev.virtualearth.net/REST/v1/Locations', {
         include: 'queryParse',
         includeNeighborhood: 1,
-        key: 'Ag4-2f0g7bcmcVgKeNYvH_byJpiPQSx4F9l0aQaz9pDYMORbeBFZ0N3C3A5LSf65',
+        key: keys.bing.key,
         query: value
       })
     });
@@ -213,7 +247,7 @@ module.exports = ({
       },
       type: 'json',
       url: util.buildUrl('https://api.mapbox.com/geocoding/v5/mapbox.places/' + value.replace(/ /g, '+').replace(/,/g, '+') + '.json', {
-        access_token: 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q'
+        access_token: keys.mapbox.access_token
       })
     });
   },
@@ -256,7 +290,7 @@ module.exports = ({
       },
       type: 'jsonp',
       url: util.buildUrl('https://www.mapquestapi.com/geocoding/v1/address', {
-        key: 'Fmjtd|luu829urn5,a2=o5-9w1gh4',
+        key: keys.mapquest.key,
         location: value,
         thumbMaps: false
       })
@@ -300,7 +334,7 @@ module.exports = ({
       },
       type: 'json',
       url: util.buildUrl('https://search.mapzen.com/v1/search', {
-        api_key: 'search-RZUX8gc',
+        api_key: keys.mapzen.api_key,
         text: value
       })
     });
@@ -341,7 +375,7 @@ module.exports = ({
         addressdetails: 1,
         dedupe: 1,
         format: 'json',
-        key: 'Fmjtd|luu829urn5,a2=o5-9w1gh4',
+        key: keys.mapquest.key,
         q: value
       })
     });

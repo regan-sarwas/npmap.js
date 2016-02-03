@@ -33,6 +33,9 @@ handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
       return options.inverse(this);
   }
 });
+handlebars.registerHelper('toInt', function (str) {
+  return parseInt(str, 10);
+});
 handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
