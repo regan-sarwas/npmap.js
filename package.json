@@ -44,7 +44,9 @@
     "mocha": "^2.2.5",
     "mocha-phantomjs": "^4.0.1",
     "phantomjs": "1.9.7-15",
-    "sinon": "1.17.2",
+    "sinon": "1.17.3",
+    "uglify-js": "2.4.23",
+    "sinon": "1.17.3",
     "uglify-js": "2.6.1",
     "xhr2": "^0.1.2"
   },
