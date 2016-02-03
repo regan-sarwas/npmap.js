@@ -2,7 +2,6 @@ module.exports = function (grunt) {
   'use strict';
 
   var cssNpmapSymbolLibrary = '';
-  var npmapBaseUrl = 'http://www.nps.gov/npmap/npmap.js';
   var npmapSymbolLibrary = require('./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json');
   var pkg = require('./package.json');
   var sizes = {
@@ -13,11 +12,9 @@ module.exports = function (grunt) {
   var secrets;
 
   function loadNpmTasks () {
-    var gruntTasks = Object.keys(pkg.devDependencies).filter(function (moduleName) {
+    Object.keys(pkg.devDependencies).filter(function (moduleName) {
       return /(^grunt-)/.test(moduleName);
-    });
-
-    gruntTasks.forEach(function (task) {
+    }).forEach(function (task) {
       grunt.loadNpmTasks(task);
     });
   }
@@ -41,6 +38,7 @@ module.exports = function (grunt) {
   grunt.initConfig({
     akamai_rest_purge: {
       lib: {
+        /*
         objects: [
           'npmap-bootstrap.js',
           'npmap-bootstrap.min.js',
@@ -55,22 +53,10 @@ module.exports = function (grunt) {
         ].map(function (fileName) {
           return 'http://www.nps.gov/lib/npmap.js/<%= pkg.version %>/' + fileName;
         })
-      },
-      npmap: {
+        */
         objects: [
-          'npmap-bootstrap.js',
-          'npmap-bootstrap.min.js',
-          'npmap.css',
-          'npmap.min.css',
-          'npmap.js',
-          'npmap.min.js',
-          'npmap-standalone.css',
-          'npmap-standalone.min.css',
-          'npmap-standalone.js',
-          'npmap-standalone.min.js'
-        ].map(function (fileName) {
-          return npmapBaseUrl + '/<%= pkg.version %>/' + fileName;
-        })
+          'http://www.nps.gov/lib/npmap.js/<%= pkg.version %>/*'
+        ]
       },
       options: {
         action: 'invalidate',
@@ -105,14 +91,6 @@ module.exports = function (grunt) {
         src: [
           '/Volumes/lib/npmap.js/<%= pkg.version %>'
         ]
-      },
-      npmap: {
-        options: {
-          force: true
-        },
-        src: [
-          '/Volumes/npmap/npmap.js/<%= pkg.version %>'
-        ]
       }
     },
     concat: {
@@ -128,6 +106,14 @@ module.exports = function (grunt) {
       }
     },
     copy: {
+      api: {
+        cwd: 'api/',
+        dest: 'dist/api',
+        expand: true,
+        src: [
+          '**/*'
+        ]
+      },
       css: {
         dest: 'dist/npmap-standalone.css',
         src: 'theme/nps.css'
@@ -165,14 +151,6 @@ module.exports = function (grunt) {
           '**/*'
         ]
       },
-      npmap: {
-        cwd: 'dist/',
-        dest: '/Volumes/npmap/npmap.js/<%= pkg.version %>/',
-        expand: true,
-        src: [
-          '**/*'
-        ]
-      },
       npmapSymbolLibrary: {
         cwd: 'node_modules/npmap-symbol-library/renders/npmap-builder/',
         dest: 'dist/images/icon/npmap-symbol-library',
@@ -192,7 +170,7 @@ module.exports = function (grunt) {
     },
     csslint: {
       src: [
-        'dist/npmap.css'
+        'theme/nps.css'
       ]
     },
     cssmin: {
@@ -207,38 +185,20 @@ module.exports = function (grunt) {
         ]
       }
     },
-    // TODO: Find a better way to hit the Akamai ECCU API. Required because the CCU API doesn't support wildcards.
-    http: {
-      lib_examples: {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Flib%2Fnpmap.js%2F<%= pkg.version %>%2Fexamples%2F*&Submit%3DSubmit'
-        }
-      },
-      lib_images: {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Flib%2Fnpmap.js%2F<%= pkg.version %>%2Fimages%2F*&Submit%3DSubmit'
-        }
-      },
-      npmap_examples: {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fexamples%2F*&Submit%3DSubmit'
-        }
-      },
-      npmap_images: {
-        options: {
-          url: 'http://ncrcms.nps.doi.net/purge/akam_build_eccu.jsp?path=%2Fnpmap%2Fnpmap.js%2F<%= pkg.version %>%2Fimages%2F*&Submit%3DSubmit'
-        }
+    md2html: {
+      api: {
+        files: [{
+          dest: 'dist/api/index.html',
+          src: [
+            'dist/api/index.md'
+          ]
+        }]
       }
     },
     mkdir: {
       lib: {
         create: [
           '/Volumes/lib/npmap.js/<%= pkg.version %>/'
-        ]
-      },
-      npmap: {
-        create: [
-          '/Volumes/npmap/npmap.js/<%= pkg.version %>/'
         ]
       }
     },
@@ -248,13 +208,21 @@ module.exports = function (grunt) {
       ]
     },
     pkg: pkg,
+    semistandard: {
+      src: [
+        'src/**/*.js'
+      ]
+    },
     uglify: {
       all: {
         cwd: 'dist/',
         expand: true,
         dest: 'dist/',
         ext: '.min.js',
-        src: ['**/*.js', '!*.min.js']
+        src: [
+          '**/*.js',
+          '!*.min.js'
+        ]
       }
     },
     usebanner: {
@@ -272,11 +240,43 @@ module.exports = function (grunt) {
       }
     }
   });
-
   loadNpmTasks();
-  grunt.registerTask('build', ['clean:dist', 'copy:css', 'copy:examples', 'copy:images', 'copy:javascript', 'copy:npmapSymbolLibrary', 'copy:plugins', 'concat', 'browserify', 'uglify', 'cssmin', 'usebanner']); // TODO: csscomb, validation
-  grunt.registerTask('deploy', ['clean:lib', 'mkdir:lib', 'copy:lib', 'akamai_rest_purge:lib', 'http:lib_examples', 'http:lib_images']);
-  grunt.registerTask('deploy-npmap', ['clean:npmap', 'mkdir:npmap', 'copy:npmap', 'akamai_rest_purge:npmap', 'http:npmap_examples', 'http:npmap_images']);
-  grunt.registerTask('lint', ['csslint']); // TODO: jshint
-  grunt.registerTask('test', ['mocha_phantomjs']);
+  // TODO: csscomb, validation
+  grunt.registerTask('build', [
+    'prebuild',
+    'clean:dist',
+    'copy:api',
+    'md2html:api',
+    'copy:css',
+    'copy:examples',
+    'copy:images',
+    'copy:javascript',
+    'copy:npmapSymbolLibrary',
+    'copy:plugins',
+    'concat',
+    'browserify',
+    'uglify',
+    'cssmin',
+    'usebanner'
+  ]);
+  grunt.registerTask('deploy', [
+    'clean:lib',
+    'mkdir:lib',
+    'copy:lib'
+  ]);
+  grunt.registerTask('lint', [
+    'csslint',
+    'semistandard'
+  ]);
+  grunt.registerTask('prebuild', 'Internal.', function () {
+    if (!grunt.file.exists('./keys.json')) {
+      grunt.file.copy('./keys.sample.json', './keys.json');
+    }
+  });
+  grunt.registerTask('purge', [
+    'akamai_rest_purge:lib'
+  ]);
+  grunt.registerTask('test', [
+    'mocha_phantomjs'
+  ]);
 };

@@ -9,7 +9,7 @@ var NpmapIcon = L.Icon.extend({
     'marker-size': 'medium'
   },
   statics: {
-    MAKI_TEMPLATE: 'url(https://a.tiles.mapbox.com/v3/marker/pin-{{size}}+{{color}}{{retina}}.png?access_token=pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q)'
+    MAKI_TEMPLATE: 'url(https://api.mapbox.com/v4/marker/pin-{{size}}+{{color}}{{retina}}.png?access_token=pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q)'
   },
   initialize: function (options) {
     options = options || {};

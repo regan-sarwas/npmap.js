@@ -1,4 +1,5 @@
 dist
+keys.json
 node_modules
 secrets.json
 

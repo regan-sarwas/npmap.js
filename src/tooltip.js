@@ -5,7 +5,7 @@
 var util = require('./util/util');
 
 var Tooltip = L.Class.extend({
-  initialize: function(options) {
+  initialize: function (options) {
     L.setOptions(this, options);
     this._map = this.options.map;
 
@@ -16,7 +16,7 @@ var Tooltip = L.Class.extend({
     this._container = L.DomUtil.create('div', 'leaflet-tooltip');
     this._map._tooltipContainer.appendChild(this._container);
   },
-  _hide: function() {
+  _hide: function () {
     this._container.style.display = 'none';
     L.DomUtil.removeClass(this._container, 'leaflet-tooltip-fade');
 
@@ -24,20 +24,20 @@ var Tooltip = L.Class.extend({
       delete this._map.activeTip;
     }
   },
-  _show: function() {
+  _show: function () {
     this._container.style.display = 'inline-block';
     L.DomUtil.addClass(this._container, 'leaflet-tooltip-fade');
   },
-  getHtml: function() {
+  getHtml: function () {
     return this._container.innerHTML;
   },
-  hide: function() {
+  hide: function () {
     this._hide();
   },
-  isVisible: function() {
+  isVisible: function () {
     return this._container.style.display !== 'none';
   },
-  setHtml: function(html) {
+  setHtml: function (html) {
     if (typeof html === 'string') {
       this._container.innerHTML = util.unescapeHtml(html);
     } else {
@@ -50,11 +50,11 @@ var Tooltip = L.Class.extend({
 
     this._sizeChanged = true;
   },
-  setPosition: function(point) {
-    var container = this._container,
-      containerSize = util.getOuterDimensions(container),
-      mapSize = this._map.getSize(),
-      offset = L.point(15, 0);
+  setPosition: function (point) {
+    var container = this._container;
+    var containerSize = util.getOuterDimensions(container);
+    var mapSize = this._map.getSize();
+    var offset = L.point(15, 0);
 
     if (point.x + containerSize.width > mapSize.x - offset.x - 5) {
       container.style.left = 'auto';
@@ -63,7 +63,7 @@ var Tooltip = L.Class.extend({
       container.style.left = point.x + offset.x + 'px';
       container.style.right = 'auto';
     }
-    
+
     if (point.y + containerSize.height > mapSize.y) {
       container.style.top = 'auto';
       container.style.bottom = (mapSize.y - point.y) + 'px';
@@ -72,13 +72,13 @@ var Tooltip = L.Class.extend({
       container.style.bottom = 'auto';
     }
   },
-  show: function(point, html) {
+  show: function (point, html) {
     if (this._map.activeTip && (this._map.activeTip !== this)) {
       this._map.activeTip._hide();
     }
 
     this._map.activeTip = this;
-    
+
     if (html) {
       this.setHtml(html);
     }
@@ -88,10 +88,10 @@ var Tooltip = L.Class.extend({
   }
 });
 
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   this._tooltipContainer = L.DomUtil.create('div', 'leaflet-tooltip-container', this._container);
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new Tooltip(options);
 };

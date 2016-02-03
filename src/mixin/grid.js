@@ -1,11 +1,11 @@
 /* globals L */
 
-var reqwest = require('reqwest'),
-  tileMath = require('../util/tilemath');
+var reqwest = require('reqwest');
+var tileMath = require('../util/tilemath');
 
 module.exports = {
   _cache: {},
-  _getTileCoords: function(latLng) {
+  _getTileCoords: function (latLng) {
     var zoom = this._map.getZoom();
 
     return {
@@ -20,7 +20,7 @@ module.exports = {
 
       if (response === 'empty') {
         callback(null, null);
-      } else  {
+      } else {
         var tileGridPoint = this._getTileGridPoint(latLng, response);
 
         // TODO: Handle if tileGridPoint contains an error.
@@ -37,11 +37,11 @@ module.exports = {
       me._cache[url] = 'loading';
       reqwest({
         crossOrigin: true,
-        error: function() {
+        error: function () {
           me._cache[url] = 'empty';
           callback(null, null);
         },
-        success: function(response) {
+        success: function (response) {
           if (response) {
             me._cache[url] = response;
             callback(response, me._getTileGridPoint(latLng, response));
@@ -56,35 +56,35 @@ module.exports = {
       });
     }
   },
-  _getTileGridPoint: function(latLng, response) {
+  _getTileGridPoint: function (latLng, response) {
     var map = this._map;
 
     // TODO: Handle if response.error exists.
 
     if (map && typeof response === 'object') {
-      var point = map.project(latLng.wrap()),
-        resolution = 4,
-        tileSize = 256,
-        max = map.options.crs.scale(map.getZoom()) / tileSize;
+      var point = map.project(latLng.wrap());
+      var resolution = 4;
+      var tileSize = 256;
+      var max = map.options.crs.scale(map.getZoom()) / tileSize;
 
       return (response.data[response.keys[this._utfDecode(response.grid[Math.floor((point.y - (((Math.floor(point.y / tileSize) + max) % max) * tileSize)) / resolution)].charCodeAt(Math.floor((point.x - (((Math.floor(point.x / tileSize) + max) % max) * tileSize)) / resolution)))]]);
     }
 
     return null;
   },
-  _getTileGridUrl: function(latLng) {
-    var grids = this.options.grids,
-      gridTileCoords = this._getTileCoords(latLng);
+  _getTileGridUrl: function (latLng) {
+    var grids = this.options.grids;
+    var gridTileCoords = this._getTileCoords(latLng);
 
     return L.Util.template(grids[Math.floor(Math.abs(gridTileCoords.x + gridTileCoords.y) % grids.length)], gridTileCoords);
   },
-  _handleClick: function(latLng, callback) {
+  _handleClick: function (latLng, callback) {
     this._getGridData(latLng, callback);
   },
   _handleMousemove: function (latLng, callback) {
     this._getGridData(latLng, callback);
   },
-  _utfDecode: function(key) {
+  _utfDecode: function (key) {
     if (key >= 93) {
       key--;
     }
