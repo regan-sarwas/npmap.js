@@ -19,7 +19,7 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
       options.cluster = {};
     }
 
-    options.cluster.iconCreateFunction = new this.createCustomIconFunction(options.cluster.clusterIcon);
+    options.cluster.iconCreateFunction = new me.IconCreateFunction(options.cluster.clusterIcon);
     L.Util.setOptions(this, options.cluster);
     options.clustered = options.cluster.iconCreateFunction('getInfo');
     delete options.cluster;
@@ -76,23 +76,23 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
       this._map.attributionControl.removeAttribution(attribution);
     }
   },
-  createCustomIconFunction: function (settings) {
+  IconCreateFunction: function (settings) {
     var defaultSettings = [{
-      color: '#7a904f',
+      color: '#000',
       fontColor: '#fff',
       maxNodes: 9,
       name: 'small',
       outerRing: 22,
       size: 20
     }, {
-      color: '#d49900',
+      color: '#000',
       fontColor: '#fff',
       maxNodes: 99,
       name: 'medium',
       outerRing: 24,
       size: 35
     }, {
-      color: '#814705',
+      color: '#000',
       fontColor: '#fff',
       maxNodes: Infinity,
       name: 'large',
