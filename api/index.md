@@ -944,6 +944,7 @@ _Arguments_:
 The first, and only, argument is optional, and may be a control config object with the following properties:
 
 * (Optional) `provider` (String): Which supported provider should be used? Defaults to `esri`. Valid options are `bing`, `esri`, `mapbox`, `mapquest`, `mapzen`, and `nominatim`. **Note** that the `mapquest` and `nominatim` providers are limited to 15,000 transactions per month, so they are not recommended for production usage.
+* (Optional) `searchPlaces` (Boolean): Should the geocoder search through points of interest from the National Park Service's [Places](http://www.nps.gov/npmap/tools/places/) system? Defaults to `false`.
 
 You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
 
@@ -1753,6 +1754,7 @@ NPMap.js also adds a number of "helpers" to Handlebars. These helpers can be use
   <li><code>ifCond (available operators include '!=', '!==', '==', '===', '&lt;', '&lt;=', '&gt;', '&gt;=', '&&', and '||')</code><pre><code>description: "I am {{#ifCond Name '===' 'A Rectangle'}}indeed{{else}}not{{/ifCond}} a rectangle! (Verified by a custom Handlebars helper.)"</code></pre></li>
   <li><code>toLowerCase</code><pre><code>title: '{{toUpperCase Name}}'</code></pre></li>
   <li><code>toUpperCase</code><pre><code>title: '{{toUpperCase Name}}'</code></pre></li>
+  <li><code>toInt</code><pre><code>description: '{{toInt StrInt}}'</code></pre></li>
 </ul>
 
 You can see examples of configuring popups for overlays in the [popups](../examples/popups.html) example.
