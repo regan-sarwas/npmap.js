@@ -12,11 +12,9 @@ module.exports = function (grunt) {
   var secrets;
 
   function loadNpmTasks () {
-    var gruntTasks = Object.keys(pkg.devDependencies).filter(function (moduleName) {
+    Object.keys(pkg.devDependencies).filter(function (moduleName) {
       return /(^grunt-)/.test(moduleName);
-    });
-
-    gruntTasks.forEach(function (task) {
+    }).forEach(function (task) {
       grunt.loadNpmTasks(task);
     });
   }
@@ -221,7 +219,10 @@ module.exports = function (grunt) {
         expand: true,
         dest: 'dist/',
         ext: '.min.js',
-        src: ['**/*.js', '!*.min.js']
+        src: [
+          '**/*.js',
+          '!*.min.js'
+        ]
       }
     },
     usebanner: {
@@ -242,6 +243,7 @@ module.exports = function (grunt) {
   loadNpmTasks();
   // TODO: csscomb, validation
   grunt.registerTask('build', [
+    'prebuild',
     'clean:dist',
     'copy:api',
     'md2html:api',
@@ -266,6 +268,11 @@ module.exports = function (grunt) {
     'csslint',
     'semistandard'
   ]);
+  grunt.registerTask('prebuild', 'Internal.', function () {
+    if (!grunt.file.exists('./keys.json')) {
+      grunt.file.copy('./keys.sample.json', './keys.json');
+    }
+  });
   grunt.registerTask('purge', [
     'akamai_rest_purge:lib'
   ]);

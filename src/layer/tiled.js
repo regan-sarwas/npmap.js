@@ -2,14 +2,14 @@
 
 'use strict';
 
-var util = require('../util/util'),
-  TiledLayer;
+var util = require('../util/util');
+var TiledLayer;
 
 TiledLayer = L.TileLayer.extend({
   options: {
     errorTileUrl: L.Util.emptyImageUrl
   },
-  initialize: function(options) {
+  initialize: function (options) {
     util.strict(options.url, 'string');
 
     if (L.Browser.retina && options.retinaId) {
@@ -32,7 +32,7 @@ TiledLayer = L.TileLayer.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   options = options || {};
 
   if (!options.type) {

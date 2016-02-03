@@ -34,10 +34,19 @@ NPMap.js is versioned using [semantic versioning](http://semver.org). This means
 - [v3.0.3](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.3+is%3Aclosed)
 - [v3.0.4](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.4+is%3Aclosed)
 - [v3.0.7](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.7+is%3Aclosed)
+- [v3.0.8](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.8+is%3Aclosed)
+- [v3.0.9](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.9+is%3Aclosed)
+- [v3.0.10](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.10+is%3Aclosed)
 
 ## Hosted version
 
 NPMap.js is hosted on the National Park Service's content delivery network. If you are a National Park Service employee, partner, or contractor, feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/lib/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. `2.0.0`).
+
+## Keys
+
+NPMap.js supports connecting to a number of services that require API keys. The National Park Service's keys are bundled into the library releases served from the agency's content delivery network (see the [#hosted-version]("Hosted version") section above), so if you are loading the library from there, you should be good to go.
+
+If, however, you are not a National Park Service employee, partner, or contractor, you will need to create a copy of `keys.sample.json`, rename it `keys.json`, add your keys, and run `grunt build` to bundle your keys into the build of NPMap.js that is created in the `_dist` folder.
 
 ## Building
 
