@@ -53,7 +53,7 @@ if (typeof document.addEventListener !== 'function') {
           divLoading.parentNode.removeChild(divLoading);
           config.spinner.stop();
           delete config.spinner;
-          setTimeout(function() {
+          setTimeout(function () {
             config.L.invalidateSize();
           }, 50);
         }
