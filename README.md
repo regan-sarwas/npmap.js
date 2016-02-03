@@ -6,7 +6,7 @@ Extends [Leaflet](http://leafletjs.com) to include functionality and a look-and-
 
 This library is under active development, so please help test and [report issues](https://github.com/nationalparkservice/npmap.js/issues).
 
-## Builder
+## NPMap Builder
 
 You may also want to take a look at [NPMap Builder](https://github.com/nationalparkservice/npmap-builder). It is a graphical interface that walks through the process of building a map with NPMap.js, step-by-step.
 
@@ -16,23 +16,37 @@ Heavily inspired (cough cough) by [Mapbox.js](https://github.com/mapbox/mapbox.j
 
 ## Versioning
 
-NPMap.js is versioned using [semantic versioining](http://semver.org). This means that releases are numbered: `major.minor.patch` and follow these guidelines:
+NPMap.js is versioned using [semantic versioning](http://semver.org). This means that releases are numbered: `major.minor.patch` and follow these guidelines:
 
 - Breaking backward compatibility bumps the major (and resets the minor and patch to zero)
 - New additions that don't break backward compatibility bumps the minor (and resets the patch to zero)
 - Bug fixes and miscellaneous changes bumps the patch
 
-2.0.0 is the first official NPMap.js version. All versions < 2.0.0 are part of the original [NPMap JavaScript library](https://github.com/nationalparkservice/npmap), which has now been deprecated.
+2.0.0 was the first official NPMap.js version. All versions < 2.0.0 are part of the original [NPMap JavaScript library](https://github.com/nationalparkservice/npmap), which has now been deprecated.
 
 ## Changelog
 
-- [v2.0.0](https://github.com/nationalparkservice/npmap.js/issues?milestone=1&page=1&state=closed)
-- [v2.0.1](https://github.com/nationalparkservice/npmap.js/issues?milestone=2&page=1&state=closed)
-- [v3.0.0](https://github.com/nationalparkservice/npmap.js/issues?milestone=3&page=1&state=closed)
+- [v2.0.0](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A2.0.0+is%3Aclosed)
+- [v2.0.1](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A2.0.1+is%3Aclosed)
+- [v3.0.0](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.0+is%3Aclosed)
+- [v3.0.1](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.1+is%3Aclosed)
+- [v3.0.2](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.2+is%3Aclosed)
+- [v3.0.3](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.3+is%3Aclosed)
+- [v3.0.4](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.4+is%3Aclosed)
+- [v3.0.7](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.7+is%3Aclosed)
+- [v3.0.8](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.8+is%3Aclosed)
+- [v3.0.9](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.9+is%3Aclosed)
+- [v3.0.10](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.10+is%3Aclosed)
 
-## Hosted Version
+## Hosted version
 
-NPMap.js is hosted on the National Park Service's content delivery network. Feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/lib/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. 2.0.0).
+NPMap.js is hosted on the National Park Service's content delivery network. If you are a National Park Service employee, partner, or contractor, feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/lib/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. `2.0.0`).
+
+## Keys
+
+NPMap.js supports connecting to a number of services that require API keys. The National Park Service's keys are bundled into the library releases served from the agency's content delivery network (see the [#hosted-version]("Hosted version") section above), so if you are loading the library from there, you should be good to go.
+
+If, however, you are not a National Park Service employee, partner, or contractor, you will need to create a copy of `keys.sample.json`, rename it `keys.json`, add your keys, and run `grunt build` to bundle your keys into the build of NPMap.js that is created in the `_dist` folder.
 
 ## Building
 
@@ -54,7 +68,7 @@ Then use Grunt to build the library:
 
     grunt build
 
-Internally, the Grunt task uses [browserify](https://github.com/substack/node-browserify) to combine dependencies. It is installed locally, along with other required packages, when you run `npm install`. The build task also uses [uglify](https://github.com/gruntjs/grunt-contrib-uglify) and [cssmin](https://npmjs.org/package/grunt-contrib-cssmin) to create minified versions in `dist/`.
+Internally, the Grunt task uses [browserify](https://github.com/substack/node-browserify) to combine dependencies. It is installed locally, along with other required packages, when you run `npm install`. The build task also uses [uglify](https://github.com/gruntjs/grunt-contrib-uglify) and [cssmin](https://npmjs.org/package/grunt-contrib-cssmin) to create minified versions of the library's CSS and JavaScript in `dist/`.
 
 ## Testing
 
@@ -70,12 +84,12 @@ We are working to expand test coverage for the library.
 
 ## Documentation
 
-Take a look at [API.md](https://github.com/nationalparkservice/npmap.js/blob/master/API.md).
+Take a look at the [API docs](https://github.com/nationalparkservice/npmap.js/blob/master/api/index.md).
 
 ## Examples
 
-Simple and targeted examples reside in the `examples` directory. This is a great starting point if you haven't used NPMap.js before.
+Simple and targeted examples reside in the [examples directory](https://github.com/nationalparkservice/npmap.js/blob/master/examples/). This is a great starting point if you're new to NPMap.js.
 
 ## Support
 
-You can get in touch with the NPMap team by contacting us via Twitter ([@npmap](http://twitter.com/npmap)) or email ([npmap@nps.gov](mailto:npmap@nps.gov)). We are happy to help with any questions, and feedback is welcome as well!
+You can get in touch with the NPMap team by contacting us via Twitter ([@npmap](http://twitter.com/npmap)) or email ([npmap@nps.gov](mailto:npmap@nps.gov)). We are happy to help with any questions. Feedback is welcome as well!

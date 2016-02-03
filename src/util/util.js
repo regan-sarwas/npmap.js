@@ -33,6 +33,9 @@ handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
       return options.inverse(this);
   }
 });
+handlebars.registerHelper('toInt', function (str) {
+  return parseInt(str, 10);
+});
 handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
@@ -700,7 +703,7 @@ module.exports = {
           }
         },
         type: 'json' + (supportsCors ? '' : 'p'),
-        url: window.location.protocol + '//server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+        url: 'https://server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
       });
     }
   },
