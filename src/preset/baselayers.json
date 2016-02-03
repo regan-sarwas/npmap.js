@@ -223,14 +223,14 @@
     "streets": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "street",
-      "id": "mapbox.streets",
+      "id": "mapbox.streets-basic",
       "name": "Mapbox Streets",
       "type": "mapbox"
     },
     "terrain": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "topo",
-      "id": "nps.map-lj6szvbq",
+      "id": "mapbox.streets",
       "name": "Mapbox Terrain",
       "type": "mapbox"
     }

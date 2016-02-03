@@ -41,7 +41,7 @@ var GeoJsonLayer = L.GeoJSON.extend({
       me.fire('ready');
       me.readyFired = true;
       me._loaded = true;
-    } catch(e) {
+    } catch (e) {
       var obj = {
         message: 'The response was not a valid GeoJSON object.'
       };

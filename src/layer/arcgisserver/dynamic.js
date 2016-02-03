@@ -19,7 +19,7 @@ var ArcGisServerDynamicLayer = L.Class.extend({
     layers: '',
     transparent: true
   },
-  initialize: function(options) {
+  initialize: function (options) {
     util.strict(options.url, 'string');
 
     this._layerParams = L.Util.extend({}, this._defaultLayerParams);
@@ -44,7 +44,7 @@ var ArcGisServerDynamicLayer = L.Class.extend({
 
     this._getMetadata();
   },
-  onAdd: function(map) {
+  onAdd: function (map) {
     this._map = map;
     this._moveHandler = this._debounce(this._update, 150, this);
 
@@ -58,18 +58,19 @@ var ArcGisServerDynamicLayer = L.Class.extend({
     map.on('moveend', this._moveHandler, this);
     this._update();
   },
-  onRemove: function(map) {
+  onRemove: function (map) {
     if (this._currentImage) {
       this._map.removeLayer(this._currentImage);
     }
 
     map.off('moveend', this._moveHandler, this);
   },
-  _debounce: function(fn, delay) {
+  _debounce: function (fn, delay) {
     var timer = null;
 
-    return function() {
-      var context = this || context, args = arguments;
+    return function () {
+      var args = arguments;
+      var context = this || context;
 
       clearTimeout(timer);
 
@@ -79,14 +80,14 @@ var ArcGisServerDynamicLayer = L.Class.extend({
     };
   },
   _getImageUrl: function () {
-    var map = this._map,
-      bounds = map.getBounds(),
-      crs = map.options.crs,
-      layerParams = this._layerParams,
-      size = map.getSize(),
-      ne = crs.project(bounds._northEast),
-      options = this.options,
-      sw = crs.project(bounds._southWest);
+    var map = this._map;
+    var bounds = map.getBounds();
+    var crs = map.options.crs;
+    var layerParams = this._layerParams;
+    var size = map.getSize();
+    var ne = crs.project(bounds._northEast);
+    var options = this.options;
+    var sw = crs.project(bounds._southWest);
 
     layerParams.bbox = [sw.x, sw.y, ne.x, ne.y].join(',');
     layerParams.size = size.x + ',' + size.y;
@@ -107,10 +108,10 @@ var ArcGisServerDynamicLayer = L.Class.extend({
       return;
     }
 
-    var action = this._layerParams.layerOption || null,
-      layers = this._layerParams.layers || null,
-      verb = 'show',
-      verbs = ['exclude', 'hide', 'include', 'show'];
+    var action = this._layerParams.layerOption || null;
+    var layers = this._layerParams.layers || null;
+    var verb = 'show';
+    var verbs = ['exclude', 'hide', 'include', 'show'];
 
     delete this._layerParams.layerOption;
 
@@ -142,8 +143,10 @@ var ArcGisServerDynamicLayer = L.Class.extend({
       this._layerParams.layers = verb + ':' + layers;
     }
   },
-  _update: function() {
-    var bounds, image, zoom;
+  _update: function () {
+    var bounds;
+    var image;
+    var zoom;
 
     if (this._animatingZoom || (this._map._panTransition && this._map._panTransition._inProgress)) {
       return;
@@ -161,9 +164,9 @@ var ArcGisServerDynamicLayer = L.Class.extend({
     image = new L.ImageOverlay(this._getImageUrl(), bounds, {
       opacity: 0
     }).addTo(this._map);
-    image.on('load', function(e){
-      var newImage = e.target,
-        oldImage = this._currentImage;
+    image.on('load', function (e) {
+      var newImage = e.target;
+      var oldImage = this._currentImage;
 
       if (newImage._bounds.equals(bounds)) {
         this._currentImage = newImage;
@@ -187,20 +190,20 @@ var ArcGisServerDynamicLayer = L.Class.extend({
       bounds: bounds
     });
   },
-  bringToBack: function(){
+  bringToBack: function () {
     this.options.position = 'back';
     this._currentImage.bringToBack();
     return this;
   },
-  bringToFront: function(){
+  bringToFront: function () {
     this.options.position = 'front';
     this._currentImage.bringToFront();
     return this;
   },
-  redraw: function() {
+  redraw: function () {
     this._update();
   },
-  setLayers: function(layers) {
+  setLayers: function (layers) {
     if (typeof layers === 'number') {
       layers = layers.toString();
     }
@@ -210,13 +213,13 @@ var ArcGisServerDynamicLayer = L.Class.extend({
     this._map.removeLayer(this._currentImage);
     this._update();
   },
-  setOpacity: function(opacity) {
+  setOpacity: function (opacity) {
     this.options.opacity = opacity;
     this._currentImage.setOpacity(opacity);
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   options = options || {};
 
   if (!options.type) {

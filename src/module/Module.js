@@ -3,8 +3,9 @@
 'use strict';
 
 var Module = L.Class.extend({
-  initialize: function(options) {
-    var content, title
+  initialize: function (options) {
+    var content;
+    var title;
 
     this._container = document.createElement('div');
     content = L.DomUtil.create('div', 'content', this._container);
@@ -16,7 +17,7 @@ var Module = L.Class.extend({
 
     return this._container;
   },
-  addTo: function(map) {
+  addTo: function (map) {
     this._map = map;
     console.log(map);
 
@@ -24,6 +25,6 @@ var Module = L.Class.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new Module(options);
 };
