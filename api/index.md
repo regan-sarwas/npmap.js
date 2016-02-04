@@ -1541,6 +1541,7 @@ The following baseLayer preset strings are supported:
    * `mapbox-dark`
    * `mapbox-emerald`
    * `mapbox-highContrast`
+   * `mapbox-landsatLive`
    * `mapbox-light`
    * `mapbox-outdoors`
    * `mapbox-pencil`
