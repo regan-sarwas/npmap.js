@@ -198,7 +198,7 @@ var GeocoderControl = L.Control.extend({
             }
           },
           type: 'jsonp',
-          url: 'https://nps.cartodb.com/api/v2/sql?q=' + window.encodeURIComponent('SELECT ST_AsGeoJSON(ST_Extent(the_geom)) FROM parks WHERE full_name=\'' + id + '\'')
+          url: 'https://nps.cartodb.com/api/v2/sql?q=' + window.encodeURIComponent('SELECT ST_AsGeoJSON(ST_Extent(the_geom)) FROM parks WHERE full_name=\'' + id.replace('\'', '\'\'') + '\'')
         });
       }
     }
