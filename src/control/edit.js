@@ -2,6 +2,8 @@
 
 'use strict';
 
+// Modified options to support passing a layer in.
+
 require('leaflet-draw');
 require('../icon/maki');
 require('../icon/npmapsymbollibrary');
@@ -17,6 +19,7 @@ var EditControl = L.Control.extend({
         weight: 4
       }
     },
+    layer: undefined,
     marker: {
       icon: {
         'marker-color': '#d46655',
@@ -53,7 +56,7 @@ var EditControl = L.Control.extend({
   initialize: function (options) {
     L.Util.setOptions(this, options);
     this._activeMode = null;
-    this._featureGroup = new L.FeatureGroup();
+    this._featureGroup = (options && options.layer ? options.layer : new L.FeatureGroup());
     this._modes = {};
     return this;
   },
