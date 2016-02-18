@@ -1,6 +1,7 @@
 /* global L */
 
 var NPMap = NPMap || null;
+var ie;
 
 if (!NPMap) {
   throw new Error('The NPMap object is required.');
@@ -10,17 +11,51 @@ if (typeof NPMap !== 'object') {
   throw new Error('The NPMap variable cannot be a ' + typeof NPMap + '.');
 }
 
+// https://github.com/Gavin-Paolucci-Kleinow/ie-truth
+function IeVersion () {
+  var msie = navigator.userAgent.match(/MSIE (\d+)/);
+  var trident = navigator.userAgent.match(/Trident\/(\d+)/);
+  var value = {
+    actingVersion: 0,
+    compatibilityMode: false,
+    isIe: false,
+    trueVersion: 0
+  };
+
+  if (trident) {
+    value.isIe = true;
+    value.trueVersion = parseInt(trident[1], 10) + 4;
+  }
+
+  if (msie) {
+    value.isIe = true;
+    value.actingVersion = parseInt(msie[1], 10);
+  } else {
+    value.actingVersion = value.trueVersion;
+  }
+
+  if (value.isIe && value.trueVersion > 0 && value.actingVersion > 0) {
+    value.compatibilityMode = value.trueVersion !== value.actingVersion;
+  }
+
+  return value;
+}
 function showError (div) {
   if (typeof div === 'string') {
     div = document.getElementById(div);
   }
 
   div.innerHTML = '' +
-    '<p>National Park Service maps do not support Internet Explorer versions 7 or 8. We recommend upgrading to a <a href="http://outdatedbrowser.com/" target="_blank">modern browser</a>, like the latest version of Internet Explorer, Google Chrome, or Mozilla Firefox.</p><p>If you are using Internet Explorer 9 or later, make sure "Compatibility View" is <a href="https://support.google.com/mail/answer/181472?hl=en" target="_blank">turned off</a>.</p>' +
+    '<div style="padding:15px;">' +
+      '<p>National Park Service maps do not support Internet Explorer versions 7, 8, or 9. We recommend upgrading to a <a href="http://outdatedbrowser.com/" target="_blank">modern browser</a>, like the latest version of Internet Explorer, Google Chrome, or Mozilla Firefox.</p>' +
+      '<p>If you are using Internet Explorer 10 or later, make sure "Enterprise Mode" and <a href="https://support.google.com/mail/answer/181472?hl=en" target="_blank">"Compatibility View"</a> are turned off.</p>' +
+    '</div>' +
   '';
 }
 
-if (typeof document.addEventListener !== 'function') {
+ie = IeVersion();
+
+if (ie.isIe && (ie.actingVersion < 10 || ie.trueVersion < 10)) {
   if (NPMap.constructor === Array) {
     for (var i = 0; i < NPMap.length; i++) {
       showError(NPMap[i].div);
