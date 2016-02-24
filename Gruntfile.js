@@ -84,6 +84,11 @@ module.exports = function (grunt) {
           'dist/**/*'
         ]
       },
+      examples: {
+        src: [
+          'dist/examples/**/*'
+        ]
+      },
       lib: {
         options: {
           force: true
@@ -118,15 +123,18 @@ module.exports = function (grunt) {
         dest: 'dist/npmap-standalone.css',
         src: 'theme/nps.css'
       },
-      examples: {
-        cwd: 'examples/',
-        dest: 'dist/examples',
+      'examples-data': {
+        cwd: 'examples/data/',
+        dest: 'dist/examples/data',
         expand: true,
-        options: {
-          process: function (content) {
-            return content.replace(/..\/dist\//g, '../');
-          }
-        },
+        src: [
+          '**'
+        ]
+      },
+      'examples-img': {
+        cwd: 'examples/img/',
+        dest: 'dist/examples/img',
+        expand: true,
         src: [
           '**'
         ]
@@ -248,7 +256,7 @@ module.exports = function (grunt) {
     'copy:api',
     'md2html:api',
     'copy:css',
-    'copy:examples',
+    'examples',
     'copy:images',
     'copy:javascript',
     'copy:npmapSymbolLibrary',
@@ -264,6 +272,12 @@ module.exports = function (grunt) {
     'mkdir:lib',
     'copy:lib'
   ]);
+  grunt.registerTask('examples', [
+    'clean:examples',
+    'copy:examples-data',
+    'copy:examples-img',
+    'generate-examples'
+  ]);
   grunt.registerTask('lint', [
     'csslint',
     'semistandard'
@@ -276,6 +290,62 @@ module.exports = function (grunt) {
   grunt.registerTask('purge', [
     'akamai_rest_purge:lib'
   ]);
+  grunt.registerTask('generate-examples', 'Internal.', function () {
+    var categories = {
+      'Getting Started': [],
+      'Presets': [],
+      'Layers': [],
+      'Controls': [],
+      'Modules': [],
+      'Examples': [],
+      'Advanced': []
+    };
+    var examples = require('./examples/index.json');
+    var html;
+    var i;
+
+    for (i = 0; i < examples.length; i++) {
+      var example = examples[i];
+
+      if (example.include && !example.under_development) {
+        var css = grunt.file.read('examples/' + (example.css ? example.id : 'default') + '.css');
+        var js = grunt.file.read('examples/' + example.id + '.js');
+
+        html = grunt.file.read('examples/' + (example.html ? example.id : 'default') + '.html');
+
+        grunt.file.copy('examples/template.html', 'dist/examples/' + example.id + '.html', {
+          process: function (content) {
+            content = content.replace(/{{ css }}/g, css);
+            content = content.replace(/{{ html }}/g, html);
+            content = content.replace(/{{ js }}/g, js);
+            content = content.replace(/{{ path }}/g, '..');
+            content = content.replace(/{{ title }}/g, example.title);
+
+            return content;
+          }
+        });
+
+        if (categories[example.category]) {
+          categories[example.category].push(example);
+        }
+      }
+    }
+
+    html = '<h1 style="display:none;">NPMap.js Examples</h1>';
+
+    for (var category in categories) {
+      html += '<h2>' + category + '</h2><ul>';
+
+      for (i = 0; i < categories[category].length; i++) {
+        example = categories[category][i];
+        html += '<li><a href="' + example.id + '.html">' + example.title + '</a></li>';
+      }
+
+      html += '</ul>';
+    }
+
+    grunt.file.write('dist/examples/index.html', html);
+  });
   grunt.registerTask('test', [
     'mocha_phantomjs'
   ]);
