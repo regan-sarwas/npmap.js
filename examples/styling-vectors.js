@@ -29,11 +29,11 @@ var NPMap = {
       }
     },
     type: 'csv',
-    url: '/data/colorado-cities-simplestyle.csv',
+    url: 'data/colorado-cities-simplestyle.csv',
     zoomToBounds: true
   }, {
     type: 'geojson',
-    url: '{data/simplestyle.geojson'
+    url: 'data/simplestyle.geojson'
   }, {
     popup: {
       description: 'No attributes available'
