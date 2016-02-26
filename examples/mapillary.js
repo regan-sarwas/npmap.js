@@ -11,12 +11,9 @@ var NPMap = {
       window.L.npmap.layer.geojson({
         attribution: '<a href="http://www.mapillary.com">Mapillary</a>',
         popup: {
-          description: '<img src="{{image}}" style="height:240px;width:320px;">',
-          title: function (data) {
-            return (data.location || null);
-          }
+          description: '<img src="https://d1cuyjsrcm0gby.cloudfront.net/{{key}}/thumb-320.jpg" style="height:240px;width:320px;">'
         },
-        url: 'https://api.mapillary.com/v1/im/search?min-lat=' + bounds.getSouth() + '&max-lat=' + bounds.getNorth() + '&min-lon=' + bounds.getWest() + '&max-lon=' + bounds.getEast() + '&max-results=100&geojson=true'
+        url: 'https://a.mapillary.com/v2/search/im/geojson?client_id=REVmc0hVYk13NF82NDlGcDQ3VVI2Zzo1ZjljYTA2MTQ4NWI2ZjEx&max_lat=' + bounds.getNorth() + '&max_lon=' + bounds.getEast() + '&min_lat=' + bounds.getSouth() + '&min_lon=' + bounds.getWest() + '&limit=100&page=0'
       }).addTo(NPMap.config.L);
       callback();
     }
