@@ -8,6 +8,7 @@ var util = require('../util/util');
 var GeocoderControl = L.Control.extend({
   _bounds: {},
   _cache: {},
+  _centroids: {},
   _pois: {},
   includes: L.Mixin.Events,
   options: {
@@ -181,24 +182,36 @@ var GeocoderControl = L.Control.extend({
       me._map.setView({
         lat: poi.y,
         lng: poi.x
-      }, 17);
+      }, 14);
     } else {
       this._input.value = this._oldValue = id;
 
       if (me._bounds[id]) {
         me._map.fitBounds(me._bounds[id]);
+      } else if (me._centroids[id]) {
+        me._map.setView(me._centroids[id], 17);
       } else {
         reqwest({
           success: function (response) {
             if (response && response.total_rows) {
-              me._bounds[id] = new L.GeoJSON(JSON.parse(response.rows[0].st_asgeojson));
-              me._map.fitBounds(me._bounds[id]);
+              var row = response.rows[0];
+
+              if (row.b) {
+                me._bounds[id] = new L.GeoJSON(JSON.parse(row.b));
+                me._map.fitBounds(me._bounds[id]);
+              } else {
+                me._centroids[id] = {
+                  lat: row.l,
+                  lng: row.n
+                };
+                me._map.setView(me._centroids[id], 14);
+              }
             } else {
               me._map.notify.danger('There was an error getting the bounds for that park.');
             }
           },
           type: 'jsonp',
-          url: 'https://nps.cartodb.com/api/v2/sql?q=' + window.encodeURIComponent('SELECT ST_AsGeoJSON(ST_Extent(the_geom)) FROM parks WHERE full_name=\'' + id.replace('\'', '\'\'') + '\'')
+          url: 'https://nps.cartodb.com/api/v2/sql?q=' + window.encodeURIComponent('SELECT ST_AsGeoJSON(ST_Extent(the_geom)) AS b,max(latitude) AS l,max(longitude) AS n FROM parks WHERE full_name=\'' + id.replace('\'', '\'\'') + '\'')
         });
       }
     }
@@ -341,7 +354,7 @@ var GeocoderControl = L.Control.extend({
         }
       },
       type: 'jsonp',
-      url: 'https://nps.cartodb.com/api/v2/sql?q=SELECT full_name AS n FROM parks WHERE the_geom IS NOT NULL ORDER BY full_name'
+      url: 'https://nps.cartodb.com/api/v2/sql?q=SELECT full_name AS n FROM parks WHERE the_geom IS NOT NULL OR (latitude IS NOT NULL AND longitude IS NOT NULL) ORDER BY full_name'
     });
   },
   _resultsReady: function (value, results) {
