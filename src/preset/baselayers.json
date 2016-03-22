@@ -257,6 +257,38 @@
       "name": "NPS Neutral Terrain",
       "type": "mapbox"
     },
+    "parkTiles3": {
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+      "clickable": false,
+      "icon": "nps",
+      "id": "nps.397cfb9a,nps.3cf3d4ab,nps.b0add3e6",
+      "name": "Park Tiles 3",
+      "type": "mapbox"
+    },
+    "parkTiles3Imagery": {
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+      "clickable": false,
+      "icon": "nps",
+      "id": "nps.2c589204,nps.25abf75b,nps.7531d30a",
+      "name": "Park Tiles 3 Imagery",
+      "type": "mapbox"
+    },
+    "parkTiles3Light": {
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+      "clickable": false,
+      "icon": "nps",
+      "id": "nps.1ee61ddf,nps.7f508801,nps.5748cf33",
+      "name": "Park Tiles 3 Light",
+      "type": "mapbox"
+    },
+    "parkTiles3Slate": {
+      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+      "clickable": false,
+      "icon": "nps",
+      "id": "nps.9e521899,nps.17f575d9,nps.e091bdaf",
+      "name": "Park Tiles 3 Slate",
+      "type": "mapbox"
+    },
     "parkTiles": {
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
       "icon": "nps",
@@ -268,7 +300,6 @@
       "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
       "icon": "nps",
       "id": "mapbox.satellite,nps.gdipreks",
-      //"maxNativeZoom": 19,
       "name": "Park Tiles Imagery",
       "type": "mapbox"
     },

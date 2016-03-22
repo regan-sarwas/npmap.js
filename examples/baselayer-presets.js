@@ -1,8 +1,12 @@
 var NPMap =  {
   baseLayers: [
     'nps-parkTiles',
+    'nps-parkTiles3',
     'nps-parkTilesImagery',
+    'nps-parkTiles3Imagery',
+    'nps-parkTiles3Light',
     'nps-parkTilesSlate',
+    'nps-parkTiles3Slate',
     'nps-lightStreets',
     'nps-neutralTerrain',
     'nps-satelliteNight',
