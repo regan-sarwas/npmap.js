@@ -4,6 +4,7 @@ var NPMap = {
     lng: -110.554
   },
   div: 'map',
+  hashControl: true,
   overlays: [{
     preset: 'nps-places-pois',
     unitCodes: [

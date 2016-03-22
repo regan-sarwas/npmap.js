@@ -1576,12 +1576,12 @@ var PoiLayer = L.GeoJSON.extend({
                           3,
                           3
                         ],
-                        iconRetinaUrl: '//nps.gov/npmap/dev/hfc/park-maps-redesign/assets/img/dot-black-6@2x.png',
+                        iconRetinaUrl: window.L.Icon.Default.imagePath + '/dots/dot-green-6@2x.png',
                         iconSize: [
                           6,
                           6
                         ],
-                        iconUrl: '//nps.gov/npmap/dev/hfc/park-maps-redesign/assets/img/dot-black-6.png',
+                        iconUrl: window.L.Icon.Default.imagePath + '/dots/dot-green-6.png',
                         popupAnchor: [
                           2,
                           -6
