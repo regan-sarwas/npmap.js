@@ -21,7 +21,8 @@ var DownloadControl = L.Control.extend({
     util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '28px';
     return this;
   },
-  download: function () {
+  download: function (e) {
+    L.DomEvent.preventDefault(e);
     window.alert('The download tool has not yet been implemented.');
   }
 });

@@ -60,7 +60,9 @@ var FullscreenControl = L.Control.extend({
 
     return null;
   },
-  fullscreen: function () {
+  fullscreen: function (e) {
+    L.DomEvent.preventDefault(e);
+
     if (this._supported) {
       var body = document.body;
       var utils;

@@ -69,12 +69,14 @@ var PrintControl = L.Control.extend({
       return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     };
   })(),
-  print: function () {
+  print: function (e) {
     var map = this._map;
     var me = this;
     var center = map.getCenter();
     var url = me.options.url + (me.options.url.indexOf('?') === -1 ? '?' : '&') + 'lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&zoom=' + map.getZoom();
     var win;
+
+    L.DomEvent.preventDefault(e);
 
     if (map.options.mapId) {
       url += '&mapId=' + map.options.mapId;

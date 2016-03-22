@@ -131,8 +131,12 @@ var GeocoderControl = L.Control.extend({
       }, delay);
     };
   },
-  _geocodeRequest: function () {
+  _geocodeRequest: function (e) {
     var value = this._input.value;
+
+    if (typeof e === 'object') {
+      L.DomEvent.preventDefault(e);
+    }
 
     if (value.length) {
       var me = this;

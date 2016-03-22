@@ -20,7 +20,8 @@ var ShareControl = L.Control.extend({
     util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '28px';
     return this;
   },
-  share: function () {
+  share: function (e) {
+    L.DomEvent.preventDefault(e);
     window.alert('The share tool has not yet been implemented.');
   }
 });
