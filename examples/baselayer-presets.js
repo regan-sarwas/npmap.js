@@ -40,7 +40,13 @@ var NPMap =  {
     'stamen-toner',
     'stamen-watercolor'
   ],
-  div: 'map'
+  div: 'map',
+  events: [{
+    fn: function (e) {
+      console.log(e);
+    },
+    type: 'baselayerchange'
+  }]
 };
 
 (function () {

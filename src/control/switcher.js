@@ -52,22 +52,6 @@ var SwitcherControl = L.Control.extend({
     this._activeDropdown = L.DomUtil.create('span', null, this._active);
     L.DomEvent.addListener(this._active, 'click', this._toggleList, this);
   },
-  _onLayerChange: function (e) {
-    var obj = this._baseLayers[L.stamp(e.layer)];
-    var type;
-
-    if (!obj) {
-      return;
-    }
-
-    if (!obj.overlay) {
-      type = (e.type === 'layeradd' ? 'baselayerchange' : null);
-    }
-
-    if (type) {
-      this._map.fire(type, obj);
-    }
-  },
   _onClick: function (e) {
     var target = util.getEventObjectTarget(e);
 
@@ -120,13 +104,16 @@ var SwitcherControl = L.Control.extend({
             this._map.options.maxZoom = 19;
           }
 
-          this._map.addLayer(baseLayer.L, true);
+          this._map.addLayer(baseLayer.L);
           L.DomUtil.addClass(target, 'selected');
           this._setActive(baseLayer);
-          added = true;
+          added = baseLayer.L;
         }
 
         if (added && removed) {
+          this._map.fire('baselayerchange', {
+            layer: added
+          });
           break;
         }
       }
@@ -184,16 +171,8 @@ var SwitcherControl = L.Control.extend({
   onAdd: function (map) {
     this._initLayout();
     this._update();
-    map
-      .on('layeradd', this._onLayerChange, this)
-      .on('layerremove', this._onLayerChange, this);
 
     return this._container;
-  },
-  onRemove: function (map) {
-    map
-      .off('layeradd', this._onLayerChange, this)
-      .off('layerremove', this._onLayerChange, this);
   }
 });
 
