@@ -1497,7 +1497,7 @@ var PoiLayer = L.GeoJSON.extend({
       query = query.slice(0, query.length - 4) + ')';
 
       if (this.options.unitCodes.length) {
-        query += 'AND (';
+        query += ' AND (';
 
         for (i = 0; i < this.options.unitCodes.length; i++) {
           query += 'a.unit_code=\'' + this.options.unitCodes[i] + '\' OR ';
@@ -1506,7 +1506,7 @@ var PoiLayer = L.GeoJSON.extend({
         query = query.slice(0, query.length - 4) + ')';
       }
     } else if (this.options.unitCodes.length) {
-      query += 'AND (';
+      query += ' AND (';
 
       for (i = 0; i < this.options.unitCodes.length; i++) {
         query += 'a.unit_code=\'' + this.options.unitCodes[i] + '\' OR ';
