@@ -25,17 +25,17 @@ var PoiLayer = L.GeoJSON.extend({
     maxZoom: 22,
     priority: 1
   }, {
-    type: 'Information',
-    symbol: 'information',
-    minZoomFactor: 6,
-    maxZoom: 22,
-    priority: 1
-  }, {
     type: 'Entrance Station',
     symbol: 'entrance-station',
     minZoomFactor: 6,
     maxZoom: 22,
     priority: 1
+  }, {
+    type: 'Information',
+    symbol: 'information',
+    minZoomFactor: 6,
+    maxZoom: 22,
+    priority: 2
   }, {
     type: 'Fee Booth',
     symbol: 'entrance-station',
@@ -1566,6 +1566,7 @@ var PoiLayer = L.GeoJSON.extend({
                   icon: (function () {
                     if (symbol) {
                       return L.npmap.icon.npmapsymbollibrary({
+                        'marker-color': '#117733',
                         'marker-size': 'medium',
                         'marker-symbol': symbol + '-white'
                       });
@@ -1588,7 +1589,8 @@ var PoiLayer = L.GeoJSON.extend({
                       });
                     }
                   })(),
-                  zIndex: config.priority * 1000 * (row.t === 'Visitor Center' ? 1000 : 1)
+                  title: row.n || row.t,
+                  zIndexOffset: config.priority * -1000
                 }).bindPopup((function () {
                   var html = '<div style="min-width:250px;">';
 

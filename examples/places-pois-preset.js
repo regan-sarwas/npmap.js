@@ -5,7 +5,10 @@ var NPMap = {
   },
   div: 'map',
   overlays: [{
-    preset: 'nps-places-pois'
+    preset: 'nps-places-pois',
+    unitCodes: [
+      'yell'
+    ]
   }],
   zoom: 9
 };
