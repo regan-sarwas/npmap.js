@@ -30,30 +30,6 @@
     }
   },
   "nps": {
-    "parkTiles": {
-      "pointsOfInterest": {
-        "attribution": "<a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
-        "id": "nps.jhd2e8lb",
-        "name": "Points of Interest",
-        "type": "mapbox"
-      }
-    },
-    "parkTilesImagery": {
-      "pointsOfInterest": {
-        "attribution": "<a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
-        "id": "nps.08c8af87",
-        "name": "Points of Interest",
-        "type": "mapbox"
-      }
-    },
-    "parkTilesSlate": {
-      "pointsOfInterest": {
-        "attribution": "<a class='improve-park-tiles' href='http://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
-        "id": "nps.502a840b",
-        "name": "Points of Interest",
-        "type": "mapbox"
-      }
-    },
     "places": {
       "buildings": {
         "name": "Buildings",

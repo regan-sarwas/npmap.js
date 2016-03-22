@@ -223,6 +223,12 @@
   "include": true,
   "title": "Plugins"
 }, {
+  "category": "Presets",
+  "description": "",
+  "id": "places-pois-preset",
+  "include": true,
+  "title": "Places Points of Interest Preset"
+}, {
   "category": "Controls",
   "description": "",
   "id": "print-control",

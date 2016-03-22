@@ -4,7 +4,6 @@
 var version = require('./package.json').version;
 
 window.L.Icon.Default.imagePath = 'http://www.nps.gov/lib/npmap.js/' + version + '/images';
-
 L.npmap = module.exports = {
   VERSION: version,
   // Preserve order of controls because it affects the display hierarchy.
@@ -59,7 +58,10 @@ L.npmap = module.exports = {
     colors: require('./src/preset/colors.json'),
     maki: require('./node_modules/maki/_includes/maki.json'),
     npmapsymbollibrary: require('./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json'),
-    overlays: require('./src/preset/overlays.json')
+    overlays: require('./src/preset/overlays.json'),
+    places: {
+      pois: require('./src/preset/places/pois')
+    }
   },
   tooltip: require('./src/tooltip'),
   util: {

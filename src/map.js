@@ -221,14 +221,22 @@ MapExt = L.Map.extend({
       for (var j = 0; j < options.overlays.length; j++) {
         var overlay = options.overlays[j];
 
-        if (overlay.type === 'zoomify') {
+        if (typeof overlay === 'string') {
+          // TODO: Support preset strings that are passed in.
+        } else if (overlay.type === 'zoomify') {
           throw new Error('Zoomify layers can only be added in the "baseLayers" config property.');
         } else {
           if (overlay.visible || typeof overlay.visible === 'undefined') {
             overlay.visible = true;
             overlay.zIndex = zIndex;
 
-            if (overlay.type === 'arcgisserver') {
+            if (overlay.preset) {
+              switch (overlay.preset) {
+                case 'nps-places-pois':
+                  overlay.L = L.npmap.preset.places.pois(overlay);
+                  break;
+              }
+            } else if (overlay.type === 'arcgisserver') {
               overlay.L = me._createArcGisServerLayer(overlay);
             } else {
               overlay.L = L.npmap.layer[overlay.type](overlay);
