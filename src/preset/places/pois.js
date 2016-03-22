@@ -1654,7 +1654,9 @@ var PoiLayer = L.GeoJSON.extend({
 
     if (me.options.prioritization) {
       me._map.on('moveend', function () {
-        me._update();
+        if (me._rows && me._rows.length) {
+          me._update();
+        }
       });
     }
 
