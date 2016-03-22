@@ -9,6 +9,13 @@ var NPMap = {
       description: 'Zip Code: {{zip}}',
       title: '{{name}}'
     },
+    styles: {
+      point: {
+        'marker-library': 'npmapsymbollibrary',
+        'marker-size': 'small',
+        'marker-symbol': 'dot-white'
+      }
+    },
     type: 'csv',
     url: 'data/colorado-cities.csv'
   }],

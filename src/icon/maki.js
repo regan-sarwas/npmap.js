@@ -2,14 +2,22 @@
 
 'use strict';
 
+var keys = require('../../keys.json');
 var util = require('../util/util');
 var MakiIcon = L.Icon.extend({
   options: {
+    accessToken: (function () {
+      if (keys && keys.mapbox && keys.mapbox.access_token) {
+        return keys.mapbox.access_token;
+      } else {
+        return null;
+      }
+    })(),
     'marker-color': '#000000',
     'marker-size': 'medium'
   },
   statics: {
-    CSS_TEMPLATE: 'url(https://api.mapbox.com/v4/marker/pin-{{size}}{{symbol}}+{{color}}{{retina}}.png?access_token=pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q)'
+    CSS_TEMPLATE: 'url(https://api.mapbox.com/v4/marker/pin-{{size}}{{symbol}}+{{color}}{{retina}}.png?access_token={{accessToken}}'
   },
   initialize: function (options) {
     options = options || {};
@@ -42,6 +50,7 @@ var MakiIcon = L.Icon.extend({
 
     this._setIconStyles(div, 'icon');
     div.style.backgroundImage = util.handlebars(MakiIcon.CSS_TEMPLATE, {
+      accessToken: options.accessToken,
       color: options['marker-color'].replace('#', ''),
       retina: L.Browser.retina ? '@2x' : '',
       size: options['marker-size'].slice(0, 1),
