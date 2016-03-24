@@ -37,7 +37,6 @@ var CartoDbLayer = L.TileLayer.extend({
   },
   initialize: function (options) {
     var me = this;
-    var supportsCors = util.supportsCors();
 
     if (!L.Browser.retina || !options.detectRetina) {
       options.detectRetina = false;
@@ -49,7 +48,7 @@ var CartoDbLayer = L.TileLayer.extend({
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
     this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
     reqwest({
-      crossOrigin: supportsCors === 'yes',
+      crossOrigin: true,
       error: function (error) {
         error.message = JSON.parse(error.response).error[0];
         me.fire('error', error);
@@ -113,7 +112,7 @@ var CartoDbLayer = L.TileLayer.extend({
           }
 
           reqwest({
-            crossOrigin: supportsCors === 'yes',
+            crossOrigin: true,
             error: function (response) {
               var obj = {};
 
@@ -134,7 +133,7 @@ var CartoDbLayer = L.TileLayer.extend({
             success: function (response) {
               if (response) {
                 // This is the only layer handler that we don't default everything to https for.
-                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a serious performance hit for when using https.
+                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a performance hit for when using https.
                 // If the web page is using https, however, we do want to default to it - even if it means taking a performance hit.
                 var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid;
                 var template = '{z}/{x}/{y}';
@@ -156,7 +155,7 @@ var CartoDbLayer = L.TileLayer.extend({
                 });
               }
             },
-            type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
+            type: 'json',
             url: util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
               config: JSON.stringify({
                 layers: [
@@ -164,17 +163,17 @@ var CartoDbLayer = L.TileLayer.extend({
                 ],
                 version: '1.0.1'
               })
-            }) + (supportsCors === 'yes' ? '' : '&callback=?')
+            })
           });
         }
       },
-      type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
+      type: 'json',
       url: util.buildUrl(this._urlApi, {
         q: 'SELECT DISTINCT CDB_ColumnNames,CDB_ColumnType(\'' + this.options.table + '\',cdb_columnnames) FROM CDB_ColumnNames(\'' + this.options.table + '\');'
-      }) + (supportsCors === 'yes' ? '' : '&callback=?')
+      })
     });
     reqwest({
-      crossOrigin: supportsCors === 'yes',
+      crossOrigin: true,
       success: function (response) {
         me._geometryTypes = [];
 
@@ -186,10 +185,10 @@ var CartoDbLayer = L.TileLayer.extend({
           }
         }
       },
-      type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
+      type: 'json',
       url: util.buildUrl(this._urlApi, {
         q: 'select ST_GeometryType(the_geom) from ' + this.options.table + ' where the_geom IS NOT NULL limit 1;'
-      }) + (supportsCors === 'yes' ? '' : '&callback=?')
+      })
     });
   },
   _getGridData: function (latLng, callback) {

@@ -3,7 +3,7 @@
 
 var version = require('./package.json').version;
 
-window.L.Icon.Default.imagePath = 'http://www.nps.gov/lib/npmap.js/' + version + '/images';
+window.L.Icon.Default.imagePath = 'https://www.nps.gov/lib/npmap.js/' + version + '/images';
 L.npmap = module.exports = {
   VERSION: version,
   // Preserve order of controls because it affects the display hierarchy.

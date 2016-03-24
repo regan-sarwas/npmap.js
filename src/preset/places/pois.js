@@ -1471,15 +1471,23 @@ var PoiLayer = L.GeoJSON.extend({
     maxZoom: 22,
     priority: 5
   }],
-  _rows: null,
   includes: [
     require('../../mixin/geojson')
   ],
   options: {
+    // autoContrast: true,
     prioritization: true,
     types: [],
     unitCodes: []
   },
+
+  // Wipe out popup, tooltip, and styles configs if they're passed up.
+  // This is a "developmental" feature, so the API is going to be a moving target for a little while.
+  // Add "darkOrLight" property to each baseLayer preset.
+  // If autoContrast === true, subscribe to map baselayerchange event and update color of all icons, when needed.
+  // Only support two colors for now.
+
+  rows: null,
   initialize: function (options) {
     var me = this;
     var query = 'SELECT a.minzoompoly AS m,b.name AS n,b.type AS t,b.unit_code AS u,ST_X(b.the_geom) AS x,ST_Y(b.the_geom) AS y FROM parks AS a,points_of_interest AS b WHERE a.unit_code=b.unit_code';
@@ -1559,57 +1567,41 @@ var PoiLayer = L.GeoJSON.extend({
               if (config) {
                 var symbol = config.symbol;
 
-                row.marker = new L.Marker({
+                obj = {
                   lat: row.y,
-                  lng: row.x
+                  lng: row.x,
+                  minZoom: row.m,
+                  name: row.n,
+                  symbol: symbol,
+                  type: row.t,
+                  unitCode: row.u
+                };
+                L.Util.extend(row, obj);
+                delete row.m;
+                delete row.n;
+                delete row.t;
+                delete row.u;
+                delete row.x;
+                delete row.y;
+                row.marker = new L.Marker({
+                  lat: row.lat,
+                  lng: row.lng
                 }, {
-                  icon: (function () {
-                    if (symbol) {
-                      return L.npmap.icon.npmapsymbollibrary({
-                        'marker-color': '#117733',
-                        'marker-size': 'medium',
-                        'marker-symbol': symbol + '-white'
-                      });
-                    } else {
-                      return L.icon({
-                        iconAnchor: [
-                          3,
-                          3
-                        ],
-                        iconRetinaUrl: window.L.Icon.Default.imagePath + '/dots/dot-green-6@2x.png',
-                        iconSize: [
-                          6,
-                          6
-                        ],
-                        iconUrl: window.L.Icon.Default.imagePath + '/dots/dot-green-6.png',
-                        popupAnchor: [
-                          2,
-                          -6
-                        ]
-                      });
-                    }
-                  })(),
-                  title: row.n || row.t,
+                  icon: me._getIcon(true, symbol),
+                  title: row.name || row.type,
                   zIndexOffset: config.priority * -1000
                 }).bindPopup((function () {
                   var html = '<div style="min-width:250px;">';
 
-                  if (row.n) {
-                    html += '<h2 style="font-weight:bold;">' + row.n + '</h2>';
+                  if (row.name) {
+                    html += '<h2 style="font-weight:bold;">' + row.name + '</h2>';
                   }
 
-                  html += '<p>' + row.t + '</p></div>';
+                  html += '<p>' + row.type + '</p></div>';
 
                   return html;
                 })());
-                L.Util.extend(row.marker, {
-                  m: row.m,
-                  n: row.n,
-                  t: row.t,
-                  u: row.u,
-                  x: row.x,
-                  y: row.y
-                });
+                L.Util.extend(row.marker, obj);
               } else {
                 me._rows.splice(i, 1);
               }
@@ -1654,6 +1646,52 @@ var PoiLayer = L.GeoJSON.extend({
 
     me._map = map;
 
+    /*
+    if (me.options.autoContrast) {
+      // TODO: Need to set this dynamically.
+      // TODO: Also think about storing "lightOrDark" here in this module rather than with the baselayer presets.
+      me._baseLayerColor = 'light';
+
+      me._map.on('baselayerchange', function (e) {
+        if (me._rows && me._rows.length && e.layer.options) {
+          var lightOrDark = e.layer.options.lightOrDark;
+
+          if (typeof lightOrDark === 'string' && (lightOrDark !== me._baseLayerColor)) {
+            for (var i = 0; i < me._rows.length; i++) {
+              var row = me._rows[i];
+              var symbol = (function () {
+                var c;
+
+                for (var j = 0; j < me._include.length; j++) {
+                  if (me._include[j].type === row.type) {
+                    c = me._include[j];
+                    break;
+                  }
+                }
+
+                if (c) {
+                  return c.symbol;
+                } else {
+                  return null;
+                }
+              })();
+
+
+              // TODO: It seems like you're going to have to rebuild the marker itself.
+              // So, remove all the markers from the map.
+              // Then iterate through me._rows, overwriting me._rows[i].marker with the new marker.
+              // Then call _update if me.options.prioritization is true.
+              // If it isn't true, just readd all the markers.
+
+
+              row.marker.setIcon(me._getIcon(lightOrDark === 'dark', symbol));
+            }
+          }
+        }
+      });
+    }
+    */
+
     if (me.options.prioritization) {
       me._map.on('moveend', function () {
         if (me._rows && me._rows.length) {
@@ -1663,6 +1701,32 @@ var PoiLayer = L.GeoJSON.extend({
     }
 
     L.GeoJSON.prototype.onAdd.call(this, this._map);
+  },
+  _getIcon: function (dark, symbol) {
+    if (symbol) {
+      return L.npmap.icon.npmapsymbollibrary({
+        'marker-color': (dark ? '000000' : '117733'),
+        'marker-size': 'medium',
+        'marker-symbol': symbol + '-white'
+      });
+    } else {
+      return L.icon({
+        iconAnchor: [
+          3,
+          3
+        ],
+        iconRetinaUrl: window.L.Icon.Default.imagePath + '/dots/dot-' + (dark ? 'black' : 'green') + '-6@2x.png',
+        iconSize: [
+          6,
+          6
+        ],
+        iconUrl: window.L.Icon.Default.imagePath + '/dots/dot-' + (dark ? 'black' : 'green') + '-6.png',
+        popupAnchor: [
+          2,
+          -6
+        ]
+      });
+    }
   },
   _update: function () {
     var me = this;
@@ -1686,7 +1750,7 @@ var PoiLayer = L.GeoJSON.extend({
     while (i--) {
       marker = layers[i];
 
-      if (active.indexOf(marker.t) === -1 || !bounds.contains(marker.getLatLng())) {
+      if (active.indexOf(marker.type) === -1 || !bounds.contains(marker.getLatLng())) {
         me.removeLayer(marker);
       }
     }
@@ -1695,7 +1759,7 @@ var PoiLayer = L.GeoJSON.extend({
       var type;
 
       marker = me._rows[i].marker;
-      type = marker.t;
+      type = marker.type;
 
       if (active.indexOf(type) > -1) {
         if (bounds.contains(marker.getLatLng())) {
@@ -1718,7 +1782,7 @@ var PoiLayer = L.GeoJSON.extend({
           factor = config.minZoomFactor;
 
           if (typeof factor === 'number') {
-            var minZoom = marker.m;
+            var minZoom = marker.minZoom;
             var zoom = 16;
 
             if (typeof minZoom === 'number' && ((minZoom + factor) < 16)) {

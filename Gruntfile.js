@@ -51,11 +51,11 @@ module.exports = function (grunt) {
           'npmap-standalone.js',
           'npmap-standalone.min.js'
         ].map(function (fileName) {
-          return 'http://www.nps.gov/lib/npmap.js/<%= pkg.version %>/' + fileName;
+          return 'https://www.nps.gov/lib/npmap.js/<%= pkg.version %>/' + fileName;
         })
         */
         objects: [
-          'http://www.nps.gov/lib/npmap.js/<%= pkg.version %>/*'
+          'https://www.nps.gov/lib/npmap.js/<%= pkg.version %>/*'
         ]
       },
       options: {

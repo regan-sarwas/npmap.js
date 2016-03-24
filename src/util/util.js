@@ -162,56 +162,22 @@ module.exports = {
       node.style.display = 'block';
     }
   },
-  // TODO: Need to support https for test/inside endpoint
   checkNpsNetwork: function (callback) {
-    var me = this;
-
-    if (me.supportsCors()) {
-      me.reqwest({
-        crossOrigin: true,
-        error: function () {
-          callback(false);
-        },
-        success: function (response) {
-          if (response && response.success) {
-            callback(true);
-          } else {
-            callback(false);
-          }
-        },
-        type: 'json',
-        url: 'http://insidemaps.nps.gov/test/inside'
-      });
-    } else {
-      var done = false;
-      var inside = false;
-      var time = 0;
-      var interval;
-
-      interval = setInterval(function () {
-        if (done === true) {
-          clearInterval(interval);
-          callback(inside);
+    this.reqwest({
+      crossOrigin: true,
+      error: function () {
+        callback(false);
+      },
+      success: function (response) {
+        if (response && response.success) {
+          callback(true);
         } else {
-          time++;
-
-          if (time >= 1500) {
-            done = true;
-          }
+          callback(false);
         }
-      }, 100);
-      me.reqwest({
-        success: function (response) {
-          if (response && response.success) {
-            inside = true;
-          }
-
-          done = true;
-        },
-        type: 'jsonp',
-        url: 'http://insidemaps.nps.gov/test/inside?callback=?'
-      });
-    }
+      },
+      type: 'json',
+      url: '//insidemaps.nps.gov/test/inside'
+    });
   },
   _getAutoPanPaddingTopLeft: function (el) {
     var containers = this.getChildElementsByClassName(el, 'leaflet-top');

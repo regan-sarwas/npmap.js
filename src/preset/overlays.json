@@ -7,7 +7,7 @@
       "name": "Esri Light Gray Labels",
       "tiled": true,
       "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer"
+      "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer"
     },
     "imageryLabels": {
       "attribution": "Esri, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community",
@@ -17,7 +17,7 @@
       "name": "Esri Boundaries & Places",
       "tiled": true,
       "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
+      "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
     },
     "oceansLabels": {
       "attribution": "Esri",
@@ -26,7 +26,7 @@
       "name": "Esri Ocean Labels",
       "tiled": true,
       "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer"
+      "url": "https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer"
     }
   },
   "nps": {

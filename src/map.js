@@ -19,7 +19,7 @@ require('./popup.js');
   L.Circle.mergeOptions(style);
   L.CircleMarker.mergeOptions(style);
   L.Control.Attribution.mergeOptions({
-    prefix: '<a href="http://www.nps.gov/npmap/disclaimer/" target="_blank">Disclaimer</a>'
+    prefix: '<a href="https://www.nps.gov/npmap/disclaimer/" target="_blank">Disclaimer</a>'
   });
   L.Map.addInitHook(function () {
     var container = this.getContainer();
@@ -810,7 +810,7 @@ MapExt = L.Map.extend({
         var lng = center.lng.toFixed(5);
         var zoom = this.getZoom();
 
-        el.href = (this._onNpsNetwork ? ('http://insidemaps.nps.gov/places/editor/#background=mapbox-satellite&map=' + zoom + '/' + lng + '/' + lat + '&overlays=park-tiles-overlay') : ('http://www.nps.gov/npmap/tools/park-tiles/improve/#' + zoom + '/' + lat + '/' + lng));
+        el.href = (this._onNpsNetwork ? ('http://insidemaps.nps.gov/places/editor/#background=mapbox-satellite&map=' + zoom + '/' + lng + '/' + lat + '&overlays=park-tiles-overlay') : ('https://www.nps.gov/npmap/tools/park-tiles/improve/#' + zoom + '/' + lat + '/' + lng));
       }
     }
   },

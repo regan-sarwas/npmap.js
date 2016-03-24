@@ -69,7 +69,7 @@ var SpotLayer = L.GeoJSON.extend({
               }
             }
           } else {
-            message = response.errors.error.text;
+            message = 'The SPOT service returned the following error message: ' + response.errors.error.text;
 
             me.fire('error', {
               message: message

@@ -1,7 +1,7 @@
 var NPMap = {
   div: 'map',
   overlays: [{
-    attribution: '<a href="http://www.nps.gov/npmap/" target="_blank">NPMap</a>',
+    attribution: '<a href="https://www.nps.gov/npmap/" target="_blank">NPMap</a>',
     name: 'Parks',
     opacity: 1,
     popup: {

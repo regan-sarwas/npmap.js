@@ -3,6 +3,10 @@ var NPMap = {
     lat: 44.599,
     lng: -110.554
   },
+  baseLayers: [
+    'nps-parkTiles3',
+    'nps-parkTiles3Imagery'
+  ],
   div: 'map',
   hashControl: true,
   overlays: [{

@@ -944,7 +944,7 @@ _Arguments_:
 The first, and only, argument is optional, and may be a control config object with the following properties:
 
 * (Optional) `provider` (String): Which supported provider should be used? Defaults to `esri`. Valid options are `bing`, `esri`, `mapbox`, `mapquest`, `mapzen`, and `nominatim`. **Note** that the `mapquest` and `nominatim` providers are limited to 15,000 transactions per month, so they are not recommended for production usage.
-* (Optional) `searchPlaces` (Boolean): Should the geocoder search through points of interest from the National Park Service's [Places](http://www.nps.gov/npmap/tools/places/) system? Defaults to `false`.
+* (Optional) `searchPlaces` (Boolean): Should the geocoder search through points of interest from the National Park Service's [Places](https://www.nps.gov/npmap/tools/places/) system? Defaults to `false`.
 
 You can also (optionally) provide any of the options supported by [`L.Control`](http://leafletjs.com/reference.html#control).
 
@@ -1244,7 +1244,7 @@ _Arguments_:
 The first, and only, argument is optional, and may be a config object with the following properties:
 
 * (Optional) `ui` (Boolean): Should the control add its user interface (UI) to the map? Defaults to `true`.
-* (Optional) `url` (String): A URL to a print-optimized web page. Defaults to `http://www.nps.gov/maps/print/`.
+* (Optional) `url` (String): A URL to a print-optimized web page. Defaults to `https://www.nps.gov/maps/print/`.
 
 _Returns_: a control object
 

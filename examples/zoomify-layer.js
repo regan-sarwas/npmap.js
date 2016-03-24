@@ -3,7 +3,7 @@ var NPMap = {
     attribution: 'Harpers Ferry Center',
     height: 6738,
     type: 'zoomify',
-    url: 'http://www.nps.gov/parkmaps/yell/img/',
+    url: 'https://www.nps.gov/parkmaps/yell/img/',
     width: 5069
   }],
   div: 'map'

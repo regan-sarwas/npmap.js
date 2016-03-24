@@ -9,7 +9,7 @@ var NPMap = {
       var bounds = NPMap.config.L.getBounds();
 
       window.L.npmap.layer.geojson({
-        attribution: '<a href="http://www.mapillary.com">Mapillary</a>',
+        attribution: '<a href="https://www.mapillary.com">Mapillary</a>',
         popup: {
           description: '<img src="https://d1cuyjsrcm0gby.cloudfront.net/{{key}}/thumb-320.jpg" style="height:240px;width:320px;">'
         },

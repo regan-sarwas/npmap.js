@@ -9,12 +9,12 @@
     <meta name="description" content="A website for National Park Service maps.">
     <meta name="keywords" content="NPMap, National Park Service, Federal Government, Department of Interior, United States Government, GIS, Cartography, Web Mapping, Natural Resources, Cultural Resources, National Park Maps, NPS Maps">
     <meta name="msapplication-TileColor" content="#222222">
-    <meta name="msapplication-TileImage" content="http://www.nps.gov/npmap/windows-8-tile.png">
-    <link rel="shortcut icon" href="http://www.nps.gov/npmap/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://www.nps.gov/npmap/apple-touch-icon-144x144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://www.nps.gov/npmap/apple-touch-icon-114x114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://www.nps.gov/npmap/apple-touch-icon-72x72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="http://www.nps.gov/npmap/apple-touch-icon-57x57-precomposed.png">
+    <meta name="msapplication-TileImage" content="https://www.nps.gov/npmap/windows-8-tile.png">
+    <link rel="shortcut icon" href="https://www.nps.gov/npmap/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.nps.gov/npmap/apple-touch-icon-144x144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://www.nps.gov/npmap/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://www.nps.gov/npmap/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="https://www.nps.gov/npmap/apple-touch-icon-57x57-precomposed.png">
     <style>
       html, body {
         margin-top: 0;
@@ -183,7 +183,7 @@
                   }
                 },
                 type: 'jsonp',
-                url: 'http://www.nps.gov/maps/builder/configs/' + mapId + '.jsonp?callback=callback'
+                url: 'https://www.nps.gov/maps/builder/configs/' + mapId + '.jsonp?callback=callback'
               });
             } else if (printId) {
               var supportsCors = L.npmap.util._.supportsCors() === 'yes',
@@ -228,7 +228,7 @@
 
       (function() {
         var s = document.createElement('script');
-        s.src = 'http://www.nps.gov/lib/npmap.js/3.0.2/npmap-bootstrap.js';
+        s.src = 'https://www.nps.gov/lib/npmap.js/3.0.2/npmap-bootstrap.js';
         document.body.appendChild(s);
       })();
     </script>

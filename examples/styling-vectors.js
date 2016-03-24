@@ -8,7 +8,7 @@ var NPMap = {
   overlays: [{
     name: 'National Parks',
     popup: {
-      title: '<a href="http://www.nps.gov/{{toLowerCase Code}}">{{Name}}</a>'
+      title: '<a href="https://www.nps.gov/{{toLowerCase Code}}">{{Name}}</a>'
     },
     styles: function (data) {
       return {

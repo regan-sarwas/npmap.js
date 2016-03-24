@@ -3,9 +3,12 @@ var NPMap = {
   div: 'map',
   maxZoom: 13,
   overlays: [{
-    attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>',
+    icon: 'street',
+    name: 'CartoDB Dark Matter',
+    retinaId: '@2x',
     type: 'tiled',
-    url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+    url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{{retina}}.png'
   }]
 };
 

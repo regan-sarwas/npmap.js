@@ -25,7 +25,7 @@ var GeocoderControl = L.Control.extend({
       MAPZEN: 'Geocoding by Mapzen',
       NOMINATIM: [
         'Geocoding by Nominatim',
-        '&copy; <a href=\'http://openstreetmap.org/copyright\'>OpenStreetMap</a> contributors'
+        '&copy; <a href=\'https://openstreetmap.org/copyright\'>OpenStreetMap</a> contributors'
       ]
     }
   },

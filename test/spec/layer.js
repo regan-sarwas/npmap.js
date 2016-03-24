@@ -19,7 +19,7 @@ describe('L.npmap.layer', function () {
         overlays: [{
           tiled: false,
           type: 'arcgisserver',
-          url: 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
+          url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
         }]
       });
 
@@ -38,7 +38,7 @@ describe('L.npmap.layer', function () {
           }],
           tiled: false,
           type: 'arcgisserver',
-          url: 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
+          url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
         }]
       });
     });
@@ -49,7 +49,7 @@ describe('L.npmap.layer', function () {
         overlays: [{
           tiled: true,
           type: 'arcgisserver',
-          url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+          url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
         }]
       });
 
@@ -68,7 +68,7 @@ describe('L.npmap.layer', function () {
           }],
           tiled: true,
           type: 'arcgisserver',
-          url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+          url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
         }]
       });
     });

@@ -40,10 +40,11 @@ NPMap.js is versioned using [semantic versioning](http://semver.org). This means
 - v3.0.11
 - [v3.0.12](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.12+is%3Aclosed)
 - [v3.0.13](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.13+is%3Aclosed)
+- [v3.0.14](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.14+is%3Aclosed)
 
 ## Hosted version
 
-NPMap.js is hosted on the National Park Service's content delivery network. If you are a National Park Service employee, partner, or contractor, feel free to load the library directly from there. You can access hosted versions at http://www.nps.gov/lib/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. `2.0.0`).
+NPMap.js is hosted on the National Park Service's content delivery network. If you are a National Park Service employee, partner, or contractor, feel free to load the library directly from there. You can access hosted versions at https://www.nps.gov/lib/npmap.js/major.minor.patch/npmap-bootstrap.min.js. You should replace "major.minor.patch" with the number of the version you want to access (e.g. `2.0.0`).
 
 ## Keys
 
@@ -53,7 +54,7 @@ If, however, you are not a National Park Service employee, partner, or contracto
 
 ## Building
 
-You must have [node.js](http://nodejs.org/) installed to run the build. After installing node.js:
+You must have [node.js](https://nodejs.org/) installed to run the build. After installing node.js:
 
     git clone https://github.com/nationalparkservice/npmap.js
     cd npmap.js
@@ -75,7 +76,7 @@ Internally, the Grunt task uses [browserify](https://github.com/substack/node-br
 
 ## Testing
 
-NPMap.js uses the [Mocha](http://mochajs.org) JavaScript test framework, with the [expect.js](https://github.com/Automattic/expect.js) assertion library, and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with either of the following commands:
+NPMap.js uses the [Mocha](https://mochajs.org) JavaScript test framework, with the [expect.js](https://github.com/Automattic/expect.js) assertion library, and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with either of the following commands:
 
     grunt test
 
@@ -95,4 +96,4 @@ Simple and targeted examples reside in the [examples directory](https://github.c
 
 ## Support
 
-You can get in touch with the NPMap team by contacting us via Twitter ([@npmap](http://twitter.com/npmap)) or email ([npmap@nps.gov](mailto:npmap@nps.gov)). We are happy to help with any questions. Feedback is welcome as well!
+You can get in touch with the NPMap team by contacting us via Twitter ([@npmap](https://twitter.com/npmap)) or email ([npmap@nps.gov](mailto:npmap@nps.gov)). We are happy to help with any questions. Feedback is welcome as well!

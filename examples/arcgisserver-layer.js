@@ -5,13 +5,13 @@ var NPMap = {
     clickable: false,
     tiled: true,
     type: 'arcgisserver',
-    url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+    url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
   }],
   overlays: [{
     attribution: 'Land Resources Division',
     name: 'National Parks',
     type: 'geojson',
-    url: 'https://server-utils.herokuapp.com/arcgis2geojson/?url=http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/1'
+    url: 'https://server-utils.herokuapp.com/arcgis2geojson/?url=https://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/1'
   }, {
     attribution: 'Great Smoky Mountains National Park',
     name: 'Restrooms',
@@ -22,7 +22,7 @@ var NPMap = {
       }
     },
     type: 'geojson',
-    url: 'http://services1.arcgis.com/fBc8EJBxQRMcHlei/ArcGIS/rest/services/GRSM_RESTROOMS/FeatureServer/0/query?f=geojson&outSR=4326&where=OBJECTID+IS+NOT+NULL'
+    url: 'https://services1.arcgis.com/fBc8EJBxQRMcHlei/ArcGIS/rest/services/GRSM_RESTROOMS/FeatureServer/0/query?f=geojson&outSR=4326&where=OBJECTID+IS+NOT+NULL'
   }, {
     attribution: 'Esri',
     layers: '2',
@@ -40,7 +40,7 @@ var NPMap = {
     },
     tiled: false,
     type: 'arcgisserver',
-    url: 'http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer'
+    url: 'https://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer'
   }, {
     attribution: 'Esri',
     name: 'Hurricanes',
@@ -81,7 +81,7 @@ var NPMap = {
     },
     tiled: false,
     type: 'arcgisserver',
-    url: 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
+    url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
   }]
 };
 

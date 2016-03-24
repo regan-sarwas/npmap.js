@@ -45,7 +45,7 @@ var NPMap = {
           callback();
         },
         type: 'jsonp',
-        url: 'http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/legend?f=json'
+        url: 'https://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer/legend?f=json'
       });
     }
   },
@@ -65,7 +65,7 @@ var NPMap = {
     },
     tiled: false,
     type: 'arcgisserver',
-    url: 'http://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer'
+    url: 'https://mapservices.nps.gov/arcgis/rest/services/LandResourcesDivisionTractAndBoundaryService/MapServer'
   }],
   zoom: 7
 };

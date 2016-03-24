@@ -1,4 +1,4 @@
-var attribution = '<a href="http://mapbox.com/about/maps" target="_blank">MapBox</a>, &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+var attribution = '<a href="https://www.mapbox.com/about/maps" target="_blank">MapBox</a>, &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 var NPMap = {
   baseLayers: [{
     attribution: attribution,

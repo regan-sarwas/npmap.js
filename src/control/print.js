@@ -6,7 +6,7 @@ var util = require('../util/util');
 var PrintControl = L.Control.extend({
   options: {
     ui: true,
-    url: 'http://www.nps.gov/maps/print/'
+    url: 'https://www.nps.gov/maps/print/'
   },
   initialize: function (options) {
     L.Util.setOptions(this, options);
