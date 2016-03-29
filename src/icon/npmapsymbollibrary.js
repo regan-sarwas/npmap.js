@@ -17,7 +17,7 @@ var NpmapIcon = L.Icon.extend({
     'marker-size': 'medium'
   },
   statics: {
-    MAKI_TEMPLATE: 'url(https://api.mapbox.com/v4/marker/pin-{{size}}+{{color}}{{retina}}.png?access_token={{accessToken}}'
+    MAKI_TEMPLATE: 'url(https://api.mapbox.com/v4/marker/pin-{{size}}+{{color}}{{retina}}.png?access_token={{accessToken}})'
   },
   initialize: function (options) {
     options = options || {};

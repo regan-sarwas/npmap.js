@@ -17,7 +17,7 @@ var MakiIcon = L.Icon.extend({
     'marker-size': 'medium'
   },
   statics: {
-    CSS_TEMPLATE: 'url(https://api.mapbox.com/v4/marker/pin-{{size}}{{symbol}}+{{color}}{{retina}}.png?access_token={{accessToken}}'
+    CSS_TEMPLATE: 'url(https://api.mapbox.com/v4/marker/pin-{{size}}{{symbol}}+{{color}}{{retina}}.png?access_token={{accessToken}})'
   },
   initialize: function (options) {
     options = options || {};
