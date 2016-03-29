@@ -1591,13 +1591,13 @@ var PoiLayer = L.GeoJSON.extend({
                   title: row.name || row.type,
                   zIndexOffset: config.priority * -1000
                 }).bindPopup((function () {
-                  var html = '<div style="min-width:250px;">';
+                  var html = '<div class="layer" style="min-width:250px;">';
 
                   if (row.name) {
-                    html += '<h2 style="font-weight:bold;">' + row.name + '</h2>';
+                    html += '<div class="title">' + row.name + '</div>';
                   }
 
-                  html += '<p>' + row.type + '</p></div>';
+                  html += '<div class="description"><p>' + row.type + '</p></div>';
 
                   return html;
                 })());
@@ -1676,13 +1676,11 @@ var PoiLayer = L.GeoJSON.extend({
                 }
               })();
 
-
               // TODO: It seems like you're going to have to rebuild the marker itself.
               // So, remove all the markers from the map.
               // Then iterate through me._rows, overwriting me._rows[i].marker with the new marker.
               // Then call _update if me.options.prioritization is true.
               // If it isn't true, just readd all the markers.
-
 
               row.marker.setIcon(me._getIcon(lightOrDark === 'dark', symbol));
             }

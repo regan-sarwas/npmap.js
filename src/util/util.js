@@ -176,7 +176,7 @@ module.exports = {
         }
       },
       type: 'json',
-      url: '//insidemaps.nps.gov/test/inside'
+      url: 'https://insidemaps.nps.gov/test/inside'
     });
   },
   _getAutoPanPaddingTopLeft: function (el) {
