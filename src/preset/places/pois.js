@@ -1476,6 +1476,7 @@ var PoiLayer = L.GeoJSON.extend({
   ],
   options: {
     // autoContrast: true,
+    environment: 'production',
     prioritization: true,
     types: [],
     unitCodes: []
@@ -1489,8 +1490,9 @@ var PoiLayer = L.GeoJSON.extend({
 
   rows: null,
   initialize: function (options) {
+    var environment = this.options.environment;
     var me = this;
-    var query = 'SELECT a.minzoompoly AS m,b.name AS n,b.type AS t,b.unit_code AS u,ST_X(b.the_geom) AS x,ST_Y(b.the_geom) AS y FROM parks AS a,points_of_interest AS b WHERE a.unit_code=b.unit_code';
+    var query = 'SELECT a.minzoompoly AS m,b.name AS n,b.type AS t,b.unit_code AS u,ST_X(b.the_geom) AS x,ST_Y(b.the_geom) AS y FROM parks AS a,points_of_interest' + (environment === 'production' ? '' : '_' + environment) + ' AS b WHERE a.unit_code=b.unit_code';
     var i;
 
     L.Util.setOptions(this, this._toLeaflet(options));
