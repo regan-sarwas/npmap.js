@@ -33,6 +33,9 @@ handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
       return options.inverse(this);
   }
 });
+handlebars.registerHelper('toInt', function (str) {
+  return parseInt(str, 10);
+});
 handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
@@ -102,7 +105,6 @@ handlebars.registerHelper('toUpperCase', function (str) {
       }
 
       out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
-
     }
 
     return out;
@@ -160,56 +162,22 @@ module.exports = {
       node.style.display = 'block';
     }
   },
-  // TODO: Need to support https for test/inside endpoint
   checkNpsNetwork: function (callback) {
-    var me = this;
-
-    if (me.supportsCors()) {
-      me.reqwest({
-        crossOrigin: true,
-        error: function () {
-          callback(false);
-        },
-        success: function (response) {
-          if (response && response.success) {
-            callback(true);
-          } else {
-            callback(false);
-          }
-        },
-        type: 'json',
-        url: 'http://insidemaps.nps.gov/test/inside'
-      });
-    } else {
-      var done = false;
-      var inside = false;
-      var time = 0;
-      var interval;
-
-      interval = setInterval(function () {
-        if (done === true) {
-          clearInterval(interval);
-          callback(inside);
+    this.reqwest({
+      crossOrigin: true,
+      error: function () {
+        callback(false);
+      },
+      success: function (response) {
+        if (response && response.success) {
+          callback(true);
         } else {
-          time++;
-
-          if (time >= 1500) {
-            done = true;
-          }
+          callback(false);
         }
-      }, 100);
-      me.reqwest({
-        success: function (response) {
-          if (response && response.success) {
-            inside = true;
-          }
-
-          done = true;
-        },
-        type: 'jsonp',
-        url: 'http://insidemaps.nps.gov/test/inside?callback=?'
-      });
-    }
+      },
+      type: 'json',
+      url: 'https://insidemaps.nps.gov/test/inside'
+    });
   },
   _getAutoPanPaddingTopLeft: function (el) {
     var containers = this.getChildElementsByClassName(el, 'leaflet-top');
@@ -615,7 +583,7 @@ module.exports = {
     return (el.offsetParent === null);
   },
   isLocalUrl: function (url) {
-    if (url.indexOf(window.location.origin) === 0) {
+    if (url.indexOf(window.location.hostname) >= 0) {
       return true;
     } else {
       return !(/^(?:[a-z]+:)?\/\//i.test(url));
@@ -701,7 +669,7 @@ module.exports = {
           }
         },
         type: 'json' + (supportsCors ? '' : 'p'),
-        url: window.location.protocol + '//server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+        url: 'https://server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
       });
     }
   },

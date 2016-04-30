@@ -30,13 +30,7 @@
   }
 }
 
-  /* TODO: Come up with a color that fits into the NPS graphic identity */
-
-  /*
-  .npmap a:focus, .npmap button:focus, .npmap div:focus, .npmap input:focus {
-    outline-color: #b28000 !important;  Only necessary because NPS Bootstrap isn't updated yet 
-  }
-  */
+/* Modules */
 .npmap-modules {
   -webkit-box-shadow: 2px 0 2px rgba(0,0,0,.2);
      -moz-box-shadow: 2px 0 2px rgba(0,0,0,.2);
@@ -263,9 +257,6 @@
 .npmap input, .npmap button, .npmap select, .npmap textarea {
   font-family: inherit;
   font-size: inherit;
-  /*
-  line-height: inherit;
-  */
 }
 .npmap button, .npmap input, .npmap select[multiple], .npmap textarea {
   background-image: none;
@@ -431,21 +422,21 @@
   }
 
 /* Icons */
-.npmaki-icon.large {
+.npmapsymbollibrary-icon.large {
   background-size: 24px 24px;
   height: 24px;
   margin-left: 5px;
   margin-top: 7px;
   width: 24px;
 }
-.npmaki-icon.medium {
+.npmapsymbollibrary-icon.medium {
   background-size: 18px 18px;
   height: 18px;
   margin-left: 5px;
   margin-top: 4px;
   width: 18px;
 }
-.npmaki-icon.small {
+.npmapsymbollibrary-icon.small {
   background-size: 12px 12px;
   height: 12px;
   margin-left: 5px;
@@ -864,7 +855,6 @@
   padding: 3px 5px;
   text-align: right;
   text-overflow: ellipsis;
-  transition: all .2s;
   white-space: nowrap;
 }
 
@@ -1064,12 +1054,6 @@
 .npmap .leaflet-retina .npmap-control-locate button {
   background-image: url('images/font-awesome/location-arrow@2x.png');
 }
-
-/*
-.npmap .leaflet-touch .leaflet-control-locate button {
-  background-image: url(images/locate_touch.png);
-}
-*/
 .npmap .npmap-control-locate button.requesting {
   background-image: url('images/control/locate/spinner.gif');
   background-position: 50% 50%;
@@ -1077,16 +1061,6 @@
 .npmap .leaflet-retina .npmap-control-locate button.requesting {
   background-image: url('images/control/locate/spinner@2x.gif');
 }
-/*
-.npmap .leaflet-control-locate.active a {
-  background-position: -32px -2px;
-}
-.npmap .leaflet-touch .leaflet-control-locate {
-  box-shadow: none;
-  border: 2px solid rgba(0,0,0,0.2);
-  background-clip: padding-box;
-}
-*/
 
 /* Measure Control */
 .npmap-control-measure button.leaflet-bar-single {
@@ -1215,7 +1189,7 @@
     bottom: 10px;
     height: 10px;
     position: absolute;
-    right: 10px; 
+    right: 10px;
     transition: all .2s;
     width: 10px;
   }

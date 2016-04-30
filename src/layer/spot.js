@@ -2,17 +2,17 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  util = require('../util/util');
+var reqwest = require('reqwest');
+var util = require('../util/util');
 
 var SpotLayer = L.GeoJSON.extend({
   includes: [
     require('../mixin/geojson')
   ],
-  initialize: function(options) {
-    var me = this,
-      supportsCors = util.supportsCors(),
-      startDate;
+  initialize: function (options) {
+    var me = this;
+    var supportsCors = util.supportsCors();
+    var startDate;
 
     if (options.minutesAgo) {
       startDate = new Date(new Date() - options.minutesAgo * 60000).toISOString().slice(0, -5) + '-0000';
@@ -21,8 +21,8 @@ var SpotLayer = L.GeoJSON.extend({
     util.strict(options.id, 'string');
     L.Util.setOptions(this, this._toLeaflet(options));
     reqwest({
-      crossOrigin: supportsCors === 'yes' ? true : false,
-      success: function(response) {
+      crossOrigin: supportsCors === 'yes',
+      success: function (response) {
         var message;
 
         if (response && response.data && response.data.response) {
@@ -32,8 +32,8 @@ var SpotLayer = L.GeoJSON.extend({
             var geoJson = {
               features: [],
               type: 'FeatureCollection'
-            },
-            messages = response.feedMessageResponse.messages.message;
+            };
+            var messages = response.feedMessageResponse.messages.message;
 
             if (!L.Util.isArray(messages)) {
               messages = [messages];
@@ -69,7 +69,7 @@ var SpotLayer = L.GeoJSON.extend({
               }
             }
           } else {
-            message = response.errors.error.text;
+            message = 'The SPOT service returned the following error message: ' + response.errors.error.text;
 
             me.fire('error', {
               message: message
@@ -96,7 +96,7 @@ var SpotLayer = L.GeoJSON.extend({
 
     return this;
   },
-  _create: function(options, data) {
+  _create: function (options, data) {
     L.GeoJSON.prototype.initialize.call(this, data, options);
     this.fire('ready');
     this.readyFired = true;
@@ -105,7 +105,7 @@ var SpotLayer = L.GeoJSON.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   options = options || {};
 
   if (!options.type) {

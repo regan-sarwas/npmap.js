@@ -19,7 +19,7 @@ require('./popup.js');
   L.Circle.mergeOptions(style);
   L.CircleMarker.mergeOptions(style);
   L.Control.Attribution.mergeOptions({
-    prefix: '<a href="http://www.nps.gov/npmap/disclaimer/" target="_blank">Disclaimer</a>'
+    prefix: '<a href="https://www.nps.gov/npmap/disclaimer/" target="_blank">Disclaimer</a>'
   });
   L.Map.addInitHook(function () {
     var container = this.getContainer();
@@ -221,14 +221,22 @@ MapExt = L.Map.extend({
       for (var j = 0; j < options.overlays.length; j++) {
         var overlay = options.overlays[j];
 
-        if (overlay.type === 'zoomify') {
+        if (typeof overlay === 'string') {
+          // TODO: Support preset strings that are passed in.
+        } else if (overlay.type === 'zoomify') {
           throw new Error('Zoomify layers can only be added in the "baseLayers" config property.');
         } else {
           if (overlay.visible || typeof overlay.visible === 'undefined') {
             overlay.visible = true;
             overlay.zIndex = zIndex;
 
-            if (overlay.type === 'arcgisserver') {
+            if (overlay.preset) {
+              switch (overlay.preset) {
+                case 'nps-places-pois':
+                  overlay.L = L.npmap.preset.places.pois(overlay);
+                  break;
+              }
+            } else if (overlay.type === 'arcgisserver') {
               overlay.L = me._createArcGisServerLayer(overlay);
             } else {
               overlay.L = L.npmap.layer[overlay.type](overlay);
@@ -802,7 +810,7 @@ MapExt = L.Map.extend({
         var lng = center.lng.toFixed(5);
         var zoom = this.getZoom();
 
-        el.href = (this._onNpsNetwork ? ('http://insidemaps.nps.gov/places/editor/#background=mapbox-satellite&map=' + zoom + '/' + lng + '/' + lat + '&overlays=park-tiles-overlay') : ('http://www.nps.gov/npmap/tools/park-tiles/improve/#' + zoom + '/' + lat + '/' + lng));
+        el.href = (this._onNpsNetwork ? ('http://insidemaps.nps.gov/places/editor/#background=mapbox-satellite&map=' + zoom + '/' + lng + '/' + lat + '&overlays=park-tiles-overlay') : ('https://www.nps.gov/npmap/tools/park-tiles/improve/#' + zoom + '/' + lat + '/' + lng));
       }
     }
   },

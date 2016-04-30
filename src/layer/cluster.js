@@ -9,9 +9,9 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
   options: {
     showCoverageOnHover: false
   },
-  initialize: function(options) {
-    var me = this,
-      interval;
+  initialize: function (options) {
+    var me = this;
+    var interval;
 
     L.Util.setOptions(this, options);
 
@@ -19,7 +19,7 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
       options.cluster = {};
     }
 
-    options.cluster.iconCreateFunction = new this.createCustomIconFunction(options.cluster.clusterIcon);
+    options.cluster.iconCreateFunction = new me.IconCreateFunction(options.cluster.clusterIcon);
     L.Util.setOptions(this, options.cluster);
     options.clustered = options.cluster.iconCreateFunction('getInfo');
     delete options.cluster;
@@ -33,66 +33,66 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
     this._nonPointGroup.on(L.FeatureGroup.EVENTS, this._propagateEvent, this);
     this._queue = [];
     this.L = L.npmap.layer[options.type](options);
-    interval = setInterval(function() {
+    interval = setInterval(function () {
       if (me.L._loaded) {
         clearInterval(interval);
         me.addLayer(me.L);
         me.fire('ready');
         me.readyFired = true;
-        me._loaded  = true;
+        me._loaded = true;
       }
     }, 0);
 
     return this;
   },
-  onAdd: function(map) {
+  onAdd: function (map) {
     this._map = map;
     this._addAttribution();
 
     if (this.options.zoomToBounds) {
-      this.L.on('ready', function() {
+      this.L.on('ready', function () {
         map.fitBounds(this.getBounds());
       });
     }
 
     L.MarkerClusterGroup.prototype.onAdd.call(this, map);
   },
-  onRemove: function(map) {
+  onRemove: function (map) {
     this._removeAttribution();
     L.MarkerClusterGroup.prototype.onRemove.call(this, map);
     delete this._map;
   },
-  _addAttribution: function() {
+  _addAttribution: function () {
     var attribution = this.options.attribution;
 
     if (attribution && this._map.attributionControl) {
       this._map.attributionControl.addAttribution(attribution);
     }
   },
-  _removeAttribution: function() {
+  _removeAttribution: function () {
     var attribution = this.options.attribution;
 
     if (attribution && this._map.attributionControl) {
       this._map.attributionControl.removeAttribution(attribution);
     }
   },
-  createCustomIconFunction: function(settings) {
+  IconCreateFunction: function (settings) {
     var defaultSettings = [{
-      color: '#7a904f',
+      color: '#000',
       fontColor: '#fff',
       maxNodes: 9,
       name: 'small',
       outerRing: 22,
       size: 20
-    },{
-      color: '#d49900',
+    }, {
+      color: '#000',
       fontColor: '#fff',
       maxNodes: 99,
       name: 'medium',
       outerRing: 24,
       size: 35
-    },{
-      color: '#814705',
+    }, {
+      color: '#000',
       fontColor: '#fff',
       maxNodes: Infinity,
       name: 'large',
@@ -100,10 +100,10 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
       size: 50
     }];
 
-    function addStyles() {
-      var head = document.head || document.getElementsByTagName('head')[0],
-        style = document.createElement('style'),
-        text = '';
+    function addStyles () {
+      var head = document.head || document.getElementsByTagName('head')[0];
+      var style = document.createElement('style');
+      var text = '';
 
       style.type = 'text/css';
       text += '.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {';
@@ -117,7 +117,7 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
         var currStyle = createStyle(defaultSettings[i]);
 
         for (var styleType in currStyle) {
-          text += '.' + 'marker-cluster-custom-' + defaultSettings[i].maxNodes.toString() + ' ' + (styleType === 'main' ? '' : styleType)  + ' {' + currStyle[styleType]  + '}\n';
+          text += '.' + 'marker-cluster-custom-' + defaultSettings[i].maxNodes.toString() + ' ' + (styleType === 'main' ? '' : styleType) + ' {' + currStyle[styleType] + '}\n';
         }
       }
 
@@ -129,13 +129,13 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
 
       head.appendChild(style);
     }
-    function autoTextColor(rgb) {
+    function autoTextColor (rgb) {
       if (Object.prototype.toString.call(rgb) !== '[object Array]') {
         rgb = hexToArray(rgb);
       }
 
       if (rgb) {
-        var brightness = (((rgb[0] * 299) + (rgb[1] * 587) + (rgb[2]* 144)) / 1000);
+        var brightness = (((rgb[0] * 299) + (rgb[1] * 587) + (rgb[2] * 144)) / 1000);
 
         if (brightness > 127) {
           return '#000';
@@ -146,15 +146,15 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
         return false;
       }
     }
-    function createStyle(style) {
+    function createStyle (style) {
       var styles = {
         main: {
           'background-clip': 'padding-box',
-          background: supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.4)'),
-          'border-radius': ((style.size + style.outerRing)*0.5) + 'px'
+          background: supportsRgba('rgba(' + hexToArray(style.color)[0] + ', ' + hexToArray(style.color)[1] + ', ' + hexToArray(style.color)[2] + ', 0.4)'),
+          'border-radius': ((style.size + style.outerRing) * 0.5) + 'px'
         },
         div: {
-          background: supportsRgba('rgba(' +  hexToArray(style.color)[0] +', ' +  hexToArray(style.color)[1] + ', ' +  hexToArray(style.color)[2] + ', 0.9)'),
+          background: supportsRgba('rgba(' + hexToArray(style.color)[0] + ', ' + hexToArray(style.color)[1] + ', ' + hexToArray(style.color)[2] + ', 0.9)'),
           'border-radius': (style.size / 2) + 'px',
           height: style.size + 'px',
           'margin-left': (style.outerRing / 2) + 'px',
@@ -163,23 +163,23 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
           width: style.size + 'px'
         },
         span: {
-          color: 'rgb(' +  hexToArray(style.fontColor)[0] +', ' +  hexToArray(style.fontColor)[1] + ', ' +  hexToArray(style.fontColor)[2] + ')',
+          color: 'rgb(' + hexToArray(style.fontColor)[0] + ', ' + hexToArray(style.fontColor)[1] + ', ' + hexToArray(style.fontColor)[2] + ')',
           display: 'block',
           font: '12px Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif',
           'line-height': style.size + 'px'
         }
       };
 
-      function cssStyle(fields) {
+      function cssStyle (fields) {
         var returnValue = [];
 
         for (var field in fields) {
-          returnValue.push(field + ': ' + fields[field] +'; ');
+          returnValue.push(field + ': ' + fields[field] + '; ');
         }
 
         return returnValue.join('');
       }
-      function styleLoop(fields, process) {
+      function styleLoop (fields, process) {
         var returnValue = {};
 
         for (var field in fields) {
@@ -191,13 +191,13 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
 
       return styleLoop(styles, cssStyle);
     }
-    function customIconCreateFunction(cluster) {
+    function customIconCreateFunction (cluster) {
       if (cluster === 'getInfo') {
         return defaultSettings;
       }
 
-      var childCount = cluster.getChildCount(),
-        className, size;
+      var childCount = cluster.getChildCount();
+      var className, size;
 
       for (var i = 0; i < defaultSettings.length; i++) {
         var defaultSetting = defaultSettings[i];
@@ -215,10 +215,10 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
         iconSize: new L.Point(size, size)
       });
     }
-    function hexToArray(hexValue) {
+    function hexToArray (hexValue) {
       var returnValue = false;
 
-      if (typeof(hexValue) === 'string') {
+      if (typeof hexValue === 'string') {
         hexValue = hexValue.replace('#', '');
 
         if (hexValue.length === 3) {
@@ -236,11 +236,11 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
 
       return returnValue;
     }
-    function supportsRgba(color) {
-      var returnValue = false,
-        rgbaTestVal = 'rgba(0,0,0,0.1)',
-        testDiv = document.createElement('div'),
-        newColor;
+    function supportsRgba (color) {
+      var returnValue = false;
+      var rgbaTestVal = 'rgba(0,0,0,0.1)';
+      var testDiv = document.createElement('div');
+      var newColor;
 
       try {
         testDiv.style.color = rgbaTestVal;
@@ -254,14 +254,23 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
         if (returnValue) {
           return color;
         } else {
-          newColor = color.replace(/^rgba\(/g, 'rgb(,').replace(')','').split(',');
+          newColor = color.replace(/^rgba\(/g, 'rgb(,').replace(')', '').split(',');
           newColor[1] = Math.floor(parseInt(newColor[1], 10) + (255 * (1 - parseFloat(newColor[4], 10))));
           newColor[2] = Math.floor(parseInt(newColor[2], 10) + (255 * (1 - parseFloat(newColor[4], 10))));
           newColor[3] = Math.floor(parseInt(newColor[3], 10) + (255 * (1 - parseFloat(newColor[4], 10))));
-          if (newColor[1] > 255) {newColor[1] = 255;}
-          if (newColor[2] > 255) {newColor[2] = 255;}
-          if (newColor[3] > 255) {newColor[3] = 255;}
-          newColor = newColor.slice(0,4).join(',').replace('(,','(') + ')';
+          if (newColor[1] > 255) {
+            newColor[1] = 255;
+          }
+
+          if (newColor[2] > 255) {
+            newColor[2] = 255;
+          }
+
+          if (newColor[3] > 255) {
+            newColor[3] = 255;
+          }
+
+          newColor = newColor.slice(0, 4).join(',').replace('(,', '(') + ')';
 
           return newColor;
         }
@@ -269,7 +278,7 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
         return returnValue;
       }
     }
-    function updateDefaults(newSettings) {
+    function updateDefaults (newSettings) {
       for (var j = 0; j < defaultSettings.length; j++) {
         if (defaultSettings[j].name && newSettings[defaultSettings[j].name]) {
           L.Util.extend(defaultSettings[j], newSettings[defaultSettings[j].name]);
@@ -307,6 +316,6 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new ClusterLayer(options);
 };

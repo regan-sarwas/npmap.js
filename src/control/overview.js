@@ -302,8 +302,10 @@ var OverviewControl = L.Control.extend({
       }
     }
   },
-  _toggleDisplayButtonClicked: function () {
+  _toggleDisplayButtonClicked: function (e) {
     this._userToggledDisplay = true;
+
+    L.DomEvent.preventDefault(e);
 
     if (!this._minimized) {
       this._minimize();

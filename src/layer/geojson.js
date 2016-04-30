@@ -13,11 +13,10 @@ var GeoJsonLayer = L.GeoJSON.extend({
 
     if (typeof options.data === 'object') {
       this._create(options, options.data);
-    } else {
+    } else if (typeof options.url === 'string') {
       var me = this;
       var url = options.url;
 
-      util.strict(url, 'string');
       util.loadFile(url, 'json', function (response) {
         if (response) {
           // TODO: Do a check to make sure the GeoJSON is valid, and fire error event if it isn't.
@@ -31,6 +30,8 @@ var GeoJsonLayer = L.GeoJSON.extend({
           me.errorFired = obj;
         }
       });
+    } else {
+      this._create(options);
     }
   },
   _create: function (options, data) {
@@ -41,7 +42,7 @@ var GeoJsonLayer = L.GeoJSON.extend({
       me.fire('ready');
       me.readyFired = true;
       me._loaded = true;
-    } catch(e) {
+    } catch (e) {
       var obj = {
         message: 'The response was not a valid GeoJSON object.'
       };
