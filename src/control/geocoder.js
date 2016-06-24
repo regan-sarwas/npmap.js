@@ -186,7 +186,7 @@ var GeocoderControl = L.Control.extend({
       me._map.setView({
         lat: poi.y,
         lng: poi.x
-      }, 14);
+      }, 17);
     } else {
       this._input.value = this._oldValue = id;
 
