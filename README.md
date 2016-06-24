@@ -92,7 +92,7 @@ We are working to expand test coverage for the library.
 
 ## Deploying
 
-1. [Build](#build) the library
+1. [Build](#building) the library
 2. Connect to `smb://dencmscontent/nps_prod/other/static/lib`
 3. `grunt deploy`
 
