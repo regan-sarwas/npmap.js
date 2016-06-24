@@ -90,6 +90,12 @@ OR
 
 We are working to expand test coverage for the library.
 
+## Deploying
+
+1. [Build](#build) the library
+2. Connect to `smb://dencmscontent/nps_prod/other/static/lib`
+3. `grunt deploy`
+
 ## Documentation
 
 Take a look at the [API docs](https://github.com/nationalparkservice/npmap.js/blob/master/api/index.md).
