@@ -35,7 +35,7 @@
     "grunt-contrib-handlebars": "1.0.0",
     "grunt-contrib-uglify": "2.0.0",
     "grunt-curl": "2.2.0",
-    "grunt-http": "2.0.0",
+    "grunt-http": "2.0.1",
     "grunt-md2html": "^0.3.0",
     "grunt-mkdir": "0.1.2",
     "grunt-mocha-phantomjs": "^2.0.1",
