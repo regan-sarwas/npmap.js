@@ -4,7 +4,7 @@
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
   },
   "dependencies": {
-    "csv2geojson": "4.0.0",
+    "csv2geojson": "5.0.2",
     "handlebars": "4.0.5",
     "helper-dateformat": "https://github.com/nationalparkservice/helper-dateformat/archive/v0.2.1.tar.gz",
     "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
