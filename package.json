@@ -38,7 +38,7 @@
     "grunt-http": "2.0.1",
     "grunt-md2html": "^0.3.0",
     "grunt-mkdir": "1.0.0",
-    "grunt-mocha-phantomjs": "^2.0.1",
+    "grunt-mocha-phantomjs": "^3.0.0",
     "grunt-semistandard": "^1.0.4",
     "grunt-string-replace": "^1.2.1",
     "happen": "0.1.3",
