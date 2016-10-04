@@ -12,7 +12,7 @@
     "leaflet-draw": "git+https://github.com/nationalparkservice/Leaflet.Draw.git#23287efc2dc02fcf7de3b4737a76d16f06e7557c",
     "leaflet.markercluster": "https://github.com/nationalparkservice/Leaflet.MarkerCluster/archive/v0.4.0-hotfix.1.tar.gz",
     "maki": "~0.5.0",
-    "nanobar": "0.2.1",
+    "nanobar": "0.4.2",
     "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.2.2.tar.gz",
     "reqwest": "1.1.6",
     "togeojson": "0.13.0"
