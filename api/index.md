@@ -1458,7 +1458,7 @@ _Example (Bootstrap)_:
             'marker-color': '#5e9fd5',
             'marker-library': 'npmapsymbollibrary',
             'marker-size': 'small',
-            'marker-symbol': 'camping-white'
+            'marker-symbol': 'campsite-white'
           }
         },
         type: 'csv',
@@ -1479,7 +1479,7 @@ _Example (API)_:
           'marker-color': '#5e9fd5',
           'marker-library': 'npmapsymbollibrary',
           'marker-size': 'small',
-          'marker-symbol': 'camping-white'
+          'marker-symbol': 'campsite-white'
         }
       },
       type: 'csv',
