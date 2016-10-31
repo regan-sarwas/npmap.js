@@ -56,7 +56,7 @@
   "engines": {
     "node": "*"
   },
-  "homepage": "https://www.nps.gov/npmap/tools/npmap.js/",
+  "homepage": "https://www.nps.gov/maps/tools/npmap.js/",
   "keywords": [
     "Cartography",
     "Department of Interior",
