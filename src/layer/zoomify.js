@@ -6,30 +6,30 @@ var util = require('../util/util');
 
 var ZoomifyLayer = L.TileLayer.extend({
   options: {
-    continuousWorld: true,
+    noWrap: true,
+    tileGroupPrefix: 'TileGroup',
+    tilesPerTileGroup: 256,
     tolerance: 1
   },
-  getTileUrl: function (tilePoint) {
-    return this._url + 'TileGroup' + this._getTileGroup(tilePoint) + '/' + this._map.getZoom() + '-' + tilePoint.x + '-' + tilePoint.y + '.jpg';
-  },
-  initialize: function (options) {
-    var imageSize, tileSize;
-
-    options = L.setOptions(this, options);
+  initialize: function (url, options) {
+    L.TileLayer.prototype.initialize.call(this, url, options);
     util.strict(options.height, 'number');
     util.strict(options.url, 'string');
     util.strict(options.width, 'number');
-    this._url = options.url;
-    imageSize = new L.Point(options.width, options.height);
-    tileSize = options.tileSize;
-    this._imageSize = [
-      imageSize
-    ];
-    this._gridSize = [
-      this._getGridSize(imageSize)
-    ];
+  },
+  beforeAdd: function (map) {
+    var imageSize = L.point(this.options.width, this.options.height);
+    var maxNativeZoom;
+    var maxX;
+    var maxY;
+    var maxZoomGrid;
+    var northWest;
+    var southEast;
 
-    while (parseInt(imageSize.x, 10) > tileSize || parseInt(imageSize.y, 10) > tileSize) {
+    this._imageSize = [imageSize];
+    this._gridSize = [this._getGridSize(imageSize)];
+
+    while (imageSize.x > this.options.tileSize || imageSize.y > this.options.tileSize) {
       imageSize = imageSize.divideBy(2).floor();
       this._imageSize.push(imageSize);
       this._gridSize.push(this._getGridSize(imageSize));
@@ -37,7 +37,15 @@ var ZoomifyLayer = L.TileLayer.extend({
 
     this._imageSize.reverse();
     this._gridSize.reverse();
-    this.options.maxZoom = this._gridSize.length - 1;
+    maxNativeZoom = this._gridSize.length - 1;
+    this.options.maxNativeZoom = maxNativeZoom;
+    maxZoomGrid = this._gridSize[maxNativeZoom];
+    maxX = maxZoomGrid.x * this.options.tileSize;
+    maxY = maxZoomGrid.y * this.options.tileSize;
+    northWest = map.unproject([0, 0], maxNativeZoom);
+    southEast = map.unproject([maxX, maxY], maxNativeZoom);
+    this.options.bounds = new L.LatLngBounds([northWest, southEast]);
+    L.TileLayer.prototype.beforeAdd.call(this, map);
   },
   onAdd: function (map) {
     var mapSize = map.getSize();
@@ -47,34 +55,37 @@ var ZoomifyLayer = L.TileLayer.extend({
 
     L.TileLayer.prototype.onAdd.call(this, map);
     map.options.center = center;
-    map.options.maxZoom = this.options.maxZoom;
+    map.options.maxZoom = this.options.maxNativeZoom;
     map.options.zoom = zoom;
     map.setView(center, zoom, false);
     this.fire('ready');
     this.readyFired = true;
   },
-  _addTile: function (tilePoint, container) {
-    var tile = this._getTile();
-    var tilePos = this._getTilePos(tilePoint);
-    var tileSize = this.options.tileSize;
-    var zoom = this._map.getZoom();
-    var imageSize = this._imageSize[zoom];
-    var gridSize = this._gridSize[zoom];
+  getBounds: function () {
+    return this.options.bounds;
+  },
+  getTileUrl: function (coords) {
+    this.options.g = this.options.tileGroupPrefix + this._getTileGroup(coords);
+    return L.TileLayer.prototype.getTileUrl.call(this, coords);
+  },
+  _addTile: function (coords, container) {
+    var imageSize = this._imageSize[this._getZoomForUrl()];
+    var gridSize = this._gridSize[this._getZoomForUrl()];
+    var realTileSize = L.GridLayer.prototype.getTileSize.call(this);
+    var displayTileSize = L.TileLayer.prototype.getTileSize.call(this);
+    var key = this._tileCoordsToKey(coords);
+    var tile;
+    var scaleFactor = L.point((imageSize.x % realTileSize.x), (imageSize.y % realTileSize.y)).unscaleBy(realTileSize);
 
-    if (tilePoint.x === gridSize.x - 1) {
-      tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + 'px';
+    L.TileLayer.prototype._addTile.call(this, coords, container);
+    tile = this._tiles[key].el;
+
+    if ((imageSize.x % realTileSize.x) > 0 && coords.x === gridSize.x - 1) {
+      tile.style.width = displayTileSize.scaleBy(scaleFactor).x + 'px';
     }
 
-    if (tilePoint.y === gridSize.y - 1) {
-      tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + 'px';
-    }
-
-    L.DomUtil.setPosition(tile, tilePos, L.Browser.chrome || L.Browser.android23);
-    this._tiles[tilePoint.x + ':' + tilePoint.y] = tile;
-    this._loadTile(tile, tilePoint);
-
-    if (tile.parentNode !== this._tileContainer) {
-      container.appendChild(tile);
+    if ((imageSize.y % realTileSize.y) > 0 && coords.y === gridSize.y - 1) {
+      tile.style.height = displayTileSize.scaleBy(scaleFactor).y + 'px';
     }
   },
   _getBestFitZoom: function (mapSize) {
@@ -96,12 +107,11 @@ var ZoomifyLayer = L.TileLayer.extend({
   },
   _getGridSize: function (imageSize) {
     var tileSize = this.options.tileSize;
-
     return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
   },
-  _getTileGroup: function (tilePoint) {
+  _getTileGroup: function (coords) {
+    var zoom = this._getZoomForUrl();
     var num = 0;
-    var zoom = this._map.getZoom();
     var gridSize;
 
     for (var z = 0; z < zoom; z++) {
@@ -109,14 +119,8 @@ var ZoomifyLayer = L.TileLayer.extend({
       num += gridSize.x * gridSize.y;
     }
 
-    num += tilePoint.y * this._gridSize[zoom].x + tilePoint.x;
-
-    return Math.floor(num / 256);
-  },
-  _tileShouldBeLoaded: function (tilePoint) {
-    var gridSize = this._gridSize[this._map.getZoom()];
-
-    return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+    num += coords.y * this._gridSize[zoom].x + coords.x;
+    return Math.floor(num / this.options.tilesPerTileGroup);
   }
 });
 
@@ -127,5 +131,5 @@ module.exports = function (options) {
     options.type = 'zoomify';
   }
 
-  return new ZoomifyLayer(options);
+  return new ZoomifyLayer(options.url, options);
 };
