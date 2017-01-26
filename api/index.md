@@ -1518,6 +1518,10 @@ The following baseLayer preset strings are supported:
    * `nps-parkTiles`
    * `nps-parkTilesImagery`
    * `nps-parkTilesSlate`
+   * `nps-parkTiles3`
+   * `nps-parkTiles3Imagery`
+   * `nps-parkTiles3Light`
+   * `nps-parkTiles3Slate`
    * `nps-satelliteNight`
 * Bing
    * `bing-aerial`
