@@ -11,11 +11,12 @@
     "leaflet": "1.0.3",
     "leaflet-draw": "0.4.9",
     "leaflet.markercluster": "~1.0.0",
-    "maki": "~0.5.0",
+    "@mapbox/maki": "~0.5.0",
     "nanobar": "0.4.2",
-    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.2.2.tar.gz",
+    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.3.0.tar.gz",
     "reqwest": "2.0.5",
-    "@mapbox/togeojson": "0.16.0"
+    "@mapbox/togeojson": "~0.16.0",
+    "@mapbox/sexagesimal": "~1.0.0"
   },
   "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
   "devDependencies": {
