@@ -1,7 +1,10 @@
+.idea
 dist
 keys.json
 node_modules
 secrets.json
+DOIRootCA.crt
+npm-debug.log
 
 .DS_Store
 Thumbs.db

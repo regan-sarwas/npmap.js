@@ -11,7 +11,7 @@
     "leaflet": "1.0.3",
     "leaflet-draw": "0.4.9",
     "leaflet.markercluster": "~1.0.0",
-    "@mapbox/maki": "~0.5.0",
+    "@mapbox/maki": "~3.0.0",
     "nanobar": "0.4.2",
     "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.3.0.tar.gz",
     "reqwest": "2.0.5",
