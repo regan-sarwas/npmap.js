@@ -1,19 +1,18 @@
 /* global afterEach, beforeEach, describe, expect, it, L, sinon */
 
-describe('L.npmap.control', function() {
-  var element,
-    server;
+describe('L.npmap.control', function () {
+  var element, server;
 
-  afterEach(function() {
+  afterEach(function () {
     element = null;
     server.restore();
   });
-  beforeEach(function() {
+  beforeEach(function () {
     element = document.createElement('div');
     server = sinon.fakeServer.create();
   });
-  describe('fullscreenControl', function() {
-    it('creates a fullscreenControl when option "fullscreenControl: true"', function() {
+  describe('fullscreenControl', function () {
+    it('creates a fullscreenControl when option "fullscreenControl: true"', function () {
       var map = L.npmap.map({
         div: element,
         fullscreenControl: true
@@ -21,7 +20,7 @@ describe('L.npmap.control', function() {
 
       expect(map.fullscreenControl).to.be.ok();
     });
-    it('does not create a fullscreenControl when option "fullscreenControl: false" or "fullscreenControl: undefined"', function() {
+    it('does not create a fullscreenControl when option "fullscreenControl: false" or "fullscreenControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
@@ -29,8 +28,8 @@ describe('L.npmap.control', function() {
       expect(map.fullscreenControl).to.be(undefined);
     });
   });
-  describe('geocoderControl', function() {
-    it('creates a geocoderControl when option "geocoderControl: true"', function() {
+  describe('geocoderControl', function () {
+    it('creates a geocoderControl when option "geocoderControl: true"', function () {
       var map = L.npmap.map({
         div: element,
         geocoderControl: true
@@ -38,7 +37,7 @@ describe('L.npmap.control', function() {
 
       expect(map.geocoderControl).to.be.ok();
     });
-    it('does not create a geocoderControl when option "geocoderControl: false" or "geocoderControl: undefined"', function() {
+    it('does not create a geocoderControl when option "geocoderControl: false" or "geocoderControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
@@ -46,15 +45,91 @@ describe('L.npmap.control', function() {
       expect(map.geocoderControl).to.be(undefined);
     });
   });
-  describe('homeControl', function() {
-    it('creates a homeControl by default', function() {
+  describe('hashControl', function () {
+    it('creates a hashControl when option "hashControl: true"', function () {
+      var map = L.npmap.map({
+        div: element,
+        hashControl: true
+      });
+
+      expect(map.hashControl).to.be.ok();
+    });
+    it('does not create a hashControl when option "hashControl: false" or "hashControl: undefined"', function () {
+      var map = L.npmap.map({
+        div: element
+      });
+
+      expect(map.hashControl).to.be(undefined);
+    });
+    it('sets a hash when the map is moved', function (done) {
+      var map = L.npmap.map({
+        div: document.createElement('div')
+      });
+
+      L.npmap.control.hash().addTo(map);
+      window.setTimeout(function () {
+        map.setView([
+          51.505,
+          -0.09
+        ], 13);
+        expect(window.location.hash).to.be('#13/51.5050/-0.0900');
+        done();
+      }, 300);
+    });
+    it('uses a hash set initially on the page', function (done) {
+      var map = L.npmap.map({
+        div: document.createElement('div')
+      });
+
+      window.location.hash = '#13/10/40';
+      L.npmap.control.hash().addTo(map);
+      window.setTimeout(function () {
+        expect(Math.round(map.getCenter().lat)).to.be(10);
+        expect(Math.round(map.getCenter().lng)).to.be(40);
+        done();
+      }, 300);
+    });
+    it('responds to a hash change after an initial hash is set', function (done) {
+      var map = L.npmap.map({
+        div: document.createElement('div')
+      });
+
+      map.setView([
+        51.505,
+        -0.09
+      ], 13);
+      window.location.hash = '#13/20/40';
+      L.npmap.control.hash().addTo(map);
+      window.setTimeout(function () {
+        expect(Math.round(map.getCenter().lat)).to.be(20);
+        expect(Math.round(map.getCenter().lng)).to.be(40);
+        done();
+      }, 300);
+    });
+    /*
+    it('unbinds events when removed', function () {
+      var map = L.npmap.map({
+        div: document.createElement('div')
+      });
+      var hash;
+
+      window.location.hash = '';
+      hash = L.npmap.control.hash().addTo(map);
+      map.removeControl(hash);
+      map.setView([51.505, -0.09], 13);
+      expect(window.location.hash).to.be('');
+    });
+    */
+  });
+  describe('homeControl', function () {
+    it('creates a homeControl by default', function () {
       var map = L.npmap.map({
         div: element
       });
 
       expect(map.homeControl).to.be.ok();
     });
-    it('does not create a homeControl when option "homeControl: false"', function() {
+    it('does not create a homeControl when option "homeControl: false"', function () {
       var map = L.npmap.map({
         div: element,
         homeControl: false
@@ -63,8 +138,8 @@ describe('L.npmap.control', function() {
       expect(map.homeControl).to.be(undefined);
     });
   });
-  describe('overviewControl', function() {
-    it('creates an overviewControl when a valid "overviewControl" object is provided', function() {
+  describe('overviewControl', function () {
+    it('creates an overviewControl when a valid "overviewControl" object is provided', function () {
       var map = L.npmap.map({
         div: element,
         overviewControl: {
@@ -74,7 +149,7 @@ describe('L.npmap.control', function() {
 
       expect(map.overviewControl).to.be.ok();
     });
-    it('does not create an overviewControl when option "overviewControl: false" or "overviewControl: undefined"', function() {
+    it('does not create an overviewControl when option "overviewControl: false" or "overviewControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
@@ -82,8 +157,8 @@ describe('L.npmap.control', function() {
       expect(map.overviewControl).to.be(undefined);
     });
   });
-  describe('scaleControl', function() {
-    it('creates a scaleControl when option "scaleControl: true"', function() {
+  describe('scaleControl', function () {
+    it('creates a scaleControl when option "scaleControl: true"', function () {
       var map = L.npmap.map({
         div: element,
         scaleControl: true
@@ -91,7 +166,7 @@ describe('L.npmap.control', function() {
 
       expect(map.scaleControl).to.be.ok();
     });
-    it('does not create a scaleControl when option "scaleControl: false" or "scaleControl: undefined"', function() {
+    it('does not create a scaleControl when option "scaleControl: false" or "scaleControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
@@ -99,15 +174,15 @@ describe('L.npmap.control', function() {
       expect(map.scaleControl).to.be(undefined);
     });
   });
-  describe('smallzoomControl', function() {
-    it('creates a smallzoomControl by default', function() {
+  describe('smallzoomControl', function () {
+    it('creates a smallzoomControl by default', function () {
       var map = L.npmap.map({
         div: element
       });
 
       expect(map.smallzoomControl).to.be.ok();
     });
-    it('does not create a smallzoomControl when option "smallzoomControl: false"', function() {
+    it('does not create a smallzoomControl when option "smallzoomControl: false"', function () {
       var map = L.npmap.map({
         div: element,
         smallzoomControl: false
@@ -116,8 +191,8 @@ describe('L.npmap.control', function() {
       expect(map.smallzoomControl).to.be(undefined);
     });
   });
-  describe('switcherControl', function() {
-    it('creates a switcherControl when more than one baseLayer is present', function() {
+  describe('switcherControl', function () {
+    it('creates a switcherControl when more than one baseLayer is present', function () {
       var map = L.npmap.map({
         baseLayers: [
           'esri-imagery',
@@ -128,7 +203,7 @@ describe('L.npmap.control', function() {
 
       expect(map.switcherControl).to.be.ok();
     });
-    it('does not create a switcherControl when less than two baseLayers are present', function() {
+    it('does not create a switcherControl when less than two baseLayers are present', function () {
       var map = L.npmap.map({
         baseLayers: false,
         div: element

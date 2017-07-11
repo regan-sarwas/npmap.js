@@ -2,9 +2,8 @@
 
 'use strict';
 
-var baselayerPresets = require('../preset/baselayers.json'),
-  util = require('../util/util');
-
+var baselayerPresets = require('../preset/baselayers.json');
+var util = require('../util/util');
 var OverviewControl = L.Control.extend({
   options: {
     autoToggleDisplay: false,
@@ -16,13 +15,13 @@ var OverviewControl = L.Control.extend({
     zoomLevelFixed: false,
     zoomLevelOffset: -5
   },
-  addTo: function(map) {
+  addTo: function (map) {
     L.Control.prototype.addTo.call(this, map);
     this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
     this._setDisplay(this._decideMinimized());
     return this;
   },
-  initialize: function(options) {
+  initialize: function (options) {
     util.strict(options, 'object');
 
     if (options.layer) {
@@ -33,14 +32,22 @@ var OverviewControl = L.Control.extend({
       }
 
       L.Util.setOptions(this, options);
-      this._layer = options.layer.L = L.npmap.layer[options.layer.type](options.layer);
+
+      if (options.layer.type === 'arcgisserver') {
+        this._layer = options.layer.L = L.npmap.layer[options.layer.type][options.layer.tiled === true ? 'tiled' : 'dynamic'](options.layer);
+      } else {
+        this._layer = options.layer.L = L.npmap.layer[options.layer.type](options.layer);
+      }
+
       return this;
     } else {
-      throw new Error('The overview control must have layer specified.');
+      throw new Error('The overview control must have a layer specified.');
     }
   },
-  onAdd: function(map) {
-    this._container = L.DomUtil.create('div', 'leaflet-control-overview');
+  onAdd: function (map) {
+    // TODO: The hidden-* classes needs to be triggered by the width of the map itself.
+
+    this._container = L.DomUtil.create('div', 'npmap-hidden-xs leaflet-control-overview');
     this._container.style.width = this.options.width + 'px';
     this._container.style.height = this.options.height + 'px';
     L.DomEvent.disableClickPropagation(this._container);
@@ -74,7 +81,7 @@ var OverviewControl = L.Control.extend({
       this._addToggleButton();
     }
 
-    this._miniMap.whenReady(L.Util.bind(function() {
+    this._miniMap.whenReady(L.Util.bind(function () {
       this._aimingRect = L.rectangle(this._mainMap.getBounds(), {
         clickable: false,
         color: '#d29700',
@@ -96,24 +103,23 @@ var OverviewControl = L.Control.extend({
 
     return this._container;
   },
-  onRemove: function() {
+  onRemove: function () {
     this._mainMap.off('moveend', this._onMainMapMoved, this);
     this._mainMap.off('move', this._onMainMapMoving, this);
     this._miniMap.off('moveend', this._onMiniMapMoved, this);
     this._miniMap.removeLayer(this._layer);
     this._attributionContainer.style.marginRight = '0';
   },
-  _addToggleButton: function() {
+  _addToggleButton: function () {
     this._toggleDisplayButton = this._createButton('', 'Hide Overview', null, this._container, this._toggleDisplayButtonClicked, this);
     this._toggleDisplayButtonImage = L.DomUtil.create('span', null, this._toggleDisplayButton);
   },
-  _createButton: function(html, title, className, container, fn, context) {
-    var button = L.DomUtil.create('button', className, container),
-        stop = L.DomEvent.stopPropagation;
+  _createButton: function (html, title, className, container, fn, context) {
+    var button = L.DomUtil.create('button', className, container);
+    var stop = L.DomEvent.stopPropagation;
 
     button.innerHTML = html;
     button.setAttribute('alt', title);
-
     L.DomEvent
       .on(button, 'click', stop)
       .on(button, 'mousedown', stop)
@@ -123,7 +129,7 @@ var OverviewControl = L.Control.extend({
 
     return button;
   },
-  _decideMinimized: function() {
+  _decideMinimized: function () {
     if (this._userToggledDisplay) {
       return this._minimized;
     }
@@ -138,7 +144,7 @@ var OverviewControl = L.Control.extend({
 
     return this._minimized;
   },
-  _decideZoom: function(fromMaintoMini) {
+  _decideZoom: function (fromMaintoMini) {
     if (!this.options.zoomLevelFixed) {
       if (fromMaintoMini) {
         var zoom = this._mainMap.getZoom() + this.options.zoomLevelOffset;
@@ -149,9 +155,9 @@ var OverviewControl = L.Control.extend({
 
         return zoom;
       } else {
-        var currentDiff = this._miniMap.getZoom() - this._mainMap.getZoom(),
-          proposedZoom = this._miniMap.getZoom() - this.options.zoomLevelOffset,
-          toRet;
+        var currentDiff = this._miniMap.getZoom() - this._mainMap.getZoom();
+        var proposedZoom = this._miniMap.getZoom() - this.options.zoomLevelOffset;
+        var toRet;
 
         if (currentDiff > this.options.zoomLevelOffset && this._mainMap.getZoom() < this._miniMap.getMinZoom() - this.options.zoomLevelOffset) {
           if (this._miniMap.getZoom() > this._lastMiniMapZoom) {
@@ -175,24 +181,22 @@ var OverviewControl = L.Control.extend({
       }
     }
   },
-  _minimize: function() {
+  _minimize: function () {
     var me = this;
-
-    this._transitioning = true;
-    this._attributionContainer.style.marginRight = '50px';
-    this._container.style.width = '47px';
-    this._container.style.height = '47px';
-    this._minimized = true;
-    this._toggleDisplayButton.style.display = 'none';
-    this._toggleDisplayButton.style.height = '47px';
-    this._toggleDisplayButton.style.width = '47px';
-    this._toggleDisplayButtonImage.className += ' minimized';
-    this._toggleDisplayButtonImage.style.bottom = 'auto';
-    this._toggleDisplayButtonImage.style.right = 'auto';
-    this._toggleDisplayButtonImage.style.left = '10px';
-    this._toggleDisplayButtonImage.style.top = '10px';
-
-    setTimeout(function() {
+    me._transitioning = true;
+    me._attributionContainer.style.marginRight = '50px';
+    me._container.style.width = '47px';
+    me._container.style.height = '47px';
+    me._minimized = true;
+    me._toggleDisplayButton.style.display = 'none';
+    me._toggleDisplayButton.style.height = '47px';
+    me._toggleDisplayButton.style.width = '47px';
+    me._toggleDisplayButtonImage.className += ' minimized';
+    me._toggleDisplayButtonImage.style.bottom = 'auto';
+    me._toggleDisplayButtonImage.style.right = 'auto';
+    me._toggleDisplayButtonImage.style.left = '10px';
+    me._toggleDisplayButtonImage.style.top = '10px';
+    setTimeout(function () {
       me._toggleDisplayButton.style.display = 'block';
       me._toggleDisplayButton.focus();
       me._aimingRect.setStyle({
@@ -203,7 +207,7 @@ var OverviewControl = L.Control.extend({
       me._transitioning = false;
     }, 200);
   },
-  _onMainMapMoved: function() {
+  _onMainMapMoved: function () {
     if (!this._transitioning) {
       if (!this._miniMapMoving) {
         this._mainMapMoving = true;
@@ -216,10 +220,10 @@ var OverviewControl = L.Control.extend({
 
     this._aimingRect.setBounds(this._mainMap.getBounds());
   },
-  _onMainMapMoving: function() {
+  _onMainMapMoving: function () {
     this._aimingRect.setBounds(this._mainMap.getBounds());
   },
-  _onMiniMapMoved: function() {
+  _onMiniMapMoved: function () {
     if (!this._transitioning) {
       if (!this._mainMapMoving) {
         this._miniMapMoving = true;
@@ -240,7 +244,7 @@ var OverviewControl = L.Control.extend({
       }
     }
   },
-  _onMiniMapMoveStarted:function() {
+  _onMiniMapMoveStarted: function () {
     var lastAimingRect = this._aimingRect.getBounds();
 
     this._lastAimingRectPosition = {
@@ -248,38 +252,37 @@ var OverviewControl = L.Control.extend({
       ne: this._miniMap.latLngToContainerPoint(lastAimingRect.getNorthEast())
     };
   },
-  _onMiniMapMoving: function() {
+  _onMiniMapMoving: function () {
     if (!this._mainMapMoving && this._lastAimingRectPosition) {
-      this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw),this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
+      this._shadowRect.setBounds(new L.LatLngBounds(this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.sw), this._miniMap.containerPointToLatLng(this._lastAimingRectPosition.ne)));
       this._shadowRect.setStyle({
         fillOpacity: 0.3,
-        opacity:1
+        opacity: 1
       });
     }
   },
-  _restore: function() {
+  _restore: function () {
     var me = this;
 
-    this._transitioning = true;
-    this._toggleDisplayButton.style.display = 'none';
-    this._toggleDisplayButton.style.height = '20px';
-    this._toggleDisplayButton.style.bottom = '0';
-    this._toggleDisplayButton.style.left = 'auto';
-    this._toggleDisplayButton.style.position = 'absolute';
-    this._toggleDisplayButton.style.right = '0';
-    this._toggleDisplayButton.style.top = 'auto';
-    this._toggleDisplayButton.style.width = '20px';
-    this._toggleDisplayButtonImage.className = this._toggleDisplayButtonImage.className.replace(/(?:^|\s)minimized(?!\S)/g, '');
-    this._toggleDisplayButtonImage.style.bottom = '10px';
-    this._toggleDisplayButtonImage.style.left = 'auto';
-    this._toggleDisplayButtonImage.style.right = '10px';
-    this._toggleDisplayButtonImage.style.top = 'auto';
-    this._container.style.width = this.options.width + 'px';
-    this._container.style.height = this.options.height + 'px';
-    this._attributionContainer.style.marginRight = (this.options.width + 3) + 'px';
-    this._minimized = false;
-
-    setTimeout(function() {
+    me._transitioning = true;
+    me._toggleDisplayButton.style.display = 'none';
+    me._toggleDisplayButton.style.height = '20px';
+    me._toggleDisplayButton.style.bottom = '0';
+    me._toggleDisplayButton.style.left = 'auto';
+    me._toggleDisplayButton.style.position = 'absolute';
+    me._toggleDisplayButton.style.right = '0';
+    me._toggleDisplayButton.style.top = 'auto';
+    me._toggleDisplayButton.style.width = '20px';
+    me._toggleDisplayButtonImage.className = me._toggleDisplayButtonImage.className.replace(/(?:^|\s)minimized(?!\S)/g, '');
+    me._toggleDisplayButtonImage.style.bottom = '10px';
+    me._toggleDisplayButtonImage.style.left = 'auto';
+    me._toggleDisplayButtonImage.style.right = '10px';
+    me._toggleDisplayButtonImage.style.top = 'auto';
+    me._container.style.width = me.options.width + 'px';
+    me._container.style.height = me.options.height + 'px';
+    me._attributionContainer.style.marginRight = (me.options.width + 3) + 'px';
+    me._minimized = false;
+    setTimeout(function () {
       me._toggleDisplayButton.style.display = 'block';
       me._toggleDisplayButton.focus();
       me._aimingRect.setStyle({
@@ -290,7 +293,7 @@ var OverviewControl = L.Control.extend({
       me._transitioning = false;
     }, 200);
   },
-  _setDisplay: function(minimize) {
+  _setDisplay: function (minimize) {
     if (minimize !== this._minimized) {
       if (!this._minimized) {
         this._minimize();
@@ -299,8 +302,10 @@ var OverviewControl = L.Control.extend({
       }
     }
   },
-  _toggleDisplayButtonClicked: function() {
+  _toggleDisplayButtonClicked: function (e) {
     this._userToggledDisplay = true;
+
+    L.DomEvent.preventDefault(e);
 
     if (!this._minimized) {
       this._minimize();
@@ -315,7 +320,7 @@ var OverviewControl = L.Control.extend({
 L.Map.mergeOptions({
   overviewControl: false
 });
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.overviewControl) {
     var options = {};
 
@@ -323,10 +328,10 @@ L.Map.addInitHook(function() {
       options = this.options.overviewControl;
     }
 
-    this.overviewControl = new L.npmap.control.overview(options).addTo(this);
+    this.overviewControl = L.npmap.control.overview(options).addTo(this);
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new OverviewControl(options);
 };

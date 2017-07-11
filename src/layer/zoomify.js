@@ -1,6 +1,6 @@
 /* global L */
 
-'use strict'
+'use strict';
 
 var util = require('../util/util');
 
@@ -12,7 +12,7 @@ var ZoomifyLayer = L.TileLayer.extend({
   getTileUrl: function (tilePoint) {
     return this._url + 'TileGroup' + this._getTileGroup(tilePoint) + '/' + this._map.getZoom() + '-' + tilePoint.x + '-' + tilePoint.y + '.jpg';
   },
-  initialize: function(options) {
+  initialize: function (options) {
     var imageSize, tileSize;
 
     options = L.setOptions(this, options);
@@ -39,11 +39,11 @@ var ZoomifyLayer = L.TileLayer.extend({
     this._gridSize.reverse();
     this.options.maxZoom = this._gridSize.length - 1;
   },
-  onAdd: function(map) {
-    var mapSize = map.getSize(),
-      zoom = this._getBestFitZoom(mapSize),
-      imageSize = this._imageSize[zoom],
-      center = map.options.crs.pointToLatLng(new L.Point(imageSize.x / 2, (imageSize.y + (map.getContainer().parentNode.parentNode.childNodes[0].style.display === 'block' ? 25 : 0)) / 2), zoom);
+  onAdd: function (map) {
+    var mapSize = map.getSize();
+    var zoom = this._getBestFitZoom(mapSize);
+    var imageSize = this._imageSize[zoom];
+    var center = map.options.crs.pointToLatLng(new L.Point(imageSize.x / 2, (imageSize.y + (map.getContainer().parentNode.parentNode.childNodes[0].style.display === 'block' ? 25 : 0)) / 2), zoom);
 
     L.TileLayer.prototype.onAdd.call(this, map);
     map.options.center = center;
@@ -54,12 +54,12 @@ var ZoomifyLayer = L.TileLayer.extend({
     this.readyFired = true;
   },
   _addTile: function (tilePoint, container) {
-    var tile = this._getTile(),
-      tilePos = this._getTilePos(tilePoint),
-      tileSize = this.options.tileSize,
-      zoom = this._map.getZoom(),
-      imageSize = this._imageSize[zoom],
-      gridSize = this._gridSize[zoom];
+    var tile = this._getTile();
+    var tilePos = this._getTilePos(tilePoint);
+    var tileSize = this.options.tileSize;
+    var zoom = this._map.getZoom();
+    var imageSize = this._imageSize[zoom];
+    var gridSize = this._gridSize[zoom];
 
     if (tilePoint.x === gridSize.x - 1) {
       tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + 'px';
@@ -78,9 +78,9 @@ var ZoomifyLayer = L.TileLayer.extend({
     }
   },
   _getBestFitZoom: function (mapSize) {
-    var tolerance = this.options.tolerance,
-      zoom = this._imageSize.length - 1,
-      imageSize;
+    var tolerance = this.options.tolerance;
+    var zoom = this._imageSize.length - 1;
+    var imageSize;
 
     while (zoom) {
       imageSize = this._imageSize[zoom];
@@ -100,9 +100,9 @@ var ZoomifyLayer = L.TileLayer.extend({
     return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
   },
   _getTileGroup: function (tilePoint) {
-    var num = 0,
-      zoom = this._map.getZoom(),
-      gridSize;
+    var num = 0;
+    var zoom = this._map.getZoom();
+    var gridSize;
 
     for (var z = 0; z < zoom; z++) {
       gridSize = this._gridSize[z];
@@ -120,6 +120,12 @@ var ZoomifyLayer = L.TileLayer.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'zoomify';
+  }
+
   return new ZoomifyLayer(options);
 };

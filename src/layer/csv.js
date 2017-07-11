@@ -2,14 +2,14 @@
 
 'use strict';
 
-var csv2geojson = require('csv2geojson'),
-  util = require('../util/util');
+var csv2geojson = require('csv2geojson');
+var util = require('../util/util');
 
 var CsvLayer = L.GeoJSON.extend({
   includes: [
     require('../mixin/geojson')
   ],
-  initialize: function(options) {
+  initialize: function (options) {
     var me = this;
 
     L.Util.setOptions(this, this._toLeaflet(options));
@@ -21,7 +21,7 @@ var CsvLayer = L.GeoJSON.extend({
       var url = options.url;
 
       util.strict(url, 'string');
-      util.loadFile(url, 'text', function(response) {
+      util.loadFile(url, 'text', function (response) {
         if (response) {
           me._create(options, response);
         } else {
@@ -32,10 +32,10 @@ var CsvLayer = L.GeoJSON.extend({
       });
     }
   },
-  _create: function(options, csv) {
+  _create: function (options, csv) {
     var me = this;
 
-    csv2geojson.csv2geojson(csv, {}, function(error, data) {
+    csv2geojson.csv2geojson(csv, {}, function (error, data) {
       if (error) {
         var obj = {
           message: error
@@ -55,8 +55,12 @@ var CsvLayer = L.GeoJSON.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   options = options || {};
+
+  if (!options.type) {
+    options.type = 'csv';
+  }
 
   if (options.cluster) {
     return L.npmap.layer._cluster(options);

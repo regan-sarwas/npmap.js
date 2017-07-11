@@ -1,23 +1,10 @@
 /* global L */
-/*
-  TODO:
-    - Detect if map is in an iframe
-      - If map is in an iframe, detect if it is cross-domain
-        - If it is, detect if window.postMessage is supported
-          - If it is, enable it (this may work, but what if there are multiple maps on a page? the parent page may need to know which map has called fullscreen,, and there is no way to do this currently)
-          - If it isn't, disable the tool
-        - If it isn't, try to bubble up and set necessary CSS styles on window.parent
-
-    window.postMessage should always be called for 'enterfullscreen' and 'exitfullscreen'
-    You should provide a library that makes it easy to hook up to these postMessage calls
-*/
 
 'use strict';
 
 var util = require('../util/util');
-
 var FullscreenControl = L.Control.extend({
-  initialize: function(options) {
+  initialize: function (options) {
     this._frame = null;
     this._supported = true;
 
@@ -42,7 +29,7 @@ var FullscreenControl = L.Control.extend({
 
     return this;
   },
-  _onKeyUp: function(e) {
+  _onKeyUp: function (e) {
     if (!e) {
       e = window.event;
     }
@@ -51,7 +38,7 @@ var FullscreenControl = L.Control.extend({
       this.fullscreen();
     }
   },
-  addTo: function(map) {
+  addTo: function (map) {
     var toolbar = util.getChildElementsByClassName(map.getContainer().parentNode.parentNode, 'npmap-toolbar')[0];
 
     toolbar.childNodes[1].appendChild(this._li);
@@ -59,11 +46,10 @@ var FullscreenControl = L.Control.extend({
     this._container = toolbar.parentNode.parentNode;
     this._isFullscreen = false;
     this._map = map;
-    util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '26px';
-
+    util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '28px';
     return this;
   },
-  _getParentDocumentBody: function(el) {
+  _getParentDocumentBody: function (el) {
     while (el.parentNode) {
       el = el.parentNode;
 
@@ -74,10 +60,12 @@ var FullscreenControl = L.Control.extend({
 
     return null;
   },
-  fullscreen: function() {
+  fullscreen: function (e) {
+    L.DomEvent.preventDefault(e);
+
     if (this._supported) {
-      var body = document.body,
-        utils;
+      var body = document.body;
+      var utils;
 
       if (this._isFullscreen) {
         if (this._frame) {
@@ -112,7 +100,7 @@ var FullscreenControl = L.Control.extend({
         this._map.fire('exitfullscreen');
 
         if (this._frame && window.postMessage) {
-          parent.postMessage('exitfullscreen', '*');
+          window.parent.postMessage('exitfullscreen', '*');
 
           if (this._frameBody) {
             utils = window.parent.NPMapUtils;
@@ -178,7 +166,7 @@ var FullscreenControl = L.Control.extend({
         this._map.fire('enterfullscreen');
 
         if (this._frame && window.postMessage) {
-          parent.postMessage('enterfullscreen', '*');
+          window.parent.postMessage('enterfullscreen', '*');
 
           if (this._frameBody) {
             utils = window.parent.NPMapUtils;
@@ -200,7 +188,7 @@ var FullscreenControl = L.Control.extend({
 L.Map.mergeOptions({
   fullscreenControl: false
 });
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.fullscreenControl) {
     var options = {};
 
@@ -212,6 +200,6 @@ L.Map.addInitHook(function() {
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new FullscreenControl(options);
 };

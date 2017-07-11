@@ -6,7 +6,7 @@ var ZoomDisplayControl = L.Control.extend({
   options: {
     position: 'topleft'
   },
-  onAdd: function(map) {
+  onAdd: function (map) {
     this._map = map;
     this._container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-zoomdisplay');
     this._control = L.DomUtil.create('div', 'leaflet-bar-single', this._container);
@@ -15,14 +15,14 @@ var ZoomDisplayControl = L.Control.extend({
     map.on('zoomend', this.onMapZoomEnd, this);
     return this._container;
   },
-  onRemove: function(map) {
+  onRemove: function (map) {
     map.off('zoomend', this.onMapZoomEnd, this);
   },
-  onMapZoomEnd: function() {
+  onMapZoomEnd: function () {
     this.updateZoom(this._map.getZoom());
   },
-  updateZoom: function(zoom) {
-    if (typeof(zoom) === 'undefined'){
+  updateZoom: function (zoom) {
+    if (typeof zoom === 'undefined') {
       zoom = '';
     }
 
@@ -30,7 +30,7 @@ var ZoomDisplayControl = L.Control.extend({
   }
 });
 
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.zoomdisplayControl) {
     var options = {};
 
@@ -42,6 +42,6 @@ L.Map.addInitHook(function() {
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new ZoomDisplayControl(options);
 };

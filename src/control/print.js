@@ -3,13 +3,12 @@
 'use strict';
 
 var util = require('../util/util');
-
 var PrintControl = L.Control.extend({
   options: {
     ui: true,
-    url: 'http://www.nps.gov/maps/print/'
+    url: 'https://www.nps.gov/maps/print/'
   },
-  initialize: function(options) {
+  initialize: function (options) {
     L.Util.setOptions(this, options);
 
     if (this.options.ui === true) {
@@ -21,26 +20,26 @@ var PrintControl = L.Control.extend({
 
     return this;
   },
-  addTo: function(map) {
+  addTo: function (map) {
     if (this.options.ui === true) {
       var toolbar = util.getChildElementsByClassName(map.getContainer().parentNode.parentNode, 'npmap-toolbar')[0];
       toolbar.childNodes[1].appendChild(this._li);
       toolbar.style.display = 'block';
       this._container = toolbar.parentNode.parentNode;
-      util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '26px';
+      util.getChildElementsByClassName(this._container.parentNode, 'npmap-map-wrapper')[0].style.top = '28px';
     }
 
     this._map = map;
     return this;
   },
-  _clean: function(layer) {
+  _clean: function (layer) {
     delete layer.L;
 
     // TODO: Move layer type-specific code.
     switch (layer.type) {
-    case 'arcgisserver':
-      delete layer.service;
-      break;
+      case 'arcgisserver':
+        delete layer.service;
+        break;
     }
 
     if (layer.popup) {
@@ -59,40 +58,44 @@ var PrintControl = L.Control.extend({
       layer.tooltip = util.escapeHtml(layer.tooltip);
     }
   },
-  _guid: (function() {
-    function s4() {
+  _guid: (function () {
+    function s4 () {
       return Math.floor((1 + Math.random()) * 0x10000)
        .toString(16)
        .substring(1);
     }
 
-    return function() {
+    return function () {
       return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     };
   })(),
-  print: function() {
-    var map = this._map,
-      me = this,
-      center = map.getCenter(),
-      url = me.options.url + (me.options.url.indexOf('?') === -1 ? '?' : '&') + 'lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&zoom=' + map.getZoom(),
-      win;
+  print: function (e) {
+    var map = this._map;
+    var me = this;
+    var center = map.getCenter();
+    var url = me.options.url + (me.options.url.indexOf('?') === -1 ? '?' : '&') + 'lat=' + center.lat.toFixed(4) + '&lng=' + center.lng.toFixed(4) + '&zoom=' + map.getZoom();
+    var win;
+
+    L.DomEvent.preventDefault(e);
 
     if (map.options.mapId) {
       url += '&mapId=' + map.options.mapId;
     } else {
-      var options = map.options,
-        config = {
-          baseLayers: [],
-          center: options.center,
-          overlays: [],
-          zoom: options.zoom
-        },
-        params = {
-          action: 'save',
-          key: this._guid()
-        },
-        supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (util.supportsCors() === 'yes')),
-        active, i, layer;
+      var options = map.options;
+      var config = {
+        baseLayers: [],
+        center: options.center,
+        overlays: [],
+        zoom: options.zoom
+      };
+      var params = {
+        action: 'save',
+        key: this._guid()
+      };
+      var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (util.supportsCors() === 'yes'));
+      var active;
+      var i;
+      var layer;
 
       for (i = 0; i < options.baseLayers.length; i++) {
         layer = options.baseLayers[i];
@@ -119,10 +122,8 @@ var PrintControl = L.Control.extend({
       url += '&printId=' + params.key;
       L.npmap.util._.reqwest({
         crossOrigin: supportsCors,
-        // TODO: Should be post, but posts won't work for Internet Explorer 8/9, as they aren't supported for CORS until Internet Explorer 10.
-        //method: 'post',
         type: 'json' + (supportsCors ? '' : 'p'),
-        url: 'https://npmap-session.herokuapp.com/' + L.Util.getParamString(params)
+        url: 'https://server-utils.herokuapp.com/session/' + L.Util.getParamString(params)
       });
     }
 
@@ -135,7 +136,7 @@ var PrintControl = L.Control.extend({
   }
 });
 
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.printControl) {
     var options = {};
 
@@ -147,6 +148,6 @@ L.Map.addInitHook(function() {
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new PrintControl(options);
 };

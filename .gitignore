@@ -1,8 +1,8 @@
 .idea/
 dist
+keys.json
 node_modules
 secrets.json
 
-GruntFile.js
-
 .DS_Store
+Thumbs.db

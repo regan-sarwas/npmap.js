@@ -24,13 +24,13 @@
     text-indent: -999em;
   }
 
-  /* TODO: Come up with a color that fits into the NPS graphic identity */
-
-  /*
-  .npmap a:focus, .npmap button:focus, .npmap div:focus, .npmap input:focus {
-    outline-color: #b28000 !important;  Only necessary because NPS Bootstrap isn't updated yet 
+@media (max-width: 767px) {
+  .npmap-hidden-xs {
+    display: none!important;
   }
-  */
+}
+
+/* Modules */
 .npmap-modules {
   -webkit-box-shadow: 2px 0 2px rgba(0,0,0,.2);
      -moz-box-shadow: 2px 0 2px rgba(0,0,0,.2);
@@ -64,7 +64,7 @@
       font-size: 14px;
       left: 0;
       overflow: auto;
-      padding: 0 10px;
+      padding: 0 15px;
       position: absolute;
       right: 0;
       top: 39px;
@@ -83,7 +83,7 @@
       }
     .npmap-modules .module .title {
       border-bottom: solid 1px #B5B39C;
-      padding: 9px 15px;
+      padding: 10px 15px;
       margin: 0;
     }
 .npmap-modules-buttons .npmap-modules-buttons-button {
@@ -109,7 +109,7 @@
 }
   .npmap-map-wrapper .npmap-modules-buttons {
     bottom: 0;
-    margin: 10px -30px 0 0;
+    margin: 15px -30px 0 0;
     pointer-events: none;
     position: absolute;
     top: 0;
@@ -158,7 +158,7 @@
           box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
   background-color: #908e7d;
   display: none;
-  height: 26px;
+  height: 28px;
   left: 0;
   position: absolute;
   top: 0;
@@ -166,27 +166,35 @@
   z-index: 2;
 }
   .npmap-toolbar ul.left, .npmap-toolbar ul.right {
-    line-height: 0.8;
+    line-height: 0;
     list-style-type: none;
     margin: 0;
     padding: 0;
   }
   .npmap-toolbar ul.left {
     float: left;
+    padding-left: 10px;
   }
     .npmap-toolbar ul.left li {
       border-left: none !important;
       border-right: solid 1px #adaca2 !important;
       float: left;
     }
+      .npmap-toolbar ul.left li:first-child {
+        border-left: solid 1px #adaca2 !important;
+      }
   .npmap-toolbar ul.right {
     float: right !important;
+    padding-right: 10px;
   }
     .npmap-toolbar ul.right li {
       border-left: solid 1px #adaca2 !important;
       border-right: none !important;
       float: left !important;
     }
+      .npmap-toolbar ul.right li:last-child {
+        border-right: solid 1px #adaca2 !important;
+      }
   .npmap-toolbar ul li {
     height: auto !important;
     list-style-type: none !important;
@@ -194,16 +202,16 @@
   }
   .npmap-toolbar button {
     background-color: #828171;
-    background-position: 6px;
+    background-position: 5px;
     background-repeat: no-repeat;
     background-size: 16px 16px;
     border: none;
     box-sizing: border-box;
-    height: 25px;
+    height: 28px;
     padding-bottom: 0;
     padding-top: 0;
     position: relative;
-    width: 29px;
+    width: 26px;
   }
     .npmap-toolbar button:focus {
       outline-offset: -3px;
@@ -249,9 +257,6 @@
 .npmap input, .npmap button, .npmap select, .npmap textarea {
   font-family: inherit;
   font-size: inherit;
-  /*
-  line-height: inherit;
-  */
 }
 .npmap button, .npmap input, .npmap select[multiple], .npmap textarea {
   background-image: none;
@@ -398,6 +403,7 @@
   font-family: inherit;
   font-size: inherit;
   overflow: hidden;
+  touch-action: none;
 }
   .npmap .leaflet-container a {
     color: #b28000;
@@ -416,21 +422,21 @@
   }
 
 /* Icons */
-.npmaki-icon.large {
+.npmapsymbollibrary-icon.large {
   background-size: 24px 24px;
   height: 24px;
   margin-left: 5px;
   margin-top: 7px;
   width: 24px;
 }
-.npmaki-icon.medium {
+.npmapsymbollibrary-icon.medium {
   background-size: 18px 18px;
   height: 18px;
   margin-left: 5px;
   margin-top: 4px;
   width: 18px;
 }
-.npmaki-icon.small {
+.npmapsymbollibrary-icon.small {
   background-size: 12px 12px;
   height: 12px;
   margin-left: 5px;
@@ -849,7 +855,6 @@
   padding: 3px 5px;
   text-align: right;
   text-overflow: ellipsis;
-  transition: all .2s;
   white-space: nowrap;
 }
 
@@ -1014,6 +1019,14 @@
   background-image: url('images/font-awesome/home@2x.png');
 }
 
+/* Info Control */
+.npmap .leaflet-control-info {
+  background-color: #fff;
+  display: none;
+  padding: 3px 5px;
+  transition: all .2s;
+}
+
 /* Legend Control */
 .npmap .leaflet-control-legend {
   background-color: #fff;
@@ -1041,12 +1054,6 @@
 .npmap .leaflet-retina .npmap-control-locate button {
   background-image: url('images/font-awesome/location-arrow@2x.png');
 }
-
-/*
-.npmap .leaflet-touch .leaflet-control-locate button {
-  background-image: url(images/locate_touch.png);
-}
-*/
 .npmap .npmap-control-locate button.requesting {
   background-image: url('images/control/locate/spinner.gif');
   background-position: 50% 50%;
@@ -1054,16 +1061,6 @@
 .npmap .leaflet-retina .npmap-control-locate button.requesting {
   background-image: url('images/control/locate/spinner@2x.gif');
 }
-/*
-.npmap .leaflet-control-locate.active a {
-  background-position: -32px -2px;
-}
-.npmap .leaflet-touch .leaflet-control-locate {
-  box-shadow: none;
-  border: 2px solid rgba(0,0,0,0.2);
-  background-clip: padding-box;
-}
-*/
 
 /* Measure Control */
 .npmap-control-measure button.leaflet-bar-single {
@@ -1077,12 +1074,12 @@
 }
 .npmap-control-measure ul {
   display: none;
-  left: 24px;
+  height: 28px;
+  left: 26px;
   list-style: none;
   margin: 0;
   padding: 0;
   position: absolute;
-  top: 0;
   white-space: nowrap;
   z-index: -1;
 }
@@ -1092,19 +1089,28 @@
     .npmap-control-measure ul li:first-child a {
       border-left: none;
     }
+    .npmap-control-measure ul li:last-child {
+      vertical-align: middle;
+    }
+      .npmap-control-measure ul li select {
+        margin-left: 5px;
+      }
+      .npmap-control-measure ul li select:first-child {
+        display: none;
+      }
     .npmap-control-measure ul li button {
       background-color: #919187 !important;
       border: none !important;
       border-radius: 0 !important;
-      color: #FFF !important;
+      color: #fff !important;
       display: block !important;
-      font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
+      font-size: 11px !important;
+      height: 28px !important;
       line-height: 28px !important;
-      text-align: center !important;
-      text-decoration: none !important;
       padding-left: 10px !important;
       padding-right: 10px !important;
-      height: 28px !important;
+      text-align: center !important;
+      text-decoration: none !important;
       width: auto !important;
     }
       .npmap-control-measure ul li button:hover {
@@ -1117,22 +1123,41 @@
         border-bottom-right-radius: 4px !important;
         border-top-right-radius: 4px !important;
       }
+.leaflet-draw-tooltip {
+  visibility: hidden !important;
+}
+
+  .leaflet-draw-tooltip:before {
+    visibility: hidden !important;
+  }
+.leaflet-error-draw-tooltip {
+  background-color: #f2dede;
+  border: 1px solid #e6b6bd;
+  color: #b94a48;
+  font-size: 11px;
+  padding: 5px;
+  visibility: visible !important;
+}
 .npmap .leaflet-measure-tooltip {
+  background-color: #fff;
   background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 0 5px #bbb;
-  font: 11px/1.25 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 11px;
   height: auto !important;
   margin: 0;
   padding: 2px;
   white-space: nowrap;
   width: auto !important;
 }
-.npmap .leaflet-measure-tooltip-total {
-  font-weight: bold;
-}
-.npmap .leaflet-measure-tooltip-difference {
-  color: #777;
-}
+  .npmap .leaflet-measure-tooltip div.leaflet-measure-tooltip-distance span:last-child {
+    display: none;
+  }
+  .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-difference {
+    color: #777;
+  }
+  .npmap .leaflet-measure-tooltip .leaflet-measure-tooltip-total {
+    font-weight: bold;
+  }
 
 /* Overview Control */
 .npmap .leaflet-control-overview {
@@ -1164,7 +1189,7 @@
     bottom: 10px;
     height: 10px;
     position: absolute;
-    right: 10px; 
+    right: 10px;
     transition: all .2s;
     width: 10px;
   }

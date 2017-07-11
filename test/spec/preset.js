@@ -1,14 +1,13 @@
-/* global afterEach, beforeEach, describe, expect, it, L, sinon */
+/* global afterEach, beforeEach, describe, sinon */
 
-describe('L.npmap.preset', function() {
-  var element,
-    server;
+describe('L.npmap.preset', function () {
+  var element, server;
 
-  afterEach(function() {
+  afterEach(function () {
     element = null;
     server.restore();
   });
-  beforeEach(function() {
+  beforeEach(function () {
     element = document.createElement('div');
     server = sinon.fakeServer.create();
   });

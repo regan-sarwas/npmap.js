@@ -6,13 +6,13 @@ var HomeControl = L.Control.extend({
   options: {
     position: 'topleft'
   },
-  initialize: function(options) {
+  initialize: function (options) {
     L.Util.extend(this.options, options);
     return this;
   },
-  onAdd: function() {
-    var container = L.DomUtil.create('div', 'leaflet-control-home leaflet-bar leaflet-control'),
-      button = L.DomUtil.create('button', 'leaflet-bar-single', container);
+  onAdd: function () {
+    var container = L.DomUtil.create('div', 'leaflet-control-home leaflet-bar leaflet-control');
+    var button = L.DomUtil.create('button', 'leaflet-bar-single', container);
 
     button.setAttribute('alt', 'Pan/zoom to initial extent');
     L.DomEvent
@@ -22,9 +22,9 @@ var HomeControl = L.Control.extend({
 
     return container;
   },
-  toHome: function() {
-    var map = this._map,
-      options = map.options;
+  toHome: function () {
+    var map = this._map;
+    var options = map.options;
 
     map.setView(options.center, options.zoom);
     map.closePopup();
@@ -34,7 +34,7 @@ var HomeControl = L.Control.extend({
 L.Map.mergeOptions({
   homeControl: true
 });
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.homeControl) {
     var options = {};
 
@@ -46,6 +46,6 @@ L.Map.addInitHook(function() {
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new HomeControl(options);
 };

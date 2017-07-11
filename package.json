@@ -1,69 +1,53 @@
 {
-  "author": {
-    "email": "nate_irwin@nps.gov",
-    "name": "Nate Irwin",
-    "url": "http://www.nps.gov/npmap/team/nate-irwin.html"
-  },
   "bugs": {
     "email": "npmap@nps.gov",
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
   },
-  "contributors": [
-    {
-      "email": "james_mcandrew@partner.nps.gov",
-      "name": "Jim McAndrew",
-      "url": "http://www.nps.gov/npmap/team/jim-mcandrew.html"
-    },
-    {
-      "email": "katrina_engelsted@partner.nps.gov",
-      "name": "Katrina Engelsted",
-      "url": "http://www.nps.gov/npmap/team/katrina-engelsted.html"
-    },
-    {
-      "email": "mamata_akella@partner.nps.gov",
-      "name": "Mamata Akella",
-      "url": "http://www.nps.gov/npmap/team/mamata-akella.html"
-    }
-  ],
   "dependencies": {
-    "csv2geojson": "3.7.0",
-    "handlebars": "1.3.0",
-    "humane-js": "https://github.com/wavded/humane-js/archive/3.2.0.tar.gz",
-    "leaflet": "0.7.3",
-    "leaflet-draw": "0.2.2",
-    "leaflet.markercluster": "https://github.com/Leaflet/Leaflet.markercluster/archive/v0.4.0.tar.gz",
-    "maki": "~0.4.0",
+    "csv2geojson": "4.0.0",
+    "handlebars": "4.0.5",
+    "helper-dateformat": "https://github.com/nationalparkservice/helper-dateformat/archive/v0.2.1.tar.gz",
+    "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
+    "leaflet": "0.7.7",
+    "leaflet-draw": "git+https://github.com/nationalparkservice/Leaflet.Draw.git#23287efc2dc02fcf7de3b4737a76d16f06e7557c",
+    "leaflet.markercluster": "https://github.com/nationalparkservice/Leaflet.MarkerCluster/archive/v0.4.0.tar.gz",
+    "maki": "~0.5.0",
     "nanobar": "0.2.1",
-    "npmaki": "0.4.1",
-    "reqwest": "1.1.0",
-    "togeojson": "0.7.0"
+    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.2.2.tar.gz",
+    "reqwest": "1.1.6",
+    "togeojson": "0.13.0"
   },
-  "description": "A JavaScript web mapping library, built as a Leaflet plugin, for the National Park Service.",
+  "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
   "devDependencies": {
-    "brfs": "1.0.0",
-    "browserify": "3.38.0",
-    "expect.js": "0.3.1",
-    "grunt": "0.4.4",
+    "brfs": "1.4.3",
+    "browserify": "^13.0.0",
+    "expect.js": "^0.3.1",
+    "grunt": "^0.4.5",
     "grunt-akamai-rest-purge": "^0.1.1",
-    "grunt-banner": "0.2.2",
-    "grunt-browserify": "2.0.1",
-    "grunt-contrib-clean": "0.5.0",
-    "grunt-contrib-compress": "0.7.0",
-    "grunt-contrib-concat": "0.4.0",
-    "grunt-contrib-copy": "0.5.0",
-    "grunt-contrib-csslint": "0.2.0",
-    "grunt-contrib-cssmin": "0.9.0",
-    "grunt-contrib-uglify": "0.4.0",
-    "grunt-curl": "1.4.0",
-    "grunt-http": "1.1.0",
-    "grunt-mkdir": "0.1.1",
-    "grunt-mocha-phantomjs": "0.4.3",
+    "grunt-banner": "0.6.0",
+    "grunt-browserify": "4.0.1",
+    "grunt-contrib-clean": "0.7.0",
+    "grunt-contrib-compress": "0.14.0",
+    "grunt-contrib-concat": "0.5.1",
+    "grunt-contrib-copy": "0.8.2",
+    "grunt-contrib-csslint": "0.5.0",
+    "grunt-contrib-cssmin": "0.14.0",
+    "grunt-contrib-handlebars": "^0.11.0",
+    "grunt-contrib-uglify": "0.11.1",
+    "grunt-curl": "2.2.0",
+    "grunt-http": "2.0.0",
+    "grunt-md2html": "^0.3.0",
+    "grunt-mkdir": "0.1.2",
+    "grunt-mocha-phantomjs": "^2.0.1",
+    "grunt-semistandard": "^1.0.4",
+    "grunt-string-replace": "^1.2.1",
     "happen": "0.1.3",
-    "mocha": "^2.0.1",
-    "mocha-phantomjs": "^3.5.2",
-    "phantomjs": "^1.9.13",
-    "sinon": "^1.12.2",
-    "uglify-js": "2.4.13"
+    "mocha": "^2.4.4",
+    "mocha-phantomjs": "^4.0.1",
+    "phantomjs-prebuilt": "2.1.3",
+    "sinon": "1.17.3",
+    "uglify-js": "2.6.1",
+    "xhr2": "^0.1.2"
   },
   "scripts": {
     "test": "grunt test"
@@ -71,18 +55,20 @@
   "engines": {
     "node": "*"
   },
-  "homepage": "http://www.nps.gov/npmap",
+  "homepage": "https://www.nps.gov/npmap/tools/npmap.js/",
   "keywords": [
     "Cartography",
     "Department of Interior",
+    "Digital",
     "JavaScript",
     "Leaflet",
     "Map",
     "National Park Service",
-    "NPMaki",
     "NPMap",
+    "NPMap.js",
+    "NPMap Symbol Library",
+    "NPS Places",
     "Park Tiles",
-    "Places",
     "US Government",
     "Web Map"
   ],
@@ -98,5 +84,5 @@
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
   },
-  "version": "2.0.0"
+  "version": "3.0.16"
 }

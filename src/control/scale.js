@@ -11,7 +11,7 @@ var ScaleControl = L.Control.Scale.extend({
 L.Map.mergeOptions({
   scaleControl: false
 });
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.scaleControl) {
     var options = {};
 
@@ -23,6 +23,6 @@ L.Map.addInitHook(function() {
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new ScaleControl(options);
 };

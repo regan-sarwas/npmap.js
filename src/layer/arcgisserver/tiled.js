@@ -11,7 +11,7 @@ var ArcGisServerTiledLayer = L.TileLayer.extend({
   options: {
     errorTileUrl: L.Util.emptyImageUrl
   },
-  initialize: function(options) {
+  initialize: function (options) {
     L.Util.setOptions(this, options);
     util.strict(options.url, 'string');
     this._serviceUrl = this._cleanUrl(options.url);
@@ -23,9 +23,15 @@ var ArcGisServerTiledLayer = L.TileLayer.extend({
 
     L.TileLayer.prototype.initialize.call(this, this.tileUrl, options);
     this._getMetadata();
-  },
+  }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'arcgisserver';
+  }
+
   return new ArcGisServerTiledLayer(options);
 };

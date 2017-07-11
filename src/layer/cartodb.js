@@ -3,8 +3,8 @@
 
 'use strict';
 
-var reqwest = require('reqwest'),
-  util = require('../util/util');
+var reqwest = require('reqwest');
+var util = require('../util/util');
 
 var CartoDbLayer = L.TileLayer.extend({
   includes: [
@@ -22,19 +22,21 @@ var CartoDbLayer = L.TileLayer.extend({
   },
   statics: {
     GEOMETRY_TYPES: {
+      'st_linestring': 'line',
       'st_multilinestring': 'line',
+      'st_multipoint': 'point',
       'st_multipolygon': 'polygon',
-      'st_point': 'point'
+      'st_point': 'point',
+      'st_polygon': 'polygon'
     }
   },
-  _update: function() {
+  _update: function () {
     if (this._urlTile) {
       L.TileLayer.prototype._update.call(this);
     }
   },
-  initialize: function(options) {
-    var me = this,
-      supportsCors = util.supportsCors();
+  initialize: function (options) {
+    var me = this;
 
     if (!L.Browser.retina || !options.detectRetina) {
       options.detectRetina = false;
@@ -46,133 +48,156 @@ var CartoDbLayer = L.TileLayer.extend({
     L.TileLayer.prototype.initialize.call(this, undefined, this.options);
     this._urlApi = 'https://' + this.options.user + '.cartodb.com/api/v2/sql';
     reqwest({
-      crossOrigin: supportsCors === 'yes' ? true : false,
-      error: function(error) {
+      crossOrigin: true,
+      error: function (error) {
         error.message = JSON.parse(error.response).error[0];
         me.fire('error', error);
         me.errorFired = error;
       },
-      success: function(response) {
-        var layer = {
-          options: {},
-          type: 'cartodb'
-        };
+      success: function (response) {
+        if (response) {
+          var layer = {
+            options: {},
+            type: 'cartodb'
+          };
+          var queryFields = [];
+          var i;
 
-        response = response.data;
+          if (me.options.cartocss) {
+            me._cartocss = me.options.cartocss;
+          } else if (me.options.styles) {
+            me._cartocss = me._stylesToCartoCss(me.options.styles);
+          }
 
-        if (me.options.cartocss) {
-          me._cartocss = me.options.cartocss;
-        } else if (me.options.styles) {
-          me._cartocss = me._stylesToCartoCss(me.options.styles);
-        }
+          me._hasInteractivity = false;
+          me._interactivity = null;
 
-        me._hasInteractivity = false;
-        me._interactivity = null;
+          if (me.options.interactivity) {
+            me._interactivity = me.options.interactivity.split(',');
+          } else if (me.options.clickable !== false && response.rows) {
+            me._interactivity = [];
 
-        if (me.options.interactivity) {
-          me._interactivity = me.options.interactivity.split(',');
-        } else if (me.options.clickable !== false && response.fields) {
-          me._interactivity = [];
-
-          for (var field in response.fields) {
-            if (response.fields[field].type !== 'geometry') {
-              me._interactivity.push(field);
+            for (i = 0; i < response.rows.length; i++) {
+              if (response.rows[i].cdb_columnnames !== 'the_geom' && response.rows[i].cdb_columnnames !== 'the_geom_webmercator') {
+                me._interactivity.push(response.rows[i].cdb_columnnames);
+              }
             }
           }
-        }
 
-        if (L.Util.isArray(me._interactivity) && me._interactivity.length) {
-          me._hasInteractivity = true;
-        }
-
-        layer.options.sql = me._sql = (me.options.sql || ('SELECT * FROM ' + me.options.table + ';'));
-
-        if (me._cartocss) {
-          layer.options.cartocss = me._cartocss;
-          layer.options.cartocss_version = '2.1.1';
-        }
-
-        if (me._interactivity) {
-          layer.options.interactivity = me._interactivity;
-
-          /*
-          layer.options.attributes = {
-            columns: me._interactivity,
-            id: 'cartodb_id'
+          if (L.Util.isArray(me._interactivity) && me._interactivity.length) {
+            me._hasInteractivity = true;
           }
-          */
-        }
 
-        reqwest({
-          crossOrigin: supportsCors === 'yes' ? true : false,
-          error: function(error) {
-            error.message = JSON.parse(error.response).error[0];
-            me.fire('error', error);
-          },
-          success: function(response) {
-            if (response && response.success && response.data) {
-              var root = window.location.protocol + '//' + '{s}.' + response.data.cdn_url[window.location.protocol.replace(':', '')] + '/' + me.options.user + '/api/v1/map/' + response.data.layergroupid,
-                template = '{z}/{x}/{y}';
+          for (i = 0; i < response.rows.length; i++) {
+            var columnNames = response.rows[i].cdb_columnnames;
 
-              if (me._hasInteractivity && me._interactivity.length) {
-                me._urlGrid = root + '/0/' + template + '.grid.json';
+            if (response.rows[i].cdb_columntype === 'timestamp without time zone') {
+              queryFields.push('to_char(' + columnNames + ', \'YYYY-MM-DD-THH24:MI:SS\') AS ' + columnNames);
+            } else if (response.rows[i].cdb_columntype === 'timestamp with time zone') {
+              queryFields.push('to_char(' + columnNames + ', \'YYYY-MM-DD-THH24:MI:SS TZ\') AS ' + columnNames);
+            } else {
+              queryFields.push(columnNames);
+            }
+          }
+
+          layer.options.sql = me._sql = (me.options.sql || ('SELECT ' + queryFields.toString() + ' FROM ' + me.options.table + ';'));
+
+          if (me._cartocss) {
+            layer.options.cartocss = me._cartocss;
+            layer.options.cartocss_version = '2.1.1';
+          }
+
+          if (me._interactivity) {
+            layer.options.interactivity = me._interactivity;
+          }
+
+          reqwest({
+            crossOrigin: true,
+            error: function (response) {
+              var obj = {};
+
+              if (response && response.responseText) {
+                response = JSON.parse(response.responseText);
+
+                if (response.errors && response.errors.length) {
+                  obj.message = response.errors[0];
+                } else {
+                  obj.message = 'An unspecified error occured.';
+                }
+              } else {
+                obj.message = 'An unspecified error occured.';
               }
 
-              me._urlTile = root + '/' + template + '.png';
-              me.setUrl(me._urlTile);
-              me.redraw();
-              me.fire('ready');
-              me.readyFired = true;
+              me.fire('error', obj);
+            },
+            success: function (response) {
+              if (response) {
+                // This is the only layer handler that we don't default everything to https for.
+                // This is because CartoDB's SSL endpoint doesn't support subdomains, so there is a performance hit for when using https.
+                // If the web page is using https, however, we do want to default to it - even if it means taking a performance hit.
+                var root = (window.location.protocol === 'https:' ? 'https://' : 'http://{s}.') + response.cdn_url[window.location.protocol === 'https:' ? 'https' : 'http'] + '/' + me.options.user + '/api/v1/map/' + response.layergroupid;
+                var template = '{z}/{x}/{y}';
 
-              return me;
-            }
-          },
-          type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-          url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
-            config: JSON.stringify({
-              layers: [
-                layer
-              ],
-              version: '1.0.1'
+                if (me._hasInteractivity && me._interactivity.length) {
+                  me._urlGrid = root + '/0/' + template + '.grid.json';
+                }
+
+                me._urlTile = root + '/' + template + '.png';
+                me.setUrl(me._urlTile);
+                me.redraw();
+                me.fire('ready');
+                me.readyFired = true;
+
+                return me;
+              } else {
+                me.fire('error', {
+                  msg: 'No response was received.'
+                });
+              }
+            },
+            type: 'json',
+            url: util.buildUrl('https://' + me.options.user + '.cartodb.com/api/v1/map', {
+              config: JSON.stringify({
+                layers: [
+                  layer
+                ],
+                version: '1.0.1'
+              })
             })
-          }))) + (supportsCors === 'yes' ? '' : '&callback=?')
-        });
+          });
+        }
       },
-      type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
-        q: 'select * from ' + this.options.table + ' limit 0;'
-      }))) + (supportsCors === 'yes' ? '' : '&callback=?')
+      type: 'json',
+      url: util.buildUrl(this._urlApi, {
+        q: 'SELECT DISTINCT CDB_ColumnNames,CDB_ColumnType(\'' + this.options.table + '\',cdb_columnnames) FROM CDB_ColumnNames(\'' + this.options.table + '\');'
+      })
     });
     reqwest({
-      crossOrigin: supportsCors === 'yes' ? true : false,
-      success: function(response) {
+      crossOrigin: true,
+      success: function (response) {
         me._geometryTypes = [];
 
-        if (response && response.success && response.data) {
-          response = response.data;
+        if (response && response.rows && response.rows.length) {
+          var geometryType = response.rows[0].st_geometrytype;
 
-          if (response && response.rows && response.rows.length) {
-            var geometryType = response.rows[0].st_geometrytype;
-
-            if (geometryType) {
-              me._geometryTypes.push(CartoDbLayer.GEOMETRY_TYPES[geometryType.toLowerCase()]);
-            }
+          if (geometryType) {
+            me._geometryTypes.push(CartoDbLayer.GEOMETRY_TYPES[geometryType.toLowerCase()]);
           }
         }
       },
-      type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: '//npmap-proxy.herokuapp.com/?encoded=true&type=json&url=' + window.btoa(encodeURIComponent(util.buildUrl(this._urlApi, {
+      type: 'json',
+      url: util.buildUrl(this._urlApi, {
         q: 'select ST_GeometryType(the_geom) from ' + this.options.table + ' where the_geom IS NOT NULL limit 1;'
-      }))) + (supportsCors === 'yes' ? '' : '&callback=?')
+      })
     });
   },
-  _getGridData: function(latLng, callback) {
+  _getGridData: function (latLng, callback) {
     var me = this;
 
     if (this._urlGrid) {
       this._getTileGrid(L.Util.template(this._urlGrid, L.Util.extend({
         s: this.options.subdomains[Math.floor(Math.random() * this.options.subdomains.length)]
-      }, this._getTileCoords(latLng))), latLng, function(resultData, gridData) {
+      }, this._getTileCoords(latLng))), latLng, function (resultData, gridData) {
         if (resultData === 'loading') {
           callback({
             layer: me,
@@ -201,28 +226,28 @@ var CartoDbLayer = L.TileLayer.extend({
       });
     }
   },
-  _stylesToCartoCss: function(styles) {
-    var cartoCss = {},
-      match = {
-        'fill': 'polygon-fill',
-        'fill-opacity': 'polygon-opacity',
-        'marker-color': 'marker-fill',
-        'marker-size': function(value) {
-          var size = 8;
+  _stylesToCartoCss: function (styles) {
+    var cartoCss = {};
+    var match = {
+      'fill': 'polygon-fill',
+      'fill-opacity': 'polygon-opacity',
+      'marker-color': 'marker-fill',
+      'marker-size': function (value) {
+        var size = 8;
 
-          if (value === 'large') {
-            size = 16;
-          } else if (value === 'medium') {
-            size = 12;
-          }
+        if (value === 'large') {
+          size = 16;
+        } else if (value === 'medium') {
+          size = 12;
+        }
 
-          cartoCss['marker-height'] = size;
-          cartoCss['marker-width'] = size;
-        },
-        'stroke': 'line-color',
-        'stroke-opacity': 'line-opacity',
-        'stroke-width': 'line-width'
-      };
+        cartoCss['marker-height'] = size;
+        cartoCss['marker-width'] = size;
+      },
+      'stroke': 'line-color',
+      'stroke-opacity': 'line-opacity',
+      'stroke-width': 'line-width'
+    };
 
     for (var property in styles) {
       var value = styles[property];
@@ -238,6 +263,12 @@ var CartoDbLayer = L.TileLayer.extend({
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
+  options = options || {};
+
+  if (!options.type) {
+    options.type = 'cartodb';
+  }
+
   return new CartoDbLayer(options);
 };

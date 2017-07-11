@@ -1,4 +1,4 @@
-/* global alert, L */
+/* global L */
 
 'use strict';
 
@@ -28,10 +28,10 @@ var LocateControl = L.Control.extend({
       weight: 2
     },
     metric: true,
-    onLocationError: function(context, error) {
+    onLocationError: function (context, error) {
       context._map.notify.danger(error.message);
     },
-    onLocationOutsideMapBounds: function(context) {
+    onLocationOutsideMapBounds: function (context) {
       context._map.notify.danger(context.options.strings.outsideMapBoundsMsg);
     },
     position: 'topleft',
@@ -44,8 +44,8 @@ var LocateControl = L.Control.extend({
     }
   },
   onAdd: function (map) {
-    var me = this,
-      obj = {};
+    var me = this;
+    var obj = {};
 
     this._container = L.DomUtil.create('div', 'npmap-control-locate leaflet-bar leaflet-control');
     this._event = undefined;
@@ -68,7 +68,7 @@ var LocateControl = L.Control.extend({
     L.DomEvent
       .on(me._button, 'click', L.DomEvent.stopPropagation)
       .on(me._button, 'click', L.DomEvent.preventDefault)
-      .on(me._button, 'click', function() {
+      .on(me._button, 'click', function () {
         if (me._active && (me._event === undefined || map.getBounds().contains(me._event.latlng) || !me.options.setView || isOutsideMapBounds())) {
           stopLocate();
         } else {
@@ -77,14 +77,14 @@ var LocateControl = L.Control.extend({
       })
       .on(me._button, 'dblclick', L.DomEvent.stopPropagation);
 
-    function isOutsideMapBounds() {
+    function isOutsideMapBounds () {
       if (me._event === undefined) {
         return false;
       }
 
       return map.options.maxBounds && !map.options.maxBounds.contains(me._event.latlng);
     }
-    function locate() {
+    function locate () {
       if (!me._event) {
         L.DomUtil.addClass(me._button, 'requesting');
         L.DomUtil.addClass(me._button, 'pressed');
@@ -107,7 +107,7 @@ var LocateControl = L.Control.extend({
         me._locateOnNextLocationFound = true;
       }
     }
-    function onLocationError(err) {
+    function onLocationError (err) {
       if (err.code === 3 && me._locateOptions.watch) {
         return;
       }
@@ -115,7 +115,7 @@ var LocateControl = L.Control.extend({
       stopLocate();
       me.options.onLocationError(me, err);
     }
-    function onLocationFound(e) {
+    function onLocationFound (e) {
       if (me._event && (me._event.latlng.lat === e.latlng.lat && me._event.latlng.lng === e.latlng.lng && me._event.accuracy === e.accuracy)) {
         return;
       }
@@ -132,12 +132,12 @@ var LocateControl = L.Control.extend({
 
       visualizeLocation();
     }
-    function resetVariables() {
+    function resetVariables () {
       me._active = false;
       me._following = false;
       me._locateOnNextLocationFound = me.options.setView;
     }
-    function startFollowing() {
+    function startFollowing () {
       map.fire('startfollowing');
       me._following = true;
 
@@ -145,7 +145,7 @@ var LocateControl = L.Control.extend({
         map.on('dragstart', stopFollowing);
       }
     }
-    function stopFollowing() {
+    function stopFollowing () {
       map.fire('stopfollowing');
       me._following = false;
 
@@ -155,7 +155,7 @@ var LocateControl = L.Control.extend({
 
       visualizeLocation();
     }
-    function stopLocate() {
+    function stopLocate () {
       map.stopLocate();
       map.off('dragstart', stopFollowing);
       L.DomUtil.removeClass(me._button, 'following');
@@ -166,8 +166,11 @@ var LocateControl = L.Control.extend({
       me._circleMarker = undefined;
       me._circle = undefined;
     }
-    function visualizeLocation() {
-      var distance, mStyle, o, radius, style, unit;
+    function visualizeLocation () {
+      var mStyle;
+      var o;
+      var radius;
+      var style;
 
       if (me._event.accuracy === undefined) {
         me._event.accuracy = 0;
@@ -198,19 +201,11 @@ var LocateControl = L.Control.extend({
           me._circle = L.circle(me._event.latlng, radius, style).addTo(me._layer);
         } else {
           me._circle.setLatLng(me._event.latlng).setRadius(radius);
-          
+
           for (o in style) {
             me._circle.options[o] = style[o];
           }
         }
-      }
-
-      if (me.options.metric) {
-        distance = radius.toFixed(0);
-        unit = 'meters';
-      } else {
-        distance = (radius * 3.2808399).toFixed(0);
-        unit = 'feet';
       }
 
       if (me._following) {

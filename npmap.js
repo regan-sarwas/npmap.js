@@ -1,13 +1,14 @@
 /* global L */
+/* jshint camelcase: false */
 
 var version = require('./package.json').version;
 
-window.L.Icon.Default.imagePath = 'http://www.nps.gov/npmap/npmap.js/' + version + '/images';
-
+window.L.Icon.Default.imagePath = 'https://www.nps.gov/lib/npmap.js/' + version + '/images';
 L.npmap = module.exports = {
   VERSION: version,
   // Preserve order of controls because it affects the display hierarchy.
   control: {
+    geocoder: require('./src/control/geocoder'),
     download: require('./src/control/download'),
     home: require('./src/control/home'),
     smallzoom: require('./src/control/smallzoom'),
@@ -15,8 +16,8 @@ L.npmap = module.exports = {
     measure: require('./src/control/measure'),
     edit: require('./src/control/edit'),
     fullscreen: require('./src/control/fullscreen'),
-    geocoder: require('./src/control/geocoder'),
     hash: require('./src/control/hash'),
+    infobox: require('./src/control/infobox'),
     legend: require('./src/control/legend'),
     overview: require('./src/control/overview'),
     print: require('./src/control/print'),
@@ -27,7 +28,7 @@ L.npmap = module.exports = {
   },
   icon: {
     maki: require('./src/icon/maki'),
-    npmaki: require('./src/icon/npmaki')
+    npmapsymbollibrary: require('./src/icon/npmapsymbollibrary')
   },
   layer: {
     _cluster: require('./src/layer/cluster'),
@@ -56,8 +57,11 @@ L.npmap = module.exports = {
     baselayers: require('./src/preset/baselayers.json'),
     colors: require('./src/preset/colors.json'),
     maki: require('./node_modules/maki/_includes/maki.json'),
-    npmaki: require('./node_modules/npmaki/_includes/maki.json'),
-    overlays: require('./src/preset/overlays.json')
+    npmapsymbollibrary: require('./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json'),
+    overlays: require('./src/preset/overlays.json'),
+    places: {
+      pois: require('./src/preset/places/pois')
+    }
   },
   tooltip: require('./src/tooltip'),
   util: {

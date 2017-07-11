@@ -7,7 +7,7 @@
       "name": "Esri Light Gray Labels",
       "tiled": true,
       "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer"
+      "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer"
     },
     "imageryLabels": {
       "attribution": "Esri, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community",
@@ -17,7 +17,7 @@
       "name": "Esri Boundaries & Places",
       "tiled": true,
       "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
+      "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
     },
     "oceansLabels": {
       "attribution": "Esri",
@@ -26,19 +26,41 @@
       "name": "Esri Ocean Labels",
       "tiled": true,
       "type": "arcgisserver",
-      "url": "http://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer"
+      "url": "https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer"
     }
   },
-  "places": {
-    "pois": {
-      "attribution": "&copy; <a href='http://mapbox.com/about/maps' target='_blank'>Mapbox</a> &copy; <a href='http://openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='http://www.nps.gov/npmap/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
-      "detectRetina": true,
-      "id": "nps.jhd2e8lb",
-      "name": "Points of Interest",
-      "popup": {
-        "title": "{{#if name}}{{name}}{{else}}{{FCategory}}{{/if}}"
+  "nps": {
+    "places": {
+      "buildings": {
+        "name": "Buildings",
+        "table": "buildings",
+        "type": "cartodb",
+        "user": "nps"
       },
-      "type": "mapbox"
+      "parkingLots": {
+        "name": "Parking Lots",
+        "table": "parking_lots",
+        "type": "cartodb",
+        "user": "nps"
+      },
+      "pointsOfInterest": {
+        "name": "Points of Interest",
+        "table": "points_of_interest",
+        "type": "cartodb",
+        "user": "nps"
+      },
+      "roads": {
+        "name": "Roads",
+        "table": "roads",
+        "type": "cartodb",
+        "user": "nps"
+      },
+      "trails": {
+        "name": "Trails",
+        "table": "trails",
+        "type": "cartodb",
+        "user": "nps"
+      }
     }
   }
 }

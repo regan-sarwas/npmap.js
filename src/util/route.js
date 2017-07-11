@@ -1,14 +1,12 @@
-/* globals L */
-/* jshint camelcase: false */
-
 'use strict';
 
+var keys = require('../../keys.json');
 var reqwest = require('reqwest');
 
 module.exports = ({
-  mapbox: (function() {
+  mapbox: (function () {
     return {
-      route: function(latLngs, callback, mode) {
+      route: function (latLngs, callback, mode) {
         var locations = '';
 
         mode = mode || 'driving';
@@ -25,18 +23,17 @@ module.exports = ({
 
         reqwest({
           crossOrigin: true,
-          error: function() {
+          error: function () {
             callback({
               message: 'The route failed. Please check your network connection.',
               success: false
             });
           },
-          success: function(response) {
-            //console.log(response);
+          success: function (response) {
             callback(response);
           },
           type: 'json',
-          url: 'https://api.tiles.mapbox.com/v4/directions/mapbox.' + mode + '/' + locations + '.json?access_token=pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q&alternatives=false&instructions=html'
+          url: 'https://api.mapbox.com/v4/directions/mapbox.' + mode + '/' + locations + '.json?access_token=' + keys.mapbox.access_token + '&alternatives=false&instructions=html'
         });
       }
     };

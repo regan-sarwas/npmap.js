@@ -3,32 +3,33 @@
 'use strict';
 
 var util = require('../util/util');
-
 var HashControl = L.Class.extend({
-  addTo: function(map) {
+  addTo: function (map) {
     if (this._supported) {
+      var me = this;
+
       this._map = map;
-      this._onHashChange();
-      this._startListening();
+
+      // A bit of a hack to give map.js time to setup the DOM. Really only needed when the modules pane is set to visible = true.
+      setTimeout(function () {
+        me._onHashChange(true);
+        me._startListening();
+      }, 250);
+      return this;
     } else {
       window.alert('Sorry, but the hash control does not work for maps that are loaded in an iframe hosted from another domain.');
     }
   },
-  initialize: function() {
+  initialize: function () {
     this._iframe = false;
     this._supported = true;
-    this._supportsHashChange = (function() {
-      var docMode = window.documentMode;
-
-      return ('onhashchange' in window) && (docMode === undefined || docMode > 7);
-    })();
     this._window = window;
 
     if ((window.self !== window.top) && document.referrer !== '') {
       if (util.parseDomainFromUrl(document.referrer) === util.parseDomainFromUrl(window.location.href)) {
         try {
           this._iframe = true;
-          this._window = top;
+          this._window = window.top;
         } catch (exception) {
           this._supported = false;
         }
@@ -37,9 +38,24 @@ var HashControl = L.Class.extend({
       }
     }
 
+    if (this._supported) {
+      this._supportsHashChange = (function () {
+        var docMode = window.documentMode;
+
+        return ('onhashchange' in window) && (docMode === undefined || docMode > 7);
+      })();
+      this._supportsHistory = (function () {
+        if (window.history && window.history.pushState) {
+          return true;
+        } else {
+          return false;
+        }
+      })();
+    }
+
     return this;
   },
-  removeFrom: function() {
+  removeFrom: function () {
     if (this._changeTimeout) {
       clearTimeout(this._changeTimeout);
     }
@@ -57,10 +73,10 @@ var HashControl = L.Class.extend({
   _isListening: false,
   _lastHash: null,
   _movingMap: false,
-  _formatHash: function(map) {
-    var center = map.getCenter(),
-      zoom = map.getZoom(),
-      precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
+  _formatHash: function (map) {
+    var center = map.getCenter();
+    var zoom = map.getZoom();
+    var precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
 
     return '#' + [
       zoom,
@@ -68,7 +84,7 @@ var HashControl = L.Class.extend({
       center.lng.toFixed(precision)
     ].join('/');
   },
-  _getParentDocumentWindow: function(el) {
+  _getParentDocumentWindow: function (el) {
     while (el.parentNode) {
       el = el.parentNode;
 
@@ -79,17 +95,19 @@ var HashControl = L.Class.extend({
 
     return null;
   },
-  _onHashChange: function() {
-    if (!this._changeTimeout) {
+  _onHashChange: function (skipTimeout) {
+    if (skipTimeout) {
+      this._update();
+    } else if (!this._changeTimeout) {
       var me = this;
 
-      this._changeTimeout = setTimeout(function() {
-        me._update();
+      this._changeTimeout = setTimeout(function () {
         me._changeTimeout = null;
+        me._update();
       }, this._changeDefer);
     }
   },
-  _onMapMove: function() {
+  _onMapMove: function () {
     var hash;
 
     if (this._movingMap || !this._map._loaded) {
@@ -99,17 +117,23 @@ var HashControl = L.Class.extend({
     hash = this._formatHash(this._map);
 
     if (this._lastHash !== hash) {
-      if (this._iframe) {
-        // TODO: This preserves browser history, and is only partially working.
-        this._window.location.hash = hash;
+      if (this._supportsHistory) {
+        var location = this._window.location;
+
+        this._window.history.replaceState({}, '', location.origin + location.pathname + location.search + hash);
       } else {
-        this._window.location.replace(hash);
+        if (this._iframe) {
+          // TODO: This preserves browser history, and is only partially working.
+          this._window.location.hash = hash;
+        } else {
+          this._window.location.replace(hash);
+        }
       }
 
       this._lastHash = hash;
     }
   },
-  _parseHash: function(hash) {
+  _parseHash: function (hash) {
     var args;
 
     if (hash.indexOf('#') === 0) {
@@ -119,9 +143,9 @@ var HashControl = L.Class.extend({
     args = hash.split('/');
 
     if (args.length === 3) {
-      var lat = parseFloat(args[1]),
-        lng = parseFloat(args[2]),
-        zoom = parseInt(args[0], 10);
+      var lat = parseFloat(args[1]);
+      var lng = parseFloat(args[2]);
+      var zoom = parseInt(args[0], 10);
 
       if (isNaN(zoom) || isNaN(lat) || isNaN(lng)) {
         return false;
@@ -135,25 +159,25 @@ var HashControl = L.Class.extend({
       return false;
     }
   },
-  _startListening: function() {
+  _startListening: function () {
     var me = this;
 
     this._map.on('moveend', this._onMapMove, this);
 
     if (this._supportsHashChange) {
-      L.DomEvent.addListener(this._window, 'hashchange', function() {
+      L.DomEvent.addListener(this._window, 'hashchange', function () {
         me._onHashChange(me);
       });
     } else {
       clearInterval(this._hashChangeInterval);
-      this._hashChangeInterval = setInterval(function() {
+      this._hashChangeInterval = setInterval(function () {
         me._onHashChange(me);
       }, 50);
     }
 
     this._isListening = true;
   },
-  _stopListening: function() {
+  _stopListening: function () {
     this._map.off('moveend', this._onMapMove, this);
 
     if (this._supportsHashChange) {
@@ -165,9 +189,9 @@ var HashControl = L.Class.extend({
 
     this._isListening = false;
   },
-  _update: function() {
-    var hash = this._window.location.hash,
-      parsed;
+  _update: function () {
+    var hash = this._window.location.hash;
+    var parsed;
 
     if (hash === this._lastHash) {
       return;
@@ -185,12 +209,12 @@ var HashControl = L.Class.extend({
   }
 });
 
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.hashControl) {
     this.hashControl = L.npmap.control.hash(this.options.hashControl).addTo(this);
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new HashControl(options);
 };

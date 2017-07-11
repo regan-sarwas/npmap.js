@@ -1,11 +1,13 @@
 /* globals L */
 
+'use strict';
+
 var LegendControl = L.Control.extend({
   options: {
     position: 'topright'
   },
   _html: null,
-  initialize: function(options) {
+  initialize: function (options) {
     L.Util.setOptions(this, options);
     this._container = L.DomUtil.create('div', 'leaflet-control-legend');
     L.DomEvent.disableClickPropagation(this._container);
@@ -18,7 +20,6 @@ var LegendControl = L.Control.extend({
         this._html = options.html();
         this._container.innerHTML = this._html;
       } else {
-        // A DOM object.
         this._html = options.html;
         this._container.appendChild(this._html);
       }
@@ -27,7 +28,7 @@ var LegendControl = L.Control.extend({
       this._container.innerHTML = this._html;
     }
   },
-  onAdd: function(map) {
+  onAdd: function (map) {
     this._map = map;
 
     if (!this._html) {
@@ -36,12 +37,12 @@ var LegendControl = L.Control.extend({
 
     return this._container;
   },
-  _createLegend: function(overlays) {
-    var html = '',
-      options = this.options;
+  _createLegend: function (overlays) {
+    var html = '';
+    var options = this.options;
 
     if (options.title) {
-      html += '<h3>' + options.title  + '</h3>';
+      html += '<h3>' + options.title + '</h3>';
     }
 
     for (var i = 0; i < overlays.length; i++) {
@@ -55,7 +56,7 @@ var LegendControl = L.Control.extend({
         html += '<ul>';
 
         for (var icon in overlay.icons) {
-          html += '<li><span style="background-color:' + overlay.icons[icon]  + ';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ' + icon + '</li>';
+          html += '<li><span style="background-color:' + overlay.icons[icon] + ';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ' + icon + '</li>';
         }
       }
 
@@ -131,7 +132,7 @@ var LegendControl = L.Control.extend({
 L.Map.mergeOptions({
   legendControl: false
 });
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (this.options.legendControl) {
     var options = {};
 
@@ -143,6 +144,6 @@ L.Map.addInitHook(function() {
   }
 });
 
-module.exports = function(options) {
+module.exports = function (options) {
   return new LegendControl(options);
 };
