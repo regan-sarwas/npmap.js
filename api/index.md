@@ -1458,7 +1458,7 @@ _Example (Bootstrap)_:
             'marker-color': '#5e9fd5',
             'marker-library': 'npmapsymbollibrary',
             'marker-size': 'small',
-            'marker-symbol': 'camping-white'
+            'marker-symbol': 'campsite-white'
           }
         },
         type: 'csv',
@@ -1479,7 +1479,7 @@ _Example (API)_:
           'marker-color': '#5e9fd5',
           'marker-library': 'npmapsymbollibrary',
           'marker-size': 'small',
-          'marker-symbol': 'camping-white'
+          'marker-symbol': 'campsite-white'
         }
       },
       type: 'csv',
@@ -1518,6 +1518,10 @@ The following baseLayer preset strings are supported:
    * `nps-parkTiles`
    * `nps-parkTilesImagery`
    * `nps-parkTilesSlate`
+   * `nps-parkTiles3`
+   * `nps-parkTiles3Imagery`
+   * `nps-parkTiles3Light`
+   * `nps-parkTiles3Slate`
    * `nps-satelliteNight`
 * Bing
    * `bing-aerial`

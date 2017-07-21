@@ -73,7 +73,6 @@ module.exports = {
   _toLeaflet: function (config) {
     // TODO: Support preset colors. Setup a "colorProperties" array that contains the name of the properties that can contain colors, then use those to pull in presets.
     // TODO: Support handlebars templates.
-    var configStyles;
     var matchSimpleStyles = {
       'fill': 'fillColor',
       'fill-opacity': 'fillOpacity',
@@ -81,11 +80,11 @@ module.exports = {
       'stroke-opacity': 'opacity',
       'stroke-width': 'weight'
     };
+    var configStyles;
 
     if (typeof config.clickable === 'undefined' || config.clickable === true) {
       var activeTip = null;
       var detectAvailablePopupSpace = true;
-      var lastTarget = null;
       var map = null;
 
       // TODO: If typeof config.onEachFeature === 'function', save it and call it.
@@ -97,14 +96,6 @@ module.exports = {
 
           if (!map) {
             map = target._map;
-            map.on('click', function () {
-              if (lastTarget) {
-                lastTarget
-                  .closePopup()
-                  .unbindPopup();
-                lastTarget = null;
-              }
-            });
 
             if (typeof map.options.detectAvailablePopupSpace !== 'undefined' && map.options.detectAvailablePopupSpace === false) {
               detectAvailablePopupSpace = false;
@@ -116,11 +107,8 @@ module.exports = {
 
             setTimeout(function () {
               if (!clicks) {
-                if (lastTarget && (lastTarget._leaflet_id === target._leaflet_id)) {
-                  lastTarget
-                    .closePopup()
-                    .unbindPopup();
-                  lastTarget = null;
+                if (target._popup) {
+                  target.openPopup();
                 } else {
                   var container = map.getContainer();
                   var popup = L.npmap.popup({
@@ -130,13 +118,6 @@ module.exports = {
                   });
                   var properties = feature.properties;
                   var html = popup._resultToHtml(properties, config.popup, null, null, map.options.popup);
-
-                  if (lastTarget) {
-                    lastTarget
-                      .closePopup()
-                      .unbindPopup();
-                    lastTarget = null;
-                  }
 
                   if (html) {
                     if (typeof html === 'string') {
@@ -148,7 +129,6 @@ module.exports = {
                       target
                         .bindPopup(popup)
                         .openPopup();
-                      lastTarget = target;
                     } else {
                       popup
                         .setContent(html)
