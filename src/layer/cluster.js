@@ -24,14 +24,15 @@ var ClusterLayer = L.MarkerClusterGroup.extend({
     L.Util.setOptions(this, options.cluster);
     options.clustered = options.cluster.iconCreateFunction('getInfo');
     delete options.cluster;
+    this._markercluster = L.MarkerClusterGroup.prototype.initialize.call(this);
     this._currentShownBounds = null;
-    this._featureGroup = new L.FeatureGroup();
-    this._featureGroup.on(L.FeatureGroup.EVENTS, this._propagateEvent, this);
+    this._featureGroup = L.featureGroup();
+    this._featureGroup.addEventParent(this);
     this._inZoomAnimation = 0;
     this._needsClustering = [];
     this._needsRemoving = [];
     this._nonPointGroup = L.featureGroup();
-    this._nonPointGroup.on(L.FeatureGroup.EVENTS, this._propagateEvent, this);
+    this._nonPointGroup.addEventParent(this);
     this._queue = [];
     this.L = L.npmap.layer[options.type](options);
     interval = setInterval(function () {

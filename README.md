@@ -43,6 +43,9 @@ NPMap.js is versioned using [semantic versioning](http://semver.org). This means
 - [v3.0.14](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.14+is%3Aclosed)
 - [v3.0.15](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.15+is%3Aclosed)
 - [v3.0.16](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.16+is%3Aclosed)
+- v3.0.17
+- [v3.0.18](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.18+is%3Aclosed)
+- [v4.0.0](https://github.com/nationalparkservice/npmap.js/milestone/15?closed=1)
 
 ## Hosted version
 
@@ -87,6 +90,12 @@ OR
     npm test
 
 We are working to expand test coverage for the library.
+
+## Deploying
+
+1. [Build](#building) the library
+2. Connect to `smb://dencmscontent/nps_prod/other/static/lib`
+3. `grunt deploy`
 
 ## Documentation
 

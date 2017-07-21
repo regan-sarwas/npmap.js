@@ -482,7 +482,7 @@
 .npmap .leaflet-popup-tip-container {
   height: 25px;
   margin: -1px auto;
-  padding-left: 21px;
+  /* padding-left: 21px; */
   width: 25px;
 }
 /* IE8 and below */
@@ -749,7 +749,7 @@
 
 /* Tooltip */
 .npmap .leaflet-tooltip-container {
-  z-index: 4;
+  z-index: 650;
 }
 .npmap .leaflet-tooltip {
   -webkit-border-radius: 1px;
@@ -768,7 +768,7 @@
   padding: 7px 10px;
   position: absolute;
   width: auto;
-  z-index: 10;
+  z-index: 650;
 }
   .npmap .leaflet-tooltip.leaflet-tooltip-fade {
     opacity: 1;

@@ -114,4 +114,4 @@ NPMap.js uses a modified version of the [Leaflet.zoomdisplay](https://github.com
 
 ## Leaflet.Zoomify
 
-NPMap.js uses a modified version of the [Leaflet.Zoomify](https://github.com/turban/Leaflet.Zoomify/blob/master/L.TileLayer.Zoomify.js) plugin.
+NPMap.js uses a modified version of the [Leaflet.Zoomify](https://github.com/cmulders/Leaflet.Zoomify) plugin. It is licensed under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
