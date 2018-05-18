@@ -57,6 +57,15 @@ NPMap.js supports connecting to a number of services that require API keys. The 
 
 If, however, you are not a National Park Service employee, partner, or contractor, you will need to create a copy of `keys.sample.json`, rename it `keys.json`, add your keys, and run `grunt build` to bundle your keys into the build of NPMap.js that is created in the `_dist` folder.
 
+### Using Docker
+
+Steps:
+1. Make sure Docker is [installed](https://docs.docker.com/engine/installation/)
+1. Make sure Docker Compose is [installed](https://docs.docker.com/compose/install/)
+1. In the npmap.js devops directory run `docker-compose build`
+1. run `docker-compose up`
+1. Navigate to http://localhost:8080
+
 ## Building
 
 You must have [node.js](https://nodejs.org/) installed to run the build. After installing node.js:
