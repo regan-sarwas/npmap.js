@@ -1,56 +1,43 @@
-/* global L */
+/* global L, require, module */
 
 'use strict';
 
 var util = require('../util/util');
 var HashControl = L.Class.extend({
   addTo: function (map) {
-    if (this._supported) {
-      var me = this;
+    var me = this;
 
-      this._map = map;
+    this._map = map;
 
-      // A bit of a hack to give map.js time to setup the DOM. Really only needed when the modules pane is set to visible = true.
-      setTimeout(function () {
-        me._onHashChange(true);
-        me._startListening();
-      }, 250);
-      return this;
-    } else {
-      window.alert('Sorry, but the hash control does not work for maps that are loaded in an iframe hosted from another domain.');
-    }
+    // A bit of a hack to give npmap.js time to setup the DOM. Really only needed when the modules pane is set to visible = true.
+    setTimeout(function () {
+      me._onHashChange(true);
+      me._startListening();
+    }, 250);
+    return this;
   },
   initialize: function () {
-    this._iframe = false;
-    this._supported = true;
+    this._crossOrigin = false;
+    this._embeddedInIframe = false;
+    this._supportsHashChange = (function () {
+      var docMode = window.documentMode;
+
+      return ('onhashchange' in window) && (docMode === undefined || docMode > 7);
+    })();
     this._window = window;
 
     if ((window.self !== window.top) && document.referrer !== '') {
+      this._embeddedInIframe = true;
+
       if (util.parseDomainFromUrl(document.referrer) === util.parseDomainFromUrl(window.location.href)) {
-        try {
-          this._iframe = true;
-          this._window = window.top;
-        } catch (exception) {
-          this._supported = false;
-        }
+        this._window = window.top;
       } else {
-        this._supported = false;
+        this._crossOrigin = true;
       }
     }
 
-    if (this._supported) {
-      this._supportsHashChange = (function () {
-        var docMode = window.documentMode;
-
-        return ('onhashchange' in window) && (docMode === undefined || docMode > 7);
-      })();
-      this._supportsHistory = (function () {
-        if (window.history && window.history.pushState) {
-          return true;
-        } else {
-          return false;
-        }
-      })();
+    if (this._crossOrigin) {
+      console.warn('This map is in an iframe embedded in a web page hosted from a domain other than nps.gov.');
     }
 
     return this;
@@ -117,17 +104,14 @@ var HashControl = L.Class.extend({
     hash = this._formatHash(this._map);
 
     if (this._lastHash !== hash) {
-      if (this._supportsHistory) {
-        var location = this._window.location;
+      this._window.history.replaceState(undefined, undefined, hash);
 
-        this._window.history.replaceState({}, '', location.origin + location.pathname + location.search + hash);
-      } else {
-        if (this._iframe) {
-          // TODO: This preserves browser history, and is only partially working.
-          this._window.location.hash = hash;
-        } else {
-          this._window.location.replace(hash);
-        }
+      if (this._embeddedInIframe && this._crossOrigin) {
+        window.parent.postMessage({
+          hash: hash,
+          id: 'npmap_map_library-hashchange',
+          location: window.location.href
+        }, '*');
       }
 
       this._lastHash = hash;
@@ -145,7 +129,7 @@ var HashControl = L.Class.extend({
     if (args.length === 3) {
       var lat = parseFloat(args[1]);
       var lng = parseFloat(args[2]);
-      var zoom = parseInt(args[0], 10);
+      var zoom = parseFloat(args[0]);
 
       if (isNaN(zoom) || isNaN(lat) || isNaN(lng)) {
         return false;
