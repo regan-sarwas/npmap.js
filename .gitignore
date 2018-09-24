@@ -5,6 +5,7 @@ node_modules
 secrets.json
 DOIRootCA.crt
 npm-debug.log
+package-lock.json
 
 .DS_Store
 Thumbs.db

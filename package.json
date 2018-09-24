@@ -4,19 +4,20 @@
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
   },
   "dependencies": {
+    "@mapbox/maki": "~3.0.0",
+    "@mapbox/sexagesimal": "~1.0.0",
+    "@mapbox/togeojson": "~0.16.0",
     "csv2geojson": "5.0.2",
-    "handlebars": "4.0.5",
+    "handlebars": "4.0.11",
     "helper-dateformat": "https://github.com/nationalparkservice/helper-dateformat/archive/v0.2.1.tar.gz",
     "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
     "leaflet": "1.0.3",
     "leaflet-draw": "0.4.9",
+    "leaflet-easyprint": "git+https://github.com/jimmyrocks/leaflet-easyPrint#gh-page",
     "leaflet.markercluster": "~1.0.0",
-    "@mapbox/maki": "~3.0.0",
     "nanobar": "0.4.2",
     "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.3.0.tar.gz",
-    "reqwest": "2.0.5",
-    "@mapbox/togeojson": "~0.16.0",
-    "@mapbox/sexagesimal": "~1.0.0"
+    "reqwest": "2.0.5"
   },
   "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
   "devDependencies": {
@@ -86,5 +87,5 @@
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
   },
-  "version": "4.0.0"
+  "version": "4.0.1"
 }
