@@ -186,7 +186,7 @@ var GeocoderControl = L.Control.extend({
       me._map.setView({
         lat: poi.y,
         lng: poi.x
-      }, 14);
+      }, 17);
     } else {
       this._input.value = this._oldValue = id;
 
@@ -215,7 +215,7 @@ var GeocoderControl = L.Control.extend({
             }
           },
           type: 'jsonp',
-          url: 'https://nps.cartodb.com/api/v2/sql?q=' + window.encodeURIComponent('SELECT ST_AsGeoJSON(ST_Extent(the_geom)) AS b,max(latitude) AS l,max(longitude) AS n FROM parks WHERE full_name=\'' + id.replace('\'', '\'\'') + '\'')
+          url: 'https://nps.cartodb.com/api/v2/sql?q=' + window.encodeURIComponent('SELECT ST_AsGeoJSON(ST_Extent(the_geom)) AS b,max(label_lat) AS l,max(label_lng) AS n FROM places_parks_v2 WHERE full_name=\'' + id.replace('\'', '\'\'') + '\'')
         });
       }
     }
@@ -340,7 +340,7 @@ var GeocoderControl = L.Control.extend({
                             me._hideLoading();
                           },
                           type: 'jsonp',
-                          url: 'https://nps.cartodb.com/api/v2/sql?q=SELECT cartodb_id as c,name as n,type as t,st_x(the_geom) as x,st_y(the_geom) as y FROM points_of_interest WHERE name IS NOT NULL AND name ILIKE \'%25' + value.replace(/'/g, '\'\'') + '%25\' ORDER BY name LIMIT(10)'
+                          url: 'https://nps.cartodb.com/api/v2/sql?q=SELECT cartodb_id AS c,name AS n,type AS t,st_x(the_geom) AS x,st_y(the_geom) AS y FROM points_of_interest WHERE name IS NOT NULL AND name ILIKE \'%25' + value.replace(/'/g, '\'\'') + '%25\' ORDER BY name LIMIT(10)'
                         });
                       }
                     } else {
@@ -358,7 +358,7 @@ var GeocoderControl = L.Control.extend({
         }
       },
       type: 'jsonp',
-      url: 'https://nps.cartodb.com/api/v2/sql?q=SELECT full_name AS n FROM parks WHERE the_geom IS NOT NULL OR (latitude IS NOT NULL AND longitude IS NOT NULL) ORDER BY full_name'
+      url: 'https://nps.cartodb.com/api/v2/sql?q=SELECT full_name AS n FROM places_parks_v2 WHERE the_geom IS NOT NULL OR (label_lat IS NOT NULL AND label_lng IS NOT NULL) ORDER BY full_name'
     });
   },
   _resultsReady: function (value, results) {

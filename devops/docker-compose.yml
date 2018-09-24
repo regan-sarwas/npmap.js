@@ -1,0 +1,14 @@
+version: '3'
+services:
+  npmapjs:
+    restart: always
+    build:
+      context: ./npmapjs
+      dockerfile: ./Dockerfile
+    command: bash /scripts/start.sh
+    tty: true
+    volumes:
+      - ./../:/npmapjs
+      - ./npmapjs/scripts:/scripts
+    ports:
+      - 8080:8080

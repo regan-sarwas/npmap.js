@@ -43,6 +43,10 @@ NPMap.js is versioned using [semantic versioning](http://semver.org). This means
 - [v3.0.14](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.14+is%3Aclosed)
 - [v3.0.15](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.15+is%3Aclosed)
 - [v3.0.16](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.16+is%3Aclosed)
+- v3.0.17
+- [v3.0.18](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A3.0.18+is%3Aclosed)
+- [v4.0.0](https://github.com/nationalparkservice/npmap.js/issues?q=milestone%3A4.0.0+is%3Aclosed)
+- [v4.0.1](https://github.com/nationalparkservice/npmap.js/milestone/20?closed=1)
 
 ## Hosted version
 
@@ -53,6 +57,15 @@ NPMap.js is hosted on the National Park Service's content delivery network. If y
 NPMap.js supports connecting to a number of services that require API keys. The National Park Service's keys are bundled into the library releases served from the agency's content delivery network (see the [#hosted-version]("Hosted version") section above), so if you are loading the library from there, you should be good to go.
 
 If, however, you are not a National Park Service employee, partner, or contractor, you will need to create a copy of `keys.sample.json`, rename it `keys.json`, add your keys, and run `grunt build` to bundle your keys into the build of NPMap.js that is created in the `_dist` folder.
+
+### Using Docker
+
+Steps:
+1. Make sure Docker is [installed](https://docs.docker.com/engine/installation/)
+1. Make sure Docker Compose is [installed](https://docs.docker.com/compose/install/)
+1. In the npmap.js devops directory run `docker-compose build`
+1. run `docker-compose up`
+1. Navigate to http://localhost:8080
 
 ## Building
 
@@ -87,6 +100,12 @@ OR
     npm test
 
 We are working to expand test coverage for the library.
+
+## Deploying
+
+1. [Build](#building) the library
+2. Connect to `smb://dencmscontent/nps_prod/other/static/lib`
+3. `grunt deploy`
 
 ## Documentation
 

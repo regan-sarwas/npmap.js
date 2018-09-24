@@ -56,7 +56,7 @@ L.npmap = module.exports = {
   preset: {
     baselayers: require('./src/preset/baselayers.json'),
     colors: require('./src/preset/colors.json'),
-    maki: require('./node_modules/maki/_includes/maki.json'),
+    maki: require('./extras/maki.json'),
     npmapsymbollibrary: require('./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json'),
     overlays: require('./src/preset/overlays.json'),
     places: {

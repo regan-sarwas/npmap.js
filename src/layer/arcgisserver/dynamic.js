@@ -2,7 +2,7 @@
 
 var util = require('../../util/util');
 
-var ArcGisServerDynamicLayer = L.Class.extend({
+var ArcGisServerDynamicLayer = L.Layer.extend({
   includes: [
     L.Mixin.Events,
     require('../../mixin/esri')
