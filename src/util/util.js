@@ -655,11 +655,12 @@ module.exports = {
         });
       }
     } else {
+      var that = this;
       this.rawRequest(url, 'json', function(e, r) {
         // If the raw Request fails, try again with the proxy
         if (e) {
           // TODO, look at the error to see if this is needed
-          var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (this.supportsCors() === 'yes'));
+          var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (that.supportsCors() === 'yes'));
 
           reqwest({
             crossOrigin: supportsCors,
@@ -825,6 +826,11 @@ module.exports = {
   },
   rawRequest: function(url, format, callback) {
     // Most libraries send the 'X-Requested-With' which ESRI doesn't support 
+
+    // Try to make it https (it won't work as http if this page is https, so might as well try)
+    if (window.location.protocol === 'https:') {
+      url = url.replace(/^http:\/\/https:\/\//,'g');
+    }
     var request = new XMLHttpRequest();
     var returned = false;
     request.onreadystatechange = function () {
@@ -847,6 +853,8 @@ module.exports = {
           if (!returned) {
             callback(null, resp);
           }
+        } else {
+          callback(this);
         }
       }
     },
