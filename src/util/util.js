@@ -1,36 +1,37 @@
-/* global L, XMLHttpRequest */
+/* global L, XMLHttpRequest, require, module */
 
 'use strict';
 
 var dateFormat = require('helper-dateformat');
 var handlebars = require('handlebars');
 var reqwest = require('reqwest');
+var proxyServer = 'https://server-utils.herokuapp.com/proxy'; //TODO: New Proxy
 
 handlebars.registerHelper('dateFormat', dateFormat);
 handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
   switch (operator) {
-    case '!=':
-      return (v1 != v2) ? options.fn(this) : options.inverse(this);
-    case '!==':
-      return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-    case '==':
-      return (v1 == v2) ? options.fn(this) : options.inverse(this);
-    case '===':
-      return (v1 === v2) ? options.fn(this) : options.inverse(this);
-    case '<':
-      return (v1 < v2) ? options.fn(this) : options.inverse(this);
-    case '<=':
-      return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-    case '>':
-      return (v1 > v2) ? options.fn(this) : options.inverse(this);
-    case '>=':
-      return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-    case '&&':
-      return (v1 && v2) ? options.fn(this) : options.inverse(this);
-    case '||':
-      return (v1 || v2) ? options.fn(this) : options.inverse(this);
-    default:
-      return options.inverse(this);
+  case '!=':
+    return (v1 != v2) ? options.fn(this) : options.inverse(this);
+  case '!==':
+    return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+  case '==':
+    return (v1 == v2) ? options.fn(this) : options.inverse(this);
+  case '===':
+    return (v1 === v2) ? options.fn(this) : options.inverse(this);
+  case '<':
+    return (v1 < v2) ? options.fn(this) : options.inverse(this);
+  case '<=':
+    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+  case '>':
+    return (v1 > v2) ? options.fn(this) : options.inverse(this);
+  case '>=':
+    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+  case '&&':
+    return (v1 && v2) ? options.fn(this) : options.inverse(this);
+  case '||':
+    return (v1 || v2) ? options.fn(this) : options.inverse(this);
+  default:
+    return options.inverse(this);
   }
 });
 handlebars.registerHelper('toInt', function (str) {
@@ -593,7 +594,7 @@ module.exports = {
     return !isNaN(parseFloat(val)) && isFinite(val);
   },
   linkify: function (text, shorten, target) {
-    var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])';
+    var regexRoot = '\\b(https?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])';
     var regexLink = new RegExp(regexRoot, 'gi');
     var regexShorten = new RegExp('>' + regexRoot + '</a>', 'gi');
     var textLinked = text.replace(regexLink, '<a href="$1"' + (target ? ' target="' + target + '"' : '') + '>$1</a>');
@@ -654,22 +655,30 @@ module.exports = {
         });
       }
     } else {
-      var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (this.supportsCors() === 'yes'));
+      this.rawRequest(url, 'json', function(e, r) {
+        // If the raw Request fails, try again with the proxy
+        if (e) {
+          // TODO, look at the error to see if this is needed
+          var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (this.supportsCors() === 'yes'));
 
-      reqwest({
-        crossOrigin: supportsCors,
-        error: function () {
-          callback(false);
-        },
-        success: function (response) {
-          if (response && response.success) {
-            callback(response.data);
-          } else {
-            callback(false);
-          }
-        },
-        type: 'json' + (supportsCors ? '' : 'p'),
-        url: 'https://server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+          reqwest({
+            crossOrigin: supportsCors,
+            error: function () {
+              callback(false);
+            },
+            success: function (response) {
+              if (response && response.success) {
+                callback(response.data);
+              } else {
+                callback(false);
+              }
+            },
+            type: 'json' + (supportsCors ? '' : 'p'),
+            url: proxyServer + '?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+          });
+        } else {
+          callback(r);
+        }
       });
     }
   },
@@ -802,7 +811,7 @@ module.exports = {
     return div;
   },
   parseDomainFromUrl: function (url) {
-    var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+    var matches = url.match(/^https?:\/\/([^/?#]+)(?:[/?#]|$)/i);
 
     return matches && matches[1];
   },
@@ -810,9 +819,41 @@ module.exports = {
     if (input.setSelectionRange) {
       var length = input.value.length * 2;
       input.setSelectionRange(length, length);
-    } else {
-      input.value = input.value;
-    }
+    } /* else {
+       input.value = input.value;
+    } */
+  },
+  rawRequest: function(url, format, callback) {
+    // Most libraries send the 'X-Requested-With' which ESRI doesn't support 
+    var request = new XMLHttpRequest();
+    var returned = false;
+    request.onreadystatechange = function () {
+      var DONE = this.DONE || 4;
+      if (this.readyState === DONE){
+        if (this.status === 200) {
+          var resp = request.responseText;
+          if (format === 'json') {
+            try {
+              resp = JSON.parse(resp);
+              if (resp.error) {
+                returned = true;
+                callback(resp.error);
+              }
+            } catch (e) {
+              returned = true;
+              callback(e);
+            }
+          }
+          if (!returned) {
+            callback(null, resp);
+          }
+        }
+      }
+    },
+    request.open('GET', url, true);
+    // request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');  // Tells server that this call is made for ajax purposes.
+    //                                                                  // Most libraries like jQuery/Prototype/Dojo do this
+    request.send(null);  // No data needs to be sent along with the request.
   },
   reqwest: reqwest,
   strict: function (_, type) {
@@ -850,7 +891,7 @@ module.exports = {
       .replace(/&amp;/g, '&')
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '\"')
+      .replace(/&quot;/g, '"')
       .replace(/&#039;/g, '\'');
   }
 };
