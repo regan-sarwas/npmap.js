@@ -829,7 +829,7 @@ module.exports = {
 
     // Try to make it https (it won't work as http if this page is https, so might as well try)
     if (window.location.protocol === 'https:') {
-      url = url.replace(/^http:\/\/https:\/\//,'g');
+      url = url.replace(/^http:\/\//,'https://');
     }
     var request = new XMLHttpRequest();
     var returned = false;
