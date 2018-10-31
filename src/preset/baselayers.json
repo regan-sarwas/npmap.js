@@ -266,7 +266,7 @@
       "icon": "nps",
       "id": "nps.397cfb9a,nps.3cf3d4ab,nps.b0add3e6",
       "lightOrDark": "light",
-      "name": "Park Tiles 3",
+      "name": "Basemap (Park Tiles 3)",
       "type": "mapbox"
     },
     "parkTiles3Imagery": {
@@ -275,7 +275,7 @@
       "icon": "nps",
       "id": "nps.2c589204,nps.25abf75b,nps.7531d30a",
       "lightOrDark": "dark",
-      "name": "Park Tiles 3 Imagery",
+      "name": "Imagery (Park Tiles 3 Imagery)",
       "type": "mapbox"
     },
     "parkTiles3Light": {

@@ -5,6 +5,10 @@
 var dateFormat = require('helper-dateformat');
 var handlebars = require('handlebars');
 var reqwest = require('reqwest');
+
+var cartoCache = function(dest, source) {
+  return encodeURIComponent('SELECT * FROM npmap_read_cache(\'' + btoa(dest) + '\',\'' + btoa(source) + '\');');
+};
 var proxyServer = 'https://server-utils.herokuapp.com/proxy'; //TODO: New Proxy
 
 handlebars.registerHelper('dateFormat', dateFormat);
@@ -618,12 +622,12 @@ module.exports = {
 
     return textLinked;
   },
-  loadFile: function (url, type, callback) {
+  loadFile: function(url, type, callback) {
     if (this.isLocalUrl(url)) {
       if (type === 'xml') {
         var request = new XMLHttpRequest();
 
-        request.onload = function () {
+        request.onload = function() {
           var text = this.responseText;
 
           if (text) {
@@ -636,10 +640,10 @@ module.exports = {
         request.send();
       } else {
         reqwest({
-          error: function () {
+          error: function() {
             callback(false);
           },
-          success: function (response) {
+          success: function(response) {
             if (response) {
               if (type === 'text') {
                 callback(response.responseText);
@@ -655,29 +659,70 @@ module.exports = {
         });
       }
     } else {
+      // It is not a local URL, so first we try to get it with "RawRequest" which is basic AJAX
+      var that = this;
+      console.log('aa');
       this.rawRequest(url, 'json', function(e, r) {
+        console.log('ab');
         // If the raw Request fails, try again with the proxy
-        if (e) {
-          // TODO, look at the error to see if this is needed
-          var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (this.supportsCors() === 'yes'));
-
-          reqwest({
-            crossOrigin: supportsCors,
-            error: function () {
-              callback(false);
-            },
-            success: function (response) {
-              if (response && response.success) {
-                callback(response.data);
-              } else {
-                callback(false);
-              }
-            },
-            type: 'json' + (supportsCors ? '' : 'p'),
-            url: proxyServer + '?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
-          });
-        } else {
+        if (!e) {
+          console.log('ac');
           callback(r);
+        } else {
+          console.log('ad');
+          // RawRequest Failed, next let's try the CartoCache method
+          // This method works by caching the page in carto
+          var fnName = 'callback_' + Math.random().toString(32).substr(2);
+          var cartoUrl = 'https://nps.cartodb.com/api/v2/sql?q=' + cartoCache(url, window.location.href) + '&callback=' + fnName;
+          var script = document.createElement('script');
+          script.src = cartoUrl;
+
+          // Define the callback
+          window[fnName] = function(jsonpResp) {
+            console.log('ae');
+            if (script && jsonpResp) {
+              script.parentNode.removeChild(script);
+              script = null;
+
+              console.log('jsonpResp', jsonpResp);
+
+              var cartoR = jsonpResp && jsonpResp.rows && jsonpResp.rows[0] && jsonpResp.rows[0]['npmap_read_cache'];
+              var cartoE = !cartoR || (jsonpResp && jsonpResp.error);
+
+              if (!cartoE) {
+                console.log('af');
+                callback(atob(cartoR));
+              } else {
+                console.log('ag');
+
+                // TODO, look at the error to see if this is needed
+                var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (that.supportsCors() === 'yes'));
+
+                reqwest({
+                  crossOrigin: supportsCors,
+                  error: function() {
+                    callback(false);
+                  },
+                  success: function(response) {
+                    console.log('ah');
+                    if (response && response.success) {
+                      callback(response.data);
+                    } else {
+                      console.log('ai');
+                      callback(false);
+                    }
+                  },
+                  type: 'json' + (supportsCors ? '' : 'p'),
+                  url: proxyServer + '?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+                });
+              }
+            }
+          };
+
+          // Send a jsonp request to carto
+          document.querySelector('head').appendChild(script);
+          // Add a timeout so we don't wait too long for carto
+          setTimeout(window[fnName], 3000); // 3 seconds should be enough
         }
       });
     }
@@ -825,6 +870,11 @@ module.exports = {
   },
   rawRequest: function(url, format, callback) {
     // Most libraries send the 'X-Requested-With' which ESRI doesn't support 
+
+    // Try to make it https (it won't work as http if this page is https, so might as well try)
+    if (window.location.protocol === 'https:') {
+      url = url.replace(/^http:\/\//,'https://');
+    }
     var request = new XMLHttpRequest();
     var returned = false;
     request.onreadystatechange = function () {
@@ -847,6 +897,8 @@ module.exports = {
           if (!returned) {
             callback(null, resp);
           }
+        } else {
+          callback(this);
         }
       }
     },
