@@ -690,8 +690,10 @@ module.exports = {
               var cartoE = !cartoR || (jsonpResp && jsonpResp.error);
 
               if (!cartoE) {
-                console.log('af');
-                callback(atob(cartoR));
+                var cartoRClean = atob(cartoR).replace(/\\r\\n/g, '\n');
+                cartoRClean = cartoRClean.replace(/\\n/g, '\n');
+                console.log('af', cartoRClean);
+                callback(cartoRClean);
               } else {
                 console.log('ag');
 
