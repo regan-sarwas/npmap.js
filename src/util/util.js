@@ -665,6 +665,10 @@ module.exports = {
         // If the raw Request fails, try again with the proxy
         if (!e) {
           callback(r);
+        } else if (url.match(/https?:\/\/.+?\.carto(db)?.com\//g)) {
+          // Check is it's trying to load something on Carto or Cartodb.com
+          // Because the carto method won't fix that
+          callback(r);
         } else {
           // RawRequest Failed, next let's try the CartoCache method
           // This method works by caching the page in carto
