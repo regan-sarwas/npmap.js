@@ -661,15 +661,11 @@ module.exports = {
     } else {
       // It is not a local URL, so first we try to get it with "RawRequest" which is basic AJAX
       var that = this;
-      console.log('aa');
       this.rawRequest(url, 'json', function(e, r) {
-        console.log('ab');
         // If the raw Request fails, try again with the proxy
         if (!e) {
-          console.log('ac');
           callback(r);
         } else {
-          console.log('ad');
           // RawRequest Failed, next let's try the CartoCache method
           // This method works by caching the page in carto
           var fnName = 'callback_' + Math.random().toString(32).substr(2);
@@ -679,12 +675,9 @@ module.exports = {
 
           // Define the callback
           window[fnName] = function(jsonpResp) {
-            console.log('ae');
             if (script && jsonpResp) {
               script.parentNode.removeChild(script);
               script = null;
-
-              console.log('jsonpResp', jsonpResp);
 
               var cartoR = jsonpResp && jsonpResp.rows && jsonpResp.rows[0] && jsonpResp.rows[0]['npmap_read_cache'];
               var cartoE = !cartoR || (jsonpResp && jsonpResp.error);
@@ -692,10 +685,8 @@ module.exports = {
               if (!cartoE) {
                 var cartoRClean = atob(cartoR).replace(/\\r\\n/g, '\n');
                 cartoRClean = cartoRClean.replace(/\\n/g, '\n');
-                console.log('af', cartoRClean);
                 callback(cartoRClean);
               } else {
-                console.log('ag');
 
                 // TODO, look at the error to see if this is needed
                 var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (that.supportsCors() === 'yes'));
@@ -706,11 +697,9 @@ module.exports = {
                     callback(false);
                   },
                   success: function(response) {
-                    console.log('ah');
                     if (response && response.success) {
                       callback(response.data);
                     } else {
-                      console.log('ai');
                       callback(false);
                     }
                   },
