@@ -687,9 +687,19 @@ module.exports = {
               var cartoE = !cartoR || (jsonpResp && jsonpResp.error);
 
               if (!cartoE) {
-                var cartoRClean = atob(cartoR).replace(/\\r\\n/g, '\n');
-                cartoRClean = cartoRClean.replace(/\\n/g, '\n');
-                callback(cartoRClean);
+                if (type === 'json') {
+                  var cartoRClean = atob(cartoR).replace(/\\r\\n/g, '\n');
+                  cartoRClean = cartoRClean.replace(/\\n/g, '\n');
+                  callback(cartoRClean);
+                } else {
+                  var cartoRCleanData = atob(cartoR);
+                  try {
+                    cartoRCleanData = JSON.parse(cartoRCleanData);
+                    cartoRCleanData = cartoRCleanData.data ? cartoRCleanData.data : cartoRCleanData;
+                  } catch (e) {
+                  }
+                  callback(cartoRCleanData);
+                };
               } else {
 
                 // TODO, look at the error to see if this is needed
