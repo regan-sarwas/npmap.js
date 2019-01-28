@@ -1,4 +1,4 @@
-/* global L */
+/* global L, module, require*/
 
 'use strict';
 
@@ -91,7 +91,7 @@ var SpotLayer = L.GeoJSON.extend({
         }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: 'https://server-utils.herokuapp.com/proxy/?type=json&url=' + encodeURIComponent('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + (options.latest ? '/latest' : '/message') + '?dir=DESC&sort=timeInMili' + (options.password ? '&feedPassword=' + options.password : '') + (startDate ? '&startDate=' + startDate : '')) + (supportsCors === 'yes' ? '' : '&callback=?')
+      url: 'https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + (options.latest ? '/latest' : '/message') + '?dir=DESC&sort=timeInMili' + (options.password ? '&feedPassword=' + options.password : '') + (startDate ? '&startDate=' + startDate : '')
     });
 
     return this;

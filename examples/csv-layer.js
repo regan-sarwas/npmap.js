@@ -17,7 +17,8 @@ var NPMap = {
       }
     },
     type: 'csv',
-    url: 'data/colorado-cities.csv'
+    url: 'https://www.nps.gov/lib/npmap.js/3.0.18/examples/data/colorado-cities.csv'
+    // url: 'data/colorado-cities.csv'
   }],
   zoom: 7
 };

@@ -229,6 +229,12 @@
   "include": true,
   "title": "Places Points of Interest Preset"
 }, {
+  "category": "Examples",
+  "description": "",
+  "id": "parking-lots",
+  "include": true,
+  "title": "Parking Lot Example"
+}, {
   "category": "Controls",
   "description": "",
   "id": "print-control",

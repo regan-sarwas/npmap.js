@@ -104,8 +104,8 @@ MapExt = L.Map.extend({
     bounceAtZoomLimits: false,
     wheelPxPerZoomLevel: 120,
     worldCopyJump: true,
-    zoomDelta: 0.5,
-    zoomSnap: 0.5
+    zoomDelta: 1,
+    zoomSnap: 1
   },
   initialize: function (options) {
     var baseLayerSet = false;
