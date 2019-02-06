@@ -26,7 +26,7 @@ var SpotLayer = L.GeoJSON.extend({
         var message;
 
         // The response is either at response.response or response.data.response
-        var response = rawResponse && (rawResponse.rawResponse || (rawResponse.data && rawResponse.data.rawResponse));
+        var response = rawResponse && (rawResponse.response || (rawResponse.data && rawResponse.data.response));
 
         if (response) {
           if (response.feedMessageResponse && response.feedMessageResponse.messages && response.feedMessageResponse.messages.message) {
