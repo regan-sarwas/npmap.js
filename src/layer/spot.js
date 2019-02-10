@@ -22,12 +22,13 @@ var SpotLayer = L.GeoJSON.extend({
     L.Util.setOptions(this, this._toLeaflet(options));
     reqwest({
       crossOrigin: supportsCors === 'yes',
-      success: function (response) {
+      success: function (rawResponse) {
         var message;
 
-        if (response && response.data && response.data.response) {
-          response = response.data.response;
+        // The response is either at response.response or response.data.response
+        var response = rawResponse && (rawResponse.response || (rawResponse.data && rawResponse.data.response));
 
+        if (response) {
           if (response.feedMessageResponse && response.feedMessageResponse.messages && response.feedMessageResponse.messages.message) {
             var geoJson = {
               features: [],
