@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>Bing Layer | Examples | NPMap.js</title>
+    <link href="https://www.nps.gov/lib/bootstrap/3.3.2/css/nps-bootstrap.min.css" rel="stylesheet">
+    <style>body {
+  margin: 0;
+  padding: 0;
+}
+#map {
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+</style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>var NPMap = var NPMap = {
+  "baseLayers": [
+    "nps-parkTiles",
+    "bing-aerial",
+    "bing-aerialLabels",
+    "bing-roads",
+    "esri-nationalGeographic",
+    "esri-streets",
+    "esri-topographic",
+    "mapbox-outdoors",
+    "mapbox-satellite",
+    "mapbox-terrain"
+  ],
+  "center": {
+    "lat": 43.834528233331355,
+    "lng": -103.54394450783731
+  },
+  "div": "map",
+  "fullscreenControl": true,
+  "homeControl": true,
+  "locateControl": true,
+  "mapId": "fd52c547-45bc-494a-bebe-30209dc1cbc6",
+  "measureControl": true,
+  "overlays": [
+    {
+      "type": "geojson",
+      "url": "https://services1.arcgis.com/fBc8EJBxQRMcHlei/arcgis/rest/services/Lewis_and_Clark_Trail_Visitor_Centers_and_Museums/FeatureServer/0/query?where=URL+IS+NOT+NULL&outFields=SITE_NAME,URL,STREET_ADD&outSR=4326&f=geojson",
+      "name": "Visitor Centers and Museums",
+      "styles": {
+        "point": {
+          "marker-library": "npmapsymbollibrary",
+          "marker-symbol": "visitor-center-white",
+          "marker-color": "#d95f02",
+          "marker-size": "small"
+        }
+      },
+      "popup": {
+        "description": "{{STREET_ADD}}\n&lt;hr /&gt; \n&lt;a href=&quot;{{URL}}&quot; target=&quot;_blank&quot;&gt;\nLearn about {{SITE_NAME}}\n&lt;/a&gt;",
+        "title": "{{SITE_NAME}}"
+      },
+      "tooltip": "{{SITE_NAME}}"
+    },
+    {
+      "type": "geojson",
+      "url": "https://services1.arcgis.com/fBc8EJBxQRMcHlei/arcgis/rest/services/Lewis_and_Clark_Trail_Historic_Route/FeatureServer/0/query?where=Source+IS+NOT+NULL&outFields=Source,Exped_Seg,TRIP_TYPE,TRAIL_TYPE,LEADER,JOURNEY&outSR=4326&f=geojson",
+      "clickable": false,
+      "name": "Lewis and Clark Trail Historic Route",
+      "styles": {
+        "line": {
+          "stroke": "#117733",
+          "stroke-width": "5",
+          "stroke-opacity": "0.8"
+        }
+      }
+    },
+    {
+      "type": "geojson",
+      "url": "https://services1.arcgis.com/fBc8EJBxQRMcHlei/arcgis/rest/services/Lewis_and_Clark_Trail_Auto_Route/FeatureServer/0/query?where=NAME+IS+NOT+NULL&outFields=NAME,TYPE,FCC,SHIELD,HWY_NUM&outSR=4326&f=geojson",
+      "clickable": false,
+      "name": "Lewis and Clark Trail Auto Route",
+      "styles": {
+        "line": {
+          "stroke": "#d39800",
+          "stroke-width": "2",
+          "stroke-opacity": "0.8"
+        }
+      }
+    },
+    {
+      "type": "geojson",
+      "url": "https://services1.arcgis.com/fBc8EJBxQRMcHlei/arcgis/rest/services/HPHS/FeatureServer/0/query?where=NAME+IS+NOT+NULL&outFields=NAME,STATE,OWNTYP,OWNER,LECL_URL,LECL_Photo,LECL_Thumb&outSR=4326&f=geojson",
+      "description": "High Potential Historic Sites along the Lewis and Clark National Historic Trail",
+      "name": "High Potential Historic Sites",
+      "popup": {
+        "description": "&lt;hr /&gt;  \n&lt;a href=&quot;{{LECL_Photo}}&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;{{LECL_Thumb}}&quot;&gt;&lt;/a&gt;\n\n&lt;hr /&gt;  &lt;a href=&quot;{{LECL_URL}}&quot; target=&quot;_blank&quot;&gt; Learn about {{NAME}} &lt;/a&gt;",
+        "title": "{{NAME}}"
+      },
+      "styles": {
+        "point": {
+          "marker-library": "npmapsymbollibrary",
+          "marker-symbol": "historic-feature-white",
+          "marker-color": "#000000",
+          "marker-size": "small"
+        }
+      },
+      "tooltip": "{{NAME}}"
+    }
+  ],
+  "printControl": true,
+  "scaleControl": true,
+  "smallzoomControl": true,
+  "zoom": 5,
+  "zoomdisplayControl": false
+};
+
+(function () {
+  var s = document.createElement('script');
+  s.src = '../npmap-bootstrap.js';
+  document.body.appendChild(s);
+})();
+</script>
+  </body>
+</html>
+

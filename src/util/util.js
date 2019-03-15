@@ -1,4 +1,4 @@
-/* global L, XMLHttpRequest */
+/* global L, XMLHttpRequest, require, module */
 
 'use strict';
 
@@ -6,31 +6,36 @@ var dateFormat = require('helper-dateformat');
 var handlebars = require('handlebars');
 var reqwest = require('reqwest');
 
+var cartoCache = function(dest, source) {
+  return encodeURIComponent('SELECT * FROM npmap_read_cache(\'' + btoa(dest) + '\',\'' + btoa(source) + '\');');
+};
+var proxyServer = 'https://server-utils.herokuapp.com/proxy'; //TODO: New Proxy
+
 handlebars.registerHelper('dateFormat', dateFormat);
 handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
   switch (operator) {
-    case '!=':
-      return (v1 != v2) ? options.fn(this) : options.inverse(this);
-    case '!==':
-      return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-    case '==':
-      return (v1 == v2) ? options.fn(this) : options.inverse(this);
-    case '===':
-      return (v1 === v2) ? options.fn(this) : options.inverse(this);
-    case '<':
-      return (v1 < v2) ? options.fn(this) : options.inverse(this);
-    case '<=':
-      return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-    case '>':
-      return (v1 > v2) ? options.fn(this) : options.inverse(this);
-    case '>=':
-      return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-    case '&&':
-      return (v1 && v2) ? options.fn(this) : options.inverse(this);
-    case '||':
-      return (v1 || v2) ? options.fn(this) : options.inverse(this);
-    default:
-      return options.inverse(this);
+  case '!=':
+    return (v1 != v2) ? options.fn(this) : options.inverse(this);
+  case '!==':
+    return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+  case '==':
+    return (v1 == v2) ? options.fn(this) : options.inverse(this);
+  case '===':
+    return (v1 === v2) ? options.fn(this) : options.inverse(this);
+  case '<':
+    return (v1 < v2) ? options.fn(this) : options.inverse(this);
+  case '<=':
+    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+  case '>':
+    return (v1 > v2) ? options.fn(this) : options.inverse(this);
+  case '>=':
+    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+  case '&&':
+    return (v1 && v2) ? options.fn(this) : options.inverse(this);
+  case '||':
+    return (v1 || v2) ? options.fn(this) : options.inverse(this);
+  default:
+    return options.inverse(this);
   }
 });
 handlebars.registerHelper('toInt', function (str) {
@@ -593,7 +598,7 @@ module.exports = {
     return !isNaN(parseFloat(val)) && isFinite(val);
   },
   linkify: function (text, shorten, target) {
-    var regexRoot = '\\b(https?:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])';
+    var regexRoot = '\\b(https?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])';
     var regexLink = new RegExp(regexRoot, 'gi');
     var regexShorten = new RegExp('>' + regexRoot + '</a>', 'gi');
     var textLinked = text.replace(regexLink, '<a href="$1"' + (target ? ' target="' + target + '"' : '') + '>$1</a>');
@@ -617,12 +622,12 @@ module.exports = {
 
     return textLinked;
   },
-  loadFile: function (url, type, callback) {
+  loadFile: function(url, type, callback) {
     if (this.isLocalUrl(url)) {
       if (type === 'xml') {
         var request = new XMLHttpRequest();
 
-        request.onload = function () {
+        request.onload = function() {
           var text = this.responseText;
 
           if (text) {
@@ -635,10 +640,10 @@ module.exports = {
         request.send();
       } else {
         reqwest({
-          error: function () {
+          error: function() {
             callback(false);
           },
-          success: function (response) {
+          success: function(response) {
             if (response) {
               if (type === 'text') {
                 callback(response.responseText);
@@ -654,22 +659,76 @@ module.exports = {
         });
       }
     } else {
-      var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (this.supportsCors() === 'yes'));
+      // It is not a local URL, so first we try to get it with "RawRequest" which is basic AJAX
+      var that = this;
+      this.rawRequest(url, 'json', function(e, r) {
+        // If the raw Request fails, try again with the proxy
+        if (!e) {
+          callback(r);
+        } else if (url.match(/https?:\/\/.+?\.carto(db)?.com\//g)) {
+          // Check is it's trying to load something on Carto or Cartodb.com
+          // Because the carto method won't fix that
+          callback(r);
+        } else {
+          // RawRequest Failed, next let's try the CartoCache method
+          // This method works by caching the page in carto
+          var fnName = 'callback_' + Math.random().toString(32).substr(2);
+          var cartoUrl = 'https://nps.cartodb.com/api/v2/sql?q=' + cartoCache(url, window.location.href) + '&callback=' + fnName;
+          var script = document.createElement('script');
+          script.src = cartoUrl;
 
-      reqwest({
-        crossOrigin: supportsCors,
-        error: function () {
-          callback(false);
-        },
-        success: function (response) {
-          if (response && response.success) {
-            callback(response.data);
-          } else {
-            callback(false);
-          }
-        },
-        type: 'json' + (supportsCors ? '' : 'p'),
-        url: 'https://server-utils.herokuapp.com/proxy/?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+          // Define the callback
+          window[fnName] = function(jsonpResp) {
+            if (script && jsonpResp) {
+              script.parentNode.removeChild(script);
+              script = null;
+
+              var cartoR = jsonpResp && jsonpResp.rows && jsonpResp.rows[0] && jsonpResp.rows[0]['npmap_read_cache'];
+              var cartoE = !cartoR || (jsonpResp && jsonpResp.error);
+
+              if (!cartoE) {
+                if (type === 'json') {
+                  var cartoRClean = atob(cartoR).replace(/\\r\\n/g, '\n');
+                  cartoRClean = cartoRClean.replace(/\\n/g, '\n');
+                  callback(cartoRClean);
+                } else {
+                  var cartoRCleanData = atob(cartoR);
+                  try {
+                    cartoRCleanData = JSON.parse(cartoRCleanData);
+                    cartoRCleanData = cartoRCleanData.data ? cartoRCleanData.data : cartoRCleanData;
+                  } catch (e) {
+                  }
+                  callback(cartoRCleanData);
+                };
+              } else {
+
+                // TODO, look at the error to see if this is needed
+                var supportsCors = (window.location.protocol.indexOf('https:') === 0 ? true : (that.supportsCors() === 'yes'));
+
+                reqwest({
+                  crossOrigin: supportsCors,
+                  error: function() {
+                    callback(false);
+                  },
+                  success: function(response) {
+                    if (response && response.success) {
+                      callback(response.data);
+                    } else {
+                      callback(false);
+                    }
+                  },
+                  type: 'json' + (supportsCors ? '' : 'p'),
+                  url: proxyServer + '?encoded=true&type=' + type + '&url=' + window.btoa(encodeURIComponent(url))
+                });
+              }
+            }
+          };
+
+          // Send a jsonp request to carto
+          document.querySelector('head').appendChild(script);
+          // Add a timeout so we don't wait too long for carto
+          setTimeout(window[fnName], 3000); // 3 seconds should be enough
+        }
       });
     }
   },
@@ -833,7 +892,7 @@ module.exports = {
     return div;
   },
   parseDomainFromUrl: function (url) {
-    var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+    var matches = url.match(/^https?:\/\/([^/?#]+)(?:[/?#]|$)/i);
 
     return matches && matches[1];
   },
@@ -841,9 +900,48 @@ module.exports = {
     if (input.setSelectionRange) {
       var length = input.value.length * 2;
       input.setSelectionRange(length, length);
-    } else {
-      input.value = input.value;
+    } /* else {
+       input.value = input.value;
+    } */
+  },
+  rawRequest: function(url, format, callback) {
+    // Most libraries send the 'X-Requested-With' which ESRI doesn't support 
+
+    // Try to make it https (it won't work as http if this page is https, so might as well try)
+    if (window.location.protocol === 'https:') {
+      url = url.replace(/^http:\/\//,'https://');
     }
+    var request = new XMLHttpRequest();
+    var returned = false;
+    request.onreadystatechange = function () {
+      var DONE = this.DONE || 4;
+      if (this.readyState === DONE){
+        if (this.status === 200) {
+          var resp = request.responseText;
+          if (format === 'json') {
+            try {
+              resp = JSON.parse(resp);
+              if (resp.error) {
+                returned = true;
+                callback(resp.error);
+              }
+            } catch (e) {
+              returned = true;
+              callback(e);
+            }
+          }
+          if (!returned) {
+            callback(null, resp);
+          }
+        } else {
+          callback(this);
+        }
+      }
+    },
+    request.open('GET', url, true);
+    // request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');  // Tells server that this call is made for ajax purposes.
+    //                                                                  // Most libraries like jQuery/Prototype/Dojo do this
+    request.send(null);  // No data needs to be sent along with the request.
   },
   reqwest: reqwest,
   strict: function (_, type) {
@@ -881,7 +979,7 @@ module.exports = {
       .replace(/&amp;/g, '&')
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '\"')
+      .replace(/&quot;/g, '"')
       .replace(/&#039;/g, '\'');
   }
 };

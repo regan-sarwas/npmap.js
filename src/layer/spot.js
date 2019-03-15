@@ -1,4 +1,4 @@
-/* global L */
+/* global L, module, require*/
 
 'use strict';
 
@@ -22,12 +22,13 @@ var SpotLayer = L.GeoJSON.extend({
     L.Util.setOptions(this, this._toLeaflet(options));
     reqwest({
       crossOrigin: supportsCors === 'yes',
-      success: function (response) {
+      success: function (rawResponse) {
         var message;
 
-        if (response && response.data && response.data.response) {
-          response = response.data.response;
+        // The response is either at response.response or response.data.response
+        var response = rawResponse && (rawResponse.response || (rawResponse.data && rawResponse.data.response));
 
+        if (response) {
           if (response.feedMessageResponse && response.feedMessageResponse.messages && response.feedMessageResponse.messages.message) {
             var geoJson = {
               features: [],
@@ -91,7 +92,7 @@ var SpotLayer = L.GeoJSON.extend({
         }
       },
       type: 'json' + (supportsCors === 'yes' ? '' : 'p'),
-      url: 'https://server-utils.herokuapp.com/proxy/?type=json&url=' + encodeURIComponent('https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + (options.latest ? '/latest' : '/message') + '?dir=DESC&sort=timeInMili' + (options.password ? '&feedPassword=' + options.password : '') + (startDate ? '&startDate=' + startDate : '')) + (supportsCors === 'yes' ? '' : '&callback=?')
+      url: 'https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/' + options.id + (options.latest ? '/latest' : '/message') + '?dir=DESC&sort=timeInMili' + (options.password ? '&feedPassword=' + options.password : '') + (startDate ? '&startDate=' + startDate : '')
     });
 
     return this;

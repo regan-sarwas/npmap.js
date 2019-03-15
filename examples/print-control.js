@@ -13,11 +13,6 @@ var NPMap = {
     url: 'https://nationalparkservice.github.io/data/demo/colorado_cities.csv'
   }],
   printControl: true,
-  /*
-  printControl: {
-    url: 'print-control-test.html'
-  },
-  */
   zoom: 7
 };
 
