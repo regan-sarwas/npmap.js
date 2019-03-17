@@ -18,3 +18,13 @@
    { "license" : "MIT" }
 
 4. phantomjs is deprecated find alternative for testing
+
+
+Remove happen.js from test/index.html and package.json.  It is deprecated and not being used anyway.
+update handlebars in package.json to 4.1.1 to protect against  vulnerability
+
+update sinon to latest (7.2.7), need to update code.
+ - removes some deprecated submodules
+ update mocha to the latest (6.0.2) vulnerabilities
+
+ Use the newer way to add License to package.json
