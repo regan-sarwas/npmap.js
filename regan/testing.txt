@@ -1,0 +1,62 @@
+~/MyForks/npmap.js$ grunt test
+Running "mocha_phantomjs:all" (mocha_phantomjs) task
+
+
+  L.npmap.map
+    constructor
+      ✓ passes options to constructor when called without new
+      ✓ creates the map when the div property is an object
+      ✓ sets a default center for the map if none is specified
+      ✓ sets a default zoom for the map if none is specified
+      ✓ adds a default baseLayer if none is specified
+      ✓ renames the "layers" property "overlays", if specified
+      ✓ switches preset layers in when specified in the baseLayers property
+
+  L.npmap.control
+    fullscreenControl
+      ✓ creates a fullscreenControl when option "fullscreenControl: true"
+      ✓ does not create a fullscreenControl when option "fullscreenControl: false" or "fullscreenControl: undefined"
+    geocoderControl
+      ✓ creates a geocoderControl when option "geocoderControl: true"
+      ✓ does not create a geocoderControl when option "geocoderControl: false" or "geocoderControl: undefined"
+    hashControl
+      ✓ creates a hashControl when option "hashControl: true"
+      ✓ does not create a hashControl when option "hashControl: false" or "hashControl: undefined"
+      ✓ sets a hash when the map is moved (304ms)
+      ✓ uses a hash set initially on the page (306ms)
+      ✓ responds to a hash change after an initial hash is set (306ms)
+    homeControl
+      ✓ creates a homeControl by default
+      ✓ does not create a homeControl when option "homeControl: false"
+    overviewControl
+      ✓ creates an overviewControl when a valid "overviewControl" object is provided
+      ✓ does not create an overviewControl when option "overviewControl: false" or "overviewControl: undefined"
+    scaleControl
+      ✓ creates a scaleControl when option "scaleControl: true"
+      ✓ does not create a scaleControl when option "scaleControl: false" or "scaleControl: undefined"
+    smallzoomControl
+      ✓ creates a smallzoomControl by default
+      ✓ does not create a smallzoomControl when option "smallzoomControl: false"
+    switcherControl
+      ✓ creates a switcherControl when more than one baseLayer is present
+      ✓ does not create a switcherControl when less than two baseLayers are present
+
+  L.npmap.layer
+    arcgisserver
+      ✓ creates a dynamic layer and adds it to the map
+      ✓ fires the 'ready' event for a dynamic layer (949ms)
+      ✓ creates a tiled layer and adds it to the map
+      ✓ fires the 'ready' event for a tiled layer (344ms)
+    bing
+      ✓ creates a layer and adds it to the map
+    cartodb
+      ✓ creates a layer and adds it to the map
+
+
+  32 passing (2s)
+
+Error loading resource https://dev.virtualearth.net/REST/v1/Imagery/Metadata/aerialWithLabels?include=ImageryProviders&jsonp=_bing_metadata_492&key=Ag4-2f0g7bcmcVgKeNYvH_byJpiPQSx4F9l0aQaz9pDYMORbeBFZ0N3C3A5LSf65 (5). Details: Operation canceled
+
+Done, without errors.
+~/MyForks/npmap.js$ ll ~/bin/phantomjs 
+-rwxr-xr-x@ 1 resarwas  resarwas  45020592 Jan 24  2016 /Users/resarwas/bin/phantomjs

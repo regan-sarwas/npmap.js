@@ -1,0 +1,20 @@
+1. Research testing error (Error loading resource), see testing.txt.
+   Test framework does not count it as an error (wtf?)
+2. Lots of deprecation errors in the npm install (see npm-install.txt)
+   found 72 vulnerabilities (14 low, 46 moderate, 11 high, 1 critical)
+    a. grunt-semistandard@1.0.6 by dev (unmaintained)
+	b. coffee-script@1.3.3 by grunt@0.4.5 by dev (name change_)
+	c. minimatch@0.2.14 by grunt@0.4.5 by dev (DOS vulnerable use > 3.0.2)
+	d. minimatch@0.3.0 by findup-sync by grunt@0.4.5 by dev (DOS vulnerable use > 3.0.2)
+	e. formatio@1.1.1 by sinon by dev/testing (unmaintained)  USE sinon @7.2.7
+	f. sexagesimal@0.5.0 by csv2geojson@5.0.2 by app (name change) USE csv2geojson@5.1.1
+    h. samsam@1.1.3 by formatio by sinon by dev/testing deprecated USE @sinonjs/samsam
+    h. samsam@1.1.2 by sinon by dev/testing deprecated USE sinon @7.2.7
+
+	fsevents@1.2.7 requires install ?? required by chokidar@2.1.2 by watchify@3.11.1 by grunt-browserify@5.0.0 by dev
+	phantomjs requires install...
+
+3. rename licenses field to license in package.json see https://docs.npmjs.com/files/package.json
+   { "license" : "MIT" }
+
+4. phantomjs is deprecated find alternative for testing
