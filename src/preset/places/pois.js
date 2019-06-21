@@ -1601,7 +1601,7 @@ var PoiLayer = L.GeoJSON.extend({
                   lng: row.lng
                 }, {
                   icon: me._getIcon(true, symbol),
-                  title: row.name || row.type,
+                  title: row.name || row.type || '',
                   zIndexOffset: config.priority * -1000
                 }).bindPopup((function () {
                   var html = '<div class="layer" style="min-width:250px;">';
@@ -1610,7 +1610,9 @@ var PoiLayer = L.GeoJSON.extend({
                     html += '<div class="title">' + row.name + '</div>';
                   }
 
-                  html += '<div class="description"><p>' + row.type + '</p></div>';
+                  if (row.type) {
+                    html += '<div class="description"><p>' + row.type + '</p></div>';
+                  }
 
                   return html;
                 })());
