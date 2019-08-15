@@ -81,6 +81,7 @@ var PoiLayer = L.GeoJSON.extend({
   }, {
     type: 'Gift Shop',
     symbol: 'souvenir',
+    altSymbol: 'souvenir-shop',
     minZoomFactor: 7,
     maxZoom: 22,
     priority: 3
@@ -1498,13 +1499,18 @@ var PoiLayer = L.GeoJSON.extend({
     L.Util.setOptions(this, this._toLeaflet(options));
 
     environment = this.options.environment;
-    query = 'SELECT a.minzoompoly AS m,b.name AS n,b.type AS t,b.unit_code AS u,ST_X(b.the_geom) AS x,ST_Y(b.the_geom) AS y FROM parks AS a,points_of_interest' + (environment === 'production' ? '' : '_' + environment) + ' AS b WHERE a.unit_code=b.unit_code';
+    query = 'SELECT a.minzoompoly AS m,b.name AS n,b.icon AS t,b.unit_code AS u,ST_X(b.the_geom) AS x,ST_Y(b.the_geom) AS y FROM parks AS a,park_tiles_points AS b WHERE a.unit_code=b.unit_code';
 
     if (this.options.types.length) {
       query += ' AND (';
 
       for (i = 0; i < this.options.types.length; i++) {
-        query += 'b.type=\'' + this.options.types[i] + '\' OR ';
+        // Build the query with the types
+        var thisType = me._include.filter(function (v){return v.type === this.options.types[i];});
+        if (thisType.length > 0) {
+          var thisIcon = thisType[0].altSymbol || thisType[0].symbol;
+          query += 'b.icon =\'' + thisIcon + '\' OR ';
+        }
       }
 
       query = query.slice(0, query.length - 4) + ')';
@@ -1558,7 +1564,9 @@ var PoiLayer = L.GeoJSON.extend({
                 var c;
 
                 for (var j = 0; j < me._include.length; j++) {
-                  if (me._include[j].type === row.t) {
+                  if (me._include[j].symbol === row.t ||
+                      me._include[j].altSymbol === row.t ||
+                      me._include[j].type === row.t) {
                     c = me._include[j];
                     break;
                   }
@@ -1578,7 +1586,7 @@ var PoiLayer = L.GeoJSON.extend({
                   minZoom: row.m,
                   name: row.n,
                   symbol: symbol,
-                  type: row.t,
+                  type: config.type,
                   unitCode: row.u
                 };
                 L.Util.extend(row, obj);
@@ -1593,7 +1601,7 @@ var PoiLayer = L.GeoJSON.extend({
                   lng: row.lng
                 }, {
                   icon: me._getIcon(true, symbol),
-                  title: row.name || row.type,
+                  title: row.name || row.type || '',
                   zIndexOffset: config.priority * -1000
                 }).bindPopup((function () {
                   var html = '<div class="layer" style="min-width:250px;">';
@@ -1602,7 +1610,9 @@ var PoiLayer = L.GeoJSON.extend({
                     html += '<div class="title">' + row.name + '</div>';
                   }
 
-                  html += '<div class="description"><p>' + row.type + '</p></div>';
+                  if (row.type) {
+                    html += '<div class="description"><p>' + row.type + '</p></div>';
+                  }
 
                   return html;
                 })());
