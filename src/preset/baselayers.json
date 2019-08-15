@@ -241,7 +241,7 @@
       "icon": "nps",
       "id": "nps.68926899",
       "lightOrDark": "dark",
-      "name": "Park Tiles Slate",
+      "name": "Park Tiles Slate OSM",
       "type": "mapbox"
     },
     "lightStreets": {
@@ -260,26 +260,130 @@
       "name": "NPS Neutral Terrain",
       "type": "mapbox"
     },
-    "parkTiles3": {
-      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='https://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+    "parkTiles":
+    {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "url": "https://api.mapbox.com/styles/v1/{username}/{style_id}/tiles/{tilesize}/{z}/{x}/{y}@2x?access_token={access_token}",
+      "tilesize": '512',
+      "style_id": "cjt94v8pu23wh1fqug0cnviat",
+      "maxZoom": 18,
+       'access_token': 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+       "username":"nps",
+      "name": "Park Tiles Standard",
+      "type": "tiled"
+    },
+    "parkTilesSlate":
+    {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "url": "https://api.mapbox.com/styles/v1/{username}/{style_id}/tiles/{tilesize}/{z}/{x}/{y}@2x?access_token={access_token}",
+      "tilesize": '512',
+      "style_id": "cju8w7m1l50bu1frs10dajli6",
+      "maxZoom": 18,
+       'access_token': 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+       "username":"nps",
+      "name": "Park Tiles Slate",
+      "type": "tiled"
+    },
+    "parkTilesImagery":
+    {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "url": "https://api.mapbox.com/styles/v1/{username}/{style_id}/tiles/{tilesize}/{z}/{x}/{y}@2x?access_token={access_token}",
+      "tilesize": '512',
+      "style_id": "cjublmb741ezb1fphmcjs5iy5",
+      "maxZoom": 18,
+       'access_token': 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+       "username":"nps",
+      "name": "Park Tiles Imagery",
+      "type": "tiled"
+    },
+    "parkTilesLight":
+    {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "url": "https://api.mapbox.com/styles/v1/{username}/{style_id}/tiles/{tilesize}/{z}/{x}/{y}@2x?access_token={access_token}",
+      "tilesize": '512',
+      "style_id": "cjua0op0k4q301gpbb7o7wc6t",
+      "maxZoom": 18,
+       'access_token': 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+       "username":"nps",
+      "name": "Park Tiles Light",
+      "type": "tiled"
+    },
+    "parkTiles3":
+    {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "url": "https://api.mapbox.com/styles/v1/{username}/{style_id}/tiles/{tilesize}/{z}/{x}/{y}@2x?access_token={access_token}",
+      "tilesize": '512',
+      "style_id": "cjt94v8pu23wh1fqug0cnviat",
+      "maxZoom": 18,
+       'access_token': 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+       "username":"nps",
+      "name": "Park Tiles Standard",
+      "type": "tiled"
+    },
+    "parkTiles3Slate":
+    {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "url": "https://api.mapbox.com/styles/v1/{username}/{style_id}/tiles/{tilesize}/{z}/{x}/{y}@2x?access_token={access_token}",
+      "tilesize": '512',
+      "style_id": "cju8w7m1l50bu1frs10dajli6",
+      "maxZoom": 18,
+       'access_token': 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+       "username":"nps",
+      "name": "Park Tiles Slate",
+      "type": "tiled"
+    },
+    "parkTiles3Imagery":
+    {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "url": "https://api.mapbox.com/styles/v1/{username}/{style_id}/tiles/{tilesize}/{z}/{x}/{y}@2x?access_token={access_token}",
+      "tilesize": '512',
+      "style_id": "cjublmb741ezb1fphmcjs5iy5",
+      "maxZoom": 18,
+       'access_token': 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+       "username":"nps",
+      "name": "Park Tiles Imagery",
+      "type": "tiled"
+    },
+    "parkTiles3Light":
+    {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+      "icon": "nps",
+      "url": "https://api.mapbox.com/styles/v1/{username}/{style_id}/tiles/{tilesize}/{z}/{x}/{y}@2x?access_token={access_token}",
+      "tilesize": '512',
+      "style_id": "cjua0op0k4q301gpbb7o7wc6t",
+      "maxZoom": 18,
+       'access_token': 'pk.eyJ1IjoibnBzIiwiYSI6IkdfeS1OY1UifQ.K8Qn5ojTw4RV1GwBlsci-Q',
+       "username":"nps",
+      "name": "Park Tiles Light",
+      "type": "tiled"
+    },
+    "parkTiles3Legacy": {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "clickable": false,
       "icon": "nps",
       "id": "nps.397cfb9a,nps.3cf3d4ab,nps.b0add3e6",
       "lightOrDark": "light",
-      "name": "Basemap (Park Tiles 3)",
+      "name": "Park Tiles 3 Standard",
       "type": "mapbox"
     },
-    "parkTiles3Imagery": {
-      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='https://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+    "parkTiles3ImageryLegacy": {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "clickable": false,
       "icon": "nps",
       "id": "nps.2c589204,nps.25abf75b,nps.7531d30a",
       "lightOrDark": "dark",
-      "name": "Imagery (Park Tiles 3 Imagery)",
+      "name": "Park Tiles 3 Imagery",
       "type": "mapbox"
     },
-    "parkTiles3Light": {
-      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='https://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+    "parkTiles3LightLegacy": {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "clickable": false,
       "icon": "nps",
       "id": "nps.1ee61ddf,nps.7f508801,nps.5748cf33",
@@ -287,8 +391,8 @@
       "name": "Park Tiles 3 Light",
       "type": "mapbox"
     },
-    "parkTiles3Slate": {
-      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='https://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+    "parkTiles3SlateLegacy": {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "clickable": false,
       "icon": "nps",
       "id": "nps.9e521899,nps.17f575d9,nps.e091bdaf",
@@ -296,28 +400,28 @@
       "name": "Park Tiles 3 Slate",
       "type": "mapbox"
     },
-    "parkTiles": {
-      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='https://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+    "parkTilesOSM": {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "nps",
       "id": "nps.2yxv8n84",
       "lightOrDark": "light",
-      "name": "Park Tiles",
+      "name": "Park Tiles Standard OSM",
       "type": "mapbox"
     },
-    "parkTilesImagery": {
-      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors | <a class='improve-park-tiles' href='https://www.nps.gov/npmap/tools/park-tiles/improve/' target='_blank'>Improve Park Tiles</a>",
+    "parkTilesImageryOSM": {
+      "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "nps",
       "id": "mapbox.satellite,nps.gdipreks",
       "lightOrDark": "dark",
-      "name": "Park Tiles Imagery",
+      "name": "Park Tiles Imagery OSM",
       "type": "mapbox"
     },
-    "parkTilesSlate": {
+    "parkTilesSlateOSM": {
       "attribution": "&copy; <a href='https://www.mapbox.com/about/maps/' target='_blank'>Mapbox</a> &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       "icon": "nps",
       "id": "nps.68926899",
       "lightOrDark": "dark",
-      "name": "Park Tiles Slate",
+      "name": "Park Tiles Slate OSM",
       "type": "mapbox"
     },
     "satelliteNight": {
