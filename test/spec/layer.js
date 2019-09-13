@@ -1,16 +1,17 @@
-/* global afterEach, beforeEach, describe, expect, it, L, sinon */
+/* global mocha: afterEach, beforeEach, describe, it
+           chai: expect
+        leaflet: L */
 
 describe('L.npmap.layer', function () {
-  var element, server;
 
+  var element;
   afterEach(function () {
     element = null;
-    server.restore();
   });
   beforeEach(function () {
     element = document.createElement('div');
-    server = sinon.fakeServer.create();
   });
+
   describe('arcgisserver', function () {
     it('creates a dynamic layer and adds it to the map', function () {
       var map = L.npmap.map({
@@ -23,7 +24,7 @@ describe('L.npmap.layer', function () {
         }]
       });
 
-      expect(map.options.overlays[0].L).to.be.ok();
+      expect(map.options.overlays[0].L).to.be.ok;
     });
     it('fires the \'ready\' event for a dynamic layer', function (done) {
       L.npmap.map({
@@ -53,7 +54,7 @@ describe('L.npmap.layer', function () {
         }]
       });
 
-      expect(map.options.overlays[0].L).to.be.ok();
+      expect(map.options.overlays[0].L).to.be.ok;
     });
     it('fires the \'ready\' event for a tiled layer', function (done) {
       L.npmap.map({
@@ -86,9 +87,8 @@ describe('L.npmap.layer', function () {
         }]
       });
 
-      expect(map.options.overlays[0].L).to.be.ok();
+      expect(map.options.overlays[0].L).to.be.ok;
     });
-    /*
     it('fires the \'ready\' event', function (done) {
       L.npmap.map({
         baseLayers: false,
@@ -107,7 +107,6 @@ describe('L.npmap.layer', function () {
         }]
       });
     });
-    */
   });
   describe('cartodb', function () {
     it('creates a layer and adds it to the map', function () {
@@ -121,9 +120,8 @@ describe('L.npmap.layer', function () {
         }]
       });
 
-      expect(map.options.overlays[0].L).to.be.ok();
+      expect(map.options.overlays[0].L).to.be.ok;
     });
-    /*
     it('fires the \'ready\' event for a layer', function (done) {
       L.npmap.map({
         baseLayers: false,
@@ -141,7 +139,6 @@ describe('L.npmap.layer', function () {
         }]
       });
     });
-    */
   });
   describe('csv', function () {
 

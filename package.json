@@ -23,7 +23,6 @@
   "devDependencies": {
     "brfs": "1.4.3",
     "browserify": "^13.0.0",
-    "expect.js": "^0.3.1",
     "grunt": "~0.4.0",
     "grunt-akamai-rest-purge": "^0.1.1",
     "grunt-banner": "0.6.0",
@@ -43,15 +42,11 @@
     "grunt-mocha-phantomjs": "^3.0.0",
     "grunt-semistandard": "^1.0.4",
     "grunt-string-replace": "^1.2.1",
-    "mocha": "^3.0.0",
-    "mocha-phantomjs": "^4.0.1",
-    "phantomjs-prebuilt": "~2.1.12",
-    "sinon": "1.17.5",
     "uglify-js": "2.7.3",
     "xhr2": "^0.1.2"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "open test/index.html"
   },
   "engines": {
     "node": "*"
