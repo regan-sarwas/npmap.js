@@ -43,7 +43,6 @@
     "grunt-mocha-phantomjs": "^3.0.0",
     "grunt-semistandard": "^1.0.4",
     "grunt-string-replace": "^1.2.1",
-    "happen": "0.3.1",
     "mocha": "^3.0.0",
     "mocha-phantomjs": "^4.0.1",
     "phantomjs-prebuilt": "~2.1.12",
