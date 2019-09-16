@@ -1,4 +1,5 @@
 {
+  "browser": true,
   "bugs": {
     "email": "npmap@nps.gov",
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
@@ -54,13 +55,7 @@
     "US Government",
     "Web Map"
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/nationalparkservice/npmap.js/blob/master/LICENSE.md"
-    }
-  ],
-  "main": "main.js",
+  "license": "MIT",
   "name": "npmap.js",
   "repository": {
     "type": "git",
