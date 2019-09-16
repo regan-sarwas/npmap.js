@@ -350,7 +350,4 @@ module.exports = function (grunt) {
 
     grunt.file.write('dist/examples/index.html', html);
   });
-  grunt.registerTask('test', [
-    'mocha_phantomjs'
-  ]);
 };

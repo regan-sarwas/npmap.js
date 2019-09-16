@@ -1,16 +1,17 @@
-/* global afterEach, beforeEach, describe, expect, it, L, sinon */
+/* global mocha: afterEach, beforeEach, describe, it
+           chai: expect
+        leaflet: L */
 
 describe('L.npmap.control', function () {
-  var element, server;
 
+  var element;
   afterEach(function () {
     element = null;
-    server.restore();
   });
   beforeEach(function () {
     element = document.createElement('div');
-    server = sinon.fakeServer.create();
   });
+
   describe('fullscreenControl', function () {
     it('creates a fullscreenControl when option "fullscreenControl: true"', function () {
       var map = L.npmap.map({
@@ -18,14 +19,14 @@ describe('L.npmap.control', function () {
         fullscreenControl: true
       });
 
-      expect(map.fullscreenControl).to.be.ok();
+      expect(map.fullscreenControl).to.be.ok;
     });
     it('does not create a fullscreenControl when option "fullscreenControl: false" or "fullscreenControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
 
-      expect(map.fullscreenControl).to.be(undefined);
+      expect(map.fullscreenControl).to.be.undefined;
     });
   });
   describe('geocoderControl', function () {
@@ -35,14 +36,14 @@ describe('L.npmap.control', function () {
         geocoderControl: true
       });
 
-      expect(map.geocoderControl).to.be.ok();
+      expect(map.geocoderControl).to.be.ok;
     });
     it('does not create a geocoderControl when option "geocoderControl: false" or "geocoderControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
 
-      expect(map.geocoderControl).to.be(undefined);
+      expect(map.geocoderControl).to.be.undefined;
     });
   });
   describe('hashControl', function () {
@@ -52,14 +53,14 @@ describe('L.npmap.control', function () {
         hashControl: true
       });
 
-      expect(map.hashControl).to.be.ok();
+      expect(map.hashControl).to.be.ok;
     });
     it('does not create a hashControl when option "hashControl: false" or "hashControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
 
-      expect(map.hashControl).to.be(undefined);
+      expect(map.hashControl).to.be.undefined;
     });
     it('sets a hash when the map is moved', function (done) {
       var map = L.npmap.map({
@@ -72,7 +73,7 @@ describe('L.npmap.control', function () {
           51.505,
           -0.09
         ], 13);
-        expect(window.location.hash).to.be('#13/51.5050/-0.0900');
+        expect(window.location.hash).to.equal('#13/51.5050/-0.0900');
         done();
       }, 300);
     });
@@ -84,8 +85,8 @@ describe('L.npmap.control', function () {
       window.location.hash = '#13/10/40';
       L.npmap.control.hash().addTo(map);
       window.setTimeout(function () {
-        expect(Math.round(map.getCenter().lat)).to.be(10);
-        expect(Math.round(map.getCenter().lng)).to.be(40);
+        expect(Math.round(map.getCenter().lat)).to.equal(10);
+        expect(Math.round(map.getCenter().lng)).to.equal(40);
         done();
       }, 300);
     });
@@ -101,8 +102,8 @@ describe('L.npmap.control', function () {
       window.location.hash = '#13/20/40';
       L.npmap.control.hash().addTo(map);
       window.setTimeout(function () {
-        expect(Math.round(map.getCenter().lat)).to.be(20);
-        expect(Math.round(map.getCenter().lng)).to.be(40);
+        expect(Math.round(map.getCenter().lat)).to.equal(20);
+        expect(Math.round(map.getCenter().lng)).to.equal(40);
         done();
       }, 300);
     });
@@ -117,7 +118,7 @@ describe('L.npmap.control', function () {
       hash = L.npmap.control.hash().addTo(map);
       map.removeControl(hash);
       map.setView([51.505, -0.09], 13);
-      expect(window.location.hash).to.be('');
+      expect(window.location.hash).to.equal('');
     });
     */
   });
@@ -127,7 +128,7 @@ describe('L.npmap.control', function () {
         div: element
       });
 
-      expect(map.homeControl).to.be.ok();
+      expect(map.homeControl).to.be.ok;
     });
     it('does not create a homeControl when option "homeControl: false"', function () {
       var map = L.npmap.map({
@@ -135,7 +136,7 @@ describe('L.npmap.control', function () {
         homeControl: false
       });
 
-      expect(map.homeControl).to.be(undefined);
+      expect(map.homeControl).to.be.undefined;
     });
   });
   describe('overviewControl', function () {
@@ -147,14 +148,14 @@ describe('L.npmap.control', function () {
         }
       });
 
-      expect(map.overviewControl).to.be.ok();
+      expect(map.overviewControl).to.be.ok;
     });
     it('does not create an overviewControl when option "overviewControl: false" or "overviewControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
 
-      expect(map.overviewControl).to.be(undefined);
+      expect(map.overviewControl).to.be.undefined;
     });
   });
   describe('scaleControl', function () {
@@ -164,14 +165,14 @@ describe('L.npmap.control', function () {
         scaleControl: true
       });
 
-      expect(map.scaleControl).to.be.ok();
+      expect(map.scaleControl).to.be.ok;
     });
     it('does not create a scaleControl when option "scaleControl: false" or "scaleControl: undefined"', function () {
       var map = L.npmap.map({
         div: element
       });
 
-      expect(map.scaleControl).to.be(undefined);
+      expect(map.scaleControl).to.be.undefined;
     });
   });
   describe('smallzoomControl', function () {
@@ -180,7 +181,7 @@ describe('L.npmap.control', function () {
         div: element
       });
 
-      expect(map.smallzoomControl).to.be.ok();
+      expect(map.smallzoomControl).to.be.ok;
     });
     it('does not create a smallzoomControl when option "smallzoomControl: false"', function () {
       var map = L.npmap.map({
@@ -188,7 +189,7 @@ describe('L.npmap.control', function () {
         smallzoomControl: false
       });
 
-      expect(map.smallzoomControl).to.be(undefined);
+      expect(map.smallzoomControl).to.be.undefined;
     });
   });
   describe('switcherControl', function () {
@@ -201,7 +202,7 @@ describe('L.npmap.control', function () {
         div: element
       });
 
-      expect(map.switcherControl).to.be.ok();
+      expect(map.switcherControl).to.be.ok;
     });
     it('does not create a switcherControl when less than two baseLayers are present', function () {
       var map = L.npmap.map({
@@ -209,7 +210,7 @@ describe('L.npmap.control', function () {
         div: element
       });
 
-      expect(map.switcherControl).to.be(undefined);
+      expect(map.switcherControl).to.be.undefined;
     });
   });
 });

@@ -1,15 +1,15 @@
-/* global afterEach, beforeEach, describe, sinon */
+/* global mocha: afterEach, beforeEach, describe, it
+           chai: expect
+        leaflet: L */
 
 describe('L.npmap.icon', function () {
-  var element, server;
+  var element;
 
   afterEach(function () {
     element = null;
-    server.restore();
   });
   beforeEach(function () {
     element = document.createElement('div');
-    server = sinon.fakeServer.create();
   });
   describe('maki', function () {
 
