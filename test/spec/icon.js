@@ -1,6 +1,5 @@
-/* global mocha: afterEach, beforeEach, describe, it
-           chai: expect
-        leaflet: L */
+/* global L, expect, afterEach, beforeEach, describe, it */
+/* eslint-disable no-unused-expressions */
 
 describe('L.npmap.icon', function () {
   var element;

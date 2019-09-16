@@ -1,9 +1,7 @@
-/* global mocha: afterEach, beforeEach, describe, it
-           chai: expect
-        leaflet: L */
+/* global L, expect, afterEach, beforeEach, describe, it */
+/* eslint-disable no-unused-expressions */
 
 describe('L.npmap.layer', function () {
-
   var element;
   afterEach(function () {
     element = null;
