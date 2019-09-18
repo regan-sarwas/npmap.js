@@ -32,10 +32,10 @@
   },
   "scripts": {
     "build": "bash build/build.sh",
-    "check": "npm lint && npm test",
-    "cleanCSS": "npx csscomb theme/nps.css",
-    "deploy": "npm build && bash build/deploy.sh",
-    "lint": "npx csslint theme && npx semistandard",
+    "check": "npm run lint && npm run test",
+    "cleanCSS": "csscomb theme/nps.css",
+    "deploy": "npm run build && bash build/deploy.sh",
+    "lint": "csslint theme && semistandard",
     "test": "open test/index.html"
   },
   "homepage": "https://www.nps.gov/maps/tools/npmap.js/",
