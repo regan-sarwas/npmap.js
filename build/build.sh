@@ -1,92 +1,71 @@
-# This is just an outline, not an actual working script
+#!/bin/bash
 
-make_css(header):
- * Create theme/symbols.css
- * (echo $header; cat theme/symbols.css theme/nps.css) > dist/npmap-standalone.css
- * cssmin dist/npmap-standalone.css > dist/npmap-standalone.min.css
-   - or if you don't want the header minified, try something like this:
-   - (echo $header; cssmin theme/symbols.css theme/nps.css) > dist/npmap-standalone.min.css
+# All functions execpt `build` assume that the cwd is the project root
 
-make_js(header):
- * (echo $header; browserify main.js) > dist/npmap.js
- * (echo $header; browserify npmap.js) > dist/npmap-standalone.js
- * (echo $header; cat src/bootstrap.js) > dist/npmap-bootstrap.js
- * uglify dist/npmap.js > dist/npmap.min.js
- * uglify dist/npmap-standalone.js > dist/npmap-standalone.min.js
- * uglify src/bootstrap.js > dist/npmap-bootstrap.min.js
+function create_header() {
+  if [ -z $npm_package_version ]; then
+    npm_package_version=$(node -p "require('./package.json').version")
+    npm_package_license=$(node -p "require('./package.json').license")
+  fi
+  year=`date +%Y`
+  datetime=`date`
+  local header="/* NPMap.js $npm_package_version\n * Built on $datetime\n * Copyright $year National Park Service\n * Licensed under $npm_package_license \n */"
+  echo -e "$header"
+}
 
-make_docs:
-  # consider removing this function.  API docs are best viewed on github; no longer published on nps.gov
-  * mkdir dist/api
-  * npx showdown makehtml -i api/index.md -o dist/api/index.html
+function reset_dist {
+  rm -rf dist
+  mkdir dist
+}
 
-make_examples:
-  * mkdir dist/examples
-  * cp examples/data dist/examples/data
-  * cp examples/img dist/examples/img
-  * node build_examples.js
+function copy_assets() {
+  cp -r plugins dist/plugins
+  cp -r theme/images dist/images
+  cp -r node_modules/npmap-symbol-library/renders/npmap-builder dist/images/icon/npmap-symbol-library
+}
 
-copy_assets:
-  * cp plugins dist/plugins
-  * cp theme/images dist/images
-  * cp node_modules/npmap-symbol-library/renders/npmap-builder dist/images/icon/npmap-symbol-library
+function make_secrets() {
+  if [ ! -f keys.json ]; then
+    cp keys.sample.json keys.json
+  fi
+}
 
-lint():
- * csslint theme/nps.css (optional)
- * eslint *.js src/**/*.js (optional)
+function make_js() {
+  local header=$1
+  (echo "$header"; npx browserify main.js) > dist/npmap.js
+  (echo "$header"; npx browserify npmap.js) > dist/npmap-standalone.js
+  (echo "$header"; cat src/bootstrap.js) > dist/npmap-bootstrap.js
+  (echo "$header"; npx uglifyjs dist/npmap.js) > dist/npmap.min.js
+  (echo "$header"; npx uglifyjs dist/npmap-standalone.js) > dist/npmap-standalone.min.js
+  (echo "$header"; npx uglifyjs src/bootstrap.js) > dist/npmap-bootstrap.min.js
+}
 
-build():
- * set cwd to root project folder (fixed relative to this file)
- * header = create_header(package.json)
- * rm -rf dist; mkdir dist
- * copy_assets()
- * make_secrets()
- * make_js(header)
- * make_css(header)
- * make_docs()
- * make_examples()
- * restore cwd
+function make_css() {
+  local header=$1
+  local symbol_css="$(node build/build_symbol_css.js)"
+  (echo "$header"; cat theme/nps.css) > dist/npmap-standalone.css
+  (echo "$header"; echo "$symbol_css"; cat node_modules/leaflet/dist/leaflet.css theme/nps.css) > dist/npmap.css
+  (echo "$header"; npx cssmin dist/npmap-standalone.css) > dist/npmap-standalone.min.css
+  (echo "$header"; npx cssmin dist/npmap.css) > dist/npmap.min.css
+}
 
-publish():
-  * build()
-  * deploy.sh
+function make_examples() {
+  mkdir dist/examples
+  cp -r examples/data dist/examples/data
+  cp -r examples/img dist/examples/img
+  node build/build_examples.js
+}
 
-create_header(pkg):
-  version = grep pkg
-  license = grep pkg
-  date = date +FORMAT
-  time = date +FORMAT
-  header = '/**\n * NPMap.js $version\n * Built on $date at $time\n * Copyright $year National Park Service\n * Licensed under $license */'
-  return header
+function build() {
+  cd "${0%/*}"/.. # set the cwd to the project directory, i.e. the parent of this script's directory
+  local header="$(create_header)"
+  reset_dist
+  copy_assets
+  make_secrets
+  make_js "$header"
+  make_css "$header"
+  make_examples
+  cd ~-  # quietly restore the old cwd
+}
 
-Create theme/symbols.css:
-  if theme/symbols.css is newer than script and input then quit
-  rm theme/symbols.css
-  foreach icon in ./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json
-    foreach name,size in [(large,24),(medium,18),(small,12)]:
-      echo '.' + icon.icon + '-' + name + ' {background-image: url(images/icon/npmap-symbol-library/' + icon.icon + '-' + size + '.png);}' >> theme/symbols.css
-      echo '.' + icon.icon + '-' + name + '-2x {background-image: url(images/icon/npmap-symbol-library/' + icon.icon + '-' + size + '@2x.png);}' >>theme/symbols.css
-
-
-      'examples-data': {
-        cwd: 'examples/data/',
-        dest: 'dist/examples/data',
-        expand: true,
-        src: [
-          '**'
-        ]
-      },
-      'examples-img': {
-        cwd: 'examples/img/',
-        dest: 'dist/examples/img',
-        expand: true,
-        src: [
-          '**'
-        ]
-      },
-      images: {
-        cwd: 'theme/images/',
-        dest: 'dist/images',
-        expand: true,
-        src: [
-          '**/*'
+build
