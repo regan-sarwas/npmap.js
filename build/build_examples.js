@@ -3,6 +3,7 @@
  * Assumes the cwd is the project root (i.e. there is a ./examples directory for the source)
  * Output will be in dist/examples, which will be created if necessary, but not cleaned.
  */
+'use strict';
 
 const fs = require('fs');
 const examples = require('../examples/index.json'); // relative to script not cwd

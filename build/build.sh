@@ -2,6 +2,13 @@
 
 # All functions execpt `build` assume that the cwd is the project root
 
+# FIXME: Plugins (used by examples) are looking for minified version, which is not created
+#  - make sure we are supporting the dist to match the expectations of builder
+#  - plugins should not be part of dist, they can be part of examples
+#  - individual applications like builder should be responsible for adding the plugins they need
+#  - We can also put the minified versions in the src plugins folder.
+#  - alternatively, have the examples load the non-minified version.
+
 function create_header() {
   if [ -z $npm_package_version ]; then
     npm_package_version=$(node -p "require('./package.json').version")

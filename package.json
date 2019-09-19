@@ -6,7 +6,6 @@
   },
   "dependencies": {
     "@mapbox/togeojson": "~0.16.0",
-    "brfs": "^2.0.2",
     "csv2geojson": "5.0.2",
     "handlebars": "4.2.0",
     "helper-dateformat": "https://github.com/nationalparkservice/helper-dateformat/archive/v0.2.1.tar.gz",
@@ -21,6 +20,7 @@
   },
   "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
   "devDependencies": {
+    "brfs": "^2.0.2",
     "browserify": "^16.5.0",
     "csslint": "^1.0.5",
     "cssmin": "^0.4.3",
