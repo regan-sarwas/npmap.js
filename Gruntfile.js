@@ -2,12 +2,12 @@ module.exports = function (grunt) {
   'use strict';
 
   var cssNpmapSymbolLibrary = '';
-  var npmapSymbolLibrary = require('./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json');
+  var npmapSymbolLibrary = require('./node_modules/npmap-symbol-library/www/standalone/npmap-symbol-library.json');
   var pkg = require('./package.json');
   var sizes = {
-    large: 24,
-    medium: 18,
-    small: 12
+    large: 30,
+    medium: 22,
+    small: 14
   };
   var secrets;
 
@@ -160,7 +160,7 @@ module.exports = function (grunt) {
         ]
       },
       npmapSymbolLibrary: {
-        cwd: 'node_modules/npmap-symbol-library/renders/npmap-builder/',
+        cwd: 'node_modules/npmap-symbol-library/renders/standalone/',
         dest: 'dist/images/icon/npmap-symbol-library',
         expand: true,
         src: [

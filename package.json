@@ -16,7 +16,7 @@
     "leaflet-easyprint": "git+https://github.com/jimmyrocks/leaflet-easyPrint#gh-pages",
     "leaflet.markercluster": "~1.0.0",
     "nanobar": "0.4.2",
-    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.3.0.tar.gz",
+    "npmap-symbol-library": "https://github.com/nationalparkservice/npmap-symbol-library/archive/v2.5.0.tar.gz",
     "reqwest": "2.0.5"
   },
   "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
