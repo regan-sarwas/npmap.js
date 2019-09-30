@@ -1,0 +1,47 @@
+Unused node_modules (removed)
+    "@mapbox/maki": "~3.0.0",
+    "@mapbox/sexagesimal": "~1.0.0",
+
+Add module "brfs"  doesn't seem to be referenced by any modules, but browserify fails without it.
+
+
+src/module/Module.js is never required, and can be deleted
+./secrets.json is never referencd by code; it was used in gruntfile to connect to akamai server; see build/deploy.sh
+
+** = module referenced by npmap.js
+* = secondary reference
+
+*./keys.json
+*./package.json
+
+**./extras/maki.json
+**./node_modules/npmap-symbol-library/www/npmap-builder/npmap-symbol-library.json
+
+src/
+***bootstrap.js       **map.js         **popup.js      **tooltip.js
+
+src/control:
+**download.js     **fullscreen.js   **hash.js         **infobox.js      **locate.js
+**overview.js     **scale.js        **smallzoom.js    **zoomdisplay.js
+**edit.js         **geocoder.js     **home.js         **legend.js       **measure.js
+**print.js        **share.js        **switcher.js
+
+src/icon:
+**maki.js                **npmapsymbollibrary.js
+
+src/layer:
+**arcgisserver/dynamic.js       **arcgisserver/tiled.js
+**cartodb.js    **csv.js        **github.js     **mapbox.js     **tiled.js      **zoomify.js
+**bing.js       **cluster.js    **geojson.js    **kml.js        **spot.js       **wms.js
+
+src/mixin:
+*esri.js     *geojson.js  *grid.js     *module.js
+
+src/module:
+Module.js      **directions.js
+
+src/preset:
+**baselayers.json  **colors.json      **overlays.json    **places/pois.js
+
+src/util:
+**geocode.js     *lazyloader.js  **route.js       *tilemath.js    **topojson.js    **util.js

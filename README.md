@@ -91,11 +91,7 @@ Internally, the Grunt task uses [browserify](https://github.com/substack/node-br
 
 ## Testing
 
-NPMap.js uses the [Mocha](https://mochajs.org) JavaScript test framework, with the [expect.js](https://github.com/Automattic/expect.js) assertion library, and [PhantomJS](http://phantomjs.org/) to run the tests. You can run the tests with either of the following commands:
-
-    grunt test
-
-OR
+NPMap.js uses the [Mocha](https://mochajs.org) JavaScript test framework, with the [chai.js](https://www.chaijs.com) assertion library. You can run the tests in any browser by opening `test/index.html` or by running:
 
     npm test
 

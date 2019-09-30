@@ -1,14 +1,13 @@
 {
+  "browser": true,
   "bugs": {
     "email": "npmap@nps.gov",
     "url": "https://github.com/nationalparkservice/npmap.js/issues"
   },
   "dependencies": {
-    "@mapbox/maki": "~3.0.0",
-    "@mapbox/sexagesimal": "~1.0.0",
     "@mapbox/togeojson": "~0.16.0",
-    "csv2geojson": "5.0.2",
-    "handlebars": "4.0.11",
+    "csv2geojson": "5.1.1",
+    "handlebars": "4.3.1",
     "helper-dateformat": "https://github.com/nationalparkservice/helper-dateformat/archive/v0.2.1.tar.gz",
     "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
     "leaflet": "1.0.3",
@@ -21,41 +20,21 @@
   },
   "description": "A JavaScript web mapping library for the National Park Service, built as a Leaflet plugin.",
   "devDependencies": {
-    "brfs": "1.4.3",
-    "browserify": "^13.0.0",
-    "expect.js": "^0.3.1",
-    "grunt": "~0.4.0",
-    "grunt-akamai-rest-purge": "^0.1.1",
-    "grunt-banner": "0.6.0",
-    "grunt-browserify": "5.0.0",
-    "grunt-contrib-clean": "1.0.0",
-    "grunt-contrib-compress": "1.3.0",
-    "grunt-contrib-concat": "1.0.1",
-    "grunt-contrib-copy": "1.0.0",
-    "grunt-contrib-csslint": "2.0.0",
-    "grunt-contrib-cssmin": "1.0.2",
-    "grunt-contrib-handlebars": "1.0.0",
-    "grunt-contrib-uglify": "2.0.0",
-    "grunt-curl": "2.2.0",
-    "grunt-http": "2.0.1",
-    "grunt-md2html": "^0.3.0",
-    "grunt-mkdir": "1.0.0",
-    "grunt-mocha-phantomjs": "^3.0.0",
-    "grunt-semistandard": "^1.0.4",
-    "grunt-string-replace": "^1.2.1",
-    "happen": "0.3.1",
-    "mocha": "^3.0.0",
-    "mocha-phantomjs": "^4.0.1",
-    "phantomjs-prebuilt": "~2.1.12",
-    "sinon": "1.17.5",
-    "uglify-js": "2.7.3",
-    "xhr2": "^0.1.2"
+    "brfs": "^2.0.2",
+    "browserify": "^16.5.0",
+    "csslint": "^1.0.5",
+    "cssmin": "^0.4.3",
+    "eslint-config-standard": "^13.0.1",
+    "semistandard": "^14.2.0",
+    "uglify-js": "^3.6.0"
   },
   "scripts": {
-    "test": "grunt test"
-  },
-  "engines": {
-    "node": "*"
+    "build": "bash build/build.sh",
+    "check": "npm run lint && npm run test",
+    "cleanCSS": "csscomb theme/nps.css",
+    "deploy": "npm run build && bash build/deploy.sh",
+    "lint": "csslint theme && semistandard",
+    "test": "open test/index.html"
   },
   "homepage": "https://www.nps.gov/maps/tools/npmap.js/",
   "keywords": [
@@ -74,17 +53,16 @@
     "US Government",
     "Web Map"
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/nationalparkservice/npmap.js/blob/master/LICENSE.md"
-    }
-  ],
-  "main": "main.js",
+  "license": "MIT",
   "name": "npmap.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nationalparkservice/npmap.js.git"
+  },
+  "semistandard": {
+    "ignore": [
+      "plugins/"
+    ]
   },
   "version": "4.0.1"
 }
