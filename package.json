@@ -6,8 +6,8 @@
   },
   "dependencies": {
     "@mapbox/togeojson": "~0.16.0",
-    "csv2geojson": "5.0.2",
-    "handlebars": "4.2.0",
+    "csv2geojson": "5.1.1",
+    "handlebars": "4.3.1",
     "helper-dateformat": "https://github.com/nationalparkservice/helper-dateformat/archive/v0.2.1.tar.gz",
     "humane-js": "https://github.com/nationalparkservice/humane-js/archive/3.2.2.tar.gz",
     "leaflet": "1.0.3",
