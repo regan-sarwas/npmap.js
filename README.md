@@ -1,5 +1,25 @@
 # NPMap.js
 
+The AKROGIS fork of NPMap.js was created to add functionality for linking
+photos on the AKRO GIS web servers to a building popup via its FMSS id.
+This work is in the FMSS_Photos branch, and was deployed in the
+[buildings web app](https://github.com/AKROGIS/Buildings-Website)
+and early versions of the
+[facilities web app](https://github.com/AKROGIS/Facilities-Website)
+
+Additional work was begun, in other branches, to modernize the build
+system, fix some bugs and add some functionality for the facilities web app.
+Ultimately, it was determined that working with NPMap.js was more difficult
+and less flexible than using leaflet directly.  The facilities web app is
+no longer dependent on NPMap.js, but the buildings web app still is.
+
+The connection of this repo to the true 
+[upsteam master](https://github.com/nationalparkservice/npmap.js)
+was broken when the National Park Service repo was made private.
+
+# The following is the Original(upstream) Readme
+# NPMap.js
+
 [![Circle CI](https://circleci.com/gh/nationalparkservice/npmap.js.svg?style=svg)](https://circleci.com/gh/nationalparkservice/npmap.js)
 
 Extends [Leaflet](http://leafletjs.com) to include functionality and a look-and-feel built specifically for the National Park Service.
